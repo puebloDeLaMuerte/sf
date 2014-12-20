@@ -1,0 +1,8 @@
+{
+	"previousProject" : {
+		"projectName" : "default",
+		"projectPath" : "/Users/philipptoegel/PROJEKTE/Föhr/exmplproj"
+	},
+	"museumData" : "MuKuDeWe.sfm",
+	"fileChooserCurrentDirectory" : " "
+}

@@ -1,0 +1,9 @@
+{
+  "projectLibrary": [],
+  "projectName": "testprojekt",
+  "rooms": [
+    {"room": "ROOM_1"},
+    {"room": "ROOM_2"},
+    {"room": "ROOM_3"}
+  ]
+}

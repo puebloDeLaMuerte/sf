@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 841.9 595.3" enable-background="new 0 0 841.9 595.3" xml:space="preserve">
+<g id="Grundriss">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="288.2" y1="211" x2="589.2" y2="211"/>
+	<polyline fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" points="245.4,391.7 140.2,391.7 140.2,211 
+		256.5,211 	"/>
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="503.6" y1="391.7" x2="297.8" y2="391.7"/>
+	<polyline fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" points="612.7,211 666.1,211 666.1,391.7 
+		555.5,391.7 	"/>
+	<polyline fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" points="255.7,158 150.7,158 150.7,211 256.5,211 
+			"/>
+	<polyline fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" points="288.2,211 363,211 363,158 290,158 	"/>
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="205.7" y1="338" x2="140.2" y2="338"/>
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="205.7" y1="246.3" x2="205.7" y2="354.3"/>
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="140.2" y1="270.3" x2="205.7" y2="270.3"/>
+	<g id="Ebene_2">
+	</g>
+	<text transform="matrix(1 0 0 1 632.3041 230.9999)" font-family="'Helvetica-Bold'" font-size="16">A</text>
+	<text transform="matrix(1 0 0 1 647.6156 308.3777)" font-family="'Helvetica-Bold'" font-size="16">B</text>
+	<text transform="matrix(1 0 0 1 604.849 383.9473)" font-family="'Helvetica-Bold'" font-size="16">C</text>
+	<text transform="matrix(1 0 0 1 400.7311 383.9473)" font-family="'Helvetica-Bold'" font-size="16">D</text>
+	<text transform="matrix(1 0 0 1 183.73 383.9473)" font-family="'Helvetica-Bold'" font-size="16">E</text>
+	<text transform="matrix(1 0 0 1 146.2432 372.8596)" font-family="'Helvetica-Bold'" font-size="16">F</text>
+	<text transform="matrix(1 0 0 1 167.3625 357.0201)" font-family="'Helvetica-Bold'" font-size="16">G</text>
+	<text transform="matrix(1 0 0 1 213.8251 306.0853)" font-family="'Helvetica-Bold'" font-size="16">H</text>
+	<text transform="matrix(1 0 0 1 146.2431 246.333)" font-family="'Helvetica-Bold'" font-size="16">I</text>
+	<text transform="matrix(1 0 0 1 180.562 230.9997)" font-family="'Helvetica-Bold'" font-size="16">J</text>
+	<text transform="matrix(1 0 0 1 418.6824 230.9997)" font-family="'Helvetica-Bold'" font-size="16">K</text>
+	<text transform="matrix(1 0 0 1 317.3491 204.3332)" font-family="'Helvetica-Bold'" font-size="16">L</text>
+	<text transform="matrix(1 0 0 1 317.3491 177.6667)" font-family="'Helvetica-Bold'" font-size="16">M</text>
+</g>
+<g id="Wand_A_Active">
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="612.7" y1="211" x2="667.6" y2="211"/>
+</g>
+<g id="Wand_A_Over">
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="612.7" y1="211" x2="667.6" y2="211"/>
+</g>
+<g id="Wand_A">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="612.7" y1="211" x2="667.6" y2="211"/>
+</g>
+<g id="Wand_B_Active">
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="666.1" y1="209.5" x2="666.1" y2="393.2"/>
+</g>
+<g id="Wand_B_Over">
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="666.1" y1="209.5" x2="666.1" y2="393.2"/>
+</g>
+<g id="Wand_B">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="666.1" y1="209.5" x2="666.1" y2="393.2"/>
+</g>
+<g id="Wand_C_Active">
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="667.6" y1="391.7" x2="555.5" y2="391.7"/>
+	<path fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" d="M205.7,270.3"/>
+	<path fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" d="M140.2,270.3"/>
+</g>
+<g id="Wand_C_Over">
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="667.6" y1="391.7" x2="555.5" y2="391.7"/>
+	<path fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" d="M205.7,270.3"/>
+	<path fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" d="M140.2,270.3"/>
+</g>
+<g id="Wand_C">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="667.6" y1="391.7" x2="555.5" y2="391.7"/>
+	<path fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" d="M205.7,270.3"/>
+	<path fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" d="M140.2,270.3"/>
+</g>
+<g id="Wand_D_Active">
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="503.6" y1="391.7" x2="297.8" y2="391.7"/>
+</g>
+<g id="Wand_D_Over">
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="503.6" y1="391.7" x2="297.8" y2="391.7"/>
+</g>
+<g id="Wand_D">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="503.6" y1="391.7" x2="297.8" y2="391.7"/>
+</g>
+<g id="Wand_E_Active">
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="245.4" y1="391.7" x2="138.6" y2="391.7"/>
+</g>
+<g id="Wand_E_Over">
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="245.4" y1="391.7" x2="138.6" y2="391.7"/>
+</g>
+<g id="Wand_E">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="245.4" y1="391.7" x2="138.6" y2="391.7"/>
+</g>
+<g id="Wand_F_Active">
+	<path fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" d="M140.2,336.5"/>
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="140.2" y1="393.2" x2="140.2" y2="336.5"/>
+	<path fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" d="M140.2,336.5"/>
+</g>
+<g id="Wand_F_Over">
+	<path fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" d="M140.2,336.5"/>
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="140.2" y1="393.2" x2="140.2" y2="336.5"/>
+	<path fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" d="M140.2,336.5"/>
+</g>
+<g id="Wand_F">
+	<path fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" d="M140.2,336.5"/>
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="140.2" y1="393.2" x2="140.2" y2="336.5"/>
+	<path fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" d="M140.2,336.5"/>
+</g>
+<g id="Wand_G_Active">
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="207.2" y1="338" x2="138.7" y2="338"/>
+</g>
+<g id="Wand_G_Over">
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="207.2" y1="338" x2="138.7" y2="338"/>
+</g>
+<g id="Wand_G">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="207.2" y1="338" x2="138.7" y2="338"/>
+</g>
+<g id="Wand_H_Active">
+	<path fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" d="M205.7,338"/>
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="205.7" y1="246.3" x2="205.7" y2="354.3"/>
+	<path fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" d="M205.7,270.3"/>
+</g>
+<g id="Wand_H_Over">
+	<path fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" d="M205.7,338"/>
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="205.7" y1="246.3" x2="205.7" y2="354.3"/>
+	<path fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" d="M205.7,270.3"/>
+</g>
+<g id="Wand_H">
+	<path fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" d="M205.7,338"/>
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="205.7" y1="246.3" x2="205.7" y2="354.3"/>
+	<path fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" d="M205.7,270.3"/>
+</g>
+<g id="Wand_I_Active">
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="140.2" y1="271.8" x2="140.2" y2="209.5"/>
+	<path fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" d="M140.2,271.8"/>
+</g>
+<g id="Wand_I_Over">
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="140.2" y1="271.8" x2="140.2" y2="209.5"/>
+	<path fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" d="M140.2,271.8"/>
+</g>
+<g id="Wand_I">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="140.2" y1="271.8" x2="140.2" y2="209.5"/>
+	<path fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" d="M140.2,271.8"/>
+</g>
+<g id="Wand_J_Active">
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="138.7" y1="211" x2="256.5" y2="211"/>
+</g>
+<g id="Wand_J_Over">
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="138.7" y1="211" x2="256.5" y2="211"/>
+</g>
+<g id="Wand_J">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="138.7" y1="211" x2="256.5" y2="211"/>
+</g>
+<g id="Wand_K_Active">
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="288.2" y1="211" x2="589.2" y2="211"/>
+</g>
+<g id="Wand_K_Over">
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="288.2" y1="211" x2="589.2" y2="211"/>
+</g>
+<g id="Wand_K">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="288.2" y1="211" x2="589.2" y2="211"/>
+</g>
+<g id="Wand_L_Active">
+	<path fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" d="M288.2,211"/>
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="288.2" y1="211" x2="364.4" y2="211"/>
+</g>
+<g id="Wand_L_Over">
+	<path fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" d="M288.2,211"/>
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="288.2" y1="211" x2="364.4" y2="211"/>
+</g>
+<g id="Wand_L">
+	<path fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" d="M288.2,211"/>
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="288.2" y1="211" x2="364.4" y2="211"/>
+</g>
+<g id="Wand_M_Active">
+	<line fill="none" stroke="#E2001A" stroke-width="3" stroke-miterlimit="10" x1="364.5" y1="158" x2="290" y2="158"/>
+</g>
+<g id="Wand_M_Over">
+	<line fill="none" stroke="#707173" stroke-width="3" stroke-miterlimit="10" x1="364.5" y1="158" x2="290" y2="158"/>
+</g>
+<g id="Wand_M">
+	<line fill="none" stroke="#000000" stroke-width="3" stroke-miterlimit="10" x1="364.5" y1="158" x2="290" y2="158"/>
+</g>
+</svg>
