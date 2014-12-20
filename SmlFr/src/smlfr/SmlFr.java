@@ -16,19 +16,18 @@ import processing.data.JSONObject;
 
 
 
-public class SmlFr {
+public class SmlFr extends JFrame{
 
 	// Modules
 	public SmlFr 			base;
 	public SM_FileManager 	fm;
-	public SM_Room[] 		rooms;
 	
 	// Data
-	/*  /
-	 */
-	/*
-	 *
-	 */
+	public SM_Room[] 		rooms;
+	public SM_Artwork[]		artworks;
+	
+	// utils
+	private boolean 		fistStart = true;
 	
 
 	
@@ -46,6 +45,7 @@ public class SmlFr {
 	private void initialize() {
 		
 		base = this;
+		base.setVisible(true);
 		
 		fm = new SM_FileManager();
 		
@@ -62,6 +62,7 @@ public class SmlFr {
 			
 		case 1:
 			System.out.println("projekt laden ausgewählt");
+			fm.loadProject(null);
 			break;
 			
 		case 2:
@@ -72,12 +73,19 @@ public class SmlFr {
 			break;
 		}
 		
-		// init museum data
+		// check if loading was successful
+		if( !fm.isProjectLoaded() ) {
+			base.initialize();
+		}
 		
-		// // init rooms from architecture (without project data)
+		
+		
+		// init museum data for current project
+		
+		// // init rooms in Project from architecture (without project data)
 		
 		String[] s = fm.getRoomNamesInProject() ;
-		System.out.println("the rooms:");
+		System.out.println("the rooms in this project:");
 		for(String ss : s) {
 			System.out.println(ss);
 		}
@@ -88,16 +96,12 @@ public class SmlFr {
 			JSONObject room = fm.getRoomFromArchitecture(s[ii]);
 			rooms[ii] = new SM_Room(base, s[ii], room);
 		}
-		
-		
-		// fm.newProject("some", new String[] { "S1" } );
 
 
-		for(SM_Room r : rooms) {
-			System.out.println(r.sayHi());
-		}
 
 	}
+	
+
 	
 	public void sayHi() {
 		

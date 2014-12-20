@@ -1,8 +1,8 @@
 {
-	"previousProject" : {
-		"projectName" : "default",
-		"projectPath" : "/Users/philipptoegel/PROJEKTE/Föhr/xmpl_02/exmplproj.sfp"
-	},
-	"museumData" : "MuKuDeWe.sfm",
-	"fileChooserCurrentDirectory" : " "
+  "previousProject": {
+    "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/xmpl_02/xmpl_03.sfp",
+    "projectName": "some"
+  },
+  "fileChooserCurrentDirectory": " ",
+  "museumData": "MuKuDeWe.sfm"
 }

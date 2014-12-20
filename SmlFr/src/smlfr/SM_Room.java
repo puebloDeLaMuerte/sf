@@ -103,14 +103,7 @@ public class SM_Room {
 
 			myViewAngles[a] = new SM_ViewAngle(thisAngle, wallSkewInThisView, wallCropInThisView);
 
-
-			
-
-
 		}
-
-
-
 	}
 
 	public String sayHi() {

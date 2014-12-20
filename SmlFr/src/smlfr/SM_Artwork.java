@@ -1,7 +1,6 @@
 package smlfr;
 
 import SMUtils.FrameStyle;
-import SMUtils.Rooms;
 
 public class SM_Artwork {
 	
@@ -17,7 +16,7 @@ public class SM_Artwork {
 	
 	
 	// init from project
-	private Rooms			isInRoom;
+	private String			isInRoom;
 	private int[]			posInRoom;
 	private boolean			light;
 
@@ -73,7 +72,7 @@ public class SM_Artwork {
 				
 	}
 	
-	public void initProjectData( Rooms _isInRoom, int _posX, int _posY, boolean _hasLight) {
+	public void initProjectData( String _isInRoom, int _posX, int _posY, boolean _hasLight) {
 		isInRoom = _isInRoom;
 		posInRoom = new int[2];
 		posInRoom[0] = _posX;

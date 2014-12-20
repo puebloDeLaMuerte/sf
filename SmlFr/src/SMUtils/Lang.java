@@ -16,6 +16,8 @@ public class Lang {
 	public static String 	initializeFromWhereTitle = "Was wollen Sie tun?";
 	public static String 	initializeFromWhere_1 = "Zuletzt gešffnetes Projekt:\n\n";
 	public static String 	initializeFromWhere_2 = "\n\nMšchten Sie das letzte Projekt šffnen, ein neues Projekt erstellen,\noder ein anderes Projekt laden?";
-	public static String[]	initializeFromWhereButtons = new String[] { "Neues Projekt", "Projekt laden...", "letztes šffnen" };
 	
+	// Control Elements
+	public static String[]	initializeFromWhereButtons = new String[] { "Neues Projekt", "Projekt laden...", "letztes šffnen" };
+	public static String	SM_filetypes = "Nur SimulFšhr Dateien";
 }
