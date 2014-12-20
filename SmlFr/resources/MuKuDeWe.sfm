@@ -2,6 +2,21 @@
   "museumName": "Museum Kunst Der Westküste",
   "architecture": {
     "S1": {
+      "viewAngles": [
+        "v_S1_AB",
+        "v_S1_ABC",
+        "v_S1_BC",
+        "v_S1_DEF",
+        "v_S1_DEFHIJK",
+        "v_S1_EF",
+        "v_S1_EFHIJ",
+        "v_S1_FG",
+        "v_S1_IJ",
+        "v_S1_K",
+        "v_S1_KBCD",
+        "v_S1_L",
+        "v_S1_M"
+      ],
       "roomRealName": "Saal 1",
       "w_S1_A": {
         "navigatorBoundingBox": [

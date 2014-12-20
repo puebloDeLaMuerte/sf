@@ -10,7 +10,8 @@ public class Lang {
 	public static String 	couldntLoadPrefs = "Die Voreinstellungs-Datei konnte nicht geladen werden.\nMšglicherweise ist die datei beschŠdigt.";
 	public static String 	couldntFindMuseum = "Die Museums-Datei konnte nicht gefunden werden! \nBitte ŸberprŸfen Sie, ob sie sich im Ordner >resources< befindet.";
 	public static String 	couldntLoadMuseumData = "Die Museumsdaten konnten nicht geladen werden.\nDie Datei scheint beschŠdigt zu sein.";
-	
+	public static String	couldntLoadProject_1 = "Das Projekt konnte nicht geladen werden.\nStellen Sie sicher das sich die Datei ";
+	public static String	couldntLoadProject_2 = " in diesem Ordner befindet: \n";
 	// questions
 	public static String 	initializeFromWhereTitle = "Was wollen Sie tun?";
 	public static String 	initializeFromWhere_1 = "Zuletzt gešffnetes Projekt:\n\n";

@@ -1,6 +1,9 @@
 package smlfr;
 
 import java.awt.BorderLayout;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -55,7 +58,6 @@ public class SmlFr {
 		case 0:
 			
 			System.out.println("neues Projekt ausgewählt");
-			
 			break;
 			
 		case 1:
@@ -64,6 +66,7 @@ public class SmlFr {
 			
 		case 2:
 			System.out.println("letztes öffnen ausgewählt");
+			fm.loadProject(new File(fm.getPreviousProject()[1]));
 
 		default:
 			break;
@@ -71,13 +74,28 @@ public class SmlFr {
 		
 		// init museum data
 		
+		// // init rooms from architecture (without project data)
+		
+		String[] s = fm.getRoomNamesInProject() ;
+		System.out.println("the rooms:");
+		for(String ss : s) {
+			System.out.println(ss);
+		}
+		
+		rooms = new SM_Room[s.length];
+		for( int ii=0; ii<s.length; ii++) {
+			
+			JSONObject room = fm.getRoomFromArchitecture(s[ii]);
+			rooms[ii] = new SM_Room(base, s[ii], room);
+		}
+		
 		
 		// fm.newProject("some", new String[] { "S1" } );
 
 
-
-		
-		
+		for(SM_Room r : rooms) {
+			System.out.println(r.sayHi());
+		}
 
 	}
 	
@@ -86,8 +104,5 @@ public class SmlFr {
 	}
 
 
-	public String[] getViewAnglesAsStrings() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 }

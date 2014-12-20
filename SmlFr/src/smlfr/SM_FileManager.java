@@ -24,6 +24,7 @@ public class SM_FileManager extends PApplet {
 	
 	private JSONObject		preferences;
 	private JSONObject 		museum;
+	private JSONObject		project;
 
 
 	public SM_FileManager() {
@@ -136,10 +137,18 @@ public class SM_FileManager extends PApplet {
 		return museum.getJSONObject("architecture");
 	}
 	
-	// PROJECT
+	public synchronized JSONObject getRoomFromArchitecture( String _room) {
+		
+		if( museum != null ) {
+			JSONObject o = museum.getJSONObject("architecture").getJSONObject(_room);
+			return o;
+		} else {
+			return null;
+		}
+		
+	}
 	
-
-
+	// PROJECT
 
 	public synchronized String[] getPreviousProject() {
 		
@@ -172,4 +181,48 @@ public class SM_FileManager extends PApplet {
 		
 	}
 
+	public synchronized void loadProject(File _f) {
+		if( _f.exists() ) {
+			project = loadJSONObject(_f);
+		}
+		else {
+			String msg = Lang.couldntLoadProject_1 + _f.getName() + Lang.couldntLoadProject_2 + _f.getPath();
+			javax.swing.JOptionPane.showMessageDialog(this,msg, "couldn't find...", javax.swing.JOptionPane.WARNING_MESSAGE);
+
+		}
+	}
+	
+	public synchronized String[] getRoomNamesInProject() {
+		String[] rms;
+		JSONArray rooms = project.getJSONArray("rooms");
+		rms = new String[rooms.size()];
+
+		for( int i=0; i< rooms.size(); i++) {
+			
+			rms[i] = rooms.getJSONObject(i).getString("roomName"); 
+		}
+		
+		return rms;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
