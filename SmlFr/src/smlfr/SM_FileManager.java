@@ -3,6 +3,7 @@ package smlfr;
 import java.awt.Color;
 import java.io.File;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
@@ -13,24 +14,28 @@ import processing.data.*;
 
 import SMUtils.JsonCreator;
 import SMUtils.Lang;
+import SMUtils.awFileSize;
 
 public class SM_FileManager extends PApplet {
 
 	private JsonCreator 	creator;
+	private ImageIcon		icon;
 	private JFileChooser	fc;
 
 	private File 			preferencesPath;
 	private File 			museumPath;
+	private File			projectPath;
 
 	private JSONObject		preferences;
 	private JSONObject 		museum;
 	private JSONObject		project;
 
 	private boolean			loaded = false;
+	
 
-
-	public SM_FileManager() {
-
+	public SM_FileManager(ImageIcon _icon) {
+		
+		icon = _icon;
 		creator = new JsonCreator(this);
 		fc = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -61,6 +66,13 @@ public class SM_FileManager extends PApplet {
 
 	public synchronized boolean isProjectLoaded() {
 		return loaded;
+	}
+	
+	public synchronized boolean isMuseumLoaded() {
+		if( museum != null && preferences != null ) {
+			return true;
+		}
+		else return false;
 	}
 
 	// PREFERENCES
@@ -217,28 +229,81 @@ public class SM_FileManager extends PApplet {
 		}
 
 
-		if( loaded ) {	
+		if( loaded ) {
 			JSONObject p = new JSONObject();
 			p.setString("projectPath", _f.getAbsolutePath());
 			p.setString("projectName", getCurrentProjectName());
 			updatePrefs("previousProject", p.toString());
 
+			projectPath = _f;
+			System.out.println("projectPath: "+projectPath.getAbsolutePath());
 		}
 	}
 
-		public synchronized String[] getRoomNamesInProject() {
-			String[] rms;
-			JSONArray rooms = project.getJSONArray("rooms");
-			rms = new String[rooms.size()];
+	public synchronized String[] getRoomNamesInProject() {
 
-			for( int i=0; i< rooms.size(); i++) {
+		String[] rms;
+		JSONArray rooms = project.getJSONArray("rooms");
+		rms = new String[rooms.size()];
 
-				rms[i] = rooms.getJSONObject(i).getString("roomName"); 
-			}
+		for( int i=0; i< rooms.size(); i++) {
 
-			return rms;
+			rms[i] = rooms.getJSONObject(i).getString("roomName"); 
 		}
+
+		return rms;
 	}
+	
+	public synchronized String[] getArtLibraryFromProject() {
+		
+		return project.getJSONArray("artLibrary").getStringArray();
+		
+	}
+	
+	// ARTWORK
+	
+	public synchronized JSONObject loadArtwork(String _name) {
+		
+		String filePath = projectPath.getAbsolutePath().substring(0, projectPath.getAbsolutePath().length()-4)+"_lib/"+_name+".sfa";
+		JSONObject aw;
+		if(new File(filePath).exists()) {
+			aw = loadJSONObject(filePath);
+		}
+		else {
+			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntLoadArtwork, "couldn't load ...", javax.swing.JOptionPane.WARNING_MESSAGE, icon);
+			System.exit(1);
+			aw=null;
+		}
+		return aw;
+	}
+
+	public synchronized File getFilePathForArtwork(String _artwork, SMUtils.awFileSize _size) {
+		
+		String sufx;
+		switch (_size) {
+		case THUMB:
+			sufx = "_thumb";
+			break;
+		case MEDIUM:
+			sufx = "_med";
+			break;
+		case LARGE:
+			sufx = "_full";
+			break;
+			
+		default:
+			sufx = "_med";
+			break;
+		}
+		
+		String filePath = projectPath.getAbsolutePath().substring(0, projectPath.getAbsolutePath().length()-4)+"_lib/"+_artwork+"/"+_artwork+sufx+".png";
+
+		
+		
+		return new File(filePath);
+	}
+
+}
 
 
 

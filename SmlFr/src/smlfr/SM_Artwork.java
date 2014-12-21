@@ -1,5 +1,6 @@
 package smlfr;
 
+import processing.data.JSONObject;
 import SMUtils.FrameStyle;
 
 public class SM_Artwork {
@@ -10,7 +11,7 @@ public class SM_Artwork {
 	private String 			title;
 	private String 			invNr;
 	private int[] 			size;
-	private FrameStyle		frame;
+	private FrameStyle		frameStyle;
 	private int[]			frameSize;
 	private int[]			passepartoutSize;
 	
@@ -22,6 +23,23 @@ public class SM_Artwork {
 
 	private boolean			selected = false;
 
+	SM_Artwork(JSONObject _j) {
+		
+		artist = _j.getString("artist");
+		title = _j.getString("title");
+		invNr = _j.getString("invNr");
+		size = _j.getJSONArray("size").getIntArray();
+		frameStyle = FrameStyle.valueOf(FrameStyle.class, _j.getString("frameStyle"));
+		frameSize = _j.getJSONArray("frameSize").getIntArray();
+		passepartoutSize = _j.getJSONArray("pasSize").getIntArray();
+		
+		
+		
+		
+		
+		
+		
+	}
 	
 	SM_Artwork(String _artist, String _title, String _invNr, int _sizeX, int _sizeY) {
 		artist = _artist;
@@ -30,7 +48,7 @@ public class SM_Artwork {
 		size = new int[2];
 		size[0] = _sizeX;
 		size[1] = _sizeY;
-		frame = FrameStyle.NONE;
+		frameStyle = FrameStyle.NONE;
 		frameSize = null;
 		passepartoutSize = null;
 	}
@@ -42,7 +60,7 @@ public class SM_Artwork {
 		size = new int[2];
 		size[0] = _sizeX;
 		size[1] = _sizeY;
-		frame = _frame;
+		frameStyle = _frame;
 		frameSize = new int[4];
 		frameSize[0] = _frameTop;
 		frameSize[1] = _frameBottom;
@@ -58,7 +76,7 @@ public class SM_Artwork {
 		size = new int[2];
 		size[0] = _sizeX;
 		size[1] = _sizeY;
-		frame = _frame;
+		frameStyle = _frame;
 		frameSize = new int[4];
 		frameSize[0] = _frameTop;
 		frameSize[1] = _frameBottom;
@@ -120,7 +138,7 @@ public class SM_Artwork {
 	/// Frame
 	
 	public boolean hasFrame() {
-		if(frame != FrameStyle.NONE) {
+		if(frameStyle != FrameStyle.NONE) {
 			return true;
 		} else {
 			return false;
@@ -128,18 +146,26 @@ public class SM_Artwork {
 	}
 	
 	public FrameStyle getFrameStyle() {
-		return frame;
+		return frameStyle;
 	}
 	
 	public void setFrameStyle(FrameStyle _fStyle) {
-		frame = _fStyle;
+		frameStyle = _fStyle;
 	}
 	
 	public int[] getFrameMeasure() {
 		return frameSize;
 	}
 	
-	
+	public void sayHi() {
+		
+		System.out.println("\ninvNR: "+invNr);
+		System.out.println("  "+title);
+		System.out.println("  "+artist);
+		System.out.println("  "+size[0]+" x "+size[1]);
+		
+		
+	}
 	
 	
 }
