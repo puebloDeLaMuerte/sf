@@ -14,7 +14,7 @@ public class Lang {
 	public static String	couldntLoadProject_2 = " in diesem Ordner befindet: \n";
 	public static String	couldntLoadArtwork = "Die Library-Dateien konnten nicht geladen werden.\nStellen Sie sicher, dass sich der Ordner mit dem\nSuffix \"_lib\" im selben Ordner wie die Projektadtei befindet.";
 	// questions
-	public static String 	initializeFromWhereTitle = "Willkommen!!";
+	public static String 	initializeFromWhereTitle = "Willkommen zu SimulFšhr!";
 	public static String 	initializeFromWhere_1 = "Zuletzt gešffnetes Projekt:\n\"";
 	public static String 	initializeFromWhere_2 = "\"\n\nMšchten Sie dieses Projekt šffnen, ein neues erstellen,\noder ein anderes Projekt laden?";
 	

@@ -9,8 +9,12 @@ import java.awt.dnd.DropTargetListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.JFrame;
+
+import com.sun.tools.jdi.LinkedHashMap;
 
 import processing.core.PApplet;
 import processing.core.PShape;
@@ -25,16 +29,16 @@ public class SM_Room {
 	// TODO implement DropTarget dt
 
 	// From Museum-File
-	private String				myRoomName;
-	private String				myRealName;
-	private SM_ViewAngle[] 		myViewAngles;
-	private SM_Wall[] 			myWalls;
+	private String							myRoomName;
+	private String							myRealName;
+	private SM_ViewAngle[] 					myViewAngles;
+	private LinkedHashMap 	myWalls;
 
 	// upon init
-	private SM_RoomProjectView	myView;
-	private SmlFr				base;
-	private boolean				saveDirty;
-	private boolean				entered;
+	private SM_RoomProjectView				myView;
+	private SmlFr							base;
+	private boolean							saveDirty;
+	private boolean							entered;
 
 
 
@@ -59,17 +63,20 @@ public class SM_Room {
 		
 		System.out.println("the room wants to init "+count+" walls!");
 		
-		myWalls = new SM_Wall[count];
+		myWalls = new LinkedHashMap();
 		count = 0;
 		it = _jRoom.keyIterator();
 		while( it.hasNext() ) {
 			String str = (String)it.next();
 			if(str.startsWith("w_")) {
-				System.out.println("...making wall nr "+count);
-				myWalls[count] = new SM_Wall(str, _jRoom.getJSONObject(str));
+				char key = str.charAt(str.length()-1);
+				System.out.println("...making wall nr "+count+" the char is: ");
+				myWalls.put(key, new SM_Wall(str, _jRoom.getJSONObject(str)));
 				count++;
 			}
 		}
+		Map<Character, SM_Wall> tMap = new TreeMap<Character, SM_Wall>(myWalls);
+		myWalls = new LinkedHashMap(tMap);
 
 		// Viewangles:
 		
@@ -117,7 +124,7 @@ public class SM_Room {
 	}
 
 	public String sayHi() {
-		return "Hi, this is room "+myRealName+" ("+myRoomName+") \nI have "+myViewAngles.length+" ViewAngles.\nI also have as many as "+myWalls.length+" Walls.\n\n";
+		return "Hi, this is room "+myRealName+" ("+myRoomName+") \nI have "+myViewAngles.length+" ViewAngles.\nI also have as many as "+myWalls.size()+" Walls.\n\n";
 	}
 	
 	public void enterRoom() {
@@ -163,9 +170,8 @@ public class SM_Room {
 		
 	}
 	
-	public SM_Wall[] getWalls() {
+	public LinkedHashMap getWalls() {
 		if( myWalls == null ) System.out.println("THEY ARE FUCKING NULL IN THE ROOM");
-		else System.out.println("the null seems to be somhere esle");
 		return myWalls;
 	}
 
