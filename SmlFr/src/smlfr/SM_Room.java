@@ -56,11 +56,16 @@ public class SM_Room {
 				count++;
 			}
 		}
+		
+		System.out.println("the room wants to init "+count+" walls!");
+		
 		myWalls = new SM_Wall[count];
 		count = 0;
+		it = _jRoom.keyIterator();
 		while( it.hasNext() ) {
 			String str = (String)it.next();
 			if(str.startsWith("w_")) {
+				System.out.println("...making wall nr "+count);
 				myWalls[count] = new SM_Wall(str, _jRoom.getJSONObject(str));
 				count++;
 			}
@@ -146,7 +151,7 @@ public class SM_Room {
 		f.add(myView);
 		File fl = _fm.getFilePathForRoom(myRoomName);
 		System.out.println("theRoom passes:\n"+fl.getAbsolutePath());
-		myView.init(f, fl, this);
+		myView.init(f, new int[] { _size.width, _size.height }, fl, this);
 		
 		f.setTitle(myRealName);
 		f.setVisible(true);
@@ -156,6 +161,12 @@ public class SM_Room {
 		
 		
 		
+	}
+	
+	public SM_Wall[] getWalls() {
+		if( myWalls == null ) System.out.println("THEY ARE FUCKING NULL IN THE ROOM");
+		else System.out.println("the null seems to be somhere esle");
+		return myWalls;
 	}
 
 	public String getName() {

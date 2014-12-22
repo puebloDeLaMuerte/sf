@@ -87,14 +87,15 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 	public Object getTransferData(DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException {
 			System.out.println("getTransferData called: "+flavor.toString());
-		return myArtworkName;
+			String[] t = new String[] { myArtworkName, "SM_Artwork" };
+		return t;
 	}
 
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
 		System.out.println("getTransferDataFlavors called");
 		DataFlavor[] dfs = new DataFlavor[1];
-		dfs[0] = DataFlavor.stringFlavor;
+		dfs[0] = SM_DataFlavor.SM_AW_Flavor;
 		return dfs;
 	}
 
