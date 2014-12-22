@@ -1,12 +1,18 @@
 package smlfr;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.JFrame;
+
+import processing.core.PApplet;
 import processing.core.PShape;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
@@ -19,17 +25,16 @@ public class SM_Room {
 	// TODO implement DropTarget dt
 
 	// From Museum-File
-	private String			myRoomName;
-	private String			myRealName;
-	private SM_ViewAngle[] 	myViewAngles;
-	private SM_Wall[] 		myWalls;
+	private String				myRoomName;
+	private String				myRealName;
+	private SM_ViewAngle[] 		myViewAngles;
+	private SM_Wall[] 			myWalls;
 
 	// upon init
-	private SM_RoomView		myView;
-	private PShape			myGraphics;
-	private SmlFr			base;
-	private boolean			saveDirty;
-	private boolean			entered;
+	private SM_RoomProjectView	myView;
+	private SmlFr				base;
+	private boolean				saveDirty;
+	private boolean				entered;
 
 
 
@@ -129,5 +134,29 @@ public class SM_Room {
 		// TODO dispose Tools
 
 
+	}
+
+	public void initProjectView(Dimension _size, Dimension _loc, SM_FileManager _fm) {
+		
+		
+		
+		JFrame f = new JFrame();
+		f.setLayout(new BorderLayout());
+		myView = new SM_RoomProjectView();
+		f.add(myView);
+		File fl = _fm.getFilePathForRoom(myRoomName);
+		System.out.println("theRoom passes:\n"+fl.getAbsolutePath());
+		myView.init(f, fl, this);
+		
+		f.setVisible(true);
+		f.setSize(_size);
+		f.setLocation(_loc.width, _loc.height);
+		f.setResizable(true);
+		
+		
+	}
+
+	public String getName() {
+		return myRoomName;
 	}
 }

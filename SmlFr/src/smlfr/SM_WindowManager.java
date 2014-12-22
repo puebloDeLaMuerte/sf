@@ -19,6 +19,7 @@ public class SM_WindowManager {
 	private java.awt.Dimension 		roomNavSize;
 	
 	public SM_WindowManager(SM_FileManager _fm, SmlFr _base) {
+		
 		state = progState.LOADING;
 		fm = _fm;
 		base = _base;
@@ -33,11 +34,22 @@ public class SM_WindowManager {
 		if( state == progState.LOADING && _requestedState == progState.PROJECT ) {
 			if( fm.isMuseumLoaded() && fm.isProjectLoaded() ) {
 				
+				System.out.println("we're initializing the project state change");
+				
 				String[] rooms = fm.getRoomNamesInProject();
+				int x = 0; int y = 0;
+				for(String r : rooms) {
+					System.out.println("init projView for "+r);
+					Dimension loc = new Dimension(roomNavSize.width+roomNavSize.width*(x%2), roomNavSize.height*(y));
+					base.rooms.get(r).initProjectView(roomNavSize, loc, fm);
+
+				}
 				
 				
+				base.lib = createLibrary(base.artworks);
 				
 				
+				state = progState.PROJECT;
 			}
 		} else
 		if( state == progState.PROJECT && _requestedState == progState.ROOM    ) {
@@ -58,7 +70,7 @@ public class SM_WindowManager {
 		SM_Library tLib = new SM_Library(fm, _artworks);
 		tLib.setSize(roomNavSize.width, (roomNavSize.height*3 -50));
 		tLib.setResizable(true);
-//		testlib.setUndecorated(true);
+//		tLib.setUndecorated(true);
 		tLib.setBackground(Color.DARK_GRAY);
 		tLib.setVisible(true);
 		tLib.setLocation(0, 0);

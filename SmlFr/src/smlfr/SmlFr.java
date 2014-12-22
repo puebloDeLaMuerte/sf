@@ -23,6 +23,7 @@ import com.sun.codemodel.internal.JLabel;
 
 import SMUtils.JsonCreator;
 import SMUtils.Lang;
+import SMUtils.progState;
 
 import processing.data.JSONObject;
 
@@ -37,7 +38,7 @@ public class SmlFr extends JFrame{
 	public SM_Library					lib;
 	
 	// Data
-	public SM_Room[] 					rooms;
+	public HashMap<String, SM_Room>		rooms;
 	public HashMap<String, SM_Artwork>	artworks;
 	
 	// utils
@@ -130,11 +131,13 @@ public class SmlFr extends JFrame{
 			System.out.println(ss);
 		}
 		
-		rooms = new SM_Room[s.length];
+//		rooms = new SM_Room[s.length];
+		rooms = new HashMap<String, SM_Room>();
+		
 		for( int ii=0; ii<s.length; ii++) {
 			
 			JSONObject room = fm.getRoomFromArchitecture(s[ii]);
-			rooms[ii] = new SM_Room(base, s[ii], room);
+			rooms.put(s[ii], new SM_Room(base, s[ii], room));
 		}
 
 		// // init Artworks
@@ -159,9 +162,9 @@ public class SmlFr extends JFrame{
 //		lib.setVisible(true);
 		
 //		wm.testFrames();
-		lib = wm.createLibrary(artworks);
+//		lib = wm.createLibrary(artworks);
 
-
+		wm.requestStateChange(progState.PROJECT, null);
 		
 	}
 	

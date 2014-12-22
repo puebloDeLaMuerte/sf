@@ -171,6 +171,15 @@ public class SM_FileManager extends PApplet {
 
 	}
 
+	public synchronized File getFilePathForRoom(String _room) {
+		
+		String museumIdentifier = museumPath.getAbsolutePath().substring(museumPath.getAbsolutePath().lastIndexOf("/")+1,museumPath.getAbsolutePath().length()-4);
+		System.out.println(museumIdentifier);
+		String filePath4Room = museumPath.getAbsolutePath().substring(0,museumPath.getAbsolutePath().length()-4)+"/"+_room;
+		System.out.println(filePath4Room);
+		return new File(filePath4Room);
+	}
+	
 	// PROJECT
 
 	public synchronized String[] getPreviousProject() {
