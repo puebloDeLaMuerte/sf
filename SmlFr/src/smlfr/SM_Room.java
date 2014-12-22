@@ -148,10 +148,12 @@ public class SM_Room {
 		System.out.println("theRoom passes:\n"+fl.getAbsolutePath());
 		myView.init(f, fl, this);
 		
+		f.setTitle(myRealName);
 		f.setVisible(true);
 		f.setSize(_size);
 		f.setLocation(_loc.width, _loc.height);
 		f.setResizable(true);
+		
 		
 		
 	}

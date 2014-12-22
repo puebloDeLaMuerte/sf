@@ -31,12 +31,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 		
 		shape(myGraphics,0,0);
 		
+
 		
 	}
 	
 	public void draw() {
+
 		
-		background(random(50,80));
+		background(255);
 		shape(myGraphics,0,0);
 
 	}
@@ -44,6 +46,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 	public void init(JFrame _frame, File _filePath, SM_Room _room) {
 		
 //		mySize = _size;
+		myFrame = _frame;
 		myFilePath = _filePath;
 		myRoom = _room;
 
