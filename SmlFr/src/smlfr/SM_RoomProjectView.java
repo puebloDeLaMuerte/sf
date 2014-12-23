@@ -14,6 +14,8 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 
+import artworkUpdateModel.WallUpdateRequestEvent;
+
 import com.sun.tools.jdi.LinkedHashMap;
 
 import SMUtils.SM_DataFlavor;
@@ -24,14 +26,14 @@ import processing.core.PShape;
 public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 
 	SM_Room 									myRoom;
-	LinkedHashMap			myWalls;
+	LinkedHashMap								myWalls;
 	
 	// utils
 	private JFrame								myFrame;
 	private int[]								mySize;
 	private File								myFilePath;
-	private HashMap<Character, PShape>	wallsActiveGfx;
-	private HashMap<Character, PShape>	wallsOverGfx;
+	private HashMap<Character, PShape>			wallsActiveGfx;
+	private HashMap<Character, PShape>			wallsOverGfx;
 	private PShape								greyRoom;
 	private DropTarget							dt;
 	private float[]								nb;
@@ -158,9 +160,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 		mx = (float)dtde.getLocation().x / (float)mySize[0];
 		my = (float)dtde.getLocation().y / (float)mySize[1];
 		wallOver = ' ';
-		
-		System.out.println(mx+" x "+my);
-		
+				
 		for( Object w : myWalls.keySet() ) {
 			SM_Wall wl = (SM_Wall)myWalls.get(w);
 			
@@ -184,8 +184,16 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 			
 			try {
 				
-				System.out.println("WE JUST DROPED "+dtde.getTransferable().getClass()+" ON THE PAPPLET");
-				System.out.println("WE JUST DROPED "+dtde.getTransferable().getTransferData(DataFlavor.stringFlavor).toString()+" ON THE PAPPLET");
+				String[] arr = (String[])dtde.getTransferable().getTransferData(SM_DataFlavor.SM_AW_Flavor);
+				String name = arr[0];
+				
+				System.out.println("TRYING TO FIRE");
+				
+						
+				WallUpdateRequestEvent e = new WallUpdateRequestEvent(this, name, wallOver, myRoom.getName());
+				myRoom.fireUpdateRequest(e);
+				
+				
 				
 				dtde.dropComplete(true);
 				dtde.acceptDrop(dtde.getDropAction());

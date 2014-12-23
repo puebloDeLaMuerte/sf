@@ -1,5 +1,6 @@
 package smlfr;
 
+import processing.data.JSONArray;
 import processing.data.JSONObject;
 import SMUtils.FrameStyle;
 
@@ -17,7 +18,7 @@ public class SM_Artwork {
 	
 	
 	// init from project
-	private String			isInRoom;
+	private String			isInWall;
 	private int[]			posInRoom;
 	private boolean			light;
 
@@ -33,7 +34,9 @@ public class SM_Artwork {
 		frameSize = _j.getJSONArray("frameSize").getIntArray();
 		passepartoutSize = _j.getJSONArray("pasSize").getIntArray();
 		
-		
+		isInWall = null;
+		posInRoom = new int[2];
+		light = false;
 		
 		
 		
@@ -90,8 +93,8 @@ public class SM_Artwork {
 				
 	}
 	
-	public void initProjectData( String _isInRoom, int _posX, int _posY, boolean _hasLight) {
-		isInRoom = _isInRoom;
+	public void initProjectData( String _isInWall, int _posX, int _posY, boolean _hasLight) {
+		isInWall = _isInWall;
 		posInRoom = new int[2];
 		posInRoom[0] = _posX;
 		posInRoom[1] = _posY;
@@ -157,6 +160,10 @@ public class SM_Artwork {
 		return frameSize;
 	}
 	
+	public String getWall() {
+		return isInWall;
+	}
+	
 	public void sayHi() {
 		
 		System.out.println("\ninvNR: "+invNr);
@@ -165,6 +172,25 @@ public class SM_Artwork {
 		System.out.println("  "+size[0]+" x "+size[1]);
 		
 		
+	}
+
+	public void setWall(SM_FileManager sm_FileManager, String _wall) {
+		
+	}
+
+	public String getName() {
+		return invNr;
+	}
+
+	public JSONObject getAsJsonObject(SM_FileManager fm) {
+		JSONObject o = new JSONObject();
+		o.setString("invNr", invNr);
+		o.setBoolean("light", light);
+		JSONArray pos = new JSONArray();
+		pos.append(posInRoom[0]);
+		pos.append(posInRoom[1]);
+		o.setJSONArray("pos", pos);
+		return o;
 	}
 	
 	

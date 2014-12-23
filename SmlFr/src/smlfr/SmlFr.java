@@ -25,6 +25,7 @@ import SMUtils.JsonCreator;
 import SMUtils.Lang;
 import SMUtils.progState;
 
+import processing.data.JSONArray;
 import processing.data.JSONObject;
 
 
@@ -64,7 +65,7 @@ public class SmlFr extends JFrame{
 		if( firstStart ) {
 			
 			warn = new ImageIcon("resources/sf_warning_Transp.png");
-			fm = new SM_FileManager(warn);
+			fm = new SM_FileManager(this, warn);
 			wm = new SM_WindowManager(fm, this);
 
 			// gui stuff here, keep in mind that you might have to step away from transparent windows and such...
@@ -114,6 +115,7 @@ public class SmlFr extends JFrame{
 		}
 		
 		// check if loading was successful
+		// go for another round if necessary
 		if( !fm.isProjectLoaded() ) {
 			base.initialize();
 			return;
@@ -121,7 +123,7 @@ public class SmlFr extends JFrame{
 		
 		
 		
-		// init museum data for current project
+		// MUSEUM INIT  data for rooms related to current project
 		
 		// // init rooms in Project from architecture (without project data)
 		
@@ -131,7 +133,6 @@ public class SmlFr extends JFrame{
 			System.out.println(ss);
 		}
 		
-//		rooms = new SM_Room[s.length];
 		rooms = new HashMap<String, SM_Room>();
 		
 		for( int ii=0; ii<s.length; ii++) {
@@ -140,7 +141,11 @@ public class SmlFr extends JFrame{
 			rooms.put(s[ii], new SM_Room(base, s[ii], room));
 		}
 
-		// // init Artworks
+		
+		
+		// PROJECT INIT
+		
+		// // init Artworks (general)
 		
 		String[] aws = fm.getArtLibraryFromProject();
 		artworks = new HashMap<String, SM_Artwork>();
@@ -149,26 +154,61 @@ public class SmlFr extends JFrame{
 			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]) ));	
 		}
 		
-
+	
+		// // init Artworks (in Rooms)
 		
-//		System.err.println("ARTWORK!!!!!!!\n"+fm.loadArtwork("fidibus"));
-		
-		String[] keys = artworks.keySet().toArray(new String[0]);
-		for( int z = 0; z<artworks.size(); z++ ) {
-			artworks.get(keys[z]).sayHi();
+		JSONArray jRooms = fm.getRoomsInProject();
+		// rooms
+		for( int r = 0; r<jRooms.size(); r++ ) {
+			
+			JSONObject jRoom = jRooms.getJSONObject(r);
+			SM_Room sfRoom = rooms.get(jRoom.getString("roomName"));
+			
+			
+			// walls
+			for( Object w : sfRoom.getWalls().keySet() ) {
+				
+				SM_Wall smWall = (SM_Wall)sfRoom.getWalls().get(w);
+				String thisWallName = smWall.getWallName();
+				
+				JSONObject jWall = jRoom.getJSONObject(thisWallName);
+				
+				smWall.setArtworks( jWall.getJSONArray("artworks") );
+				
+				
+				Integer colorInt = 255;//jWall.getString("colorInt");  // TODO Implement Color Integer!
+				String colorBrillux = jWall.getString("colorBrillux");
+				
+				smWall.setColor( colorInt, colorBrillux );
+				
+			}
+			
+			
 		}
 		
-//		lib = new SM_Library();
-//		lib.setVisible(true);
 		
-//		wm.testFrames();
-//		lib = wm.createLibrary(artworks);
-
+		
+		
+		
+		
+		
+		
+	
+		
 		wm.requestStateChange(progState.PROJECT, null);
-		
 	}
 	
+	public SM_FileManager getFileManager() {
+		return fm;
+	}
+	
+	public SM_Room getRoom(SM_FileManager fm, String key) {
+		return  rooms.get(key);
+	}
 
+	public SM_Artwork getArtwork(SM_FileManager fm, String key) {
+		return artworks.get(key);
+	}
 	
 	public void sayHi() {
 		

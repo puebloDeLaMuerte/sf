@@ -2,12 +2,16 @@ package smlfr;
 
 import java.awt.Color;
 import java.io.File;
+import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import artworkUpdateModel.WallUpdateRequestEvent;
+import artworkUpdateModel.ArtworkUpdateRequestListener;
 
 import processing.core.PApplet;
 import processing.data.*;
@@ -16,7 +20,7 @@ import SMUtils.JsonCreator;
 import SMUtils.Lang;
 import SMUtils.awFileSize;
 
-public class SM_FileManager extends PApplet {
+public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListener {
 
 	private JsonCreator 	creator;
 	private ImageIcon		icon;
@@ -25,16 +29,23 @@ public class SM_FileManager extends PApplet {
 	private File 			preferencesPath;
 	private File 			museumPath;
 	private File			projectPath;
+	private File			tempProjectPath;
 
 	private JSONObject		preferences;
 	private JSONObject 		museum;
 	private JSONObject		project;
+	
+	private String			currentProjectName;
 
+	private SmlFr			base;
+	
 	private boolean			loaded = false;
+	private boolean			savedirty = false;
 	
 
-	public SM_FileManager(ImageIcon _icon) {
+	public SM_FileManager(SmlFr _base, ImageIcon _icon) {
 		
+		base = _base;
 		icon = _icon;
 		creator = new JsonCreator(this);
 		fc = new JFileChooser();
@@ -51,7 +62,8 @@ public class SM_FileManager extends PApplet {
 
 
 		// init file paths and load files:
-		preferencesPath = new File("resources/prefs.txt");		
+		preferencesPath = new File("resources/prefs.txt");
+		tempProjectPath = preferencesPath;
 		preferences = loadPrefs();
 		museumPath = new File("resources/"+preferences.getString("museumData"));
 		museum = loadMuseumData();
@@ -181,6 +193,16 @@ public class SM_FileManager extends PApplet {
 	}
 	
 	// PROJECT
+	
+	private void saveTempProject() {
+		savedirty = true;
+		
+		String tempProjFileName = projectPath.getAbsoluteFile().getName()+".tmp";
+		
+		tempProjectPath = new File(preferencesPath.getParent()+"/"+tempProjFileName);
+		System.out.println("the tempProject was saved as "+tempProjectPath);
+		saveJSONObject(project, tempProjectPath.getAbsolutePath());
+	}
 
 	public synchronized String[] getPreviousProject() {
 
@@ -246,6 +268,7 @@ public class SM_FileManager extends PApplet {
 
 			projectPath = _f;
 			System.out.println("projectPath: "+projectPath.getAbsolutePath());
+			currentProjectName = p.getString("projectName");
 		}
 	}
 
@@ -261,6 +284,16 @@ public class SM_FileManager extends PApplet {
 		}
 
 		return rms;
+	}
+	
+	public synchronized JSONArray getRoomsInProject() {
+		
+		if( loaded ) {
+			return project.getJSONArray("rooms");
+		}
+		else {
+			return null;
+		}
 	}
 	
 	public synchronized String[] getArtLibraryFromProject() {
@@ -310,6 +343,36 @@ public class SM_FileManager extends PApplet {
 		
 		
 		return new File(filePath);
+	}
+
+
+	@Override
+	public synchronized void updateRequested(WallUpdateRequestEvent e) {
+		
+
+		System.out.println("the artwork name: "+  e.getName());
+		System.out.println("the room: "+e.getRoom());
+		
+		String target = "w_"+e.getRoom()+"_"+e.getWall();
+		
+		System.out.println(target);
+		
+		// update artwork
+		SM_Artwork thisAw = base.getArtwork(this, (e.getName()));
+		thisAw.setWall(this, target);
+
+		// update Room/Wall
+		SM_Room thisRm = base.getRoom(this, e.getRoom());
+		thisRm.addArtworkToWall(this, thisAw, e.getWall());
+		
+		for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
+			JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
+			if(r.getString("roomName").equalsIgnoreCase(e.getRoom())) {
+				r.getJSONObject(target).getJSONArray("artworks").append(thisAw.getAsJsonObject(this));
+			}
+		}
+		
+		saveTempProject();
 	}
 
 }

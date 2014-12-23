@@ -14,6 +14,9 @@ import java.util.TreeMap;
 
 import javax.swing.JFrame;
 
+import artworkUpdateModel.WallUpdateRequestEvent;
+import artworkUpdateModel.ArtworkUpdateRequestListener;
+
 import com.sun.tools.jdi.LinkedHashMap;
 
 import processing.core.PApplet;
@@ -26,21 +29,19 @@ import processing.data.JSONObject;
 public class SM_Room {
 
 	// TODO	implement ArtworkUpdateListener
-	// TODO implement DropTarget dt
 
 	// From Museum-File
 	private String							myRoomName;
 	private String							myRealName;
 	private SM_ViewAngle[] 					myViewAngles;
-	private LinkedHashMap 	myWalls;
+	private LinkedHashMap 					myWalls;
 
 	// upon init
 	private SM_RoomProjectView				myView;
 	private SmlFr							base;
-	private boolean							saveDirty;
 	private boolean							entered;
 
-
+	private ArtworkUpdateRequestListener	requestListener;
 
 
 	public SM_Room(SmlFr _base, String _name, JSONObject _jRoom) {
@@ -49,6 +50,7 @@ public class SM_Room {
 		myRoomName = _name;
 		myRealName = _jRoom.getString("roomRealName");
 
+		requestListener = base.getFileManager();
 
 		/// Walls:
 		
@@ -71,7 +73,7 @@ public class SM_Room {
 			if(str.startsWith("w_")) {
 				char key = str.charAt(str.length()-1);
 				System.out.println("...making wall nr "+count+" the char is: ");
-				myWalls.put(key, new SM_Wall(str, _jRoom.getJSONObject(str)));
+				myWalls.put(key, new SM_Wall(str, _jRoom.getJSONObject(str), this));
 				count++;
 			}
 		}
@@ -171,11 +173,36 @@ public class SM_Room {
 	}
 	
 	public LinkedHashMap getWalls() {
-		if( myWalls == null ) System.out.println("THEY ARE FUCKING NULL IN THE ROOM");
 		return myWalls;
 	}
 
+	public String[] getWallNames() {
+		
+		String[] s = new String[myWalls.size()];
+		
+		int i=0;
+		for( Object c : myWalls.keySet() ) {
+			SM_Wall w = (SM_Wall)myWalls.get(c);
+			s[i] = w.getWallName();
+		}
+		
+		return s;
+	}
+	
+	public void addArtworkToWall(SM_FileManager fm, SM_Artwork _aw, char _wall) {
+		SM_Wall w = (SM_Wall)myWalls.get((char)_wall);
+		w.addArtwork(_aw, _aw.getName());
+	}
+	
 	public String getName() {
 		return myRoomName;
+	}
+
+	public SM_Artwork getArtworkFromBase(String _invNr) {
+		return base.artworks.get(_invNr);
+	}
+
+	public void fireUpdateRequest(WallUpdateRequestEvent e) {
+		requestListener.updateRequested(e);
 	}
 }

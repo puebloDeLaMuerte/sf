@@ -72,7 +72,6 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 
 	@Override
 	public void dragGestureRecognized(DragGestureEvent dge) {
-		System.out.println(dge.getDragSource().toString());
 		Cursor cursor = null;
         if (dge.getDragAction() == DnDConstants.ACTION_COPY) {
             cursor = DragSource.DefaultCopyDrop;
@@ -86,14 +85,12 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 	@Override
 	public Object getTransferData(DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException {
-			System.out.println("getTransferData called: "+flavor.toString());
 			String[] t = new String[] { myArtworkName, "SM_Artwork" };
 		return t;
 	}
 
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		System.out.println("getTransferDataFlavors called");
 		DataFlavor[] dfs = new DataFlavor[1];
 		dfs[0] = SM_DataFlavor.SM_AW_Flavor;
 		return dfs;
@@ -101,7 +98,6 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
-		System.out.println("isDataFlavorSupported called");
 		return false;
 	}
 	
