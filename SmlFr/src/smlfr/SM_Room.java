@@ -162,11 +162,13 @@ public class SM_Room {
 		System.out.println("theRoom passes:\n"+fl.getAbsolutePath());
 		myView.init(f, new int[] { _size.width, _size.height }, fl, this);
 		
-		f.setTitle(myRealName);
+//		f.setTitle(myRealName);
+		f.setUndecorated(true);
 		f.setVisible(true);
 		f.setSize(_size);
 		f.setLocation(_loc.width, _loc.height);
 		f.setResizable(true);
+		
 		
 		
 		
@@ -187,6 +189,18 @@ public class SM_Room {
 		}
 		
 		return s;
+	}
+
+	public boolean hasArtwork(String _name, char _wallChar) {
+		
+		int i=0;
+		for( Object c : myWalls.keySet() ) {
+			SM_Wall w = (SM_Wall)myWalls.get(c);
+			
+			if( w.hasArtwork(_name) ) return true;
+			
+		}
+		return false;
 	}
 	
 	public void addArtworkToWall(SM_FileManager fm, SM_Artwork _aw, char _wall) {

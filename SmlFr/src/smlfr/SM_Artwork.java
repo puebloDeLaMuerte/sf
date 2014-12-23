@@ -1,5 +1,6 @@
 package smlfr;
 
+import apple.laf.JRSUIConstants.Size;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 import SMUtils.FrameStyle;
@@ -11,7 +12,7 @@ public class SM_Artwork {
 	private String 			artist;
 	private String 			title;
 	private String 			invNr;
-	private int[] 			size;
+	private int[] 			mySize;
 	private FrameStyle		frameStyle;
 	private int[]			frameSize;
 	private int[]			passepartoutSize;
@@ -19,7 +20,7 @@ public class SM_Artwork {
 	
 	// init from project
 	private String			isInWall;
-	private int[]			posInRoom;
+	private int[]			posInWall;
 	private boolean			light;
 
 	private boolean			selected = false;
@@ -29,13 +30,13 @@ public class SM_Artwork {
 		artist = _j.getString("artist");
 		title = _j.getString("title");
 		invNr = _j.getString("invNr");
-		size = _j.getJSONArray("size").getIntArray();
+		mySize = _j.getJSONArray("size").getIntArray();
 		frameStyle = FrameStyle.valueOf(FrameStyle.class, _j.getString("frameStyle"));
 		frameSize = _j.getJSONArray("frameSize").getIntArray();
 		passepartoutSize = _j.getJSONArray("pasSize").getIntArray();
 		
 		isInWall = null;
-		posInRoom = new int[2];
+		posInWall = new int[2];
 		light = false;
 		
 		
@@ -48,9 +49,9 @@ public class SM_Artwork {
 		artist = _artist;
 		title = _title;
 		invNr = _invNr;
-		size = new int[2];
-		size[0] = _sizeX;
-		size[1] = _sizeY;
+		mySize = new int[2];
+		mySize[0] = _sizeX;
+		mySize[1] = _sizeY;
 		frameStyle = FrameStyle.NONE;
 		frameSize = null;
 		passepartoutSize = null;
@@ -60,9 +61,9 @@ public class SM_Artwork {
 		artist = _artist;
 		title = _title;
 		invNr = _invNr;
-		size = new int[2];
-		size[0] = _sizeX;
-		size[1] = _sizeY;
+		mySize = new int[2];
+		mySize[0] = _sizeX;
+		mySize[1] = _sizeY;
 		frameStyle = _frame;
 		frameSize = new int[4];
 		frameSize[0] = _frameTop;
@@ -76,9 +77,9 @@ public class SM_Artwork {
 		artist = _artist;
 		title = _title;
 		invNr = _invNr;
-		size = new int[2];
-		size[0] = _sizeX;
-		size[1] = _sizeY;
+		mySize = new int[2];
+		mySize[0] = _sizeX;
+		mySize[1] = _sizeY;
 		frameStyle = _frame;
 		frameSize = new int[4];
 		frameSize[0] = _frameTop;
@@ -95,9 +96,9 @@ public class SM_Artwork {
 	
 	public void initProjectData( String _isInWall, int _posX, int _posY, boolean _hasLight) {
 		isInWall = _isInWall;
-		posInRoom = new int[2];
-		posInRoom[0] = _posX;
-		posInRoom[1] = _posY;
+		posInWall = new int[2];
+		posInWall[0] = _posX;
+		posInWall[1] = _posY;
 		light = _hasLight;
 	}
 
@@ -121,8 +122,9 @@ public class SM_Artwork {
 	}
 	
 	public void setPos(int x, int y) {
-		posInRoom[0] = x;
-		posInRoom[0] = y;
+		System.out.println("SET POOOOOS");
+		posInWall[0] = x;
+		posInWall[0] = y;
 	}
 	
 	/// Passepartout
@@ -169,13 +171,28 @@ public class SM_Artwork {
 		System.out.println("\ninvNR: "+invNr);
 		System.out.println("  "+title);
 		System.out.println("  "+artist);
-		System.out.println("  "+size[0]+" x "+size[1]);
+		System.out.println("  "+mySize[0]+" x "+mySize[1]);
 		
 		
 	}
 
 	public void setWall(SM_FileManager sm_FileManager, String _wall) {
-		
+		// TODO not implemented yet
+		System.out.println("I GET CALLED, FIX ME!!!");
+		isInWall = _wall;
+	}
+	
+	public int[] getPosInWall() {
+		if( posInWall != null ) return posInWall;
+		return null;
+	}
+	
+	public int getWidth(){
+		return mySize[0];
+	}
+	
+	public int getHeight(){
+		return mySize[1];
 	}
 
 	public String getName() {
@@ -187,8 +204,8 @@ public class SM_Artwork {
 		o.setString("invNr", invNr);
 		o.setBoolean("light", light);
 		JSONArray pos = new JSONArray();
-		pos.append(posInRoom[0]);
-		pos.append(posInRoom[1]);
+		pos.append(posInWall[0]);
+		pos.append(posInWall[1]);
 		o.setJSONArray("pos", pos);
 		return o;
 	}

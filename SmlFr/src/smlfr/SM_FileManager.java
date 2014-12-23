@@ -358,13 +358,16 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		System.out.println(target);
 		
 		// update artwork
-		SM_Artwork thisAw = base.getArtwork(this, (e.getName()));
-		thisAw.setWall(this, target);
-
-		// update Room/Wall
-		SM_Room thisRm = base.getRoom(this, e.getRoom());
-		thisRm.addArtworkToWall(this, thisAw, e.getWall());
+		// update room
 		
+		SM_Artwork thisAw = base.getArtwork(this, (e.getName()));
+		SM_Room thisRm = base.getRoom(this, e.getRoom());		
+
+		if(! thisRm.hasArtwork(e.getName(), e.getWall()) ) {
+			thisAw.setWall(this, target);
+			thisRm.addArtworkToWall(this, thisAw, e.getWall());
+		}
+		// update Json
 		for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
 			JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
 			if(r.getString("roomName").equalsIgnoreCase(e.getRoom())) {

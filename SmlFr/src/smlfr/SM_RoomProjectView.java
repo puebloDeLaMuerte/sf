@@ -22,6 +22,7 @@ import SMUtils.SM_DataFlavor;
 
 import processing.core.PApplet;
 import processing.core.PShape;
+import processing.core.PVector;
 
 public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 
@@ -36,7 +37,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 	private HashMap<Character, PShape>			wallsOverGfx;
 	private PShape								greyRoom;
 	private DropTarget							dt;
-	private float[]								nb;
+	private float[]								nbnd;
+	private float[]								npos;
 	private char								wallOver;
 	private boolean								drag;
 	private float 								mx;
@@ -89,15 +91,16 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 			wallOver = ' ';
 			for( Object w : myWalls.keySet() ) {
 				SM_Wall wl = (SM_Wall)myWalls.get(w);
-				nb = wl.getNavBounds();
+				nbnd = wl.getNavBounds();
 
+				// debug: draw navBounds
 //				if(w == 'M') {
 //					rectMode(CORNERS);
 //					stroke(0);
 //					rect(nb[0]*mySize[0], nb[1]*mySize[1], nb[2]*mySize[0], nb[3]*mySize[1]);
 //				}
 				
-				if (mx > nb[0] && mx < nb[2] && my > nb[1] && my < nb[3]) {
+				if (mx > nbnd[0] && mx < nbnd[2] && my > nbnd[1] && my < nbnd[3]) {
 
 					wallOver = wl.getWallChar();
 					break;
@@ -105,21 +108,107 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 
 			}
 		}
+		
+		// drop visual feedback
 		bgr = bgr + ((255-bgr)/3);
 		bgg = bgg + ((255-bgg)/3);
 		bgb = bgb + ((255-bgb)/3);
 		background(bgr,bgg,bgb);
-		
 		if (dropAnim) dropAnim();
 		
+		// draw walls
 		shape(greyRoom,0,0);
+		
+		// draw Artworks
+		for( Object w : myWalls.keySet() ) {
+			SM_Wall wl = (SM_Wall)myWalls.get(w);
+			
+			// debug: draw wall Pos
+//			line( wl.getNavPos()[0] * width, wl.getNavPos()[1] * height, wl.getNavPos()[2] * width, wl.getNavPos()[3] * height );
+			
+			if( wl.hasArtworks().length > 0 ) {
+
+				//PShape s = wallsActiveGfx.get(wl.getWallChar());
+
+				pushStyle();
+				fill(250, 10, 30);
+				noStroke();
+				for(SM_Artwork aw : wl.hasArtworks()) {
+					
+					drawArtworkIcon(aw, wl);
+					
+				}
+				popStyle();
+				
+				//shape(s,0,0);
+			}
+			
+			
+		}
+		
+		
+		
 		if(wallOver != ' ') {
 			shape(wallsOverGfx.get(wallOver), 0, 0);
 		}
 		
-		text( wallOver, 20,20  );
+//		text( wallOver, 20,20  );
 //		text( mx+" x "+my, 20,40);
 
+	}
+	
+	private void drawArtworkIcon(SM_Artwork _aw, SM_Wall _wl) {
+		
+		int orientation = _wl.getOrientation();
+		float normalOffsetY = 0.008f;
+		float normalOffsetX = ((float)height/(float)width) * normalOffsetY;
+		float normalizedSize =0;
+		
+		float normalizedPosX1=0;
+		float normalizedPosY1=0;
+		float normalizedPosX2=0;
+		float normalizedPosY2=0;
+		
+		if( orientation == 0 || orientation == 2 ) {
+			
+			normalizedSize   = map(_aw.getWidth(),        0, _wl.getWidth(), 0, _wl.getNavPos()[2] - _wl.getNavPos()[0]);
+			normalizedPosX1  = map(_aw.getPosInWall()[0], 0, _wl.getWidth(), _wl.getNavPos()[0], _wl.getNavPos()[2]); 
+			normalizedPosX2  = normalizedPosX1+normalizedSize;
+			
+		}else if( orientation == 1 || orientation == 3) {
+			
+			normalizedSize   = map(_aw.getWidth(),        0, _wl.getWidth(), 0, _wl.getNavPos()[3] -  _wl.getNavPos()[1]);
+			normalizedPosY1  = map(_aw.getPosInWall()[0], 0, _wl.getWidth(), _wl.getNavPos()[1], _wl.getNavPos()[3]);
+			normalizedPosY2  = normalizedPosY1+normalizedSize;
+		}
+		
+		switch (orientation) {
+		case 0:
+			normalizedPosY1 = _wl.getNavPos()[1] - normalOffsetY*2;
+			normalizedPosY2 = _wl.getNavPos()[1] - normalOffsetY*1;
+			break;
+		case 1:
+			normalizedPosX1 = _wl.getNavPos()[0] + normalOffsetX*1;
+			normalizedPosX2 = _wl.getNavPos()[0] + normalOffsetX*2;
+			break;
+		case 2:
+			normalizedPosY1 = _wl.getNavPos()[1] + normalOffsetY*2;
+			normalizedPosY2 = _wl.getNavPos()[1] + normalOffsetY*1;
+			break;
+		case 3:
+			normalizedPosX1 = _wl.getNavPos()[0] - normalOffsetX*1;
+			normalizedPosX2 = _wl.getNavPos()[0] - normalOffsetX*2;
+			break;
+			
+		default:
+			break;
+		}
+		
+		rectMode(CORNERS);
+		rect( normalizedPosX1 * width , normalizedPosY1 * height, normalizedPosX2 * width, normalizedPosY2 * height );
+		
+	
+		
 	}
 	
 	public void init(JFrame _frame, int[] _size, File _filePath, SM_Room _room) {
@@ -164,9 +253,9 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 		for( Object w : myWalls.keySet() ) {
 			SM_Wall wl = (SM_Wall)myWalls.get(w);
 			
-			nb = wl.getNavBounds();
+			nbnd = wl.getNavBounds();
 			
-			if( mx > nb[0] && mx < nb[2] && my > nb[1] && my < nb[3] ) {
+			if( mx > nbnd[0] && mx < nbnd[2] && my > nbnd[1] && my < nbnd[3] ) {
 				
 				wallOver = wl.getWallChar();
 				break;
@@ -182,18 +271,26 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 			
 			setDropAnim( dtde.getLocation().x, dtde.getLocation().y );
 			
+			
+				
 			try {
 				
 				String[] arr = (String[])dtde.getTransferable().getTransferData(SM_DataFlavor.SM_AW_Flavor);
 				String name = arr[0];
+
+				if( myRoom.hasArtwork(name, wallOver) ){
+					System.out.println("rejected by room");
+					bgg = 0;
+					bgb = 0;
+					dtde.rejectDrop();
+					wallOver = ' ';
+					return;
+				}
 				
-				System.out.println("TRYING TO FIRE");
+				System.out.println("passed by room");
 				
-						
 				WallUpdateRequestEvent e = new WallUpdateRequestEvent(this, name, wallOver, myRoom.getName());
 				myRoom.fireUpdateRequest(e);
-				
-				
 				
 				dtde.dropComplete(true);
 				dtde.acceptDrop(dtde.getDropAction());

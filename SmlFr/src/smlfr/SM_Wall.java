@@ -12,6 +12,8 @@ public class SM_Wall {
 	private String							myWallName;
 	private char							myWallChar;
 	private float[]							myNavigatorBoundingBox;
+	private float[]							myNavigatorPos;
+	private int								myNavigatorOrientation;
 	private int[]							mySize;
 	
 	// from Project:
@@ -23,11 +25,13 @@ public class SM_Wall {
 	
 	public SM_Wall(String _name, JSONObject _w, SM_Room _room) {
 		
-		System.out.println("the wall says Hi!");
+		System.out.println("the wall says Hi! ..my name? Shure, here it is: "+_name);
 		myRoom = _room;
 		myWallName = _name;
 		myWallChar = myWallName.charAt(myWallName.length()-1);
 		myNavigatorBoundingBox = _w.getJSONArray("navigatorBoundingBox").getFloatArray();
+		myNavigatorPos = _w.getJSONArray("navigatorPos").getFloatArray();
+		myNavigatorOrientation = _w.getInt("navigatorOrientation");
 		mySize = _w.getJSONArray("wallSize").getIntArray();
 		System.out.println("the wall says this about it's navbounds: "+myNavigatorBoundingBox[0]);
 		
@@ -36,7 +40,8 @@ public class SM_Wall {
 	}
 	
 	public void setColor( Integer _cInt, String _colorBrillux ) {
-		myColor = _cInt;   // TODO   BRILLUX NOT IMPLEMENTED
+		myColor = _cInt;   
+		// TODO   BRILLUX NOT IMPLEMENTED
 	}
 	
 	public void setArtworks(JSONArray _awks) {
@@ -61,7 +66,31 @@ public class SM_Wall {
 	
 	public void addArtwork(SM_Artwork _aw, String _awName) {
 		myArtworks.put(_awName, _aw);
-		_aw.setPos(mySize[0/2], mySize[1]/2);
+		_aw.setPos(mySize[0]/2, mySize[1]/2);
+	}
+	
+	public boolean hasArtwork(String _name) {
+		if(myArtworks.containsKey(_name)) return true;
+		else return false;
+	}
+	
+	public SM_Artwork[] hasArtworks() {
+		
+		SM_Artwork[] aws = new SM_Artwork[myArtworks.keySet().size()];
+		int i=0;
+		for( String s : myArtworks.keySet() ) {
+			aws[i] = myArtworks.get(s);
+			i++;
+		}
+		return aws;
+	}
+	
+	public int getWidth() {
+		return mySize[0];
+	}
+	
+	public int getHeight() {
+		return mySize[1];
 	}
 	
 	public String getWallName() {
@@ -70,6 +99,19 @@ public class SM_Wall {
 	
 	public char getWallChar() {
 		return myWallChar;
+	}
+	
+	public int getOrientation() {
+		if( myNavigatorOrientation >= 0 && myNavigatorOrientation <= 3) return myNavigatorOrientation;
+		else return -1;
+	}
+	
+	public float[] getNavPos() {
+		if( myNavigatorPos != null ) {
+			return myNavigatorPos;
+		} else {
+			return null;
+		}
 	}
 	
 	public float[] getNavBounds() {

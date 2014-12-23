@@ -19,6 +19,13 @@
       ],
       "roomRealName": "Saal 1",
       "w_S1_A": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0.812500,
+          0.271429,
+          0.889286,
+          0.271429
+        ],
         "navigatorBoundingBox": [
           0.79642856,
           0.18857142,
@@ -26,8 +33,8 @@
           0.34
         ],
         "wallSize": [
-          1,
-          2
+          2315,
+          3480
         ],
         "relatedViews": [
           {
@@ -79,6 +86,13 @@
         ]
       },
       "w_S1_B": {
+        "navigatorOrientation": 3,
+        "navigatorPos": [
+          0.890179,
+          0.270000,
+          0.890179,
+          0.704286
+        ],
         "navigatorBoundingBox": [
           0.8232143,
           0.3942857,
@@ -86,8 +100,8 @@
           0.58285713
         ],
         "wallSize": [
-          1,
-          2
+          7210,
+          3515
         ],
         "relatedViews": [
           {
@@ -185,6 +199,13 @@
         ]
       },
       "w_S1_C": {
+        "navigatorOrientation": 0,
+        "navigatorPos": [
+          0.890179,
+          0.705714,
+          0.724107,
+          0.705714
+        ],
         "navigatorBoundingBox": [
           0.73571426,
           0.6257143,
@@ -192,8 +213,8 @@
           0.77428573
         ],
         "wallSize": [
-          1,
-          2
+          4960,
+          3490
         ],
         "relatedViews": [
           {
@@ -245,6 +266,13 @@
         ]
       },
       "w_S1_D": {
+        "navigatorOrientation": 0,
+        "navigatorPos": [
+          0.643750,
+          0.705714,
+          0.325893,
+          0.705714
+        ],
         "navigatorBoundingBox": [
           0.37321427,
           0.6028572,
@@ -252,8 +280,8 @@
           0.8
         ],
         "wallSize": [
-          1,
-          2
+          9480,
+          3480
         ],
         "relatedViews": [
           {
@@ -328,6 +356,13 @@
         ]
       },
       "w_S1_E": {
+        "navigatorOrientation": 0,
+        "navigatorPos": [
+          0.243750,
+          0.707143,
+          0.085714,
+          0.707143
+        ],
         "navigatorBoundingBox": [
           0.13214286,
           0.6571429,
@@ -335,8 +370,8 @@
           0.77428573
         ],
         "wallSize": [
-          1,
-          2
+          4210,
+          3480
         ],
         "relatedViews": [
           {
@@ -434,6 +469,13 @@
         ]
       },
       "w_S1_F": {
+        "navigatorOrientation": 1,
+        "navigatorPos": [
+          0.085714,
+          0.705714,
+          0.085714,
+          0.584286
+        ],
         "navigatorBoundingBox": [
           0.019642858,
           0.62857145,
@@ -441,8 +483,8 @@
           0.7457143
         ],
         "wallSize": [
-          1,
-          2
+          1990,
+          3480
         ],
         "relatedViews": [
           {
@@ -563,6 +605,13 @@
         ]
       },
       "w_S1_G": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0.086607,
+          0.585714,
+          0.178571,
+          0.585714
+        ],
         "navigatorBoundingBox": [
           0.08928572,
           0.51714283,
@@ -570,8 +619,8 @@
           0.6314286
         ],
         "wallSize": [
-          1,
-          2
+          2225,
+          3820
         ],
         "relatedViews": [
           {
@@ -600,6 +649,13 @@
         ]
       },
       "w_S1_H": {
+        "navigatorOrientation": 1,
+        "navigatorPos": [
+          0.187500,
+          0.618571,
+          0.187500,
+          0.351429
+        ],
         "navigatorBoundingBox": [
           0.18235714,
           0.38,
@@ -607,8 +663,8 @@
           0.5914286
         ],
         "wallSize": [
-          1,
-          2
+          5000,
+          3940
         ],
         "relatedViews": [
           {
@@ -660,6 +716,13 @@
         ]
       },
       "w_S1_I": {
+        "navigatorOrientation": 1,
+        "navigatorPos": [
+          0.086607,
+          0.405714,
+          0.086607,
+          0.270000
+        ],
         "navigatorBoundingBox": [
           0.025,
           0.24857143,
@@ -667,8 +730,8 @@
           0.41142857
         ],
         "wallSize": [
-          1,
-          2
+          2520,
+          3510
         ],
         "relatedViews": [
           {
@@ -743,6 +806,13 @@
         ]
       },
       "w_S1_J": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0.086607,
+          0.271429,
+          0.261607,
+          0.271429
+        ],
         "navigatorBoundingBox": [
           0.12678,
           0.23714286,
@@ -750,8 +820,8 @@
           0.3342857
         ],
         "wallSize": [
-          1,
-          2
+          4710,
+          3490
         ],
         "relatedViews": [
           {
@@ -826,6 +896,13 @@
         ]
       },
       "w_S1_K": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0.310714,
+          0.271429,
+          0.775000,
+          0.271429
+        ],
         "navigatorBoundingBox": [
           0.4642857,
           0.21428572,
@@ -833,8 +910,8 @@
           0.34
         ],
         "wallSize": [
-          1,
-          2
+          12965,
+          3500
         ],
         "relatedViews": [
           {
@@ -909,6 +986,13 @@
         ]
       },
       "w_S1_L": {
+        "navigatorOrientation": 0,
+        "navigatorPos": [
+          0.424107,
+          0.258571,
+          0.310714,
+          0.258571
+        ],
         "navigatorBoundingBox": [
           0.30535713,
           0.19714285,
@@ -916,8 +1000,8 @@
           0.32
         ],
         "wallSize": [
-          1,
-          2
+          3175,
+          2820
         ],
         "relatedViews": [
           {
@@ -946,6 +1030,13 @@
         ]
       },
       "w_S1_M": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0.313393,
+          0.140000,
+          0.424107,
+          0.140000
+        ],
         "navigatorBoundingBox": [
           0.30357143,
           0.05142857,
@@ -953,8 +1044,8 @@
           0.19428572
         ],
         "wallSize": [
-          1,
-          2
+          3140,
+          2820
         ],
         "relatedViews": [
           {
