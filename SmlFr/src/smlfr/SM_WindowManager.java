@@ -47,6 +47,7 @@ public class SM_WindowManager {
 				
 				
 				base.lib = createLibrary(base.artworks);
+				fm.registerUpdateListener(base.lib);
 				
 				
 				state = progState.PROJECT;

@@ -29,6 +29,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 	SM_Room 									myRoom;
 	LinkedHashMap								myWalls;
 	
+	
 	// utils
 	private JFrame								myFrame;
 	private int[]								mySize;

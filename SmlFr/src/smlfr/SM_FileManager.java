@@ -7,9 +7,13 @@ import java.util.HashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
+import javax.swing.event.EventListenerList;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import artworkUpdateModel.ArtworkUpdateEvent;
+import artworkUpdateModel.ArtworkUpdateListener;
+import artworkUpdateModel.ArtworkUpdateType;
 import artworkUpdateModel.WallUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateRequestListener;
 
@@ -38,7 +42,8 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	private String			currentProjectName;
 
 	private SmlFr			base;
-	
+	EventListenerList		updateListeners;
+
 	private boolean			loaded = false;
 	private boolean			savedirty = false;
 	
@@ -53,7 +58,8 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				Lang.SM_filetypes, "sfp");
 		fc.setFileFilter(filter);
 
-
+		updateListeners = new EventListenerList();
+		
 		File res = new File("resources");
 		if( !res.exists() ) {
 			javax.swing.JOptionPane.showMessageDialog(this,Lang.couldntFindResourceFolder, "couldn't find...", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -345,7 +351,16 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return new File(filePath);
 	}
 
+	// UPDATE Event handling
 
+	public void registerUpdateListener(ArtworkUpdateListener _listener) {
+		updateListeners.add(ArtworkUpdateListener.class, _listener);
+	}
+	
+	public void unregisterUpdateListener(ArtworkUpdateListener _listener) {
+		updateListeners.remove(ArtworkUpdateListener.class, _listener);
+	}
+	
 	@Override
 	public synchronized void updateRequested(WallUpdateRequestEvent e) {
 		
@@ -354,7 +369,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		System.out.println("the room: "+e.getRoom());
 		
 		String target = "w_"+e.getRoom()+"_"+e.getWall();
-		
+
 		System.out.println(target);
 		
 		// update artwork
@@ -367,7 +382,9 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			thisAw.setWall(this, target);
 			thisRm.addArtworkToWall(this, thisAw, e.getWall());
 		}
+		
 		// update Json
+		
 		for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
 			JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
 			if(r.getString("roomName").equalsIgnoreCase(e.getRoom())) {
@@ -375,7 +392,14 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			}
 		}
 		
+		savedirty = true;
 		saveTempProject();
+		
+		
+		ArtworkUpdateEvent e2 = new ArtworkUpdateEvent(this, e.getName(), ArtworkUpdateType.WALL);
+		for(ArtworkUpdateListener lsnr : updateListeners.getListeners(ArtworkUpdateListener.class) ) {
+			lsnr.artworkUpdate(e2);
+		}
 	}
 
 }

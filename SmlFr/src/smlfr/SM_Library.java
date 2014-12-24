@@ -21,21 +21,33 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import artworkUpdateModel.ArtworkUpdateEvent;
+import artworkUpdateModel.ArtworkUpdateListener;
+
 import SMUtils.AWPanel;
 import SMUtils.Lang;
 import SMUtils.awFileSize;
 
 
-public class SM_Library extends JFrame {
+public class SM_Library extends JFrame implements ArtworkUpdateListener {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -885702442115456206L;
+	
 	
 	private HashMap<String, SM_Artwork> 	artworks;
 	private SM_FileManager 					fm;
+	
+	private HashMap<String, JPanel>			panels;
 	
 	
 	
@@ -77,7 +89,7 @@ public class SM_Library extends JFrame {
         
         ////////
         
-        
+        panels = new HashMap<String, JPanel>();
         JPanel artworkPanel = createArtworkPanel(artworks);
       
         JScrollPane contentPanel = new JScrollPane(artworkPanel);
@@ -119,11 +131,26 @@ public class SM_Library extends JFrame {
 
 			
 			awp.add(panel);
+			panels.put(s,panel);
 //			awp.setFocusable(true);
 			
 			
 		}
 		return awp;
+	}
+
+
+	@Override
+	public void artworkUpdate(ArtworkUpdateEvent e) {
+		
+		switch (e.getType()) {
+		case WALL:
+			panels.get(e.getName()).setBackground(Color.lightGray);
+			break;
+		default:
+			break;
+		}
+		
 	}
 
 	
