@@ -1,5 +1,7 @@
 package smlfr;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import artworkUpdateModel.WallUpdateRequestEvent;
 
@@ -81,6 +84,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 		
 		fill(0);
 		
+
 	}
 	
 	public void draw() {
@@ -94,17 +98,10 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 				SM_Wall wl = (SM_Wall)myWalls.get(w);
 				nbnd = wl.getNavBounds();
 
-				// debug: draw navBounds
-//				if(w == 'M') {
-//					rectMode(CORNERS);
-//					stroke(0);
-//					rect(nb[0]*mySize[0], nb[1]*mySize[1], nb[2]*mySize[0], nb[3]*mySize[1]);
-//				}
-				
 				if (mx > nbnd[0] && mx < nbnd[2] && my > nbnd[1] && my < nbnd[3]) {
 
 					wallOver = wl.getWallChar();
-					break;
+//					break;
 				}
 
 			}
@@ -132,11 +129,69 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 				//PShape s = wallsActiveGfx.get(wl.getWallChar());
 
 				pushStyle();
-				fill(250, 10, 30);
+				rectMode(CORNERS);
 				noStroke();
 				for(SM_Artwork aw : wl.hasArtworks()) {
 					
-					drawArtworkIcon(aw, wl);
+					float[] icnBounds = getArtworkIconBounds(aw, wl);
+					
+					
+					
+					System.out.println( "for wall: "+wl.getWallName()+"  -  aw: "+aw.getName()+" orient: "+wl.getOrientation());
+					boolean awMouseOver = false;
+					switch (wl.getOrientation()) {
+					case 0:
+						if (mouseX < icnBounds[0]+15 && mouseX > icnBounds[2]-15 && mouseY < icnBounds[1]+15 && mouseY > icnBounds[3]-15) {
+							icnBounds[0] += 5;
+							icnBounds[1] += 5;
+							icnBounds[2] -= 5;
+							icnBounds[3] -= 5;
+							awMouseOver = true;
+						}
+						break;
+					case 1:
+						if (mouseX < icnBounds[0]+15 && mouseX > icnBounds[2]-15 && mouseY < icnBounds[1]+15 && mouseY > icnBounds[3]-15) {
+							icnBounds[0] += 5;
+							icnBounds[1] += 5;
+							icnBounds[2] -= 5;
+							icnBounds[3] -= 5;
+							awMouseOver = true;
+						}
+						break;
+					case 2:
+						if (mouseX > icnBounds[0]-15 && mouseX < icnBounds[2]+15 && mouseY > icnBounds[1]-15 && mouseY < icnBounds[3]+15) {
+							icnBounds[0] -= 5;
+							icnBounds[1] -= 5;
+							icnBounds[2] += 5;
+							icnBounds[3] += 5;
+							awMouseOver = true;
+						}
+						break;
+					case 3:
+						if (mouseX > icnBounds[0]-15 && mouseX < icnBounds[2]+15 && mouseY > icnBounds[1]-15 && mouseY < icnBounds[3]+15) {
+							icnBounds[0] -= 5;
+							icnBounds[1] -= 5;
+							icnBounds[2] += 5;
+							icnBounds[3] += 5;
+							awMouseOver = true;
+						}
+						break;
+					}
+					
+					if(awMouseOver){
+						fill(250, 10, 30);
+//						rect( icnBounds[0]-3f, icnBounds[1]+3f, icnBounds[2]+3f, icnBounds[3]-3f );
+						rect( icnBounds[0], icnBounds[1], icnBounds[2], icnBounds[3]);
+//						stroke(0);
+//						fill(0);
+//						text("bounds "+icnBounds[0]+" / "+icnBounds[1]+" / "+icnBounds[2]+" / "+icnBounds[3], 20,20);
+						System.out.println("huiiiiii: "+aw.getName());
+
+					} else {
+						fill(250, 10, 20);
+						rect( icnBounds[0], icnBounds[1], icnBounds[2], icnBounds[3] );
+					}
+					
 					
 				}
 				popStyle();
@@ -158,7 +213,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 
 	}
 	
-	private void drawArtworkIcon(SM_Artwork _aw, SM_Wall _wl) {
+	private float[] getArtworkIconBounds(SM_Artwork _aw, SM_Wall _wl) {
 		
 		int orientation = _wl.getOrientation();
 		float normalOffsetY = 0.008f;
@@ -185,12 +240,12 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 		
 		switch (orientation) {
 		case 0:
-			normalizedPosY1 = _wl.getNavPos()[1] - normalOffsetY*2;
-			normalizedPosY2 = _wl.getNavPos()[1] - normalOffsetY*1;
+			normalizedPosY2 = _wl.getNavPos()[1] - normalOffsetY*2;
+			normalizedPosY1 = _wl.getNavPos()[1] - normalOffsetY*1;
 			break;
 		case 1:
-			normalizedPosX1 = _wl.getNavPos()[0] + normalOffsetX*1;
-			normalizedPosX2 = _wl.getNavPos()[0] + normalOffsetX*2;
+			normalizedPosX2 = _wl.getNavPos()[0] + normalOffsetX*1;
+			normalizedPosX1 = _wl.getNavPos()[0] + normalOffsetX*2;
 			break;
 		case 2:
 			normalizedPosY1 = _wl.getNavPos()[1] + normalOffsetY*2;
@@ -205,9 +260,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener {
 			break;
 		}
 		
-		rectMode(CORNERS);
-		rect( normalizedPosX1 * width , normalizedPosY1 * height, normalizedPosX2 * width, normalizedPosY2 * height );
 		
+		return new float[] { normalizedPosX1 * width , normalizedPosY1 * height, normalizedPosX2 * width, normalizedPosY2 * height };
 	
 		
 	}

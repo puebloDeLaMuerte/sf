@@ -122,13 +122,17 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
 			ImageIcon icn = new ImageIcon( fm.getFilePathForArtwork(s, awFileSize.THUMB ).getAbsolutePath());
 
 			JLabel imgLbl = new JLabel(icn);
-			JLabel label = new JLabel(s);
+			imgLbl.setMaximumSize(new Dimension(120,60));
+			JLabel ntxt = new JLabel(s);
+			String size = artworks.get(s).getWidth()+" x "+artworks.get(s).getHeight();
+			JLabel stxt = new JLabel(size);
+			
 			AWPanel panel = new AWPanel(s);
 			panel.setBackground(new Color(0.96f,0.96f,0.96f));
 			panel.setPreferredSize(new Dimension(120,120));
 			panel.add(imgLbl);
-			panel.add(label);
-
+			panel.add(ntxt);
+			panel.add(stxt);
 			
 			awp.add(panel);
 			panels.put(s,panel);
