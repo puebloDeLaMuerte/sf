@@ -56,6 +56,12 @@ public class SM_WindowManager {
 		} else
 		if( state == progState.PROJECT && _requestedState == progState.ROOM    ) {
 			
+			String[] rooms = fm.getRoomNamesInProject();
+			for(String r : rooms) {
+				if( !r.equalsIgnoreCase(_requestedRoom)) {
+					base.rooms.get(r).initArrangementView();
+				}
+			}
 			
 		} else
 		if( state == progState.PROJECT && _requestedState == progState.LOADING ) {

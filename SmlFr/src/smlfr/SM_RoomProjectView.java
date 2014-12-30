@@ -72,6 +72,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	private int bgr, bgg,bgb;
 	private int dloX, dloY, druX, druY, dTargetMX, dTargetMY;
 	private int mX, mY;
+	private boolean moveWindow = false;
 	
 	public void setup() {
 		
@@ -82,6 +83,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		pMenuRemoveArtwork = new JMenuItem(Lang.RemoveArtwork);
 		pMenuRemoveArtwork.addActionListener(this);
 		pMenuEnterRoom = new JMenuItem(Lang.enterRoom);
+		pMenuEnterRoom.addActionListener(this);
 		pMenu.add(pMenuRemoveArtwork);
 		pMenu.add(new JSeparator());
 		pMenu.add(pMenuEnterRoom);
@@ -106,7 +108,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			i++;
 			wallsOverGfx.put(wl.getWallChar(), gfxPack.getChild(i));
 			
-			System.out.println("wallOverGraphics.put("+wl.getWallChar()+", gfxPack.getChild("+i+"))");
+			System.out.println(myRoom.getName()+": wallOverGraphics.put("+wl.getWallChar()+", gfxPack.getChild("+i+"))");
 			i++;
 		}
 		
@@ -166,7 +168,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			popStyle();
 		}
 		
-//		text( wallOver, 20,20  );
+//		text( "wallOver: "+wallOver, 20,20  );
 //		text( mx+" x "+my, 20,40);
 
 	}
@@ -507,14 +509,30 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 
 	public void mouseDragged() {
 		
-		System.out.println("drawg!");
-		
-		int deltaX = myFrame.getLocation().x+MouseInfo.getPointerInfo().getLocation().x-mX;
-		int deltaY = myFrame.getLocation().y+MouseInfo.getPointerInfo().getLocation().y-mY;
-		
-		myFrame.setLocation(deltaX, deltaY);
-		mX = MouseInfo.getPointerInfo().getLocation().x;
-		mY = MouseInfo.getPointerInfo().getLocation().y;
+		if(moveWindow) {
+			int deltaX = myFrame.getLocation().x+MouseInfo.getPointerInfo().getLocation().x-mX;
+			int deltaY = myFrame.getLocation().y+MouseInfo.getPointerInfo().getLocation().y-mY;
+			
+			myFrame.setLocation(deltaX, deltaY);
+			mX = MouseInfo.getPointerInfo().getLocation().x;
+			mY = MouseInfo.getPointerInfo().getLocation().y;
+		}
+	}
+	
+	public void keyPressed() {
+		if( keyCode == SHIFT) {
+			moveWindow = true;
+		}
+	}
+	
+	public void keyReleased() {
+		if( keyCode == SHIFT ) {
+			moveWindow = false;
+		}
+	}
+	
+	public void mouseExited() {
+		wallOver = ' ';
 	}
 	
 	@Override
@@ -526,6 +544,10 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, artOver.getName(), ' ', "Library", myRoom.getName(), artOver.getWallChar());
 
 			myRoom.fireUpdateRequest(r);
+		} else if( e.getActionCommand().equalsIgnoreCase(Lang.enterRoom)) {
+			
+			myRoom.requestRoomEnter();
+			
 		}
 		
 	}

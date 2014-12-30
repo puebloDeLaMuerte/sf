@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 import javax.swing.JFrame;
 
+import SMUtils.progState;
 import artworkUpdateModel.WallUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateRequestListener;
 
@@ -174,6 +175,10 @@ public class SM_Room {
 		
 	}
 	
+	public void initArrangementView() {
+		System.out.println("soweit so gut");
+	}
+	
 	public LinkedHashMap getWalls() {
 		return myWalls;
 	}
@@ -219,5 +224,9 @@ public class SM_Room {
 
 	public void fireUpdateRequest(WallUpdateRequestEvent e) {
 		requestListener.updateRequested(e);
+	}
+
+	public void requestRoomEnter() {
+		base.wm.requestStateChange(progState.ROOM, myRoomName);
 	}
 }
