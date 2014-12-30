@@ -73,7 +73,7 @@ public class SM_Room {
 			if(str.startsWith("w_")) {
 				char key = str.charAt(str.length()-1);
 				System.out.println("...making wall nr "+count+" the char is: ");
-				myWalls.put(key, new SM_Wall(str, _jRoom.getJSONObject(str), this));
+				myWalls.put(key, new SM_Wall(str, _jRoom.getJSONObject(str), this, base.fm));
 				count++;
 			}
 		}
@@ -161,7 +161,7 @@ public class SM_Room {
 		File fl = _fm.getFilePathForRoom(myRoomName);
 		System.out.println("theRoom passes:\n"+fl.getAbsolutePath());
 		myView.init(f, new int[] { _size.width, _size.height }, fl, this);
-		
+
 //		f.setTitle(myRealName);
 		f.setUndecorated(true);
 		f.setVisible(true);
@@ -169,7 +169,7 @@ public class SM_Room {
 		f.setLocation(_loc.width, _loc.height);
 		f.setResizable(true);
 		
-		
+
 		
 		
 	}
@@ -178,6 +178,7 @@ public class SM_Room {
 		return myWalls;
 	}
 
+	
 	public String[] getWallNames() {
 		
 		String[] s = new String[myWalls.size()];
@@ -191,13 +192,13 @@ public class SM_Room {
 		return s;
 	}
 
-	public boolean hasArtwork(String _name, char _wallChar) {
+	public boolean hasArtworkOnWall(String _name, char _wallChar) {
 		
 		int i=0;
 		for( Object c : myWalls.keySet() ) {
 			SM_Wall w = (SM_Wall)myWalls.get(c);
 			
-			if( w.hasArtwork(_name) ) return true;
+			if( w.hasArtwork(_name) && w.getWallChar() == _wallChar ) return true;
 			
 		}
 		return false;

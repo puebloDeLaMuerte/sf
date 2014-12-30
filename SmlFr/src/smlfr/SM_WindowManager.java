@@ -42,7 +42,8 @@ public class SM_WindowManager {
 					System.out.println("init projView for "+r);
 					Dimension loc = new Dimension(roomNavSize.width+roomNavSize.width*(x%2), roomNavSize.height*(y));
 					base.rooms.get(r).initProjectView(roomNavSize, loc, fm);
-
+					x++;
+					if(x%2==0)y++;
 				}
 				
 				

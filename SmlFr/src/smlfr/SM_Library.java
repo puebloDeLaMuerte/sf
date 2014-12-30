@@ -49,13 +49,14 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
 	
 	private HashMap<String, JPanel>			panels;
 	
+	private Color							standartColor;
 	
 	
 	public SM_Library (SM_FileManager _fm, HashMap<String, SM_Artwork> _artworks ) {
 		
 		artworks = _artworks;
 		fm = _fm;
-		
+		standartColor = new Color(0.96f,0.96f,0.96f);
 	}
 	
 	
@@ -127,12 +128,17 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
 			String size = artworks.get(s).getWidth()+" x "+artworks.get(s).getHeight();
 			JLabel stxt = new JLabel(size);
 			
-			AWPanel panel = new AWPanel(s);
-			panel.setBackground(new Color(0.96f,0.96f,0.96f));
+			AWPanel panel = new AWPanel(artworks.get(s));
+			if(artworks.get(s).getWall() != null ) {
+				panel.setBackground(Color.LIGHT_GRAY);
+			} else {
+				panel.setBackground(standartColor);
+			}
 			panel.setPreferredSize(new Dimension(120,120));
 			panel.add(imgLbl);
 			panel.add(ntxt);
 			panel.add(stxt);
+			
 			
 			awp.add(panel);
 			panels.put(s,panel);
@@ -149,7 +155,12 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
 		
 		switch (e.getType()) {
 		case WALL:
-			panels.get(e.getName()).setBackground(Color.lightGray);
+			
+			if(artworks.get(e.getName()).getWall() == null) {
+				panels.get(e.getName()).setBackground(standartColor);
+			}
+			else panels.get(e.getName()).setBackground(Color.lightGray);
+			
 			break;
 		default:
 			break;

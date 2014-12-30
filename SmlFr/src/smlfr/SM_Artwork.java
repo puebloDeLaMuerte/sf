@@ -39,10 +39,6 @@ public class SM_Artwork {
 		posInWall = new int[2];
 		light = false;
 		
-		
-		
-		
-		
 	}
 	
 	SM_Artwork(String _artist, String _title, String _invNr, int _sizeX, int _sizeY) {
@@ -162,8 +158,14 @@ public class SM_Artwork {
 		return frameSize;
 	}
 	
+	///
+	
 	public String getWall() {
 		return isInWall;
+	}
+	
+	public char getWallChar() {
+		return isInWall.charAt(isInWall.length()-1);
 	}
 	
 	public void sayHi() {
@@ -199,6 +201,15 @@ public class SM_Artwork {
 		return invNr;
 	}
 
+	public String getArtis() {
+		return artist;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	
 	public JSONObject getAsJsonObject(SM_FileManager fm) {
 		JSONObject o = new JSONObject();
 		o.setString("invNr", invNr);

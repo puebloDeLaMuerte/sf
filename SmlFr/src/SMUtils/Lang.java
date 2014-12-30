@@ -1,10 +1,12 @@
 package SMUtils;
 
+import javax.swing.Icon;
+
 public class Lang {
 	
 	public enum langs {DE};
 	
-	// errors
+	// errors: File Loading
 	public static String 	couldntFindResourceFolder = "Der Ordner \"resources\" konnte nicht gefunden werden.\nStellen Sie sicher, dass er sich im selben Verzeichnis mit SimulFöhr.exe befindet.";
 	public static String 	couldntFindPrefs = "Die Voreinstellungs-Datei konnte nicht gefunden werden! \nBitte überprüfen Sie, ob sie sich im Ordner \"resources\" befindet.";
 	public static String 	couldntLoadPrefs = "Die Voreinstellungs-Datei konnte nicht geladen werden.\nMöglicherweise ist die datei beschädigt.";
@@ -13,6 +15,14 @@ public class Lang {
 	public static String	couldntLoadProject_1 = "Das Projekt konnte nicht geladen werden.\nStellen Sie sicher das sich die Datei ";
 	public static String	couldntLoadProject_2 = " in diesem Ordner befindet: \n";
 	public static String	couldntLoadArtwork = "Die Library-Dateien konnten nicht geladen werden.\nStellen Sie sicher, dass sich der Ordner mit dem\nSuffix \"_lib\" im selben Ordner wie die Projektadtei befindet.";
+	
+	// errors: Programm Handling
+	
+	public static String	artworkTooBigForWall_1  = "Dieses Kunstwerk passt nicht an diese Wand.\n	Breite des Kunstwerks: ";
+	public static String	artworkTooBigForWall_2  = " mm\n	Breite der Wand; ";
+	public static String	artworkTooBigForWall_3  = " mm.";
+			
+	
 	// questions
 	public static String 	initializeFromWhereTitle = "Willkommen zu SimulFöhr!";
 	public static String 	initializeFromWhere_1 = "Zuletzt geöffnetes Projekt:\n\"";
@@ -25,4 +35,6 @@ public class Lang {
 	public static String	sortLibBy = "sortieren nach:";
 	public static String	importBtn = "Importieren";
 	public static String	deleteBtn = "Löschen";
+	public static String 	RemoveArtwork = "von hier entfernen";
+	public static String 	enterRoom = "Raum betreten";
 }

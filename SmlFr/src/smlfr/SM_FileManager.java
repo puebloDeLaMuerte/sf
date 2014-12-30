@@ -200,6 +200,13 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	
 	// PROJECT
 	
+	private void saveProject() {
+		if(savedirty) {
+			saveJSONObject(project, projectPath.getAbsolutePath());
+			savedirty = false;
+		}
+	}
+	
 	private void saveTempProject() {
 		savedirty = true;
 		
@@ -208,6 +215,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		tempProjectPath = new File(preferencesPath.getParent()+"/"+tempProjFileName);
 		System.out.println("the tempProject was saved as "+tempProjectPath);
 		saveJSONObject(project, tempProjectPath.getAbsolutePath());
+		
+		// TODO see below!
+		///// TEMP, Implement thsi on user request insteadd!!!!
+		saveProject();
 	}
 
 	public synchronized String[] getPreviousProject() {
@@ -366,29 +377,56 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 
 		System.out.println("the artwork name: "+  e.getName());
-		System.out.println("the room: "+e.getRoom());
+		System.out.println("the room: "+e.getTargetRoom());
 		
-		String target = "w_"+e.getRoom()+"_"+e.getWall();
+		String target = "w_"+e.getTargetRoom()+"_"+e.getTargetWall();
 
-		System.out.println(target);
+		System.out.println("the Target is: "+target);
 		
 		// update artwork
-		// update room
+		// update room (Target)
 		
 		SM_Artwork thisAw = base.getArtwork(this, (e.getName()));
-		SM_Room thisRm = base.getRoom(this, e.getRoom());		
-
-		if(! thisRm.hasArtwork(e.getName(), e.getWall()) ) {
-			thisAw.setWall(this, target);
-			thisRm.addArtworkToWall(this, thisAw, e.getWall());
+		
+		
+		if ( ! e.getTargetRoom().equalsIgnoreCase("Library")) {
+			SM_Room thisRm = base.getRoom(this, e.getTargetRoom());
+			if (!thisRm.hasArtworkOnWall(e.getName(), e.getTargetWall())) {
+				thisAw.setWall(this, target);
+				thisRm.addArtworkToWall(this, thisAw, e.getTargetWall());
+			}
+		} else {
+			thisAw.setWall(this, null);
+		}
+		
+		
+		// update room (origin)
+		
+		if( ! e.getOriginRoom().equalsIgnoreCase("Library")) {
+			
+			System.out.println("Getting This Wall: "+e.getOriginWall() +" in this room: "+e.getOriginRoom());
+			
+			SM_Wall originWall = (SM_Wall)base.getRoom(this, e.getOriginRoom()).getWalls().get((e.getOriginWall()));
+			originWall.removeArtwork(e.getName());
 		}
 		
 		// update Json
 		
 		for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
 			JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
-			if(r.getString("roomName").equalsIgnoreCase(e.getRoom())) {
+			if(r.getString("roomName").equalsIgnoreCase(e.getTargetRoom())) {
 				r.getJSONObject(target).getJSONArray("artworks").append(thisAw.getAsJsonObject(this));
+			}
+			if(r.getString("roomName").equalsIgnoreCase(e.getOriginRoom())) {
+				
+				SM_Wall originWall = (SM_Wall)base.getRoom(this, e.getOriginRoom()).getWalls().get((e.getOriginWall()));
+
+				JSONArray aws = r.getJSONObject(originWall.getWallName()).getJSONArray("artworks");
+				for(int ii = 0; ii < aws.size(); ii++) {
+					if(aws.getJSONObject(ii).getString("invNr").equalsIgnoreCase(e.getName())) {
+						aws.remove(ii);
+					}
+				}
 			}
 		}
 		
@@ -396,7 +434,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		saveTempProject();
 		
 		
-		ArtworkUpdateEvent e2 = new ArtworkUpdateEvent(this, e.getName(), ArtworkUpdateType.WALL);
+		ArtworkUpdateEvent e2 = new ArtworkUpdateEvent(this, e.getName(), ArtworkUpdateType.WALL, null);
 		for(ArtworkUpdateListener lsnr : updateListeners.getListeners(ArtworkUpdateListener.class) ) {
 			lsnr.artworkUpdate(e2);
 		}

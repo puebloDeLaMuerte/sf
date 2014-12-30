@@ -21,7 +21,7 @@
       "w_S1_A": {
         "navigatorOrientation": 2,
         "navigatorPos": [
-          0.812500,
+          0.8125,
           0.271429,
           0.889286,
           0.271429
@@ -89,7 +89,7 @@
         "navigatorOrientation": 3,
         "navigatorPos": [
           0.890179,
-          0.270000,
+          0.27,
           0.890179,
           0.704286
         ],
@@ -268,7 +268,7 @@
       "w_S1_D": {
         "navigatorOrientation": 0,
         "navigatorPos": [
-          0.643750,
+          0.64375,
           0.705714,
           0.325893,
           0.705714
@@ -358,7 +358,7 @@
       "w_S1_E": {
         "navigatorOrientation": 0,
         "navigatorPos": [
-          0.243750,
+          0.24375,
           0.707143,
           0.085714,
           0.707143
@@ -651,9 +651,9 @@
       "w_S1_H": {
         "navigatorOrientation": 1,
         "navigatorPos": [
-          0.187500,
+          0.1875,
           0.618571,
-          0.187500,
+          0.1875,
           0.351429
         ],
         "navigatorBoundingBox": [
@@ -721,7 +721,7 @@
           0.086607,
           0.405714,
           0.086607,
-          0.270000
+          0.27
         ],
         "navigatorBoundingBox": [
           0.025,
@@ -900,7 +900,7 @@
         "navigatorPos": [
           0.310714,
           0.271429,
-          0.775000,
+          0.775,
           0.271429
         ],
         "navigatorBoundingBox": [
@@ -1033,9 +1033,9 @@
         "navigatorOrientation": 2,
         "navigatorPos": [
           0.313393,
-          0.140000,
+          0.14,
           0.424107,
-          0.140000
+          0.14
         ],
         "navigatorBoundingBox": [
           0.30357143,
@@ -1069,6 +1069,694 @@
               31,
               40,
               41
+            ]
+          }
+        ]
+      }
+    },
+    "S2": {
+      "viewAngles": [
+        "v_S2_A",
+        "v_S2_ABC",
+        "v_S2_ABCDF",
+        "v_S2_ACDFE",
+        "v_S2_C",
+        "v_S2_D",
+        "v_S2_DEF",
+        "v_S2_E",
+        "v_S2_F",
+        "v_S2_G",
+        "v_S2_H",
+        "v_S2_I",
+        "v_S2_J"
+      ],
+      "roomRealName": "Saal 2",
+      "w_S2_A": {
+        "navigatorOrientation": 0,
+        "navigatorPos": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "navigatorBoundingBox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "wallSize": [
+          7950,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S2_B": {
+        "navigatorOrientation": 1,
+        "navigatorPos": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "navigatorBoundingBox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "wallSize": [
+          5160,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S2_C": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "navigatorBoundingBox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "wallSize": [
+          7950,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S2_D": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "navigatorBoundingBox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "wallSize": [
+          8080,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S2_E": {
+        "navigatorOrientation": 3,
+        "navigatorPos": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "navigatorBoundingBox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "wallSize": [
+          5140,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S2_F": {
+        "navigatorOrientation": 0,
+        "navigatorPos": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "navigatorBoundingBox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "wallSize": [
+          8075,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S2_G": {
+        "navigatorOrientation": 0,
+        "navigatorPos": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "navigatorBoundingBox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "wallSize": [
+          4640,
+          2820
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S2_H": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "navigatorBoundingBox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "wallSize": [
+          4680,
+          2820
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S2_I": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "navigatorBoundingBox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "wallSize": [
+          3225,
+          2820
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S2_J": {
+        "navigatorOrientation": 0,
+        "navigatorPos": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "navigatorBoundingBox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "wallSize": [
+          3190,
+          2820
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
             ]
           }
         ]

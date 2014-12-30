@@ -3,10 +3,13 @@ package smlfr;
 import java.awt.Color;
 import java.util.HashMap;
 
+import artworkUpdateModel.ArtworkUpdateEvent;
+import artworkUpdateModel.ArtworkUpdateListener;
+
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 
-public class SM_Wall {
+public class SM_Wall implements ArtworkUpdateListener {
 	
 	// from file:
 	private String							myWallName;
@@ -23,9 +26,8 @@ public class SM_Wall {
 	// upon init
 	private SM_Room							myRoom;
 	
-	public SM_Wall(String _name, JSONObject _w, SM_Room _room) {
+	public SM_Wall(String _name, JSONObject _w, SM_Room _room, SM_FileManager _fm) {
 		
-		System.out.println("the wall says Hi! ..my name? Shure, here it is: "+_name);
 		myRoom = _room;
 		myWallName = _name;
 		myWallChar = myWallName.charAt(myWallName.length()-1);
@@ -33,8 +35,7 @@ public class SM_Wall {
 		myNavigatorPos = _w.getJSONArray("navigatorPos").getFloatArray();
 		myNavigatorOrientation = _w.getInt("navigatorOrientation");
 		mySize = _w.getJSONArray("wallSize").getIntArray();
-		System.out.println("the wall says this about it's navbounds: "+myNavigatorBoundingBox[0]);
-		
+		_fm.registerUpdateListener(this);
 		
 		
 	}
@@ -121,5 +122,22 @@ public class SM_Wall {
 		else {
 			return null;
 		}
+	}
+
+	@Override
+	public void artworkUpdate(ArtworkUpdateEvent e) {
+		switch (e.getType()) {
+		case WALL:
+			
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	public void removeArtwork(String _name) {
+		System.out.println("Wall "+ myWallName+ " REMOVED: "+_name);
+		myArtworks.remove(_name);
 	}
 }

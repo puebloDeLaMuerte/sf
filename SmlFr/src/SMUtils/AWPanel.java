@@ -17,6 +17,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import smlfr.SM_Artwork;
+
 public class AWPanel extends JPanel implements MouseListener, DragGestureListener, Transferable {
 
 	private boolean isHighlighted;
@@ -25,15 +27,17 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 
     private DragSource	ds;
     private String myArtworkName;
+    private SM_Artwork myArtwork;
     
-    public AWPanel(String _s) {
+    public AWPanel(SM_Artwork _s) {
         addMouseListener(this);
         setBorder(blackBorder);
         setFocusable(true);
         isHighlighted = false;
 		ds = new DragSource();
 		ds.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, this);
-		myArtworkName = _s;
+		myArtworkName = _s.getName();
+		myArtwork = _s;
     }
 
     
@@ -72,12 +76,14 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 
 	@Override
 	public void dragGestureRecognized(DragGestureEvent dge) {
-		Cursor cursor = null;
-        if (dge.getDragAction() == DnDConstants.ACTION_COPY) {
-            cursor = DragSource.DefaultCopyDrop;
-//            cursor = DragSource.DefaultLinkDrop;
-        }
-        dge.startDrag(cursor, this);
+		if (myArtwork.getWall() == null) {
+			Cursor cursor = null;
+			if (dge.getDragAction() == DnDConstants.ACTION_COPY) {
+				cursor = DragSource.DefaultCopyDrop;
+				//            cursor = DragSource.DefaultLinkDrop;
+			}
+			dge.startDrag(cursor, this);
+		}
 
 		
 	}
@@ -85,7 +91,7 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 	@Override
 	public Object getTransferData(DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException {
-			String[] t = new String[] { myArtworkName, "SM_Artwork" };
+			String[] t = new String[] { myArtworkName, "Library", " ", "SM_Artwork" };
 		return t;
 	}
 

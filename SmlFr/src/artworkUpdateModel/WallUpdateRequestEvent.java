@@ -5,23 +5,36 @@ import java.util.EventObject;
 public class WallUpdateRequestEvent extends EventObject{
 
 	private String		name;
-	private char		wall;
-	private String 		room;
+	private String		targetRoom;
+	private char		targetWall;
+	private String 		originRoom;
+	private char		originWall;
 
-	public WallUpdateRequestEvent( Object source , String _name, char _wall, String _room ) {
+	public WallUpdateRequestEvent( Object source , String _awName, char _targetWall, String _targetRoom, String _originRoom, char _originWall) {
 		super(source);
-
-		name = _name;
-		wall = _wall;
-		room = _room;
-	}
-
-	public char getWall() {
-		return wall;
+		originRoom = _originRoom;
+		originWall = _originWall;
+		name = _awName;
+		targetWall = _targetWall;
+		targetRoom = _targetRoom;
 	}
 	
-	public String getRoom() {
-		return room;
+	
+
+	public char getTargetWall() {
+		return targetWall;
+	}
+	
+	public String getTargetRoom() {
+		return targetRoom;
+	}
+	
+	public String getOriginRoom() {
+		return originRoom;
+	}
+	
+	public char getOriginWall() {
+		return originWall;
 	}
 	
 	public String getName() {
