@@ -229,4 +229,12 @@ public class SM_Room {
 	public void requestRoomEnter() {
 		base.wm.requestStateChange(progState.ROOM, myRoomName);
 	}
+
+	public void endView() {
+		if( myView != null ) {
+			System.out.println("exiting "+myRoomName);
+			myView.dispose();
+			myView = null;
+		}
+	}
 }

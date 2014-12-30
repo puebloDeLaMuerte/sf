@@ -67,7 +67,12 @@ public class SM_Wall implements ArtworkUpdateListener {
 	
 	public void addArtwork(SM_Artwork _aw, String _awName) {
 		myArtworks.put(_awName, _aw);
-		_aw.setPos(mySize[0]/2, mySize[1]/2);
+		_aw.setPos((mySize[0]/2)-(_aw.getWidth()/2), (mySize[1]/2)-(_aw.getHeight()/2));
+	}
+	
+	public void removeArtwork(String _name) {
+		System.out.println("Wall "+ myWallName+ " REMOVED: "+_name);
+		myArtworks.remove(_name);
 	}
 	
 	public boolean hasArtwork(String _name) {
@@ -135,9 +140,5 @@ public class SM_Wall implements ArtworkUpdateListener {
 			break;
 		}
 	}
-
-	public void removeArtwork(String _name) {
-		System.out.println("Wall "+ myWallName+ " REMOVED: "+_name);
-		myArtworks.remove(_name);
-	}
+	
 }

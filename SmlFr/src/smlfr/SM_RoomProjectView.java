@@ -67,12 +67,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	private boolean								drag;
 	private float 								mx;
 	private float 								my;
+	
 	// drop feedback:
 	private boolean dropAnim = false;
 	private int bgr, bgg,bgb;
 	private int dloX, dloY, druX, druY, dTargetMX, dTargetMY;
 	private int mX, mY;
 	private boolean moveWindow = false;
+	int count =0;
 	
 	public void setup() {
 		
@@ -98,15 +100,24 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		wallsActiveGfx = new HashMap<Character, PShape>();
 		wallsOverGfx = new HashMap<Character, PShape>();
 		
+		System.out.println("width:  "+mySize[0]+" height:  "+mySize[1]);
+		float xFact = ((float)mySize[0] / 560f);
+		float yFact = ((float)mySize[1] / 350f);
+		System.out.println("w-fact: "+xFact+" h-fact: "+yFact);
 		
 		
 		greyRoom = gfxPack.getChild(0);
+		greyRoom.scale(xFact, yFact);
 		int i = 1;
 		for( Object w : myWalls.keySet() ) {
 			SM_Wall wl = (SM_Wall)myWalls.get(w);
-			wallsActiveGfx.put(wl.getWallChar(), gfxPack.getChild(i));
+			PShape wActive = gfxPack.getChild(i);
+			wActive.scale(xFact, yFact);
+			wallsActiveGfx.put(wl.getWallChar(), wActive);
 			i++;
-			wallsOverGfx.put(wl.getWallChar(), gfxPack.getChild(i));
+			PShape wOver = gfxPack.getChild(i);
+			wOver.scale(xFact, yFact);
+			wallsOverGfx.put(wl.getWallChar(), wOver);
 			
 			System.out.println(myRoom.getName()+": wallOverGraphics.put("+wl.getWallChar()+", gfxPack.getChild("+i+"))");
 			i++;
@@ -124,6 +135,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	
 	public void draw() {
 
+//		System.out.println(myRoom.getName()+" "+count++);
 		
 		if (!drag) {
 			mx = (float) mouseX / (float) mySize[0];
@@ -248,7 +260,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 					}
 					
 					if(awMouseOver){
-						fill(250, 10, 30);
+						fill(250, 10, 30, 80);
 //						rect( icnBounds[0]-3f, icnBounds[1]+3f, icnBounds[2]+3f, icnBounds[3]-3f );
 						rect( icnBounds[0], icnBounds[1], icnBounds[2], icnBounds[3]);
 //						stroke(0);
@@ -257,7 +269,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 
 
 					} else {
-						fill(250, 10, 20);
+						fill(250, 10, 20, 160);
 						rect( icnBounds[0], icnBounds[1], icnBounds[2], icnBounds[3] );
 					}
 					
@@ -550,5 +562,11 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			
 		}
 		
+	}
+
+	public void dispose() {
+		
+		myFrame.dispose();
+		super.dispose();
 	}
 }

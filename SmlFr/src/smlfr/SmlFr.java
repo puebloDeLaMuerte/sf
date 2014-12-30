@@ -214,6 +214,13 @@ public class SmlFr extends JFrame{
 		
 	}
 
+	public ImageIcon getIcon() {
+		return icon;
+	}
+	
+	public ImageIcon getWarningIcon() {
+		return warn;
+	}
 
 
 }

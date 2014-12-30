@@ -93,6 +93,15 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		else return false;
 	}
 
+	public synchronized boolean isSaveDirty() {
+		return savedirty;
+	}
+	
+	private void setSaveDirty(boolean _sd) {
+		savedirty = _sd;
+		base.lib.setSaveDirtyMark(_sd);
+	}
+	
 	// PREFERENCES
 
 	public synchronized void updatePrefs(String _key, String _value) {
@@ -200,15 +209,26 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	
 	// PROJECT
 	
+	public synchronized boolean requestSave() {
+		
+		if( savedirty ) {
+			saveProject();
+			return true;
+		}
+		else return false;
+		
+		
+	}
+	
 	private void saveProject() {
 		if(savedirty) {
 			saveJSONObject(project, projectPath.getAbsolutePath());
-			savedirty = false;
+			setSaveDirty(false);
 		}
 	}
 	
 	private void saveTempProject() {
-		savedirty = true;
+		setSaveDirty(true);
 		
 		String tempProjFileName = projectPath.getAbsoluteFile().getName()+".tmp";
 		
@@ -216,9 +236,6 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		System.out.println("the tempProject was saved as "+tempProjectPath);
 		saveJSONObject(project, tempProjectPath.getAbsolutePath());
 		
-		// TODO see below!
-		///// TEMP, Implement thsi on user request insteadd!!!!
-		saveProject();
 	}
 
 	public synchronized String[] getPreviousProject() {
@@ -364,11 +381,11 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 	// UPDATE Event handling
 
-	public void registerUpdateListener(ArtworkUpdateListener _listener) {
+	public synchronized void registerUpdateListener(ArtworkUpdateListener _listener) {
 		updateListeners.add(ArtworkUpdateListener.class, _listener);
 	}
 	
-	public void unregisterUpdateListener(ArtworkUpdateListener _listener) {
+	public synchronized void unregisterUpdateListener(ArtworkUpdateListener _listener) {
 		updateListeners.remove(ArtworkUpdateListener.class, _listener);
 	}
 	
@@ -430,7 +447,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			}
 		}
 		
-		savedirty = true;
+		setSaveDirty(true);
 		saveTempProject();
 		
 		

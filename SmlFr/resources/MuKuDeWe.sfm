@@ -1094,16 +1094,16 @@
       "w_S2_A": {
         "navigatorOrientation": 0,
         "navigatorPos": [
-          0,
-          0,
-          0,
-          0
+          0.404464,
+          0.618571,
+          0.126786,
+          0.618571
         ],
         "navigatorBoundingBox": [
-          0,
-          0,
-          0,
-          0
+          0.197321,
+          0.544286,
+          0.369643,
+          0.72
         ],
         "wallSize": [
           7950,
@@ -1161,16 +1161,16 @@
       "w_S2_B": {
         "navigatorOrientation": 1,
         "navigatorPos": [
-          0,
-          0,
-          0,
-          0
+          0.126786,
+          0.617143,
+          0.126786,
+          0.3
         ],
         "navigatorBoundingBox": [
-          0,
-          0,
-          0,
-          0
+          0.046429,
+          0.347143,
+          0.182143,
+          0.551429
         ],
         "wallSize": [
           5160,
@@ -1228,16 +1228,16 @@
       "w_S2_C": {
         "navigatorOrientation": 2,
         "navigatorPos": [
-          0,
-          0,
-          0,
-          0
+          0.126786,
+          0.298571,
+          0.404464,
+          0.298571
         ],
         "navigatorBoundingBox": [
-          0,
-          0,
-          0,
-          0
+          0.159821,
+          0.301429,
+          0.373214,
+          0.37
         ],
         "wallSize": [
           7950,
@@ -1295,16 +1295,16 @@
       "w_S2_D": {
         "navigatorOrientation": 2,
         "navigatorPos": [
-          0,
-          0,
-          0,
-          0
+          0.438393,
+          0.298571,
+          0.71875,
+          0.298571
         ],
         "navigatorBoundingBox": [
-          0,
-          0,
-          0,
-          0
+          0.484821,
+          0.3,
+          0.666964,
+          0.377143
         ],
         "wallSize": [
           8080,
@@ -1362,16 +1362,16 @@
       "w_S2_E": {
         "navigatorOrientation": 3,
         "navigatorPos": [
-          0,
-          0,
-          0,
-          0
+          0.719643,
+          0.298571,
+          0.719643,
+          0.617143
         ],
         "navigatorBoundingBox": [
-          0,
-          0,
-          0,
-          0
+          0.6625,
+          0.36,
+          0.80625,
+          0.551429
         ],
         "wallSize": [
           5140,
@@ -1429,16 +1429,16 @@
       "w_S2_F": {
         "navigatorOrientation": 0,
         "navigatorPos": [
-          0,
-          0,
-          0,
-          0
+          0.719643,
+          0.618571,
+          0.438393,
+          0.618571
         ],
         "navigatorBoundingBox": [
-          0,
-          0,
-          0,
-          0
+          0.483036,
+          0.525714,
+          0.704464,
+          0.717143
         ],
         "wallSize": [
           8075,
@@ -1496,16 +1496,16 @@
       "w_S2_G": {
         "navigatorOrientation": 0,
         "navigatorPos": [
-          0,
-          0,
-          0,
-          0
+          0.404464,
+          0.287143,
+          0.2375,
+          0.287143
         ],
         "navigatorBoundingBox": [
-          0,
-          0,
-          0,
-          0
+          0.2375,
+          0.234286,
+          0.402679,
+          0.291429
         ],
         "wallSize": [
           4640,
@@ -1563,16 +1563,16 @@
       "w_S2_H": {
         "navigatorOrientation": 2,
         "navigatorPos": [
-          0,
-          0,
-          0,
-          0
+          0.2375,
+          0.161429,
+          0.402679,
+          0.161429
         ],
         "navigatorBoundingBox": [
-          0,
-          0,
-          0,
-          0
+          0.224107,
+          0.132857,
+          0.403571,
+          0.212857
         ],
         "wallSize": [
           4680,
@@ -1630,16 +1630,16 @@
       "w_S2_I": {
         "navigatorOrientation": 2,
         "navigatorPos": [
-          0,
-          0,
-          0,
-          0
+          0.438393,
+          0.161429,
+          0.557143,
+          0.161429
         ],
         "navigatorBoundingBox": [
-          0,
-          0,
-          0,
-          0
+          0.429464,
+          0.098571,
+          0.576786,
+          0.218571
         ],
         "wallSize": [
           3225,
@@ -1697,20 +1697,434 @@
       "w_S2_J": {
         "navigatorOrientation": 0,
         "navigatorPos": [
-          0,
-          0,
-          0,
-          0
+          0.557143,
+          0.287143,
+          0.438393,
+          0.287143
         ],
         "navigatorBoundingBox": [
-          0,
-          0,
-          0,
-          0
+          0.433036,
+          0.245714,
+          0.575,
+          0.29
         ],
         "wallSize": [
           3190,
           2820
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      }
+    },
+    "S3": {
+      "viewAngles": [
+        "v_S3_A",
+        "v_S3_AB",
+        "v_S3_D",
+        "v_S3_DE",
+        "v_S3_DEFA",
+        "v_S3_DEF",
+        "v_S3_EF"
+      ],
+      "roomRealName": "Saal 3",
+      "w_S3_A": {
+        "navigatorOrientation": 0,
+        "navigatorPos": [
+          0.432143,
+          0.577143,
+          0.200893,
+          0.577143
+        ],
+        "navigatorBoundingBox": [
+          0.232143,
+          0.52,
+          0.430357,
+          0.674286
+        ],
+        "wallSize": [
+          6410,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S3_B": {
+        "navigatorOrientation": 1,
+        "navigatorPos": [
+          0.202679,
+          0.577143,
+          0.202679,
+          0.241429
+        ],
+        "navigatorBoundingBox": [
+          0.125893,
+          0.278571,
+          0.241964,
+          0.538571
+        ],
+        "wallSize": [
+          5150,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S3_C": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0.202679,
+          0.24,
+          0.283929,
+          0.24
+        ],
+        "navigatorBoundingBox": [
+          0.191071,
+          0.138571,
+          0.292857,
+          0.294286
+        ],
+        "wallSize": [
+          2215,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S3_D": {
+        "navigatorOrientation": 2,
+        "navigatorPos": [
+          0.320536,
+          0.24,
+          0.675,
+          0.24
+        ],
+        "navigatorBoundingBox": [
+          0.3125,
+          0.144286,
+          0.634821,
+          0.297143
+        ],
+        "wallSize": [
+          10360,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S3_E": {
+        "navigatorOrientation": 3,
+        "navigatorPos": [
+          0.673214,
+          0.238571,
+          0.673214,
+          0.578571
+        ],
+        "navigatorBoundingBox": [
+          0.620536,
+          0.295714,
+          0.75,
+          0.57
+        ],
+        "wallSize": [
+          5110,
+          4200
+        ],
+        "relatedViews": [
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "viewName": "v_S2_",
+            "viewSkew": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "viewCrop": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "w_S3_F": {
+        "navigatorOrientation": 0,
+        "navigatorPos": [
+          0.674107,
+          0.578571,
+          0.466071,
+          0.578571
+        ],
+        "navigatorBoundingBox": [
+          0.465179,
+          0.507143,
+          0.671429,
+          0.68
+        ],
+        "wallSize": [
+          5680,
+          4200
         ],
         "relatedViews": [
           {

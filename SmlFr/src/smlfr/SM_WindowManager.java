@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 
+import SMUtils.Lang;
 import SMUtils.progState;
 
 public class SM_WindowManager {
@@ -26,7 +27,7 @@ public class SM_WindowManager {
 		
 		screen = Toolkit.getDefaultToolkit().getScreenSize();
 
-		roomNavSize = new Dimension(screen.width / 3,screen.height / 3);
+		roomNavSize = new Dimension(screen.width / 3, screen.height / 3);
 	}
 	
 	public synchronized void requestStateChange( progState _requestedState, String _requestedRoom) {
@@ -56,12 +57,30 @@ public class SM_WindowManager {
 		} else
 		if( state == progState.PROJECT && _requestedState == progState.ROOM    ) {
 			
-			String[] rooms = fm.getRoomNamesInProject();
-			for(String r : rooms) {
-				if( !r.equalsIgnoreCase(_requestedRoom)) {
-					base.rooms.get(r).initArrangementView();
+			if(fm.isSaveDirty()) {						
+				int decide = javax.swing.JOptionPane.showOptionDialog(null, Lang.unsavedChanges, Lang.unsavedChangesTitle, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.DEFAULT_OPTION, base.getIcon(), Lang.yesNoCancelOptions, 0);
+				switch (decide) {
+				case 0:
+					return;
+					
+				case 1:
+					break;
+				case 2:
+					fm.requestSave();
+					break;
 				}
 			}
+			
+			
+			String[] rooms = fm.getRoomNamesInProject();
+			for(String r : rooms) {
+				if( !r.equalsIgnoreCase(_requestedRoom) ) {
+					
+					base.rooms.get(r).endView();
+					
+				} else base.rooms.get(r).initArrangementView();
+			}
+			System.gc();
 			
 		} else
 		if( state == progState.PROJECT && _requestedState == progState.LOADING ) {

@@ -168,7 +168,10 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
 		
 	}
 
-	
+	public void setSaveDirtyMark( boolean _sd) {
+		if(_sd) setTitle("Library (unsaved changes)");
+		else setTitle("Library");
+	}
 
 	
 }

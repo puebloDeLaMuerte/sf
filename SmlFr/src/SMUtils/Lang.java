@@ -27,6 +27,9 @@ public class Lang {
 	public static String 	initializeFromWhereTitle = "Willkommen zu SimulFšhr!";
 	public static String 	initializeFromWhere_1 = "Zuletzt gešffnetes Projekt:\n\"";
 	public static String 	initializeFromWhere_2 = "\"\n\nMšchten Sie dieses Projekt šffnen, ein neues erstellen,\noder ein anderes Projekt laden?";
+	public static String 	unsavedChangesTitle = "€nderungen speichern?";
+	public static Object 	unsavedChanges = "Es wurden ungesicherte €nderungen vorgenommen,\nwollen Sie das Projekt jetzt speichern?";
+	public static String[]	yesNoCancelOptions = new String[] { "Abbrechen", "Nein", "Ja" };
 	
 	// Control Elements
 	public static String[]	initializeFromWhereButtons = new String[] { "Neues Projekt", "Projekt laden...", "letztes šffnen" };
@@ -37,4 +40,5 @@ public class Lang {
 	public static String	deleteBtn = "Lšschen";
 	public static String 	RemoveArtwork = "von hier entfernen";
 	public static String 	enterRoom = "Raum betreten";
-}
+	
+	}
