@@ -49,7 +49,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	LinkedHashMap								myWalls;
     private DragSource							ds;
     private JPopupMenu							pMenu;
-    private JMenuItem							pMenuRemoveArtwork, pMenuEnterRoom;
+    private JMenuItem							pMenuRemoveArtwork, pMenuEnterExitRoom;
 
 	
 	// utils
@@ -74,7 +74,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	private int dloX, dloY, druX, druY, dTargetMX, dTargetMY;
 	private int mX, mY;
 	private boolean moveWindow = false;
-	int count =0;
+//	int count =0;
 	
 	public void setup() {
 		
@@ -84,11 +84,11 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		pMenu = new JPopupMenu();
 		pMenuRemoveArtwork = new JMenuItem(Lang.RemoveArtwork);
 		pMenuRemoveArtwork.addActionListener(this);
-		pMenuEnterRoom = new JMenuItem(Lang.enterRoom);
-		pMenuEnterRoom.addActionListener(this);
+		pMenuEnterExitRoom = new JMenuItem(Lang.enterRoom);
+		pMenuEnterExitRoom.addActionListener(this);
 		pMenu.add(pMenuRemoveArtwork);
 		pMenu.add(new JSeparator());
-		pMenu.add(pMenuEnterRoom);
+		pMenu.add(pMenuEnterExitRoom);
 		
 		bgr = 255;
 		bgg = 255;
@@ -348,6 +348,19 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		super.init();
 	}
 	
+	public HashMap<Character, PShape> getWallsOverGfx() {
+		return wallsOverGfx;
+	}
+	
+	
+	public HashMap<Character, PShape> getWallsActiveGfx() {
+		return wallsActiveGfx;
+	}
+	
+	public char getWallOverChar() {
+		return wallOver;
+	}
+	
 	private void dropAnim() {
 		dloX = dloX + ((dTargetMX - dloX) / 5);
 		druX = druX + ((dTargetMX - druX) / 5);
@@ -472,6 +485,10 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		druY = mySize[1];
 	}
 
+	public void setMenuExit() {
+		pMenuEnterExitRoom.setText(Lang.exitRoom);
+	}
+	
 	@Override
 	public Object getTransferData(DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException {
@@ -560,6 +577,10 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			
 			myRoom.requestRoomEnter();
 			
+		} else if( e.getActionCommand().equalsIgnoreCase(Lang.exitRoom)) {
+			
+			myRoom.requestRoomExit();
+			
 		}
 		
 	}
@@ -569,4 +590,5 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		myFrame.dispose();
 		super.dispose();
 	}
+
 }

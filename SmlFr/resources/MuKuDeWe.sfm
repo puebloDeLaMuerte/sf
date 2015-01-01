@@ -2,6 +2,7 @@
   "museumName": "Museum Kunst Der Westküste",
   "architecture": {
     "S1": {
+      "defaultViewAngle": "v_S1_DEFHIJK",
       "viewAngles": [
         "v_S1_AB",
         "v_S1_ABC",
@@ -1075,6 +1076,7 @@
       }
     },
     "S2": {
+      "defaultViewAngle": "v_S2_ACDFE",
       "viewAngles": [
         "v_S2_A",
         "v_S2_ABC",
@@ -1763,6 +1765,7 @@
       }
     },
     "S3": {
+      "defaultViewAngle": "v_S3_DEF",
       "viewAngles": [
         "v_S3_A",
         "v_S3_AB",

@@ -21,7 +21,7 @@ public class Lang {
 	public static String	artworkTooBigForWall_1  = "Dieses Kunstwerk passt nicht an diese Wand.\n	Breite des Kunstwerks: ";
 	public static String	artworkTooBigForWall_2  = " mm\n	Breite der Wand; ";
 	public static String	artworkTooBigForWall_3  = " mm.";
-			
+	public static String	wall = "Wand";
 	
 	// questions
 	public static String 	initializeFromWhereTitle = "Willkommen zu SimulFšhr!";
@@ -40,5 +40,7 @@ public class Lang {
 	public static String	deleteBtn = "Lšschen";
 	public static String 	RemoveArtwork = "von hier entfernen";
 	public static String 	enterRoom = "Raum betreten";
+	public static String 	exitRoom = "Raum verlassen";
+	public static String 	selectView = "WŠhlen Sie eine Ansicht:";
 	
 	}

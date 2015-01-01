@@ -138,7 +138,7 @@ public class SmlFr extends JFrame{
 		for( int ii=0; ii<s.length; ii++) {
 			
 			JSONObject room = fm.getRoomFromArchitecture(s[ii]);
-			rooms.put(s[ii], new SM_Room(base, s[ii], room));
+			rooms.put(s[ii], new SM_Room(base, s[ii], room, fm.getFilePathForRoom(s[ii])));
 		}
 
 		
@@ -222,5 +222,9 @@ public class SmlFr extends JFrame{
 		return warn;
 	}
 
+	public SM_WindowManager getWindowManager() {
+		if( wm != null) return wm;
+		else return null;
+	}
 
 }

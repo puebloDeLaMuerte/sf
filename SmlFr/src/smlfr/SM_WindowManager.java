@@ -17,7 +17,7 @@ public class SM_WindowManager {
 	private SmlFr					base;
 	
 	private java.awt.Dimension 		screen;
-	private java.awt.Dimension 		roomNavSize;
+	private java.awt.Dimension 		raster;
 	
 	public SM_WindowManager(SM_FileManager _fm, SmlFr _base) {
 		
@@ -27,10 +27,12 @@ public class SM_WindowManager {
 		
 		screen = Toolkit.getDefaultToolkit().getScreenSize();
 
-		roomNavSize = new Dimension(screen.width / 3, screen.height / 3);
+		raster = new Dimension(screen.width / 3, screen.height / 3);
 	}
 	
 	public synchronized void requestStateChange( progState _requestedState, String _requestedRoom) {
+		
+		System.out.println("ProgStateRequest registered. Schreiting zur Tat.. .  .  .    .        .");
 		
 		if( state == progState.LOADING && _requestedState == progState.PROJECT ) {
 			if( fm.isMuseumLoaded() && fm.isProjectLoaded() ) {
@@ -40,9 +42,8 @@ public class SM_WindowManager {
 				String[] rooms = fm.getRoomNamesInProject();
 				int x = 0; int y = 0;
 				for(String r : rooms) {
-					System.out.println("init projView for "+r);
-					Dimension loc = new Dimension(roomNavSize.width+roomNavSize.width*(x%2), roomNavSize.height*(y));
-					base.rooms.get(r).initProjectView(roomNavSize, loc, fm);
+					Dimension loc = new Dimension(raster.width+raster.width*(x%2), raster.height*(y));
+					base.rooms.get(r).initProjectView(raster, loc, fm);
 					x++;
 					if(x%2==0)y++;
 				}
@@ -55,6 +56,8 @@ public class SM_WindowManager {
 				state = progState.PROJECT;
 			}
 		} else
+			
+			
 		if( state == progState.PROJECT && _requestedState == progState.ROOM    ) {
 			
 			if(fm.isSaveDirty()) {						
@@ -62,7 +65,6 @@ public class SM_WindowManager {
 				switch (decide) {
 				case 0:
 					return;
-					
 				case 1:
 					break;
 				case 2:
@@ -78,9 +80,16 @@ public class SM_WindowManager {
 					
 					base.rooms.get(r).endView();
 					
-				} else base.rooms.get(r).initArrangementView();
+				} else {
+					
+					base.rooms.get(r).endView();
+					base.rooms.get(r).initArrangementView(raster, new Dimension(raster.width*2,raster.height*2), fm);
+					base.lib.setSize(raster.width*2, raster.height);
+					base.lib.setLocation(0, raster.height*2);
+				}
 			}
 			System.gc();
+			state = progState.ROOM;
 			
 		} else
 		if( state == progState.PROJECT && _requestedState == progState.LOADING ) {
@@ -89,13 +98,36 @@ public class SM_WindowManager {
 		} else
 		if( state == progState.ROOM    && _requestedState == progState.LOADING ) {
 			
+		} else
+		if( state == progState.ROOM    && _requestedState == progState.PROJECT ) {
+			
+			
+			String[] rooms = fm.getRoomNamesInProject();
+			for(String r : rooms) {
+				if( base.rooms.get(r).isEntered() ) {
+					base.rooms.get(r).endView();
+				}
+			}
+			System.gc();
+			int x = 0; int y = 0;
+			for(String r : rooms) {
+				Dimension loc = new Dimension(raster.width+raster.width*(x%2), raster.height*(y));
+				base.rooms.get(r).initProjectView(raster, loc, fm);
+				x++;
+				if(x%2==0)y++;
+			}
+			
+			base.lib.setSize(raster.width, (raster.height*3 -50));
+			base.lib.setLocation(0, 0);
+			
+			state = progState.PROJECT;
 		}
 	}
 	
 	public SM_Library createLibrary( HashMap<String, SM_Artwork> _artworks) {
 		
 		SM_Library tLib = new SM_Library(fm, _artworks);
-		tLib.setSize(roomNavSize.width, (roomNavSize.height*3 -50));
+		tLib.setSize(raster.width, (raster.height*3 -50));
 		tLib.setResizable(true);
 //		tLib.setUndecorated(true);
 		tLib.setBackground(Color.DARK_GRAY);
@@ -115,11 +147,11 @@ public class SM_WindowManager {
 		int x = 0; int y = 0;
 		for( JFrame f : tst ) {
 			f = new JFrame();
-			f.setSize(roomNavSize);
+			f.setSize(raster);
 			f.setBackground(Color.LIGHT_GRAY);
 			f.setResizable(false);
 			f.setUndecorated(true);
-			f.setLocation(roomNavSize.width+roomNavSize.width*(x%2), roomNavSize.height*(y));
+			f.setLocation(raster.width+raster.width*(x%2), raster.height*(y));
 			f.setVisible(true);
 			x++;
 			if (x%2 == 0 ) y++;
@@ -139,5 +171,9 @@ public class SM_WindowManager {
 	public boolean isRoom() {
 		if( state == progState.ROOM ) return true;
 		else return false;
+	}
+
+	public Dimension getRaster() {
+		return raster;
 	}
 }

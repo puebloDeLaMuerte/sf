@@ -29,27 +29,31 @@ import processing.data.JSONObject;
 
 public class SM_Room {
 
-	// TODO	implement ArtworkUpdateListener
 
 	// From Museum-File
 	private String							myRoomName;
 	private String							myRealName;
 	private SM_ViewAngle[] 					myViewAngles;
+	private String							myDefaultViewAngle;
 	private LinkedHashMap 					myWalls;
 
 	// upon init
-	private SM_RoomProjectView				myView;
+	private SM_RoomProjectView				myProjectView;
+	private SM_RoomArrangementView			myArrangementView;
 	private SmlFr							base;
 	private boolean							entered;
+	private File							myFilePath;
 
 	private ArtworkUpdateRequestListener	requestListener;
 
 
-	public SM_Room(SmlFr _base, String _name, JSONObject _jRoom) {
+	public SM_Room(SmlFr _base, String _name, JSONObject _jRoom, File _filePath) {
 
 		base = _base;
+		myFilePath = _filePath;
 		myRoomName = _name;
 		myRealName = _jRoom.getString("roomRealName");
+		myDefaultViewAngle = _jRoom.getString("defaultViewAngle");
 
 		requestListener = base.getFileManager();
 
@@ -130,26 +134,8 @@ public class SM_Room {
 		return "Hi, this is room "+myRealName+" ("+myRoomName+") \nI have "+myViewAngles.length+" ViewAngles.\nI also have as many as "+myWalls.size()+" Walls.\n\n";
 	}
 	
-	public void enterRoom() {
-		// TODO Change RoomView to EneteredView
-		// TODO initiate ViewAngleMAnager
-		// TODO initiate PreviewManager
-		// TODO open Tools Window (child of Room, same Thread)
-		entered = true;
-	}
+	
 
-	public void leaveRoom() {
-
-		entered = false;
-		// TODO Save Room State
-
-		// TODO change Roomview to projectView
-		// TODO dispose ViewAngleManager
-		// TODO dispose PreviewManager
-		// TODO dispose Tools
-
-
-	}
 
 	public void initProjectView(Dimension _size, Dimension _loc, SM_FileManager _fm) {
 		
@@ -157,11 +143,11 @@ public class SM_Room {
 		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
-		myView = new SM_RoomProjectView();
-		f.add(myView);
+		myProjectView = new SM_RoomProjectView();
+		f.add(myProjectView);
 		File fl = _fm.getFilePathForRoom(myRoomName);
 		System.out.println("theRoom passes:\n"+fl.getAbsolutePath());
-		myView.init(f, new int[] { _size.width, _size.height }, fl, this);
+		myProjectView.init(f, new int[] { _size.width, _size.height }, fl, this);
 
 //		f.setTitle(myRealName);
 		f.setUndecorated(true);
@@ -175,15 +161,29 @@ public class SM_Room {
 		
 	}
 	
-	public void initArrangementView() {
-		System.out.println("soweit so gut");
+	public void initArrangementView(Dimension _size, Dimension _loc, SM_FileManager _fm) {
+		
+		JFrame f = new JFrame();
+		f.setLayout(new BorderLayout());
+		myArrangementView = new SM_RoomArrangementView();
+		f.add(myArrangementView);
+		File fl = _fm.getFilePathForRoom(myRoomName);
+
+		myArrangementView.init(f, new int[] { _size.width, _size.height }, fl, this, myViewAngles);
+		myArrangementView.setMenuExit();
+//		f.setTitle(myRealName);
+		f.setUndecorated(true);
+		f.setVisible(true);
+		f.setSize(_size);
+		f.setLocation(_loc.width, _loc.height);
+		f.setResizable(true);
+		entered = true;
 	}
 	
 	public LinkedHashMap getWalls() {
 		return myWalls;
 	}
 
-	
 	public String[] getWallNames() {
 		
 		String[] s = new String[myWalls.size()];
@@ -230,11 +230,40 @@ public class SM_Room {
 		base.wm.requestStateChange(progState.ROOM, myRoomName);
 	}
 
+	public void requestRoomExit() {
+		// TODO Auto-generated method stub
+		base.wm.requestStateChange(progState.PROJECT, null);
+	}
+	
 	public void endView() {
-		if( myView != null ) {
-			System.out.println("exiting "+myRoomName);
-			myView.dispose();
-			myView = null;
+		if( myProjectView != null ) {
+			System.out.println("exiting ProjView"+myRoomName);
+			myProjectView.dispose();
+			myProjectView = null;
+		} else if( myArrangementView != null) {
+			System.out.println("exiting ArrView"+myRoomName);
+			myArrangementView.disposeVM();
+			myArrangementView.dispose();
+			myArrangementView = null;
+			entered = false;
 		}
 	}
+
+	public boolean isEntered() {
+		return entered;
+	}
+	
+	public String getDefaultView() {
+		return myDefaultViewAngle;
+	}
+
+	public File getFilePath() {
+		return myFilePath;
+	}
+
+	public SM_WindowManager getWindowManager() {
+		return base.getWindowManager();
+	}
+
+
 }
