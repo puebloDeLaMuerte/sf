@@ -390,6 +390,7 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 		if( rendererUpdate ) {
 			System.out.println("VM: rendererUpdate Detected\ntelling renderer to update");
 			renderer.updateArtworksLayer();
+			renderer.setTimer();
 			rendererUpdate = false;
 		}
 	}
