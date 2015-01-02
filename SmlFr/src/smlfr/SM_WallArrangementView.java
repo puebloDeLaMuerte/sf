@@ -15,7 +15,7 @@ import processing.core.PVector;
 
 public class SM_WallArrangementView extends PApplet implements ArtworkUpdateListener {
 
-	private JFrame			myFrame;
+//	private JFrame			myFrame;
 	private SM_ViewManager  vm;
 	private Dimension		mySize;
 //	private PGraphics		bg;
@@ -55,34 +55,34 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 		return mySize;
 	}
 	
-	public void init(JFrame _frame ) {
+//	public void init(JFrame _frame ) {
+////		
+////		myFrame = _frame;
+////		mySize = _size;
+////		
+////		
+////		System.out.println(" The Size i got: "+ _size.width+" x "+ _size.height);
+////		System.out.println(" the Wall Size:  "+ myWall.getWidth() +" x "+myWall.getHeight());
+////		
+////		float aspect = (float)myWall.getHeight() / (float)myWall.getWidth();
+////		
+////		System.out.println(" the aspect is:  " + aspect);
+////		
+////		int resultheight = (int)(_size.width * aspect);
+////		
+////		System.out.println(" the resutlt is: " + resultheight);
+////		
+////		
+////		myFrame.setSize(_size.width, resultheight);
+////		
+////		System.out.println(" control aspect: "+ ((float)resultheight / (float)_size.width));
+////		
+////		myFrame.setLocation(_location.width, _location.height);
+////		
+////		myFrame.setVisible(true);
 //		
-//		myFrame = _frame;
-//		mySize = _size;
-//		
-//		
-//		System.out.println(" The Size i got: "+ _size.width+" x "+ _size.height);
-//		System.out.println(" the Wall Size:  "+ myWall.getWidth() +" x "+myWall.getHeight());
-//		
-//		float aspect = (float)myWall.getHeight() / (float)myWall.getWidth();
-//		
-//		System.out.println(" the aspect is:  " + aspect);
-//		
-//		int resultheight = (int)(_size.width * aspect);
-//		
-//		System.out.println(" the resutlt is: " + resultheight);
-//		
-//		
-//		myFrame.setSize(_size.width, resultheight);
-//		
-//		System.out.println(" control aspect: "+ ((float)resultheight / (float)_size.width));
-//		
-//		myFrame.setLocation(_location.width, _location.height);
-//		
-//		myFrame.setVisible(true);
-		
-		super.init();
-	}
+//		super.init();
+//	}
 	
 	public void setup() {
 		scale = ((float)mySize.width ) / ((float)myWall.getWidth());
@@ -250,6 +250,11 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 //		frame.dispose();
 //		frame.setVisible(false);
 		frame = null;
+	}
+	
+	public boolean isSleeping(){
+		if(frame.isVisible() ) return false;
+		else return true;
 	}
 	
 	public String getWallName() {

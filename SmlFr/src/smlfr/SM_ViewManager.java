@@ -139,7 +139,7 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 	private void doActiveViews() {
 		String retStrg = "";
 		for(String w : wallArrangementViews.keySet()) {
-			if(wallArrangementViews.get(w) != null) retStrg += w;
+			if(wallArrangementViews.get(w) != null && !wallArrangementViews.get(w).isSleeping() ) retStrg += w;
 		}
 		view.setActiveViews(retStrg);
 	}
@@ -261,6 +261,11 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 	public synchronized void openWallArr(char _c) {
 		if(wallArrangementViews.get(""+_c) == null ) {
 			wallArrangementViews.put(""+_c, initWallArrangementView(_c, 0));
+		} else if( wallArrangementViews.get(""+_c).isSleeping() ) {
+			wallArrangementViews.get(""+_c).frame.setVisible(true);
+			wallArrangementViews.get(""+_c).setEnabled(true);
+			wallArrangementViews.get(""+_c).setVisible(true);
+			System.out.println("Wie wecken wir es wieder auf?");
 		}
 		doActiveViews();
 	}
@@ -275,6 +280,22 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 					wallArrangementViews.get(s).frame.setVisible(false);
 					wallArrangementViews.get(s).dispose();
 					wallArrangementViews.put(s, null);
+					
+				}
+			}
+		}
+		System.out.println("WallArrangementViews: "+wallArrangementViews.size());
+		doActiveViews();
+	}
+	
+	public synchronized void sleepWallArr(String t){
+		System.out.println("fit's only going to be sleeping for a while: "+t);
+		for(String s : wallArrangementViews.keySet()) {
+
+			if( s.equalsIgnoreCase(t) ) {
+				if ( wallArrangementViews.get(s) != null ) {
+					wallArrangementViews.get(s).setVisible(false);
+					wallArrangementViews.get(s).frame.setVisible(false);
 					
 				}
 			}
@@ -322,7 +343,7 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 			f.setVisible(false);
 			String t = f.getTitle();
 			t = t.substring(t.length() - 1);
-			closeWallArr(t);
+			sleepWallArr(t);
 		}
 	}
 
@@ -355,6 +376,16 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 	}
 	
 	public synchronized void checkRendererUpdate() {
+		
+		/*
+		 * 
+		 * 	eventuell hier nen kleinen check, ob alle schon ein bild gemalt haben? 
+		 * 
+		 * 
+		 *  hmmm?
+		 * 
+		 * 
+		 */
 		
 		if( rendererUpdate ) {
 			System.out.println("VM: rendererUpdate Detected\ntelling renderer to update");

@@ -222,9 +222,9 @@ public class SM_Renderer extends PApplet {
 		artworksLayer.clear();
 		
 		for( Character wc : currentView.getWallChars()) {
-
+			System.out.println("  Asking Wall "+wc+"...");
 			if( vm.isWallGfxReady(wc) ) {
-				System.out.println("painting...");
+				System.out.println("  painting...");
 				artworksLayer.beginDraw();
 				
 				PImage wallGfx = vm.getWallGfx(wc);
@@ -249,12 +249,13 @@ public class SM_Renderer extends PApplet {
 					if(wc == 'd' || wc == 'D') artworksLayer.image(skewmator.skewToWall(wallGfx, loD, roD, ruD, luD, bezugX, bezugY, 0, ySize),0,0);
 					if(wc == 'k' || wc == 'K') artworksLayer.image(skewmator.skewToWall(wallGfx, loK, roK, ruK, luK, bezugX, bezugY, 0, ySize ),0,0);
 
-					System.out.println("painted.");
+					System.out.println("  painted.");
 				}
 				artworksLayer.endDraw();
 				layers[3] = artworksLayer;
 			}
 		}
+		System.out.println("end update.\n");
 		redraw();
 	}
 	
@@ -520,6 +521,8 @@ public class SM_Renderer extends PApplet {
 		if( key == '4') b4 = !b4;
 		if( key == '5') b5 = !b5;
 
+		if( key == 'u') updateArtworksLayer();
+		
 		redraw();
 	}
 
