@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import javax.swing.JFrame;
 
 import SMUtils.progState;
+import artworkUpdateModel.ArtworkUpdateListener;
 import artworkUpdateModel.WallUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateRequestListener;
 
@@ -265,5 +266,11 @@ public class SM_Room {
 		return base.getWindowManager();
 	}
 
+	public void registerUpdateListener(ArtworkUpdateListener _l){
+		base.fm.registerUpdateListener(_l);
+	}
 
+	public void unregisterUpdateListener(ArtworkUpdateListener _l) {
+		base.fm.registerUpdateListener(_l);
+	}
 }

@@ -35,4 +35,41 @@ public class SM_ViewAngle {
 	public String getName() {
 		return myName;
 	}
+	
+	public String[] getFullWallNames() {
+		String[] names = new String[wallSkew.keySet().size()];
+		
+		int i =0;
+		for(String n : wallSkew.keySet() ) {
+			names[i] = n;
+			i++;
+		}
+		
+		return names;
+		
+	}
+	
+	public Character[] getWallChars() {
+		
+		Character[] chars = new Character[wallSkew.keySet().size()];
+		
+		int i =0;
+		for(String n : wallSkew.keySet() ) {
+			chars[i] = n.charAt(n.length()-1);
+			i++;
+		}
+		
+		return chars;
+		
+	}
+	
+	public String getWallCharsAsString() {
+		String s = "";
+		
+		for(String n : wallSkew.keySet() ) {
+			s += n.charAt(n.length()-1);
+		}
+		
+		return s;
+	}
 }

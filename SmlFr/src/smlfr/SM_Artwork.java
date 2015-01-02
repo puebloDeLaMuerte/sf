@@ -120,7 +120,7 @@ public class SM_Artwork {
 	public void setPos(int x, int y) {
 		System.out.println("SET POOOOOS");
 		posInWall[0] = x;
-		posInWall[0] = y;
+		posInWall[1] = y;
 	}
 	
 	/// Passepartout

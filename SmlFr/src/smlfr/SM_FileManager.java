@@ -43,6 +43,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 	private SmlFr			base;
 	EventListenerList		updateListeners;
+	EventListenerList		updateListeners_ArrViews;
 
 	private boolean			loaded = false;
 	private boolean			savedirty = false;
@@ -59,6 +60,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		fc.setFileFilter(filter);
 
 		updateListeners = new EventListenerList();
+		updateListeners_ArrViews = new EventListenerList();
 		
 		File res = new File("resources");
 		if( !res.exists() ) {
@@ -382,11 +384,24 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	// UPDATE Event handling
 
 	public synchronized void registerUpdateListener(ArtworkUpdateListener _listener) {
-		updateListeners.add(ArtworkUpdateListener.class, _listener);
+		
+		if(_listener.getClass() == (SM_WallArrangementView.class)) {
+			
+			updateListeners_ArrViews.add(ArtworkUpdateListener.class, _listener);
+		} else {
+			updateListeners.add(ArtworkUpdateListener.class, _listener);
+		}
+
 	}
 	
 	public synchronized void unregisterUpdateListener(ArtworkUpdateListener _listener) {
-		updateListeners.remove(ArtworkUpdateListener.class, _listener);
+		if(_listener.getClass() == (SM_WallArrangementView.class)) {
+
+			updateListeners_ArrViews.remove(ArtworkUpdateListener.class, _listener);
+		} else {
+			updateListeners.remove(ArtworkUpdateListener.class, _listener);
+		}
+		//		updateListeners.remove(ArtworkUpdateListener.class, _listener);
 	}
 	
 	@Override
@@ -454,6 +469,11 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		ArtworkUpdateEvent e2 = new ArtworkUpdateEvent(this, e.getName(), ArtworkUpdateType.WALL, null);
 		for(ArtworkUpdateListener lsnr : updateListeners.getListeners(ArtworkUpdateListener.class) ) {
 			lsnr.artworkUpdate(e2);
+			System.out.println("fire regular  " + lsnr.getClass());
+		}
+		for(ArtworkUpdateListener lsnr : updateListeners_ArrViews.getListeners(ArtworkUpdateListener.class) ) {
+			lsnr.artworkUpdate(e2);
+			System.out.println("fire regular  " + lsnr.getClass());
 		}
 	}
 
