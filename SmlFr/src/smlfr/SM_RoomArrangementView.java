@@ -117,8 +117,8 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	}
 	
 	public void dispose() {
-		System.out.println("closing this Arrview");
-		 
+		System.out.println("1) closing this Arrview");
 		super.dispose();
+		System.out.println("2) closing this Arrview");
 	}
 }

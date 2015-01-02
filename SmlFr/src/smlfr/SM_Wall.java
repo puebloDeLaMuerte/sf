@@ -23,6 +23,7 @@ public class SM_Wall implements ArtworkUpdateListener {
 	private HashMap<String, SM_Artwork>		myArtworks;
 	private Integer							myColor;
 	
+	
 	// upon init
 	private SM_Room							myRoom;
 	
@@ -61,7 +62,6 @@ public class SM_Wall implements ArtworkUpdateListener {
 			
 			myArtworks.put(id, myRoom.getArtworkFromBase(id));
 			myArtworks.get(id).initProjectData(myWallName, posX, posY, light);
-			
 		}
 	}
 	
@@ -130,6 +130,10 @@ public class SM_Wall implements ArtworkUpdateListener {
 		}
 	}
 
+	public HashMap<String, SM_Artwork> getArtworks() {
+		return myArtworks;
+	}
+	
 	@Override
 	public void artworkUpdate(ArtworkUpdateEvent e) {
 		switch (e.getType()) {

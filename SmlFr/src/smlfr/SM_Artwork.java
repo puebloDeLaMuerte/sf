@@ -1,6 +1,11 @@
 package smlfr;
 
+import java.io.File;
+
+import com.sun.org.apache.bcel.internal.generic.LoadInstruction;
+
 import apple.laf.JRSUIConstants.Size;
+import processing.core.PImage;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 import SMUtils.FrameStyle;
@@ -17,15 +22,20 @@ public class SM_Artwork {
 	private int[]			frameSize;
 	private int[]			passepartoutSize;
 	
+	private File			myPath;
 	
 	// init from project
 	private String			isInWall;
 	private int[]			posInWall;
 	private boolean			light;
+	
+	private PImage			myGfx;
+
 
 	private boolean			selected = false;
 
-	SM_Artwork(JSONObject _j) {
+	SM_Artwork(JSONObject _j, File _path) {
+		myPath = _path;
 		
 		artist = _j.getString("artist");
 		title = _j.getString("title");
@@ -209,6 +219,22 @@ public class SM_Artwork {
 		return title;
 	}
 	
+	public File getFilePath() {
+		return myPath;
+	}
+	
+	public void setGfx( PImage _g) {
+		myGfx = _g;
+	}
+	
+	public PImage getGfx() {
+		return myGfx;
+	}
+	
+	public boolean hasGfx() {
+		if( myGfx == null ) return false;
+		else return true;
+	}
 	
 	public JSONObject getAsJsonObject(SM_FileManager fm) {
 		JSONObject o = new JSONObject();
@@ -220,6 +246,7 @@ public class SM_Artwork {
 		o.setJSONArray("pos", pos);
 		return o;
 	}
+
 	
 	
 }

@@ -100,10 +100,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		wallsActiveGfx = new HashMap<Character, PShape>();
 		wallsOverGfx = new HashMap<Character, PShape>();
 		
-		System.out.println("width:  "+mySize[0]+" height:  "+mySize[1]);
 		float xFact = ((float)mySize[0] / 560f);
 		float yFact = ((float)mySize[1] / 350f);
-		System.out.println("w-fact: "+xFact+" h-fact: "+yFact);
 		
 		
 		greyRoom = gfxPack.getChild(0);
@@ -119,7 +117,6 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			wOver.scale(xFact, yFact);
 			wallsOverGfx.put(wl.getWallChar(), wOver);
 			
-			System.out.println(myRoom.getName()+": wallOverGraphics.put("+wl.getWallChar()+", gfxPack.getChild("+i+"))");
 			i++;
 		}
 		
@@ -422,7 +419,6 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 
 				// Artwork already on this wall?
 				if( myRoom.hasArtworkOnWall(name, wallOver) ){
-					System.out.println("rejected by room");
 					bgg = 0;
 					bgb = 0;
 					dtde.rejectDrop();
@@ -443,7 +439,6 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 					return;
 				}
 				
-				System.out.println("passed by room");
 				
 //				WallUpdateRequestEvent e = new WallUpdateRequestEvent(this, name, wallOver, myRoom.getName());
 				
@@ -568,7 +563,6 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	public void actionPerformed(ActionEvent e) {
 		
 		if( artOver != null && e.getActionCommand().equalsIgnoreCase(Lang.RemoveArtwork)) {
-			System.out.println("now removing this artwork: "+ artOver.getName());
 			
 			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, artOver.getName(), ' ', "Library", myRoom.getName(), artOver.getWallChar());
 

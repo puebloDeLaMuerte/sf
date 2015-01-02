@@ -34,6 +34,7 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
  *
  ******************************************************************************/
 
+
 public class XTImage {
     
     private BufferedImage bufferedImage = null; 

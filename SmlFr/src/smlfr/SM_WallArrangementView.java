@@ -33,6 +33,12 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 	public SM_WallArrangementView(SM_Wall _myW, Dimension _size, Dimension _location, SM_ViewManager _vm) {
 		super();
 		myWall = _myW;
+		
+		for( String a : myWall.getArtworks().keySet() ) {
+			SM_Artwork aw = myWall.getArtworks().get(a);
+			aw.setGfx( loadImage(aw.getFilePath().getAbsolutePath())  );
+		}
+		
 		vm = _vm;
 		vm.registerUpdateListener(this);
 		
@@ -99,6 +105,16 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 	
 	public void draw() {
 		
+		if( true ){
+			for( String a : myWall.getArtworks().keySet() ) {
+				SM_Artwork aw = myWall.getArtworks().get(a);
+				if( ! aw.hasGfx() ) {
+					aw.setGfx( loadImage(aw.getFilePath().getAbsolutePath())  );
+				}
+			}
+		}
+		
+		
 //		System.out.println("stillhere "+count++);
 		
 		background(230);
@@ -114,7 +130,7 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 		
 		wlGfx.clear();
 		wlGfx.beginDraw();
-//		wlGfx.background(random(100));
+//		wlGfx.background(50,90,10,100);
 		if(myWall.hasArtworks().length > 0 ) {
 			
 			for( SM_Artwork a : myWall.hasArtworks() ) {
@@ -123,9 +139,13 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 				PVector awDrawSize = astos( new PVector(a.getWidth(), a.getHeight()));
 				
 				wlGfx.fill(230,230,230);
-				wlGfx.rect( awDrawPos.x, awDrawPos.y, awDrawSize.x, awDrawSize.y );
+				wlGfx.rect( awDrawPos.x-1, awDrawPos.y-1, awDrawSize.x+1, awDrawSize.y+1 );
+				wlGfx.fill(230,230,230, 40);
+				wlGfx.rect( awDrawPos.x-2, awDrawPos.y-2, awDrawSize.x+2, awDrawSize.y+2 );
+
+				wlGfx.image(a.getGfx(), awDrawPos.x, awDrawPos.y, awDrawSize.x, awDrawSize.y);
 				wlGfx.fill(200,200,200);
-				wlGfx.rect( awDrawPos.x+5, awDrawPos.y+5, awDrawSize.x, awDrawSize.y );
+//				wlGfx.rect( awDrawPos.x+5, awDrawPos.y+5, awDrawSize.x, awDrawSize.y );
 				
 //				System.out.println(a.getTitle()+":");
 //				System.out.println("awSiz: "+a.getWidth()+" x "+a.getHeight());

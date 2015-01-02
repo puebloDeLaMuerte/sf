@@ -70,9 +70,11 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 	}
 	
 	public void initViews() {
+		int ofset = 0;
 		for( char w : renderer.getCurrentWallChars() ) {
 			System.out.println("getting arrview for "+w);
-			wallArrangementViews.put(""+w, initWallArrangementView(w));
+			wallArrangementViews.put(""+w, initWallArrangementView(w, ofset));
+			ofset += 40;
 //			renderer.updateArtworksLayer();
 		}
 		doActiveViews();
@@ -91,15 +93,19 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 			System.out.println("waiting...  "+wait++);
 			
 		}
-//		f.setUndecorated(true);
 //		f.setVisible(true);
 		f.setSize(renderer.getSize());
+		f.setMaximumSize(renderer.getSize());
+		f.setMinimumSize(renderer.getSize());
+//		f.setUndecorated(true);
+
 		f.setLocation(wm.getRaster().width,0);
+		
 		renderer.redraw();
 //		f.setResizable(true);
 	}
 	
-	private synchronized SM_WallArrangementView initWallArrangementView(char _wall) {
+	private synchronized SM_WallArrangementView initWallArrangementView(char _wall, int _of) {
 		
 		
 		JFrame f = new JFrame();
@@ -122,6 +128,7 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 		wallArr.init();
 		wallArr.frame.pack();
 		wallArr.frame.setVisible(true);
+		wallArr.frame.setLocation(0, _of);
 		wallArr.frame.setTitle(Lang.wall+" "+wallArr.getWallName().substring(wallArr.getWallName().lastIndexOf('_')+1));
 
 		
@@ -243,7 +250,7 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 
 			for(char w : sourceItem.getActionCommand().toCharArray() ) {
 				if( wallArrangementViews.get(""+w) == null ) {
-					wallArrangementViews.put(""+w, initWallArrangementView(w));
+					wallArrangementViews.put(""+w, initWallArrangementView(w, 0));
 				}
 			}
 			doActiveViews();
@@ -253,7 +260,7 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 	
 	public synchronized void openWallArr(char _c) {
 		if(wallArrangementViews.get(""+_c) == null ) {
-			wallArrangementViews.put(""+_c, initWallArrangementView(_c));
+			wallArrangementViews.put(""+_c, initWallArrangementView(_c, 0));
 		}
 		doActiveViews();
 	}
@@ -285,9 +292,14 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 		renderer.dispose();
 		renderer = null;
 		for( String s : wallArrangementViews.keySet() ) {
+			System.out.println("trying to dispose some views here!");
 			if( wallArrangementViews.get(s) != null) {
+				wallArrangementViews.get(s).setVisible(false);
+				wallArrangementViews.get(s).frame.setVisible(false);
 				wallArrangementViews.get(s).dispose();
+				System.out.println("disposed "+s);
 			}
+			System.out.println("this is how it went");
 		}
 		wallArrangementViews = null;
 	}
@@ -303,11 +315,15 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		System.out.println(e.getSource());
-		JFrame f  = (JFrame) e.getSource();
-		String t = f.getTitle();
-		t = t.substring(t.length()-1);
-		closeWallArr(t);
+		System.out.println("disposing VM, this is the source from Window closes: " + e.getSource());
+		if (true/*e.getSource()*/) {
+			System.out.println(e.getSource());
+			JFrame f = (JFrame) e.getSource();
+			f.setVisible(false);
+			String t = f.getTitle();
+			t = t.substring(t.length() - 1);
+			closeWallArr(t);
+		}
 	}
 
 	@Override

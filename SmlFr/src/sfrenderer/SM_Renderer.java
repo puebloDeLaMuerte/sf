@@ -16,6 +16,7 @@ import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
 
 import SMUtils.Lang;
+import SMUtils.Skewmator;
 import SMUtils.ViewMenuItem;
 
 import processing.core.PApplet;
@@ -56,18 +57,24 @@ public class SM_Renderer extends PApplet {
 
 	private double 					aspect;
 	private float 					scale;
+	private Skewmator				skewmator;
 
 	private int 					ySize = 600;
 //	private int 					tint  = 30;
 	
 	public boolean 					setupRun = false;
 
-
+	private PVector	tempoOfset;
+	private PVector tempLO;
+	private PVector tempRO;
+	private PVector tempRU;
+	private PVector tempLU;
 	
 	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath) {
 		super();
 		vm = _vm;
-		
+		skewmator = new Skewmator();
+		skewmator.init();
 		initMenu();
 		
 		
@@ -130,16 +137,16 @@ public class SM_Renderer extends PApplet {
 		layers = new PImage[7];
 		layers[0] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Hintergrund.png");
 		
+		scale = (float)ySize / (float)layers[0].width;
+		
+		System.out.println("\n\nthe scale is "+scale);
+		
 		artworksLayer = createGraphics(layers[0].width, layers[0].height);
 		artworksLayer.beginDraw();
 		artworksLayer.background(50,190,0);
 		artworksLayer.endDraw();
 
-		/*
-//		artworksLayer = createImage(layers[0].width, layers[0].height, ARGB	);
-		
-		
-*/
+
 		/* 
 		 * [0] Background	FILE
 		 * [1] Color		dynamic
@@ -222,8 +229,26 @@ public class SM_Renderer extends PApplet {
 				
 				PImage wallGfx = vm.getWallGfx(wc);
 				
+//				wallGfx = skewImage(wallGfx, new PVector(-10, 0), new PVector(560, 20), new PVector(560, 207), new PVector(20, 227));
+				
+				int bezugX = 6000;
+				int bezugY = 4000;
+//				
+				PVector loD = new PVector(2400,1707);
+				PVector roD = new PVector(2836,1911);
+				PVector ruD = new PVector(2837,2065);
+				PVector luD = new PVector(2400,2245);
+//				
+				PVector loK = new PVector(3168,1909);
+				PVector roK = new PVector(4608,1130);
+				PVector ruK = new PVector(4608,2716);
+				PVector luK = new PVector(3168,2073);
+				
+				
 				if( artworksLayer != null && wallGfx != null) {
-					artworksLayer.image(wallGfx,0,0);
+					if(wc == 'd' || wc == 'D') artworksLayer.image(skewmator.skewToWall(wallGfx, loD, roD, ruD, luD, bezugX, bezugY, 0, ySize),0,0);
+					if(wc == 'k' || wc == 'K') artworksLayer.image(skewmator.skewToWall(wallGfx, loK, roK, ruK, luK, bezugX, bezugY, 0, ySize ),0,0);
+
 					System.out.println("painted.");
 				}
 				artworksLayer.endDraw();
@@ -231,6 +256,153 @@ public class SM_Renderer extends PApplet {
 			}
 		}
 		redraw();
+	}
+	
+	private PImage skewBox(PImage _i, float[] _wallskew){
+		
+		PVector lo = new PVector(2400,1707);
+		PVector ro = new PVector(2836,1911);
+		PVector ru = new PVector(2837,2065);
+		PVector lu = new PVector(2400,2245);
+		
+		int baseX = 1200;
+		int baseY = 800;
+		
+		int bezugX = 6000;
+		int bezugY = 4000;
+		
+		int fact = bezugX / baseX;
+		
+		System.out.println("fact: "+fact);
+		System.out.println("scle: "+scale);
+		
+		PVector stp1 = new PVector(      baseX * ((fact-1)/2)  ,     baseY * ((fact-1)/2)    );
+		System.out.println("stp1: "+stp1.x+" x "+stp1.y);
+		
+		stp1.mult(scale);
+		lo.sub(stp1);
+		tempLO = lo;
+		tempLO.mult(scale);
+		ro.sub(stp1);
+		tempRO = ro;
+		tempRO.mult(scale);
+		ru.sub(stp1);
+		tempRU = ru;
+		tempRU.mult(scale);
+		lu.sub(stp1);
+		tempLU = lu;
+		tempLU.mult(scale);
+		
+		PVector stp2 = new PVector(lo.x, lo.y);
+		stp2.sub(stp1);
+		System.out.println("stp2: "+stp2.x+" x "+stp2.y);
+		
+		tempoOfset = stp2;
+		
+		PVector[] ar = new PVector[] {lo, ro, ru, lu};
+		
+		// smallestX
+		PVector smallestx = lo;
+		for( int i = 1; i<ar.length; i++ ) {
+			if( ar[i].x < smallestx.x) smallestx = ar[i];
+		}
+		System.out.println("smallest x: "+ smallestx.x+" x "+smallestx.y);
+		
+		// biggestx
+		PVector biggestx = lo;
+		for( int i = 1; i<ar.length; i++ ) {
+			if( ar[i].x > biggestx.x) biggestx = ar[i];
+		}
+		System.out.println("biggest x: "+ biggestx.x+" x "+biggestx.y);
+		
+		// smallestY
+		PVector smallesty = lo;
+		for( int i = 1; i<ar.length; i++ ) {
+			if( ar[i].y < smallesty.y) smallesty = ar[i];
+		}
+		System.out.println("smallest y: "+ smallesty.x+" x "+smallesty.y);
+
+		// biggesty
+		PVector biggesty = lo;
+		for( int i = 1; i<ar.length; i++ ) {
+			if( ar[i].y > biggestx.y) biggesty = ar[i];
+		}
+		System.out.println("biggest y: "+ biggesty.x+" x "+biggesty.y);
+
+		
+		
+		float boxXsize =  biggestx.x - smallestx.x;
+		float boxYsize =  biggesty.y - smallesty.y;
+		System.out.println("box: "+boxXsize+" x "+boxYsize);
+		
+
+		PGraphics skewBox = createGraphics((int)boxXsize, (int)boxYsize);
+
+		
+		
+		
+		
+//		PVector[] returnArr = new PVector[4];
+		
+		float loX = lo.x - smallestx.x;
+		float loY = lo.y - smallesty.y;
+		PVector boxLO = new PVector(loX,loY);
+//		returnArr[0] = boxLO;
+		
+		float roX = ro.x - smallestx.x;
+		float roY = ro.y - smallesty.y;
+		PVector boxRO = new PVector(roX, roY);
+//		returnArr[1] = boxRO;
+		
+		float ruX = ru.x - smallestx.x;
+		float ruY = ru.y - smallesty.y;
+		PVector boxRU = new PVector(ruX,ruY);
+//		returnArr[2] = boxRU;
+		
+		float luX = lu.x - smallestx.x;
+		float luY = lu.y - smallesty.y;
+		PVector boxLU = new PVector(luX,luY);
+//		returnArr[3] = boxLU;
+		
+		System.out.println("boxLO : "+ loX+" * "+loY);
+		System.out.println("boxRO : "+ roX+" * "+roY);
+		System.out.println("boxRU : "+ ruX+" * "+ruY);
+		System.out.println("boxLU : "+ luX+" * "+luY);
+		
+		
+		skewBox.beginDraw();
+		skewBox.line(loX, loY, roX, roY);
+		skewBox.line(roX, roY, ruX, ruY);
+		skewBox.line(ruX, ruY, luX, luY);
+		skewBox.line(luX, luY, loX, loY);
+		skewBox.endDraw();
+		
+		PGraphics tg = createGraphics(baseX, baseY);
+
+		tg.beginDraw();
+		tg.line(boxLO.x, boxLO.y, boxRO.x, boxRO.y);
+		tg.line(boxRO.x, boxRO.y, boxRU.x, boxRU.y);
+		tg.line(boxRU.x, boxRU.y, boxLU.x, boxLU.y);
+		tg.line(boxLU.x, boxLU.y, boxLO.x, boxLO.y);
+		tg.endDraw();
+		
+//		skewBox.image(skewImage(_i, boxLO, boxRO, boxRU, boxLU), 0,0,boxXsize, boxYsize);
+		
+//		PImage retSkewBox = skewImage(skewBox, boxLO, boxRO, boxRU, boxLU);
+		
+//		PImage retSkewBox = skewBox.get();
+		PImage retSkewBox = tg.get();
+		
+		System.out.println(((float)boxXsize/fact)+" x "+((float)boxYsize/fact));
+//		retSkewBox.resize((int)(boxXsize*scale), (int)(boxYsize*scale));
+//		retSkewBox.resize(((int)(float)boxXsize/fact),(int)((float)boxYsize/fact));
+		
+//		retSkewBox.resize((int)(boxXsize*scale), (int)(boxYsize*scale));
+		retSkewBox.resize((int)(retSkewBox.width*scale), (int)(retSkewBox.height*scale));
+		
+		return retSkewBox;
+		
+//		return skewBox;
 	}
 	
 	public void draw(){
@@ -385,7 +557,7 @@ public class SM_Renderer extends PApplet {
 
 		
 		// skew the image
-		img.setCorners(lo.x , lo.y, ro.x, ro.y, ru.x, ru.y, lu.x, lu.y);
+		img.setCorners((int)lo.x , (int)lo.y, (int)ro.x, (int)ro.y, (int)ru.x, (int)ru.y, (int)lu.x, (int)lu.y);
 		
 		System.out.println("sk: "+img.getWidth()+" x "+img.getHeight());
 		

@@ -23,6 +23,7 @@ import com.sun.codemodel.internal.JLabel;
 
 import SMUtils.JsonCreator;
 import SMUtils.Lang;
+import SMUtils.awFileSize;
 import SMUtils.progState;
 
 import processing.data.JSONArray;
@@ -151,7 +152,7 @@ public class SmlFr extends JFrame{
 		artworks = new HashMap<String, SM_Artwork>();
 		for(int a=0;a<aws.length; a++) {
 			
-			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]) ));	
+			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]), fm.getFilePathForArtwork(aws[a], awFileSize.MEDIUM) ));	
 		}
 		
 	

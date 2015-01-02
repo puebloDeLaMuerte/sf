@@ -147,7 +147,6 @@ public class SM_Room {
 		myProjectView = new SM_RoomProjectView();
 		f.add(myProjectView);
 		File fl = _fm.getFilePathForRoom(myRoomName);
-		System.out.println("theRoom passes:\n"+fl.getAbsolutePath());
 		myProjectView.init(f, new int[] { _size.width, _size.height }, fl, this);
 
 //		f.setTitle(myRealName);
