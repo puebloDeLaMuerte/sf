@@ -5,8 +5,10 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import SMUtils.ViewMenuItem;
 import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
+import artworkUpdateModel.ArtworkUpdateRequestEvent;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -25,6 +27,10 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 //	private float			border;
 	private float			scale;
 	private float 			xOffsetPx, yOffsetPx;
+	
+	private SM_Artwork		awOver;
+	private boolean 		awDrag = false;
+	private PVector			awDragOfset;
 	
 	private boolean			artworkUpdate = true;
 	
@@ -55,34 +61,6 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 		return mySize;
 	}
 	
-//	public void init(JFrame _frame ) {
-////		
-////		myFrame = _frame;
-////		mySize = _size;
-////		
-////		
-////		System.out.println(" The Size i got: "+ _size.width+" x "+ _size.height);
-////		System.out.println(" the Wall Size:  "+ myWall.getWidth() +" x "+myWall.getHeight());
-////		
-////		float aspect = (float)myWall.getHeight() / (float)myWall.getWidth();
-////		
-////		System.out.println(" the aspect is:  " + aspect);
-////		
-////		int resultheight = (int)(_size.width * aspect);
-////		
-////		System.out.println(" the resutlt is: " + resultheight);
-////		
-////		
-////		myFrame.setSize(_size.width, resultheight);
-////		
-////		System.out.println(" control aspect: "+ ((float)resultheight / (float)_size.width));
-////		
-////		myFrame.setLocation(_location.width, _location.height);
-////		
-////		myFrame.setVisible(true);
-//		
-//		super.init();
-//	}
 	
 	public void setup() {
 		scale = ((float)mySize.width ) / ((float)myWall.getWidth());
@@ -100,7 +78,8 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 
 		wlGfx = createGraphics(mySize.width, mySize.height);
 		
-		frameRate(10);
+//		rectMode(CORNER);
+		frameRate(15);
 	}
 	
 	public void draw() {
@@ -115,43 +94,54 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 		}
 		
 		
-//		System.out.println("stillhere "+count++);
 		
 		background(230);
-//		image(bg,0,0);
-		
-//		rect(0,0, wptos(myWall.getWidth(), myWall.getHeight()).x, wptos(myWall.getWidth(), myWall.getHeight()).y );
-		
+	
 		// Mittelhšhe
 		pushStyle();
 		stroke(150);
 		line(0, wptos(0,myWall.getHeight()/2).y, wptos(myWall.getWidth(),0).x, wptos(0,myWall.getHeight()/2).y );
 		popStyle();
 		
+		
+		
+		wlGfxReady = false;
 		wlGfx.clear();
 		wlGfx.beginDraw();
 //		wlGfx.background(50,90,10,100);
 		if(myWall.hasArtworks().length > 0 ) {
+			
+			if(!awDrag) awOver = null;
 			
 			for( SM_Artwork a : myWall.hasArtworks() ) {
 			
 				PVector awDrawPos = wptos( new PVector(a.getPosInWall()[0], a.getPosInWall()[1]) );
 				PVector awDrawSize = astos( new PVector(a.getWidth(), a.getHeight()));
 				
-				wlGfx.fill(230,230,230);
+				if( !awDrag ) {
+					if( mouseX > awDrawPos.x && mouseX < (awDrawPos.x + awDrawSize.x) ) {
+						if( mouseY > awDrawPos.y && mouseY < (awDrawPos.y + awDrawSize.y) ) {
+							awOver = a;
+						}
+					}
+				}
+				
+				
+				wlGfx.fill(230,230,230,100);
 				wlGfx.rect( awDrawPos.x-1, awDrawPos.y-1, awDrawSize.x+1, awDrawSize.y+1 );
-				wlGfx.fill(230,230,230, 40);
-				wlGfx.rect( awDrawPos.x-2, awDrawPos.y-2, awDrawSize.x+2, awDrawSize.y+2 );
+//				wlGfx.fill(230,230,230, 40);
+//				wlGfx.rect( awDrawPos.x-2, awDrawPos.y-2, awDrawSize.x+4, awDrawSize.y+4 );
 
 				wlGfx.image(a.getGfx(), awDrawPos.x, awDrawPos.y, awDrawSize.x, awDrawSize.y);
-				wlGfx.fill(200,200,200);
-//				wlGfx.rect( awDrawPos.x+5, awDrawPos.y+5, awDrawSize.x, awDrawSize.y );
+				
 				
 //				System.out.println(a.getTitle()+":");
 //				System.out.println("awSiz: "+a.getWidth()+" x "+a.getHeight());
 //				System.out.println("awPos: "+a.getPosInWall()[0]+" x "+a.getPosInWall()[1]);
 //				System.out.println("rmSiz: "+myWall.getWidth()+" x "+myWall.getHeight());
 //				System.out.println(".");
+				
+			
 				
 			}
 		}
@@ -160,11 +150,91 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 		
 		image(wlGfx,0,0);
 		
+		
+		// DRAW mouseOver
+		
+		if( awOver != null) {
+			PVector awDrawPos = wptos( new PVector(awOver.getPosInWall()[0], awOver.getPosInWall()[1]) );
+			PVector awDrawSize = astos( new PVector(awOver.getWidth(), awOver.getHeight()));
+			
+			pushStyle();
+			fill(200,100,100,80);
+			noStroke();
+			rect( awDrawPos.x -5, awDrawPos.y-5, awDrawSize.x+9, awDrawSize.y+9 );
+			noFill();
+			stroke(200,100,100,120);
+			rect( awDrawPos.x -5, awDrawPos.y-5, awDrawSize.x+9, awDrawSize.y+9 );
+			popStyle();
+			
+		}
+		
+		// DRAW drag
+		
+		if( awOver != null && awDrag ) {
+			PVector wh = astos( new PVector(awOver.getWidth(), awOver.getHeight()));
+			pushStyle();
+			noFill();
+			rect(mouseX+awDragOfset.x, mouseY+awDragOfset.y, wh.x, wh.y);
+			popStyle();
+		}
+		
+		// DRAW selected
+		
+		if(myWall.hasArtworks().length > 0 ) {
+			for( SM_Artwork a : myWall.hasArtworks() ) {
+				
+				if(a.isSelected()) {
+				
+					PVector awDrawPos = wptos( new PVector(a.getPosInWall()[0], a.getPosInWall()[1]) );
+					PVector awDrawSize = astos( new PVector(a.getWidth(), a.getHeight()));
+				
+					pushStyle();
+					strokeWeight(3);
+					stroke(20,50,200,80);
+					noFill();
+					rect( awDrawPos.x -5, awDrawPos.y-5, awDrawSize.x+9, awDrawSize.y+9 );
+					popStyle();
+				
+				}
+			}
+		}
+		
 		if( artworkUpdate ) {
 			artworkUpdate = false;
 			vm.setRendererUpdate();
 		}
+	}
+	
+	public void mousePressed() {
+		if( awOver != null ) {
+			awDrag = true;
+			awDragOfset = wptos(awOver.getPosInWall()[0],awOver.getPosInWall()[1]);
+			awDragOfset.sub(new PVector(mouseX,mouseY));
+		}
+	}
+	
+	public void mouseReleased() {
+		if( awDrag ) {
+//			awDragOfset.sub(new PVector(mouseX,mouseY));
+			PVector npos = new PVector(mouseX,mouseY);
+			npos.add(awDragOfset);
+			PVector nPos = ptowp(npos);
+			
+			ArtworkUpdateRequestEvent e = new ArtworkUpdateRequestEvent(this, awOver.getName(), (int)nPos.x, (int)nPos.y);
+			myWall.myRoom.fireUpdateRequest(e);
+			awDrag = false;
+		}
+	}
+	
+	public void mouseClicked() {
 		
+		if( awOver != null ) {			
+			awOver.toggleSelected();
+			
+//			System.out.println("aw pos in wall: " +awOver.getPosInWall()[0] +" x "+awOver.getPosInWall()[1] );
+//			System.out.println("mousepos  wall: "+  ptowp(mouseX, mouseY).x+" x "+ ptowp(mouseX, mouseY).y  );
+//			System.out.println("mousepos  scrn: "+mouseX+" x "+mouseY);
+		}
 	}
 	
 	private PVector astos(int _inX, int _inY) {
@@ -202,13 +272,31 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 	}
 
 	private PVector ptowp(int _wX, int _wY){
-		return wptop(new PVector(_wX, _wY));
+		return ptowp(new PVector(_wX, _wY));
 	}
 	private PVector ptowp(PVector _inpos) {
+		
+		_inpos.div(scale);
 		
 		return new PVector(_inpos.x, myWall.getHeight()-_inpos.y);
 	}
 
+	private boolean checkMouseOver(SM_Artwork a) {
+		
+		PVector pos = wptos( new PVector(a.getPosInWall()[0], a.getPosInWall()[1]) );
+		PVector sze = astos( new PVector(a.getWidth(), a.getHeight()));
+		
+		
+		if( mouseX > pos.x && mouseX < (pos.x + sze.x) ) {
+			if( mouseY > pos.y && mouseY < (pos.y + sze.y) ) {
+				return true;
+			}
+			else return false;
+		}
+		else return false;
+	}
+	
+	
 	public boolean isWallGfxReady() {
 		return wlGfxReady;
 	}
@@ -230,13 +318,6 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 		}
 	}
 	
-//	public PImage getWallGraphics() {
-//		if( wlGfx != null ) {
-//			
-//			return wlGfx;
-//		}
-//		else return null;
-//	}
 	
 	public void dispose() {
 		

@@ -12,7 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
-import org.multiply.processing.TimedEventGenerator;
+//import org.multiply.processing.TimedEventGenerator;
 
 import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
@@ -20,6 +20,7 @@ import artworkUpdateModel.ArtworkUpdateListener;
 import SMUtils.Lang;
 import SMUtils.Skewmator;
 import SMUtils.ViewMenuItem;
+import SMUtils.pTimedEventGenerator;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -66,21 +67,17 @@ public class SM_Renderer extends PApplet {
 	
 	public boolean 					setupRun = false;
 	
-	private TimedEventGenerator		tGen;
-	private int 					tCount = 0;			
+	private pTimedEventGenerator		tGen;
+	private int 					tCount = 0;		
+	private boolean 				tStop = false;
 
-//	private PVector	tempoOfset;
-//	private PVector tempLO;
-//	private PVector tempRO;
-//	private PVector tempRU;
-//	private PVector tempLU;
 	
 	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath) {
 		super();
 		vm = _vm;
 		skewmator = new Skewmator();
 		skewmator.init();
-		tGen = new TimedEventGenerator(this);
+		tGen = new pTimedEventGenerator(this);
 		
 		initMenu();
 		
@@ -149,7 +146,7 @@ public class SM_Renderer extends PApplet {
 		
 		artworksLayer = createGraphics(layers[0].width, layers[0].height);
 		artworksLayer.beginDraw();
-		artworksLayer.background(50,190,0);
+//		artworksLayer.background(50,190,0);
 		artworksLayer.endDraw();
 
 
@@ -230,31 +227,25 @@ public class SM_Renderer extends PApplet {
 		for( Character wc : currentView.getWallChars()) {
 			System.out.println("  Asking Wall "+wc+"...");
 			if( vm.isWallGfxReady(wc) ) {
-				System.out.println("  painting...");
+				
+				System.out.println("  geting Gfx...");
 				artworksLayer.beginDraw();
 				
 				PImage wallGfx = vm.getWallGfx(wc);
 				
-//				wallGfx = skewImage(wallGfx, new PVector(-10, 0), new PVector(560, 20), new PVector(560, 207), new PVector(20, 227));
-				
-				int bezugX = 6000;
-				int bezugY = 4000;
-//				
-				PVector loD = new PVector(2400,1707);
-				PVector roD = new PVector(2836,1911);
-				PVector ruD = new PVector(2837,2065);
-				PVector luD = new PVector(2400,2245);
-//				
-				PVector loK = new PVector(3168,1909);
-				PVector roK = new PVector(4608,1130);
-				PVector ruK = new PVector(4608,2716);
-				PVector luK = new PVector(3168,2073);
-				
-				
 				if( artworksLayer != null && wallGfx != null) {
-					if(wc == 'd' || wc == 'D') artworksLayer.image(skewmator.skewToWall(wallGfx, loD, roD, ruD, luD, bezugX, bezugY, 0, ySize),0,0);
-					if(wc == 'k' || wc == 'K') artworksLayer.image(skewmator.skewToWall(wallGfx, loK, roK, ruK, luK, bezugX, bezugY, 0, ySize ),0,0);
-
+					
+					System.out.println("  painting...");
+					Float[] values = currentView.getWallSkew(wc);
+					
+					System.out.println("the wallskew values fro wall "+wc+" are: \n  " );
+					for( Float f : values ) System.out.print(" "+f);
+					System.out.println();
+					
+					artworksLayer.image(skewmator.skewToWall(wallGfx, values, 0, ySize), 0,0);
+//					artworksLayer.rect(8,8, wallGfx.width+4, wallGfx.height+4);
+//					artworksLayer.image(wallGfx, 10, 10);
+					
 					System.out.println("  painted.");
 				}
 				artworksLayer.endDraw();
@@ -492,19 +483,28 @@ public class SM_Renderer extends PApplet {
 	}
 	
 	public void onTimerEvent() {
-		System.out.println("TIMERRRR");
+
+		if(tStop) { 
+			tGen.setEnabled(true);
+			tGen.setEnabled(false);
+			tGen = null;
+			return;
+		}
 		tCount++;
 		updateArtworksLayer();
 
-		if( tCount > 5 ) {
+		if( tCount > 4 ) {
 			tGen.setEnabled(false);
 			tCount = 0;
 		}
 	}
 	
 	public void setTimer() {
+		
+		System.out.println("SET TIMER CALLED");
+		
 		tGen.setEnabled(true);
-		tGen.setIntervalMs(250);
+		tGen.setIntervalMs(400);
 		tCount = 0;
 	}
 	
@@ -514,12 +514,19 @@ public class SM_Renderer extends PApplet {
 	}
 	
 	public void prepareFrameForClosing() {
+		
+		tStop = true;
+		tGen.setEnabled(false);
+		tGen.setEnabled(false);
+		
 		myFrame.setVisible(false);
 	}
 	
 	public void dispose() {
 		System.out.println("Renderer goodbye...");
-		tGen.setEnabled(false);
+		
+		tGen.dispose();
+		
 //		myFrame.dispose();
 		super.dispose();
 	}

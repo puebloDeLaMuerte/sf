@@ -115,7 +115,7 @@ public class SM_Artwork {
 		return selected;
 	}
 	
-	public void selectAction() {
+	public void toggleSelected() {
 		selected = !selected;
 	}
 	

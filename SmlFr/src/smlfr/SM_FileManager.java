@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
+import artworkUpdateModel.ArtworkUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateType;
 import artworkUpdateModel.WallUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateRequestListener;
@@ -404,6 +405,58 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		//		updateListeners.remove(ArtworkUpdateListener.class, _listener);
 	}
 	
+	public synchronized void updateRequested(ArtworkUpdateRequestEvent e) {
+		
+		switch (e.getType()) {
+		case POS_IN_WALL:
+			
+			// Update Artwork
+			
+			SM_Artwork thisAw = base.getArtwork(this, (e.getName()));
+			thisAw.setPos(e.getNewPosX(), e.getNewPosY());
+			
+			// Update Project-Json
+			
+			for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
+				JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
+				
+				if( thisAw.getWall().contains(r.getString("roomName")) ) {
+					JSONArray aws = r.getJSONObject(thisAw.getWall()).getJSONArray("artworks");
+					
+					for(int ii = 0; ii < aws.size(); ii++) {
+						if(aws.getJSONObject(ii).getString("invNr").equalsIgnoreCase(e.getName()) ) {
+							JSONArray nPos = new JSONArray();
+							nPos.setInt(0, e.getNewPosX());
+							nPos.setInt(1, e.getNewPosY());
+							aws.getJSONObject(ii).setJSONArray("pos", nPos);
+						}
+					}
+					
+				}
+				
+			}
+			
+			break;
+
+		default:
+			break;
+		}
+		
+		setSaveDirty(true);
+		saveTempProject();
+		
+		ArtworkUpdateEvent e2 = new ArtworkUpdateEvent(this, e.getName(), ArtworkUpdateType.POS_IN_WALL, null);
+		for(ArtworkUpdateListener lsnr : updateListeners.getListeners(ArtworkUpdateListener.class) ) {
+			lsnr.artworkUpdate(e2);
+			System.out.println("fire regular  " + lsnr.getClass());
+		}
+		for(ArtworkUpdateListener lsnr : updateListeners_ArrViews.getListeners(ArtworkUpdateListener.class) ) {
+			lsnr.artworkUpdate(e2);
+			System.out.println("fire arrView  " + lsnr.getClass());
+		}
+		
+	}
+	
 	@Override
 	public synchronized void updateRequested(WallUpdateRequestEvent e) {
 		
@@ -473,7 +526,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 		for(ArtworkUpdateListener lsnr : updateListeners_ArrViews.getListeners(ArtworkUpdateListener.class) ) {
 			lsnr.artworkUpdate(e2);
-			System.out.println("fire regular  " + lsnr.getClass());
+			System.out.println("fire arrView  " + lsnr.getClass());
 		}
 	}
 

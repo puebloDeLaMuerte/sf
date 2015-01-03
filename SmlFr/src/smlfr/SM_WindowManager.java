@@ -101,6 +101,18 @@ public class SM_WindowManager {
 		} else
 		if( state == progState.ROOM    && _requestedState == progState.PROJECT ) {
 			
+			if(fm.isSaveDirty()) {						
+				int decide = javax.swing.JOptionPane.showOptionDialog(null, Lang.unsavedChanges, Lang.unsavedChangesTitle, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.DEFAULT_OPTION, base.getIcon(), Lang.yesNoCancelOptions, 0);
+				switch (decide) {
+				case 0:
+					return;
+				case 1:
+					break;
+				case 2:
+					fm.requestSave();
+					break;
+				}
+			}
 			
 			String[] rooms = fm.getRoomNamesInProject();
 			for(String r : rooms) {

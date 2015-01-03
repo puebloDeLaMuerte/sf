@@ -18,6 +18,10 @@ public class Skewmator extends PApplet {
 		baseY = 800;
 	}
 	
+	public PImage skewToWall(PImage inImage, Float[] _vls, int canvasWidth, int canvasHeight) {
+		return skewToWall( inImage, new PVector(_vls[2],_vls[3]), new PVector(_vls[4],_vls[5]), new PVector(_vls[6],_vls[7]), new PVector(_vls[8], _vls[9]), _vls[0].intValue(), _vls[1].intValue(), canvasWidth, canvasHeight );
+	}
+	
 	public PImage skewToWall(PImage inImage, PVector lo, PVector ro, PVector ru, PVector lu, int bezugX, int bezugY, int canvasWidth, int canvasHeight) {
 		
 		float scale; 

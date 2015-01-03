@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 
 import SMUtils.progState;
 import artworkUpdateModel.ArtworkUpdateListener;
+import artworkUpdateModel.ArtworkUpdateRequestEvent;
 import artworkUpdateModel.WallUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateRequestListener;
 
@@ -78,7 +79,7 @@ public class SM_Room {
 			String str = (String)it.next();
 			if(str.startsWith("w_")) {
 				char key = str.charAt(str.length()-1);
-				System.out.println("...making wall nr "+count+" the char is: ");
+				System.out.println("...making wall nr "+count+" the char is: "+key);
 				myWalls.put(key, new SM_Wall(str, _jRoom.getJSONObject(str), this, base.fm));
 				count++;
 			}
@@ -105,18 +106,20 @@ public class SM_Room {
 
 				String wallName = "w_"+myRoomName+"_"+thisWall;
 				
-				Float[] skews = new Float[4];
-				Float[] crops = new Float[4];
+				Float[] skews = new Float[10];
+				Float[] crops = new Float[10];
 				
 				
 				JSONArray relViews = _jRoom.getJSONObject(wallName).getJSONArray("relatedViews");
 				for( int v=0; v<relViews.size(); v++) {
 					if( relViews.getJSONObject(v).getString("viewName").equalsIgnoreCase(thisAngle) ){
-						for(int f=0; f<4; f++) {
+						System.out.println(""+thisAngle);
+						for(int f=0; f<10; f++) {
 							skews[f] = relViews.getJSONObject(v).getJSONArray("viewSkew").getFloat(f);
 						}
-						for(int f=0; f<4; f++) {
+						for(int f=0; f<10; f++) {
 							crops[f] = relViews.getJSONObject(v).getJSONArray("viewCrop").getFloat(f);
+							if( crops[f] < 0 ) break;
 						}
 					}	
 				}
@@ -223,6 +226,10 @@ public class SM_Room {
 	}
 
 	public void fireUpdateRequest(WallUpdateRequestEvent e) {
+		requestListener.updateRequested(e);
+	}
+	
+	public void fireUpdateRequest(ArtworkUpdateRequestEvent e) {
 		requestListener.updateRequested(e);
 	}
 

@@ -25,7 +25,7 @@ public class SM_Wall implements ArtworkUpdateListener {
 	
 	
 	// upon init
-	private SM_Room							myRoom;
+	public SM_Room							myRoom;
 	
 	public SM_Wall(String _name, JSONObject _w, SM_Room _room, SM_FileManager _fm) {
 		

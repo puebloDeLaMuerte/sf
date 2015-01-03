@@ -25,11 +25,20 @@ public class SM_ViewAngle {
 		int count = 0;
 		for( String s : wallSkew.keySet() ) {
 			System.out.println("skews found for "+myName+": "+count+++": "+s);
+			for( Float fl : wallSkew.get(s) ) System.out.print(fl+", ");
 		}
 	}
 
 	public String getRealName() {
 		return myRealName;
+	}
+	
+	public Float[] getWallSkew(Character _w) {
+		String querystrng = "w"+myName.substring(1, myName.lastIndexOf('_')+1)+_w;
+		System.out.println("wallSkew Query:\n  the char: "+_w+"\n  the generated query string: "+querystrng);
+		Float[] ar = wallSkew.get(querystrng);
+		if( ar != null && ar.length == 10) return ar;
+		else return null;
 	}
 	
 	public String getName() {
@@ -70,6 +79,7 @@ public class SM_ViewAngle {
 			s += n.charAt(n.length()-1);
 		}
 		
-		return s;
+//		return s;
+		return myRealName;
 	}
 }
