@@ -29,11 +29,14 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	
 	private char[]							activeViews;
 	
-	
+
+	public SM_RoomArrangementView(int w, int h) {
+		super(w,h);
+	}
 
 	
-	public void init(JFrame _frame, int[] _size, File _filePath, SM_Room _room, SM_ViewAngle[] _vas) {
-		super.init(_frame, _size, _filePath, _room);
+	public void init(File _filePath, SM_Room _room, SM_ViewAngle[] _vas) {
+		super.init(_filePath, _room);
 		
 		
 		vm = new SM_ViewManager(this, myRoom.getWindowManager(), _vas);
@@ -113,6 +116,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	}
 	
 	public void disposeVM() {
+		System.out.println("VM dispose called");
 		vm.dispose();
 	}
 	

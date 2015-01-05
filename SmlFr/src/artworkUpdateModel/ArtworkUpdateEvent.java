@@ -24,4 +24,8 @@ public class ArtworkUpdateEvent extends EventObject {
 		return artworkName;
 	}
 
+	public LinkedHashMap<String, Object> getData() {
+		return data;
+	}
+
 }

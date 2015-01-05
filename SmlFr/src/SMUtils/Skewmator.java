@@ -13,9 +13,42 @@ public class Skewmator extends PApplet {
 	int baseX, baseY;
 	PGraphics skewGraphics;
 	
-	public Skewmator() {
-		baseX = 1200;
-		baseY = 800;
+	public Skewmator( int _photoX, int _photoY) {
+		baseX = _photoX;
+		baseY = _photoY;
+	}
+
+	public PImage drawCropImage(Float[] _cropValues ) {
+		
+		PGraphics cropImage = createGraphics(baseX, baseY);
+		
+		float fact = _cropValues[0] / baseX;
+		PVector smallPicAnchor = new PVector(baseX * ((fact-1)/2) , baseY * ((fact-1)/2));
+		
+		PVector lo = new PVector( _cropValues[2], _cropValues[3] );
+		PVector ro = new PVector( _cropValues[4], _cropValues[5] );
+		PVector ru = new PVector( _cropValues[6], _cropValues[7] );
+		PVector lu = new PVector( _cropValues[8], _cropValues[9] );
+		
+		lo.sub(smallPicAnchor);
+		ro.sub(smallPicAnchor);
+		ru.sub(smallPicAnchor);
+		lu.sub(smallPicAnchor);
+		
+		cropImage.beginDraw();
+		cropImage.background(255);
+		cropImage.noStroke();
+		cropImage.fill(0);
+		cropImage.beginShape();
+		cropImage.vertex(lo.x, lo.y);
+		cropImage.vertex(ro.x, ro.y);
+		cropImage.vertex(ru.x, ru.y);
+		cropImage.vertex(lu.x, lu.y);
+		cropImage.vertex(lo.x, lo.y);
+		cropImage.endShape();
+		cropImage.endDraw();
+		
+		return cropImage;
 	}
 	
 	public PImage skewToWall(PImage inImage, Float[] _vls, int canvasWidth, int canvasHeight) {
@@ -180,4 +213,5 @@ public class Skewmator extends PApplet {
 		return wall;
 		
 	}
+
 }

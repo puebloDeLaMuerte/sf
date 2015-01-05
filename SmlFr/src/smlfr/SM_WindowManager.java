@@ -2,6 +2,8 @@ package smlfr;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.util.HashMap;
 
@@ -10,13 +12,14 @@ import javax.swing.JFrame;
 import SMUtils.Lang;
 import SMUtils.progState;
 
-public class SM_WindowManager {
+public class SM_WindowManager{
 	
 	private progState				state;
 	private SM_FileManager  		fm;
 	private SmlFr					base;
 	
 	private java.awt.Dimension 		screen;
+	private Rectangle				realscreen;
 	private java.awt.Dimension 		raster;
 	
 	public SM_WindowManager(SM_FileManager _fm, SmlFr _base) {
@@ -25,19 +28,24 @@ public class SM_WindowManager {
 		fm = _fm;
 		base = _base;
 		
+		realscreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+//		System.out.println(realscreen.width+" x "+realscreen.height);
+//		
 		screen = Toolkit.getDefaultToolkit().getScreenSize();
-
+		System.out.println(screen.width+" x "+screen.height);
+		
+		
+		
+		screen = new Dimension(realscreen.width, realscreen.height);
 		raster = new Dimension(screen.width / 3, screen.height / 3);
 	}
 	
 	public synchronized void requestStateChange( progState _requestedState, String _requestedRoom) {
 		
-		System.out.println("ProgStateRequest registered. Schreiting zur Tat.. .  .  .    .        .");
 		
 		if( state == progState.LOADING && _requestedState == progState.PROJECT ) {
 			if( fm.isMuseumLoaded() && fm.isProjectLoaded() ) {
 				
-				System.out.println("we're initializing the project state change");
 				
 				String[] rooms = fm.getRoomNamesInProject();
 				int x = 0; int y = 0;
@@ -81,11 +89,12 @@ public class SM_WindowManager {
 					base.rooms.get(r).endView();
 					
 				} else {
+
+					base.lib.setSize(raster.width*2, screen.height-(raster.height*2 ));
+					base.lib.setLocation(0, raster.height*2);
 					
 					base.rooms.get(r).endView();
 					base.rooms.get(r).initArrangementView(raster, new Dimension(raster.width*2,raster.height*2), fm);
-					base.lib.setSize(raster.width*2, raster.height);
-					base.lib.setLocation(0, raster.height*2);
 				}
 			}
 			System.gc();
@@ -100,6 +109,7 @@ public class SM_WindowManager {
 			
 		} else
 		if( state == progState.ROOM    && _requestedState == progState.PROJECT ) {
+			
 			
 			if(fm.isSaveDirty()) {						
 				int decide = javax.swing.JOptionPane.showOptionDialog(null, Lang.unsavedChanges, Lang.unsavedChangesTitle, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.DEFAULT_OPTION, base.getIcon(), Lang.yesNoCancelOptions, 0);
@@ -129,7 +139,7 @@ public class SM_WindowManager {
 				if(x%2==0)y++;
 			}
 			
-			base.lib.setSize(raster.width, (raster.height*3 -50));
+			base.lib.setSize(raster.width, (raster.height*3));
 			base.lib.setLocation(0, 0);
 			
 			state = progState.PROJECT;
@@ -143,8 +153,10 @@ public class SM_WindowManager {
 		tLib.setResizable(true);
 //		tLib.setUndecorated(true);
 		tLib.setBackground(Color.DARK_GRAY);
+//		tLib.setAlwaysOnTop(true);
 		tLib.setVisible(true);
 		tLib.setLocation(0, 0);
+		tLib.setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 
 		tLib.initUI();
 		
@@ -187,5 +199,9 @@ public class SM_WindowManager {
 
 	public Dimension getRaster() {
 		return raster;
+	}
+
+	public Dimension getScreen() {
+		return screen;
 	}
 }

@@ -125,7 +125,7 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
 			JLabel imgLbl = new JLabel(icn);
 			imgLbl.setMaximumSize(new Dimension(120,60));
 			JLabel ntxt = new JLabel(s);
-			String size = artworks.get(s).getWidth()+" x "+artworks.get(s).getHeight();
+			String size = artworks.get(s).getTotalWidth()+" x "+artworks.get(s).getTotalHeight();
 			JLabel stxt = new JLabel(size);
 			
 			AWPanel panel = new AWPanel(artworks.get(s));

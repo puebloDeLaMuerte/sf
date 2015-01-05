@@ -41,6 +41,22 @@ public class SM_ViewAngle {
 		else return null;
 	}
 	
+	public boolean isWallCrop(Character _w) {
+		String querystrng = "w"+myName.substring(1, myName.lastIndexOf('_')+1)+_w;
+		Float[] ar = wallCrop.get(querystrng);
+		if( ar[0] != -1 ) {
+			return true;
+		}
+		else return false;
+	}
+	
+	public Float[] getWallCrop(Character _w) {
+		String querystrng = "w"+myName.substring(1, myName.lastIndexOf('_')+1)+_w;
+		System.out.println("wallCrop Query:\n  the char: "+_w+"\n  the generated query string: "+querystrng);
+		Float[] ar = wallCrop.get(querystrng);
+		return ar;
+	}
+	
 	public String getName() {
 		return myName;
 	}

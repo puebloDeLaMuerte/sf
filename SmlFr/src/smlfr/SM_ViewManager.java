@@ -13,6 +13,7 @@ import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
 
 import processing.core.PGraphics;
@@ -23,7 +24,7 @@ import SMUtils.ViewMenuItem;
 
 import sfrenderer.SM_Renderer;
 
-public class SM_ViewManager implements ActionListener, WindowListener {
+public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUpdateListener {
 	
 	private SM_RoomArrangementView								view;
 	private SM_WindowManager									wm;
@@ -42,11 +43,13 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 	public SM_ViewManager(SM_RoomArrangementView _view, SM_WindowManager _wm, SM_ViewAngle[] _vas) {
 		
 		view = _view;
-		view.registerMethod("post", this);
+		
+//		view.registerMethod("post", this);
+		
 		wm = _wm;
 		viewAngles = _vas;
 		currentAngle = view.myRoom.getDefaultView();
-		
+		registerUpdateListener(this);
 		
 		for( SM_ViewAngle va : viewAngles ) {
 			va.sayHi();
@@ -82,11 +85,13 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 	
 	private synchronized void initRenderer(SM_ViewAngle _va) {
 		
+		System.out.println("RENDERER...?");
+		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
 		renderer = new SM_Renderer(this,  _va, view.myRoom.getFilePath());
 		f.add(renderer);		
-		renderer.init(f);
+		renderer.init(f, wm.getRaster().height*2);
 		f.setVisible(true);
 		int wait = 0;
 		while( !renderer.setupRun) {
@@ -94,22 +99,26 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 			
 		}
 //		f.setVisible(true);
+//		f.setAlwaysOnTop(true);
 		f.setSize(renderer.getSize());
 		f.setMaximumSize(renderer.getSize());
 		f.setMinimumSize(renderer.getSize());
+		f.setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
+
 //		f.setUndecorated(true);
 
-		f.setLocation(wm.getRaster().width,0);
+		f.setLocation(wm.getScreen().width-renderer.getSize().width,0);
 		
 		renderer.redraw();
 //		f.setResizable(true);
 	}
 	
-	private synchronized SM_WallArrangementView initWallArrangementView(char _wall, int _of) {
+	private synchronized SM_WallArrangementView initWallArrangementView(char _wall, int _windowOfset) {
 		
 		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
+//		f.setAlwaysOnTop(true);
 		f.addWindowListener(this);
 		Dimension s = wm.getRaster();
 //		s.width  *= 2;
@@ -127,8 +136,9 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 		wallArr.frame.add(wallArr);
 		wallArr.init();
 		wallArr.frame.pack();
+//		wallArr.frame.setAlwaysOnTop(true);
 		wallArr.frame.setVisible(true);
-		wallArr.frame.setLocation(0, _of);
+		wallArr.frame.setLocation(0, _windowOfset);
 		wallArr.frame.setTitle(Lang.wall+" "+wallArr.getWallName().substring(wallArr.getWallName().lastIndexOf('_')+1));
 
 		
@@ -196,16 +206,14 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 		
 	}
 
-	public synchronized PImage getWallGfx(Character _wc) {
-		if( isWallGfxReady(_wc) ) {
-			
-			
-			if( wallArrangementViews.get(""+_wc) != null ) {
-				return wallArrangementViews.get(""+_wc).getWallGfx();
-			}
-			else return null;
+	public synchronized PImage getWallGfx(Character _wc, int _shdwOfset) {
+		System.out.println("this is the vm, we're getting from this: "+_wc);
+
+		if( wallArrangementViews.get(""+_wc) != null ) {
+			return wallArrangementViews.get(""+_wc).drawWall( 1 , _shdwOfset );
 		}
 		else return null;
+
 	}
 	
 	@Override
@@ -266,6 +274,8 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 			wallArrangementViews.get(""+_c).setEnabled(true);
 			wallArrangementViews.get(""+_c).setVisible(true);
 			System.out.println("Wie wecken wir es wieder auf?");
+		} else {
+			wallArrangementViews.get(""+_c).frame.toFront();
 		}
 		doActiveViews();
 	}
@@ -308,7 +318,6 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 		
 		
 		if(renderer == null) System.out.println("ALARM GESCHLAGEN");
-		
 		renderer.prepareFrameForClosing();
 		renderer.dispose();
 		renderer = null;
@@ -371,10 +380,12 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 		rendererUpdate = true;
 	}
 	
+	@Deprecated
 	public void post() {
 		checkRendererUpdate();
 	}
 	
+	@Deprecated
 	public synchronized void checkRendererUpdate() {
 		
 		/*
@@ -389,7 +400,7 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 		
 		if( rendererUpdate ) {
 			System.out.println("VM: rendererUpdate Detected\ntelling renderer to update");
-			renderer.updateArtworksLayer();
+			renderer.updateArtworksLayer( ' ' );
 			renderer.setTimer();
 			rendererUpdate = false;
 		}
@@ -402,6 +413,32 @@ public class SM_ViewManager implements ActionListener, WindowListener {
 	
 	public void unregisterUpdateListener(ArtworkUpdateListener _l) {
 		view.myRoom.unregisterUpdateListener(_l);
+	}
+
+	@Override
+	public void artworkUpdate(ArtworkUpdateEvent e) {
+		System.out.println("vm Is Receiving");
+		
+		LinkedHashMap<String, Object> w = e.getData();
+		
+		for( String s : w.keySet() ) {
+			System.out.println("vm empfängt ArtworkUpdateEvent,\nes finden sich folgende werte in data:\n   "+s+": "+w.get(s));
+			if( s.contains("wall") ) {
+				Object o = w.get(s);
+				String os = (String)o;
+				if( ! os.contains("Library") ) {
+					renderer.updateArtworksLayer( (char)os.charAt(os.lastIndexOf('_')+1) );
+				}
+			}
+		}
+		
+	}
+	
+	public void requestRendererUpdate( char _wc) {
+		if( renderer != null ) {
+			System.out.println("requesting Update");
+			renderer.updateArtworksLayer(_wc);
+		}
 	}
 
 }

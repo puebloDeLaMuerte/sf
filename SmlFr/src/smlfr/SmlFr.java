@@ -3,8 +3,12 @@ package smlfr;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.io.File;
@@ -23,6 +27,7 @@ import com.sun.codemodel.internal.JLabel;
 
 import SMUtils.JsonCreator;
 import SMUtils.Lang;
+import SMUtils.SM_Frames;
 import SMUtils.awFileSize;
 import SMUtils.progState;
 
@@ -31,7 +36,7 @@ import processing.data.JSONObject;
 
 
 
-public class SmlFr extends JFrame{
+public class SmlFr extends JFrame {
 
 	// Modules
 	public SmlFr 						base;
@@ -42,6 +47,8 @@ public class SmlFr extends JFrame{
 	// Data
 	public HashMap<String, SM_Room>		rooms;
 	public HashMap<String, SM_Artwork>	artworks;
+	
+	public SM_Frames					frameGfxs;
 	
 	// utils
 	private boolean				 		firstStart = true;
@@ -66,9 +73,13 @@ public class SmlFr extends JFrame{
 		if( firstStart ) {
 			
 			warn = new ImageIcon("resources/sf_warning_Transp.png");
+			
+			
 			fm = new SM_FileManager(this, warn);
 			wm = new SM_WindowManager(fm, this);
 
+			frameGfxs = new SM_Frames();
+			fm.loadFrames(frameGfxs);
 			// gui stuff here, keep in mind that you might have to step away from transparent windows and such...
 			
 			icon = new ImageIcon("resources/sf_icon_Transp.png");
@@ -77,10 +88,17 @@ public class SmlFr extends JFrame{
 			base.add(label);
 
 //			java.awt.Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			base.setSize(150,150);
+//			base.setSize(150,150);
+			Rectangle realscreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+			base.setSize(realscreen.width, realscreen.height);
+
 			// maybe have a rounded logo that's always displayed?
 			base.setUndecorated(true);
-			base.setBackground(new Color(1.0f,1.0f,1.0f,0.0f));
+			base.setBackground(new Color(1f,1f,1f));
+//			base.setBackground(new Color(1.0f,1.0f,1.0f,0.0f));
+//			base.setFocusable(false);
+//			base.setFocusableWindowState(false);
+//			base.setEnabled(false);
 			base.setVisible(true);
 			firstStart = false;
 		}
@@ -152,7 +170,7 @@ public class SmlFr extends JFrame{
 		artworks = new HashMap<String, SM_Artwork>();
 		for(int a=0;a<aws.length; a++) {
 			
-			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]), fm.getFilePathForArtwork(aws[a], awFileSize.MEDIUM) ));	
+			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]), fm.getFilePathForArtwork(aws[a], awFileSize.MEDIUM), frameGfxs ));	
 		}
 		
 	
@@ -228,4 +246,5 @@ public class SmlFr extends JFrame{
 		else return null;
 	}
 
+	
 }

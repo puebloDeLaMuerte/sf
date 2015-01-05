@@ -68,6 +68,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	private float 								mx;
 	private float 								my;
 	
+	private float xFact, yFact;
+	
 	// drop feedback:
 	private boolean dropAnim = false;
 	private int bgr, bgg,bgb;
@@ -75,6 +77,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	private int mX, mY;
 	private boolean moveWindow = false;
 //	int count =0;
+	
+	public SM_RoomProjectView(int w, int h) {
+		super();
+		mySize = new int[2];
+		mySize[0] = w;
+		mySize[1] = h;
+
+	}
 	
 	public void setup() {
 		
@@ -100,8 +110,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		wallsActiveGfx = new HashMap<Character, PShape>();
 		wallsOverGfx = new HashMap<Character, PShape>();
 		
-		float xFact = ((float)mySize[0] / 560f);
-		float yFact = ((float)mySize[1] / 350f);
+		xFact = ((float)mySize[0] / 560f);
+		yFact = ((float)mySize[1] / 350f);
 		
 		
 		greyRoom = gfxPack.getChild(0);
@@ -126,7 +136,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 
 		
 		fill(0);
-		
+
 
 	}
 	
@@ -295,14 +305,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		
 		if( orientation == 0 || orientation == 2 ) {
 			
-			normalizedSize   = map(_aw.getWidth(),        0, _wl.getWidth(), 0, _wl.getNavPos()[2] - _wl.getNavPos()[0]);
-			normalizedPosX1  = map(_aw.getPosInWall()[0], 0, _wl.getWidth(), _wl.getNavPos()[0], _wl.getNavPos()[2]); 
+			normalizedSize   = map(_aw.getTotalWidth(),        0, _wl.getWidth(), 0, _wl.getNavPos()[2] - _wl.getNavPos()[0]);
+			normalizedPosX1  = map(_aw.getTotalWallPos()[0], 0, _wl.getWidth(), _wl.getNavPos()[0], _wl.getNavPos()[2]); 
 			normalizedPosX2  = normalizedPosX1+normalizedSize;
 			
 		}else if( orientation == 1 || orientation == 3) {
 			
-			normalizedSize   = map(_aw.getWidth(),        0, _wl.getWidth(), 0, _wl.getNavPos()[3] -  _wl.getNavPos()[1]);
-			normalizedPosY1  = map(_aw.getPosInWall()[0], 0, _wl.getWidth(), _wl.getNavPos()[1], _wl.getNavPos()[3]);
+			normalizedSize   = map(_aw.getTotalWidth(),        0, _wl.getWidth(), 0, _wl.getNavPos()[3] -  _wl.getNavPos()[1]);
+			normalizedPosY1  = map(_aw.getTotalWallPos()[0], 0, _wl.getWidth(), _wl.getNavPos()[1], _wl.getNavPos()[3]);
 			normalizedPosY2  = normalizedPosY1+normalizedSize;
 		}
 		
@@ -334,16 +344,27 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		
 	}
 	
-	public void init(JFrame _frame, int[] _size, File _filePath, SM_Room _room) {
+	public void init(File _filePath, SM_Room _room) {
 		
-		mySize = _size;
-		myFrame = _frame;
+		
 		myFilePath = _filePath;
 		myRoom = _room;
 		myWalls = myRoom.getWalls();
 		
 		super.init();
+
 	}
+	
+//	public void init(JFrame _frame, int[] _size, File _filePath, SM_Room _room) {
+//		
+//		mySize = _size;
+//		myFrame = _frame;
+//		myFilePath = _filePath;
+//		myRoom = _room;
+//		myWalls = myRoom.getWalls();
+//		
+//		super.init();
+//	}
 	
 	public HashMap<Character, PShape> getWallsOverGfx() {
 		return wallsOverGfx;
@@ -428,10 +449,10 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 				
 				// Artwork too big for this wall?
 				SM_Wall w = (SM_Wall)myWalls.get(wallOver); 
-				if( w.getWidth() < myRoom.getArtworkFromBase(name).getWidth()  ) {
+				if( w.getWidth() < myRoom.getArtworkFromBase(name).getTotalWidth()  ) {
 					
 //					int i = javax.swing.JOptionPane.showConfirmDialog(this, Lang.artworkTooBigForWall_1 + myRoom.getArtworkFromBase(name).getWidth() + Lang.artworkTooBigForWall_2 + w.getWidth() + Lang.artworkTooBigForWall_3);
-					javax.swing.JOptionPane.showMessageDialog(this, Lang.artworkTooBigForWall_1 + myRoom.getArtworkFromBase(name).getWidth() + Lang.artworkTooBigForWall_2 + w.getWidth() + Lang.artworkTooBigForWall_3, "Artwork doesn't fit!", javax.swing.JOptionPane.OK_OPTION);
+					javax.swing.JOptionPane.showMessageDialog(this, Lang.artworkTooBigForWall_1 + myRoom.getArtworkFromBase(name).getTotalWidth() + Lang.artworkTooBigForWall_2 + w.getWidth() + Lang.artworkTooBigForWall_3, "Artwork doesn't fit!", javax.swing.JOptionPane.OK_OPTION);
 					bgg = 0;
 					bgb = 0;
 					dtde.rejectDrop();
@@ -580,8 +601,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	}
 
 	public void dispose() {
-		
-		myFrame.dispose();
+		frame.dispose();
+//		myFrame.dispose();
 		super.dispose();
 	}
 

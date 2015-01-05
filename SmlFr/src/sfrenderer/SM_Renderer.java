@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.image.BufferedImage;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -30,7 +31,7 @@ import smlfr.SM_ViewAngle;
 import smlfr.SM_ViewManager;
 
 
-public class SM_Renderer extends PApplet {
+public class SM_Renderer extends PApplet{
 
 	private SM_ViewManager			vm;
 	private JFrame					myFrame;
@@ -48,26 +49,30 @@ public class SM_Renderer extends PApplet {
 	private float r, g, b;
 	private boolean b1 = true;
 	private boolean b2 = true;
-	private boolean b4 = true;
 	private boolean b3 = false;
+	private boolean b4 = true;
 	private boolean b5 = true;
 
 	private PGraphics 				texture;
 	private PImage 					textureIMG;
 	private PImage 					bild ;
 	
-	private PGraphics				artworksLayer;
+	private PImage					cropMask;
+	private PGraphics[]				wallGfxs;
+	private char[]					wallGfxsId;
+
+	private Skewmator				skewmator;
 
 	private double 					aspect;
 	private float 					scale;
-	private Skewmator				skewmator;
-
 	private int 					ySize = 600;
+	private int						photoX = 1200;
+	private int						photoY = 800;
 //	private int 					tint  = 30;
 	
 	public boolean 					setupRun = false;
 	
-	private pTimedEventGenerator		tGen;
+	private pTimedEventGenerator	tGen;
 	private int 					tCount = 0;		
 	private boolean 				tStop = false;
 
@@ -75,7 +80,7 @@ public class SM_Renderer extends PApplet {
 	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath) {
 		super();
 		vm = _vm;
-		skewmator = new Skewmator();
+		skewmator = new Skewmator(photoX, photoY);
 		skewmator.init();
 		tGen = new pTimedEventGenerator(this);
 		
@@ -110,7 +115,9 @@ public class SM_Renderer extends PApplet {
 		currentPath = new File(  generalPath.getAbsolutePath()+currentFileStub   );
 	}
 	
-	public void init(JFrame _frame) {
+	public void init(JFrame _frame, int _YSize) {
+		ySize = _YSize;
+		if( ySize > 600 ) ySize = 600;
 //		this.frame = _frame;
 		myFrame = _frame;
 		super.init();
@@ -142,12 +149,19 @@ public class SM_Renderer extends PApplet {
 		
 		scale = (float)ySize / (float)layers[0].width;
 		
-		System.out.println("\n\nthe scale is "+scale);
+		String w = currentView.getWallCharsAsString();
+		wallGfxs = new PGraphics[w.length()];
+		wallGfxsId = new char[w.length()];
 		
-		artworksLayer = createGraphics(layers[0].width, layers[0].height);
-		artworksLayer.beginDraw();
+		for( int i=0; i< w.length(); i++ ) {
+			wallGfxs[i]   = createGraphics(layers[0].width, layers[0].height);
+			wallGfxsId[i] =  w.charAt(i);
+		}
+		
+//		artworksLayer = createGraphics(layers[0].width, layers[0].height);
+//		artworksLayer.beginDraw();
 //		artworksLayer.background(50,190,0);
-		artworksLayer.endDraw();
+//		artworksLayer.endDraw();
 
 
 		/* 
@@ -162,7 +176,7 @@ public class SM_Renderer extends PApplet {
 		layers[1] = new PImage(layers[0].width,layers[0].height);
 		layers[2] = new PImage(layers[0].width,layers[0].height); // VIEWMANAGER
 //		layers[3] = new PImage(layers[0].width,layers[0].height); // VIEWMANAGER
-		layers[3] = artworksLayer;
+		layers[3] = new PImage(layers[0].width,layers[0].height);
 		layers[4] = new PImage(layers[0].width,layers[0].height);
 		layers[5] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Farbe.png");
 		layers[6] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Schatten.png");
@@ -170,19 +184,16 @@ public class SM_Renderer extends PApplet {
 		
 
 		aspect = (double)((double)layers[0].width / (double)layers[0].height);
-//		size( (int)(ySize * aspect), ySize);
-//		frame.setSize( (int)(ySize * aspect), ySize);
+
 
 		
 		for( PImage l : layers) {
 			l.resize( (int)(ySize * aspect), ySize);
-
+		}
+		for( PGraphics wg : wallGfxs ) {
+			wg.resize( (int)(ySize * aspect), ySize);
 		}
 	
-		// Skew Example
-//		layers[3] = skewImage(layers[3], new PVector(111,142), new PVector(257,210), new PVector(257, 378), new PVector(111, 483));
-
-		
 
 		// schatten Maske:
 
@@ -212,46 +223,96 @@ public class SM_Renderer extends PApplet {
 		layers[1].mask(layers[5]);
 
 		noLoop();
+//		frameRate(5);
 		smooth();
 		setupRun = true;
 		
 		
 	}
 
-	public void updateArtworksLayer() {
+	public void updateArtworksLayer( char _wallChar) {
 		
-		System.out.println("updating...");
+		System.out.println("updating... "+_wallChar);
 		
-		artworksLayer.clear();
+//		artworksLayer.clear();
 		
-		for( Character wc : currentView.getWallChars()) {
-			System.out.println("  Asking Wall "+wc+"...");
-			if( vm.isWallGfxReady(wc) ) {
+//		for( Character wc : currentView.getWallChars()) {
+//			System.out.println("  Asking Wall "+wc+"...");
+			
+			if( currentView.getWallCharsAsString().contains(""+_wallChar) ) {
 				
-				System.out.println("  geting Gfx...");
-				artworksLayer.beginDraw();
 				
-				PImage wallGfx = vm.getWallGfx(wc);
+				Float[] skewValues = currentView.getWallSkew(_wallChar);
+				System.out.println(skewValues.toString());
+				int shadowOfset = 0;
+				// determine shadow ofset
+				float left = ( skewValues[9]-skewValues[3] );
+				float right =( skewValues[7]-skewValues[5] );
+					shadowOfset = 0;
+				if( left > right ) {
+					shadowOfset = -1;
+				}else{
+					shadowOfset =  1;
+				}
 				
-				if( artworksLayer != null && wallGfx != null) {
+				PImage wallGfx = null;
+				while( ! vm.isWallGfxReady(_wallChar) ) {
+					 System.out.println("waiting for "+_wallChar);
+				}
+				
+				wallGfx = vm.getWallGfx(_wallChar, shadowOfset);
+				
+				if( /*artworksLayer != null && */ wallGfx != null) {
 					
 					System.out.println("  painting...");
-					Float[] values = currentView.getWallSkew(wc);
 					
-					System.out.println("the wallskew values fro wall "+wc+" are: \n  " );
-					for( Float f : values ) System.out.print(" "+f);
-					System.out.println();
+					for(int i=0; i<wallGfxs.length; i++) {
+						if( wallGfxsId[i] == _wallChar ) {
+							
+							if( currentView.isWallCrop(_wallChar) ) {
+								
+								Float[] cropValues = currentView.getWallCrop(_wallChar);
+								float f = cropValues[0] / photoX;
+								
+								cropMask = skewmator.drawCropImage(cropValues);
+								cropMask.resize(wallGfxs[i].width, wallGfxs[i].height);
+								
+								System.out.println("\n\nCROP FACTOR FOR WALL "+_wallChar+" ---> "+f);
+								System.out.println("the RendererSize = "+myFrame.getWidth()+" the ScaleFact is "+scale);
+								System.out.println("PIMAGE:"+wallGfxs[i].width+" calculated: "+ cropValues );
+								System.out.println();
+							}
+							
+							
+							System.out.println("painting on wall ["+i+"] : +"+_wallChar);
+							wallGfxs[i].beginDraw();
+							wallGfxs[i].clear();
+//							wallGfxs[i].image(wallGfx,0,0);
+							wallGfxs[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, ySize), 0,0);
+//							wallGfxs[i].image(cropMask,0,0);
+							wallGfxs[i].mask(cropMask);
+							wallGfxs[i].endDraw();
+						}
+					}
 					
-					artworksLayer.image(skewmator.skewToWall(wallGfx, values, 0, ySize), 0,0);
-//					artworksLayer.rect(8,8, wallGfx.width+4, wallGfx.height+4);
-//					artworksLayer.image(wallGfx, 10, 10);
+					
+//					artworksLayer.image(skewmator.skewToWall(wallGfx, values, 0, ySize), 0,0);
+
 					
 					System.out.println("  painted.");
 				}
-				artworksLayer.endDraw();
-				layers[3] = artworksLayer;
+//				artworksLayer.beginDraw();
+//				artworksLayer.clear();
+//				for( PGraphics wg : wallGfxs ) {
+//					artworksLayer.image(wg,0,0);
+//				}
+//				artworksLayer.endDraw();
+//				layers[3] = artworksLayer;
+//				
+				
+				
 			}
-		}
+//		}
 		System.out.println("end update.\n");
 		redraw();
 		
@@ -259,11 +320,7 @@ public class SM_Renderer extends PApplet {
 	
 	
 	public void draw(){
-		
 
-		
-		
-		
 		background(255);
 
 
@@ -303,7 +360,10 @@ public class SM_Renderer extends PApplet {
 		if(b4) {
 			pushStyle();
 			blendMode(BLEND);
-			image(layers[3], 0,0,width,height);
+			for( PGraphics wg : wallGfxs) {
+				image(wg, 0,0,width,height);
+			}
+
 			popStyle();
 		}
 
@@ -318,6 +378,7 @@ public class SM_Renderer extends PApplet {
 		}
 
 		drawGUI();
+		
 	}
 
 	void drawGUI() {
@@ -373,8 +434,10 @@ public class SM_Renderer extends PApplet {
 		if( key == '4') b4 = !b4;
 		if( key == '5') b5 = !b5;
 
-		if( key == 'u') updateArtworksLayer();
-		
+		if( key == 'u') {
+			for( char w : wallGfxsId )
+				updateArtworksLayer(w);
+		}
 		redraw();
 	}
 
@@ -482,21 +545,15 @@ public class SM_Renderer extends PApplet {
 		System.out.println("RENDERER CHECK FINISHED");
 	}
 	
+	@Deprecated
 	public void onTimerEvent() {
 
-		if(tStop) { 
-			tGen.setEnabled(true);
-			tGen.setEnabled(false);
-			tGen = null;
-			return;
-		}
-		tCount++;
-		updateArtworksLayer();
-
-		if( tCount > 4 ) {
-			tGen.setEnabled(false);
-			tCount = 0;
-		}
+		tGen.setEnabled(true);
+		tGen.setEnabled(false);
+		
+		for(char w : currentView.getWallChars() ) {
+			updateArtworksLayer(w);
+		}	
 	}
 	
 	public void setTimer() {
@@ -530,5 +587,7 @@ public class SM_Renderer extends PApplet {
 //		myFrame.dispose();
 		super.dispose();
 	}
+
+	
 
 }

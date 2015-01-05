@@ -80,6 +80,5 @@
 	<classpathentry kind="lib" path="/Users/philipptoegel/eclipse_workspace/libs/google-gson-2.2.4/gson-2.2.4-javadoc.jar"/>
 	<classpathentry kind="lib" path="/Users/philipptoegel/eclipse_workspace/libs/google-gson-2.2.4/gson-2.2.4-sources.jar"/>
 	<classpathentry kind="lib" path="/Users/philipptoegel/eclipse_workspace/libs/google-gson-2.2.4/gson-2.2.4.jar"/>
-	<classpathentry kind="lib" path="/Users/philipptoegel/eclipse_workspace/libs/TimedEvents/library/TimedEvents.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

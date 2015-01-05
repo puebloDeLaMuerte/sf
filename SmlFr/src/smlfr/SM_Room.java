@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 import javax.swing.JFrame;
 
+import SMUtils.Lang;
 import SMUtils.progState;
 import artworkUpdateModel.ArtworkUpdateListener;
 import artworkUpdateModel.ArtworkUpdateRequestEvent;
@@ -23,6 +24,7 @@ import artworkUpdateModel.ArtworkUpdateRequestListener;
 import com.sun.tools.jdi.LinkedHashMap;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.core.PShape;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
@@ -145,20 +147,73 @@ public class SM_Room {
 		
 		
 		
+//		JFrame f = new JFrame();
+//		f.setLayout(new BorderLayout());
+//		myProjectView = new SM_RoomProjectView();
+//		f.add(myProjectView);
+//		File fl = _fm.getFilePathForRoom(myRoomName);
+//		myProjectView.init(f, new int[] { _size.width, _size.height }, fl, this);
+//
+////		f.setTitle(myRealName);
+//		f.setUndecorated(true);
+//		f.setVisible(true);
+//		f.setSize(_size);
+//		f.setLocation(_loc.width, _loc.height);
+//		f.setResizable(true);
+		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
-		myProjectView = new SM_RoomProjectView();
+		myProjectView = new SM_RoomProjectView(_size.width, _size.height);
+//		f.setAlwaysOnTop(true);
 		f.add(myProjectView);
 		File fl = _fm.getFilePathForRoom(myRoomName);
-		myProjectView.init(f, new int[] { _size.width, _size.height }, fl, this);
 
-//		f.setTitle(myRealName);
-		f.setUndecorated(true);
-		f.setVisible(true);
-		f.setSize(_size);
-		f.setLocation(_loc.width, _loc.height);
-		f.setResizable(true);
+		myProjectView.frame = f;
+		myProjectView.resize(_size.width, _size.height);
+		myProjectView.setPreferredSize(_size);
+		myProjectView.setMinimumSize(_size);
+		myProjectView.frame.add(myProjectView);
+		myProjectView.init(fl, this);
+		myProjectView.frame.pack();
+		myProjectView.frame.setVisible(true);
+		myProjectView.frame.setLocation(_loc.width, _loc.height);
+		myProjectView.frame.setTitle(myRealName);
 		
+////		f.setTitle(myRealName);
+//		f.setUndecorated(true);
+//		f.setVisible(true);
+//		f.setSize(_size);
+//		f.setLocation(_loc.width, _loc.height);
+//		f.setResizable(true);
+		
+		
+		
+		//#########
+//		
+//		JFrame f = new JFrame();
+//		f.setLayout(new BorderLayout());
+//		f.addWindowListener(this);
+//		Dimension s = wm.getRaster();
+////		s.width  *= 2;
+////		s.height *=2;
+//		SM_WallArrangementView wallArr = new SM_WallArrangementView((SM_Wall)view.myWalls.get(_wall), s, new Dimension(400, 10), this );
+//		
+//		
+//		wallArr.frame = f;
+//		
+//
+//
+//		wallArr.resize(wallArr.getSize());
+//		wallArr.setPreferredSize(wallArr.getSize());
+//		wallArr.setMinimumSize(wallArr.getSize());
+//		wallArr.frame.add(wallArr);
+//		wallArr.init();
+//		wallArr.frame.pack();
+//		wallArr.frame.setVisible(true);
+//		wallArr.frame.setLocation(0, _of);
+//		wallArr.frame.setTitle(Lang.wall+" "+wallArr.getWallName().substring(wallArr.getWallName().lastIndexOf('_')+1));
+//
+//		
 
 		
 		
@@ -166,20 +221,40 @@ public class SM_Room {
 	
 	public void initArrangementView(Dimension _size, Dimension _loc, SM_FileManager _fm) {
 		
+//		JFrame f = new JFrame();
+//		f.setLayout(new BorderLayout());
+//		myArrangementView = new SM_RoomArrangementView();
+//		f.add(myArrangementView);
+//		File fl = _fm.getFilePathForRoom(myRoomName);
+//
+//		myArrangementView.init(f, new int[] { _size.width, _size.height }, fl, this, myViewAngles);
+//		myArrangementView.setMenuExit();
+////		f.setTitle(myRealName);
+//		f.setUndecorated(true);
+//		f.setVisible(true);
+//		f.setSize(_size);
+//		f.setLocation(_loc.width, _loc.height);
+//		f.setResizable(true);
+//		entered = true;
+		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
-		myArrangementView = new SM_RoomArrangementView();
+//		f.setAlwaysOnTop(true);
+		myArrangementView = new SM_RoomArrangementView(_size.width, _size.height);
 		f.add(myArrangementView);
 		File fl = _fm.getFilePathForRoom(myRoomName);
 
-		myArrangementView.init(f, new int[] { _size.width, _size.height }, fl, this, myViewAngles);
+		myArrangementView.frame = f;
+		myArrangementView.resize(_size.width, _size.height);
+		myArrangementView.setPreferredSize(_size);
+		myArrangementView.setMinimumSize(_size);
+		myArrangementView.frame.add(myArrangementView);
+		myArrangementView.init(fl, this, myViewAngles);
 		myArrangementView.setMenuExit();
-//		f.setTitle(myRealName);
-		f.setUndecorated(true);
-		f.setVisible(true);
-		f.setSize(_size);
-		f.setLocation(_loc.width, _loc.height);
-		f.setResizable(true);
+		myArrangementView.frame.pack();
+		myArrangementView.frame.setVisible(true);
+		myArrangementView.frame.setLocation(_loc.width, _loc.height);
+		myArrangementView.frame.setTitle(myRealName);
 		entered = true;
 	}
 	
@@ -243,6 +318,7 @@ public class SM_Room {
 	}
 	
 	public void endView() {
+		System.out.println("i, the room, should now end my view...");
 		if( myProjectView != null ) {
 			System.out.println("exiting ProjView"+myRoomName);
 			myProjectView.dispose();
@@ -268,6 +344,10 @@ public class SM_Room {
 		return myFilePath;
 	}
 
+	public PImage getShadowImage() {
+		return base.fm.getShadowImage();
+	}
+	
 	public SM_WindowManager getWindowManager() {
 		return base.getWindowManager();
 	}

@@ -3,6 +3,7 @@ package smlfr;
 import java.awt.Color;
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -19,10 +20,13 @@ import artworkUpdateModel.WallUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateRequestListener;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.data.*;
 
+import SMUtils.FrameStyle;
 import SMUtils.JsonCreator;
 import SMUtils.Lang;
+import SMUtils.SM_Frames;
 import SMUtils.awFileSize;
 
 public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListener {
@@ -103,6 +107,49 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	private void setSaveDirty(boolean _sd) {
 		savedirty = _sd;
 		base.lib.setSaveDirtyMark(_sd);
+	}
+	
+	public void loadFrames(SM_Frames f) {
+		for(FrameStyle s : FrameStyle.values()){
+			PImage i = null;
+			switch (s) {
+			case WOOD_DARK_BROWN:
+				i = loadImage("resources/Frames/Rahmen_Holz_Dunkelbraun_1.png") ;
+				break;
+			case WOOD_MEDIUM_BROWN:
+				i = loadImage("resources/Frames/Rahmen_Holz_Hellbraun_1.png");
+				break;
+			case WOOD_LIGHT_BROWN:
+				i = loadImage("resources/Frames/Rahmen_Holz_Hellbraun_2.png");
+				break;
+			case WOOD_BLACK:
+				i = loadImage("resources/Frames/Rahmen_Holz_Schwarz_1.png");
+				break;
+			case WOOD_LIGHT_GREY:
+				i = loadImage("resources/Frames/Rahmen_Holz_Dunkelgrau_2.png");
+				break;
+			case POMP_GOLD_1:
+				i = loadImage("resources/Frames/Rahmen_Prunk_Gold_1.png");
+				break;
+			case POMP_GOLD_2:
+				i = loadImage("resources/Frames/Rahmen_Prunk_Gold_2.png");
+				break;
+			case POMP_GOLD_3:
+				i = loadImage("resources/Frames/Rahmen_Prunk_Gold_3.png");
+				break;
+			case POMP_GOLD_BLACK:
+				i = loadImage("resources/Frames/Rahmen_Prunk_Gold_Schwarz_1.png");
+				break;
+			case POMP_GOLD_AND_BLACK:
+				i = loadImage("resources/Frames/Rahmen_Prunk_Schwarz_Gold_1.png");
+				break;
+			}
+			f.setFrameImg(s, i);
+		}
+	}
+	
+	public PImage getShadowImage() {
+		return loadImage("resources/shadow/Schatten.png");
 	}
 	
 	// PREFERENCES
@@ -204,9 +251,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	public synchronized File getFilePathForRoom(String _room) {
 		
 		String museumIdentifier = museumPath.getAbsolutePath().substring(museumPath.getAbsolutePath().lastIndexOf("/")+1,museumPath.getAbsolutePath().length()-4);
-		System.out.println(museumIdentifier);
 		String filePath4Room = museumPath.getAbsolutePath().substring(0,museumPath.getAbsolutePath().length()-4)+"/"+_room;
-		System.out.println(filePath4Room);
 		return new File(filePath4Room);
 	}
 	
@@ -382,6 +427,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return new File(filePath);
 	}
 
+	
 	// UPDATE Event handling
 
 	public synchronized void registerUpdateListener(ArtworkUpdateListener _listener) {
@@ -407,13 +453,17 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	
 	public synchronized void updateRequested(ArtworkUpdateRequestEvent e) {
 		
+		ArtworkUpdateEvent e2;
+		String eventAW       = e.getName();
+		
 		switch (e.getType()) {
 		case POS_IN_WALL:
+
 			
 			// Update Artwork
 			
-			SM_Artwork thisAw = base.getArtwork(this, (e.getName()));
-			thisAw.setPos(e.getNewPosX(), e.getNewPosY());
+			SM_Artwork thisAw = base.getArtwork(this, (eventAW));
+			thisAw.setTotalWallPos(e.getNewPosX(), e.getNewPosY());
 			
 			// Update Project-Json
 			
@@ -435,17 +485,24 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				}
 				
 			}
-			
+			String notifyWall = base.artworks.get(eventAW).getWall();
+			LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+			data.put("wall", notifyWall);
+
+			e2 = new ArtworkUpdateEvent(this, eventAW, ArtworkUpdateType.POS_IN_WALL, data);
 			break;
 
 		default:
+			e2 = new ArtworkUpdateEvent(this, eventAW, ArtworkUpdateType.BLANK, null);
+
 			break;
 		}
 		
 		setSaveDirty(true);
 		saveTempProject();
 		
-		ArtworkUpdateEvent e2 = new ArtworkUpdateEvent(this, e.getName(), ArtworkUpdateType.POS_IN_WALL, null);
+		System.out.println(e2);
+		
 		for(ArtworkUpdateListener lsnr : updateListeners.getListeners(ArtworkUpdateListener.class) ) {
 			lsnr.artworkUpdate(e2);
 			System.out.println("fire regular  " + lsnr.getClass());
@@ -462,11 +519,14 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 
 		System.out.println("the artwork name: "+  e.getName());
-		System.out.println("the room: "+e.getTargetRoom());
+		System.out.println("the target room: "+e.getTargetRoom());
 		
-		String target = "w_"+e.getTargetRoom()+"_"+e.getTargetWall();
+		String targetWall = "w_"+e.getTargetRoom()+"_"+e.getTargetWall();
+		String originWall = "w_"+e.getOriginRoom()+"_"+e.getOriginWall();
 
-		System.out.println("the Target is: "+target);
+		
+		System.out.println("the Target is: "+targetWall);
+		System.out.println("the Origin is: "+targetWall);
 		
 		// update artwork
 		// update room (Target)
@@ -477,7 +537,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		if ( ! e.getTargetRoom().equalsIgnoreCase("Library")) {
 			SM_Room thisRm = base.getRoom(this, e.getTargetRoom());
 			if (!thisRm.hasArtworkOnWall(e.getName(), e.getTargetWall())) {
-				thisAw.setWall(this, target);
+				thisAw.setWall(this, targetWall);
 				thisRm.addArtworkToWall(this, thisAw, e.getTargetWall());
 			}
 		} else {
@@ -491,8 +551,8 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 			System.out.println("Getting This Wall: "+e.getOriginWall() +" in this room: "+e.getOriginRoom());
 			
-			SM_Wall originWall = (SM_Wall)base.getRoom(this, e.getOriginRoom()).getWalls().get((e.getOriginWall()));
-			originWall.removeArtwork(e.getName());
+			SM_Wall originSM_Wall = (SM_Wall)base.getRoom(this, e.getOriginRoom()).getWalls().get((e.getOriginWall()));
+			originSM_Wall.removeArtwork(e.getName());
 		}
 		
 		// update Json
@@ -500,13 +560,13 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
 			JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
 			if(r.getString("roomName").equalsIgnoreCase(e.getTargetRoom())) {
-				r.getJSONObject(target).getJSONArray("artworks").append(thisAw.getAsJsonObject(this));
+				r.getJSONObject(targetWall).getJSONArray("artworks").append(thisAw.getAsJsonObject(this));
 			}
 			if(r.getString("roomName").equalsIgnoreCase(e.getOriginRoom())) {
 				
-				SM_Wall originWall = (SM_Wall)base.getRoom(this, e.getOriginRoom()).getWalls().get((e.getOriginWall()));
+				SM_Wall originSM_Wall = (SM_Wall)base.getRoom(this, e.getOriginRoom()).getWalls().get((e.getOriginWall()));
 
-				JSONArray aws = r.getJSONObject(originWall.getWallName()).getJSONArray("artworks");
+				JSONArray aws = r.getJSONObject(originSM_Wall.getWallName()).getJSONArray("artworks");
 				for(int ii = 0; ii < aws.size(); ii++) {
 					if(aws.getJSONObject(ii).getString("invNr").equalsIgnoreCase(e.getName())) {
 						aws.remove(ii);
@@ -519,7 +579,12 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		saveTempProject();
 		
 		
-		ArtworkUpdateEvent e2 = new ArtworkUpdateEvent(this, e.getName(), ArtworkUpdateType.WALL, null);
+		LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+		data.put("wall_1", targetWall);
+		data.put("wall_2", originWall);
+		
+		ArtworkUpdateEvent e2 = new ArtworkUpdateEvent(this, e.getName(), ArtworkUpdateType.WALL, data);
+		System.out.println(e2);
 		for(ArtworkUpdateListener lsnr : updateListeners.getListeners(ArtworkUpdateListener.class) ) {
 			lsnr.artworkUpdate(e2);
 			System.out.println("fire regular  " + lsnr.getClass());

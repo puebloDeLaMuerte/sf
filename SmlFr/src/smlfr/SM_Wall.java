@@ -6,6 +6,7 @@ import java.util.HashMap;
 import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
 
+import processing.core.PImage;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 
@@ -67,8 +68,17 @@ public class SM_Wall implements ArtworkUpdateListener {
 	
 	public void addArtwork(SM_Artwork _aw, String _awName) {
 		myArtworks.put(_awName, _aw);
-		_aw.setPos((mySize[0]/2)-(_aw.getWidth()/2), (mySize[1]/2)+(_aw.getHeight()/2));
-		System.out.println("added Artwork "+_aw.getTitle()+"\n  pos: "+((mySize[0]/2)-(_aw.getWidth()/2))+" x "+((mySize[1]/2)+(_aw.getHeight()/2)));
+		
+		int adOfset = 0;
+		
+		for( String s : myArtworks.keySet() ) {
+			SM_Artwork a = myArtworks.get(s);
+			if( (a.getTotalHeight() - a.getTotalWallPos()[1]) < 5  ) adOfset += a.getTotalWidth() + 100; 
+		}
+		
+		_aw.setTotalWallPos(adOfset % mySize[0], _aw.getTotalHeight());
+//		_aw.setTotalWallPos((mySize[0]/2)-(_aw.getTotalWidth()/2), (mySize[1]/2)+(_aw.getTotalHeight()/2));
+		System.out.println("added Artwork "+_aw.getTitle()+"\n  pos: "+((mySize[0]/2)-(_aw.getTotalWidth()/2))+" x "+((mySize[1]/2)+(_aw.getTotalHeight()/2)));
 	}
 	
 	public void removeArtwork(String _name) {
@@ -146,4 +156,7 @@ public class SM_Wall implements ArtworkUpdateListener {
 		}
 	}
 	
+	public PImage getShadowImage() {
+		return myRoom.getShadowImage();
+	}
 }
