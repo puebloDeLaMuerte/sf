@@ -57,7 +57,7 @@ public class SM_Renderer extends PApplet{
 	private PImage 					textureIMG;
 	private PImage 					bild ;
 	
-	private PImage					cropMask;
+	private PGraphics				cropMask;
 	private PGraphics[]				wallGfxs;
 	private char[]					wallGfxsId;
 
@@ -142,6 +142,8 @@ public class SM_Renderer extends PApplet{
 	}
 	
 	public void setup() {
+		
+		
 		
 		myFrame.setTitle(currentViewString.substring(2));
 		layers = new PImage[7];
@@ -269,19 +271,6 @@ public class SM_Renderer extends PApplet{
 					for(int i=0; i<wallGfxs.length; i++) {
 						if( wallGfxsId[i] == _wallChar ) {
 							
-							if( currentView.isWallCrop(_wallChar) ) {
-								
-								Float[] cropValues = currentView.getWallCrop(_wallChar);
-								float f = cropValues[0] / photoX;
-								
-								cropMask = skewmator.drawCropImage(cropValues);
-								cropMask.resize(wallGfxs[i].width, wallGfxs[i].height);
-								
-								System.out.println("\n\nCROP FACTOR FOR WALL "+_wallChar+" ---> "+f);
-								System.out.println("the RendererSize = "+myFrame.getWidth()+" the ScaleFact is "+scale);
-								System.out.println("PIMAGE:"+wallGfxs[i].width+" calculated: "+ cropValues );
-								System.out.println();
-							}
 							
 							
 							System.out.println("painting on wall ["+i+"] : +"+_wallChar);
@@ -289,9 +278,23 @@ public class SM_Renderer extends PApplet{
 							wallGfxs[i].clear();
 //							wallGfxs[i].image(wallGfx,0,0);
 							wallGfxs[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, ySize), 0,0);
-//							wallGfxs[i].image(cropMask,0,0);
-							wallGfxs[i].mask(cropMask);
 							wallGfxs[i].endDraw();
+
+							if( currentView.isWallCrop(_wallChar) ) {
+								
+								Float[] cropValues = currentView.getWallCrop(_wallChar);
+								float f = cropValues[0] / photoX;
+								
+								cropMask = skewmator.drawCropImage(cropValues);
+								cropMask.resize(wallGfxs[i].width, wallGfxs[i].height);
+
+								manualMask(wallGfxs[i], cropMask);
+								
+//								wallGfxs[i].beginDraw();
+//								wallGfxs[i].image(cropMask,0,0);
+//								wallGfxs[i].endDraw();
+
+							}
 						}
 					}
 					
@@ -318,6 +321,26 @@ public class SM_Renderer extends PApplet{
 		
 	}
 	
+	private void manualMask(PGraphics display, PImage mask) {
+		  mask.loadPixels();
+		  display.beginDraw();
+		  display.loadPixels();
+		  for (int i = 0; i < display.pixels.length; i++) {
+		 
+		    int d = display.pixels[i];
+		 
+		    // mask alpha
+		    int m_a = mask.pixels[i] & 0xFF;
+		    // display alpha
+		    int d_a = (d >> 24) & 0xFF;
+		    // output alpha (do not change alpha if already transparent)
+		    int o_a = (d_a == 0) ? d_a : m_a;
+		 
+		    display.pixels[i] = (o_a << 24) | (0x00FFFFFF & d);
+		  }
+		  display.updatePixels();
+		  display.endDraw();
+		}
 	
 	public void draw(){
 
