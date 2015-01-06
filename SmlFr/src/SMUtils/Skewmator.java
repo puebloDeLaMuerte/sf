@@ -87,11 +87,11 @@ public class Skewmator extends PApplet {
 		float scale; 
 		if( canvasWidth >0 ) {
 			scale = (float)canvasWidth / (float)baseX;
-			System.out.println("scale calculated from width and baseX: "+scale);
+//			System.out.println("scale calculated from width and baseX: "+scale);
 		}
 		else if ( canvasHeight > 0) {
 			scale = (float)canvasHeight / (float)baseY;
-			System.out.println("scale calculated from height and baseY: "+scale);
+//			System.out.println("scale calculated from height and baseY: "+scale);
 		}
 		else return null;
 		
@@ -152,7 +152,7 @@ public class Skewmator extends PApplet {
 		   ///////
 		
 		//scale = 1;
-		System.out.println("SCALE: "+scale);
+//		System.out.println("SCALE: "+scale);
 		PGraphics sizedReturnImage = createGraphics((int)(baseX*scale), (int)(baseY*scale));
 		
 		sizedReturnImage.beginDraw();
@@ -179,28 +179,28 @@ public class Skewmator extends PApplet {
 		for( int i = 1; i<ar.length; i++ ) {
 			if( ar[i].x < smallestx.x) smallestx = ar[i];
 		}
-		System.out.println("smallest x: "+ smallestx.x+" x "+smallestx.y);
+//		System.out.println("smallest x: "+ smallestx.x+" x "+smallestx.y);
 
 		// biggestx
 		PVector biggestx = v1;
 		for( int i = 1; i<ar.length; i++ ) {
 			if( ar[i].x > biggestx.x) biggestx = ar[i];
 		}
-		System.out.println("biggest x: "+ biggestx.x+" x "+biggestx.y);
+//		System.out.println("biggest x: "+ biggestx.x+" x "+biggestx.y);
 
 		// smallestY
 		PVector smallesty = v1;
 		for( int i = 1; i<ar.length; i++ ) {
 			if( ar[i].y < smallesty.y) smallesty = ar[i];
 		}
-		System.out.println("smallest y: "+ smallesty.x+" x "+smallesty.y);
+//		System.out.println("smallest y: "+ smallesty.x+" x "+smallesty.y);
 
 		// biggesty
 		PVector biggesty = v1;
 		for( int i = 1; i<ar.length; i++ ) {
 			if( ar[i].y > biggesty.y) biggesty = ar[i];
 		}
-		System.out.println("biggest y: "+ biggesty.x+" x "+biggesty.y);
+//		System.out.println("biggest y: "+ biggesty.x+" x "+biggesty.y);
 
 		return new PVector[] {smallestx, biggestx, smallesty, biggesty};
 	}
@@ -217,7 +217,7 @@ public class Skewmator extends PApplet {
 		// skew the image
 		img.setCorners((int)lo.x , (int)lo.y, (int)ro.x, (int)ro.y, (int)ru.x, (int)ru.y, (int)lu.x, (int)lu.y);
 		
-		System.out.println("sk: "+img.getWidth()+" x "+img.getHeight());
+//		System.out.println("sk: "+img.getWidth()+" x "+img.getHeight());
 
 
 		// convert the skewed image back to PImage by manually drawing

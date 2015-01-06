@@ -19,7 +19,7 @@ public class SM_JSONCreator  {
 
 	public JSONObject makeNewProjectFile( String _projectName, String[] _selectedRooms ) {
 
-		System.out.println("making");
+//		System.out.println("making");
 
 		JSONObject arch = fm.getMuseum().getJSONObject("architecture");
 
@@ -63,7 +63,7 @@ public class SM_JSONCreator  {
 
 		proj.setJSONArray("rooms", rooms);
 
-		System.out.println("\nTHE NEWLY GENERATED FRESH PROJECT FILE\n\n" + proj );
+//		System.out.println("\nTHE NEWLY GENERATED FRESH PROJECT FILE\n\n" + proj );
 
 		return proj;
 

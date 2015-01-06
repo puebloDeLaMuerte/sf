@@ -35,7 +35,7 @@ public class SM_Renderer extends PApplet{
 	 */
 	private static final long serialVersionUID = 5902287327131409732L;
 	private SM_ViewManager			vm;
-	private JFrame					myFrame;
+//	private JFrame					myFrame;
 	
 	private SM_ViewAngle			currentView;
 	private String					currentViewString;
@@ -78,7 +78,7 @@ public class SM_Renderer extends PApplet{
 	private boolean 				tStop = false;
 
 	
-	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath) {
+	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath, int _YSize) {
 		super();
 		vm = _vm;
 		skewmator = new Skewmator(photoX, photoY);
@@ -92,6 +92,12 @@ public class SM_Renderer extends PApplet{
 		currentViewString = currentView.getName();
 		setCurrentPath(currentViewString);
 		
+		ySize = _YSize;
+		if( ySize > 600 ) ySize = 600;
+		aspect = (double)((double)photoX / (double)photoY);
+
+//		this.frame = _frame;
+//		myFrame = _frame;
 	}
 	
 	public void changeView( SM_ViewAngle _view ) {
@@ -116,11 +122,7 @@ public class SM_Renderer extends PApplet{
 		currentPath = new File(  generalPath.getAbsolutePath()+currentFileStub   );
 	}
 	
-	public void init(JFrame _frame, int _YSize) {
-		ySize = _YSize;
-		if( ySize > 600 ) ySize = 600;
-//		this.frame = _frame;
-		myFrame = _frame;
+	public void init() {
 		super.init();
 	}
 	
@@ -144,9 +146,7 @@ public class SM_Renderer extends PApplet{
 	
 	public void setup() {
 		
-		
-		
-		myFrame.setTitle(currentViewString.substring(2));
+		frame.setTitle(currentViewString.substring(2));
 		layers = new PImage[7];
 		layers[0] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Hintergrund.png");
 		
@@ -186,7 +186,7 @@ public class SM_Renderer extends PApplet{
 
 		
 
-		aspect = (double)((double)layers[0].width / (double)layers[0].height);
+//		aspect = (double)((double)layers[0].width / (double)layers[0].height);
 
 
 		
@@ -227,7 +227,7 @@ public class SM_Renderer extends PApplet{
 
 		noLoop();
 //		frameRate(5);
-		smooth();
+//		smooth();
 		setupRun = true;
 		
 		
@@ -246,7 +246,7 @@ public class SM_Renderer extends PApplet{
 				
 				
 				Float[] skewValues = currentView.getWallSkew(_wallChar);
-				System.out.println(skewValues.toString());
+//				System.out.println(skewValues.toString());
 				int shadowOfset = 0;
 				// determine shadow ofset
 				float left = ( skewValues[9]-skewValues[3] );
@@ -260,14 +260,14 @@ public class SM_Renderer extends PApplet{
 				
 				PImage wallGfx = null;
 				while( ! vm.isWallGfxReady(_wallChar) ) {
-					 System.out.println("waiting for "+_wallChar);
+//					 System.out.println("waiting for "+_wallChar);
 				}
 				
 				wallGfx = vm.getWallGfx(_wallChar, shadowOfset);
 				
 				if( /*artworksLayer != null && */ wallGfx != null) {
 					
-					System.out.println("  painting...");
+//					System.out.println("  painting...");
 					
 					for(int i=0; i<wallGfxs.length; i++) {
 						if( wallGfxsId[i] == _wallChar ) {
@@ -600,7 +600,7 @@ public class SM_Renderer extends PApplet{
 		tGen.setEnabled(false);
 		tGen.setEnabled(false);
 		
-		myFrame.setVisible(false);
+		frame.setVisible(false);
 	}
 	
 	public void dispose() {

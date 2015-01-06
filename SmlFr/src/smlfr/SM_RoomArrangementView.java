@@ -34,7 +34,6 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		
 		
 		vm = new SM_ViewManager(this, myRoom.getWindowManager(), _vas);
-		vm.initViews();
 		
 		wallsOverGfx = super.getWallsOverGfx();
 		wallsActiveGfx = super.getWallsActiveGfx();

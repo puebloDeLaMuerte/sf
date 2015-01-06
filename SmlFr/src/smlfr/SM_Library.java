@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Insets;
 //import java.awt.datatransfer.DataFlavor;
 //import java.awt.datatransfer.Transferable;
@@ -90,7 +91,7 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
         JPanel artworkPanel = createArtworkPanel(artworks);
       
         JScrollPane contentPanel = new JScrollPane(artworkPanel);
-        artworkPanel.setPreferredSize(new Dimension(contentPanel.getWidth(), 1000));
+        artworkPanel.setPreferredSize(new Dimension(contentPanel.getWidth(), 10000));
         contentPanel.setBackground(Color.white);
         contentPanel.setBorder(new EmptyBorder(new Insets(10, 0, 0, 0)));
         contentPanel.setPreferredSize(this.getSize());
@@ -114,27 +115,49 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
 		awp.setLayout(new FlowLayout());
 		awp.setBackground(Color.white);
 		
+		int labelX = 120;
+		int labelY = 120;
+		
+		Font font = new Font(null, Font.PLAIN, 10);
+		
 		for( String s : _awks.keySet() ) {
 			
 			ImageIcon icn = new ImageIcon( fm.getFilePathForArtwork(s, awFileSize.THUMB ).getAbsolutePath());
 
 			JLabel imgLbl = new JLabel(icn);
-			imgLbl.setMaximumSize(new Dimension(120,60));
+			imgLbl.setMinimumSize(new Dimension(50,50));
+			
 			JLabel ntxt = new JLabel(s);
+			ntxt.setFont(font);
+			
+			String artist = artworks.get(s).getArtis();
+			JLabel atxt = new JLabel("<html><p>"+artist+"</p></html>");
+			atxt.setFont(font);
+			atxt.setBackground(Color.gray);
+			atxt.repaint();
+			
+			String title = artworks.get(s).getTitle();
+			JLabel ttxt = new JLabel("<html><p>"+title+"</p></html>");
+			ttxt.setFont(font);
+			ttxt.setBackground(Color.gray);
+			
 			String size = artworks.get(s).getTotalWidth()+" x "+artworks.get(s).getTotalHeight();
 			JLabel stxt = new JLabel(size);
+			stxt.setFont(font);
 			
 			AWPanel panel = new AWPanel(artworks.get(s));
+			panel.setLayout(new FlowLayout( FlowLayout.LEFT, 2,2 ));
 			if(artworks.get(s).getWall() != null ) {
 				panel.setBackground(Color.LIGHT_GRAY);
 			} else {
 				panel.setBackground(standartColor);
 			}
-			panel.setPreferredSize(new Dimension(120,120));
+			panel.setPreferredSize(new Dimension(labelX,labelY));
 			panel.add(imgLbl);
 			panel.add(ntxt);
+			panel.add(atxt);
+			panel.add(ttxt);
 			panel.add(stxt);
-			
 			
 			awp.add(panel);
 			panels.put(s,panel);

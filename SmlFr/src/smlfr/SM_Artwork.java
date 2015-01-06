@@ -29,6 +29,7 @@ public class SM_Artwork {
 	private boolean			light;
 	
 	private PImage			myGfx;
+	private PImage			myThumb;
 	private PImage			myFrameGfx;
 	private boolean			hasFrameGfx;
 
@@ -360,6 +361,19 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 	public boolean hasGfx() {
 		if( myGfx == null ) return false;
 		else return true;
+	}
+	
+	public boolean hasThumb() {
+		if( myThumb == null ) return false;
+		else return true;
+	}
+	
+	public void setThumb(PImage _t) {
+		myThumb = _t;
+	}
+	
+	public PImage getThumb() {
+		return myThumb;
 	}
 	
 	public JSONObject getAsJsonObjectForProject(SM_FileManager fm) {

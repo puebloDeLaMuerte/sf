@@ -103,22 +103,16 @@ public class SmlFr extends JFrame {
 		
 		
 		
-		// load a project
+		// DIALOG Message: load a project - 
 		String msg = Lang.initializeFromWhere_1+fm.getPreviousProject()[0]+Lang.initializeFromWhere_2;
 		int i = javax.swing.JOptionPane.showOptionDialog(null, msg, Lang.initializeFromWhereTitle, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, icon, Lang.initializeFromWhereButtons, 2);
 		
 		switch (i) {
 		case 0:
 			
-			String projectName = JOptionPane.showInputDialog(null,
-					  Lang.newProjectName,
-					  "",
-					  JOptionPane.QUESTION_MESSAGE);
 			
-			System.out.println("the NAME NEAM NESM NESAM  ----->> "+projectName);
-			
-			fm.newProject(projectName, new String[] { "S1", "S2", "S3"});
-			
+			File newProj = fm.newProject();
+			fm.loadProject(newProj);
 			System.out.println("neues Projekt ausgewählt");
 			
 			

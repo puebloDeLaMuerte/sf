@@ -58,9 +58,10 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		}
 		
 
+
 		wallArrangementViews = new LinkedHashMap<String, SM_WallArrangementView>();
 
-		
+		initViews();
 		
 //		initWallArrangementView('B');
 		
@@ -73,35 +74,60 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 			wallArrangementViews.put(""+w, initWallArrangementView(w, ofset));
 			ofset += 40;
 //			renderer.updateArtworksLayer();
+			
+//			try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 		}
 		doActiveViews();
 	}
 	
 	private synchronized void initRenderer(SM_ViewAngle _va) {
 		
+
+		
 		System.out.println("RENDERER...?");
 		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
-		renderer = new SM_Renderer(this,  _va, view.myRoom.getFilePath());
-		f.add(renderer);		
-		renderer.init(f, wm.getRaster().height*2);
-		f.setVisible(true);
+		renderer = new SM_Renderer(this,  _va, view.myRoom.getFilePath(), wm.getRaster().height*2);
+		System.out.println("renderer given this height: "+wm.getRaster().height*2);
+		
+		renderer.frame = f;
+		renderer.resize(renderer.getSize());
+		renderer.setPreferredSize(renderer.getSize());
+		renderer.setMinimumSize(renderer.getSize());
+		renderer.frame.add(renderer);
+		//
+		renderer.init();
+		//
+//		renderer.resize(renderer.getSize());
+		System.out.println("vm: the renderer returns this size: " + renderer.getSize().width+" x "+renderer.getSize().height);
+		System.out.println("vm: the renderer-frame seems to be: "+renderer.frame.getWidth()+" x "+renderer.frame.getHeight());
 		int wait = 0;
 		while( !renderer.setupRun) {
 			System.out.println("waiting...  "+wait++);
-			
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
 		}
-//		f.setVisible(true);
-//		f.setAlwaysOnTop(true);
-		f.setSize(renderer.getSize());
-		f.setMaximumSize(renderer.getSize());
-		f.setMinimumSize(renderer.getSize());
-		f.setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
+		renderer.frame.pack();
+		renderer.frame.setVisible(true);
+		renderer.frame.setLocation(wm.getScreen().width-renderer.getSize().width,0);
+		
+//		f.setSize(renderer.getSize());
+		
+		
+
+//		renderer.frame.setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 
 //		f.setUndecorated(true);
 
-		f.setLocation(wm.getScreen().width-renderer.getSize().width,0);
 		
 		renderer.redraw();
 //		f.setResizable(true);
@@ -131,7 +157,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		wallArr.init();
 		wallArr.frame.pack();
 //		wallArr.frame.setAlwaysOnTop(true);
-		wallArr.frame.setVisible(true);
+//		wallArr.frame.setVisible(true);
 		wallArr.frame.setLocation(0, _windowOfset);
 		wallArr.frame.setTitle(Lang.wall+" "+wallArr.getWallName().substring(wallArr.getWallName().lastIndexOf('_')+1));
 
@@ -428,7 +454,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		
 	}
 	
-	public void requestRendererUpdate( char _wc) {
+	public synchronized void requestRendererUpdate( char _wc) {
 		if( renderer != null ) {
 			System.out.println("requesting Update");
 			renderer.updateArtworksLayer(_wc);

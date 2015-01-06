@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -295,17 +296,38 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return pp;
 	}
 
-	public void newProject(String _name, String[] _selectedRooms) {
+	public File newProject() {
 
+		String[] _selectedRooms = new String[] { "S1", "S2", "S3"};
+		
+		String projectName = JOptionPane.showInputDialog(null,
+				  Lang.newProjectName,
+				  Lang.newProjectNameTitle,
+				  JOptionPane.QUESTION_MESSAGE);
+		
+		if(projectName.length() == 0 ) return null;
+		
+		System.out.println("the NAME NEAM NESM NESAM  ----->> "+projectName);
+		
+		
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fc.setMultiSelectionEnabled(false);
-
-		int i = fc.showSaveDialog(this);
+		fc.setDialogTitle(Lang.newProjectLocation_1+projectName+Lang.newProjectLocation_2);
+		int i = fc.showOpenDialog(this);
+		
 		if( i == JFileChooser.APPROVE_OPTION) {
 
-			System.out.println(fc.getSelectedFile());
+			System.out.println( "schau genau hier!  ::--->>"+fc.getSelectedFile());
+			
+			File projectFileSaveLoc = new File(fc.getSelectedFile()+"/"+projectName);
+			File artLibSaveLocation = new File(fc.getSelectedFile()+"/"+projectName+"/"+projectName+"_lib");
+			
+			System.out.println("projectFileSaveLoc: "+projectFileSaveLoc.getAbsolutePath());
+			System.out.println("artLibSaveLocation: "+artLibSaveLocation.getAbsolutePath());
+			
 
-			JSONObject theNewProj = creator.makeNewProjectFile(_name, _selectedRooms); 
+
+			JSONObject theNewProj = creator.makeNewProjectFile(projectName, _selectedRooms); 
 			String[] importedAws;
 
 			int q = javax.swing.JOptionPane.showOptionDialog(null, Lang.importNowTitle, Lang.importNow, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, null, Lang.importNowBtns, 2);
@@ -316,7 +338,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				break;
 			case 1:
 				
-				importedAws = base.in.batchImport(fc.getSelectedFile());
+				importedAws = base.in.batchImport(artLibSaveLocation);
 				
 				JSONArray lib = new JSONArray();
 				
@@ -331,16 +353,18 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				break;
 			}
 			
-			String pFileName = fc.getSelectedFile()+_name+".sfp";
+			String pFileName = projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp";
 			System.out.println("THE PROJECT WILL BE SAVED AS: "+pFileName);
 			
 			
 			saveJSONObject(theNewProj, pFileName);
 
-			updatePrefs("fileChooserCurrentDirectory", fc.getSelectedFile().toString());
+			updatePrefs("fileChooserCurrentDirectory", projectFileSaveLoc.getAbsolutePath());
 
+			return new File(projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp");
+			
 		} else {
-			return;
+			return null;
 		}
 
 
@@ -349,6 +373,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	public synchronized void loadProject(File _f) {
 
 		if( _f == null ) {
+			fc.setDialogTitle(Lang.loadProjectTitle);
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			int i = fc.showOpenDialog(this);
 			if( i == JFileChooser.APPROVE_OPTION) {

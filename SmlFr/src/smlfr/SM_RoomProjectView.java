@@ -43,7 +43,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	
 	
 	SM_Room 									myRoom;
-	LinkedHashMap<Character, SM_Wall>								myWalls;
+	LinkedHashMap<Character, SM_Wall>			myWalls;
     private DragSource							ds;
     private JPopupMenu							pMenu;
     private JMenuItem							pMenuRemoveArtwork, pMenuEnterExitRoom;
@@ -180,7 +180,13 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		if(artOver != null) {
 			pushStyle();
 			fill(160);
-			text(artOver.getTitle(), mouseX, mouseY-10);
+			text(artOver.getTitle(), mouseX, mouseY-50);
+			
+			if( ! artOver.hasThumb() ) {
+				artOver.setThumb( loadImage(myRoom.getThumbPath(artOver.getName()).getAbsolutePath() ));
+			}
+			
+			image(artOver.getThumb(), mouseX, mouseY-45);
 			popStyle();
 		}
 		
@@ -210,8 +216,9 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 				noStroke();
 				for(SM_Artwork aw : wl.hasArtworks()) {
 					
-					float[] icnBounds = getArtworkIconBounds(aw, wl);
 					
+					
+					float[] icnBounds = getArtworkIconBounds(aw, wl);
 					
 					
 //					System.out.println( "for wall: "+wl.getWallName()+"  -  aw: "+aw.getName()+" orient: "+wl.getOrientation());
@@ -265,13 +272,10 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 					
 					if(awMouseOver){
 						fill(250, 10, 30, 80);
-//						rect( icnBounds[0]-3f, icnBounds[1]+3f, icnBounds[2]+3f, icnBounds[3]-3f );
 						rect( icnBounds[0], icnBounds[1], icnBounds[2], icnBounds[3]);
-//						stroke(0);
-//						fill(0);
-//						text("bounds "+icnBounds[0]+" / "+icnBounds[1]+" / "+icnBounds[2]+" / "+icnBounds[3], 20,20);
 
-
+						
+						
 					} else {
 						fill(250, 10, 20, 160);
 						rect( icnBounds[0], icnBounds[1], icnBounds[2], icnBounds[3] );

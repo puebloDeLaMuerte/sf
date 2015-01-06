@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import javax.swing.JFrame;
 
+import SMUtils.awFileSize;
 import SMUtils.progState;
 import artworkUpdateModel.ArtworkUpdateListener;
 import artworkUpdateModel.ArtworkUpdateRequestEvent;
@@ -33,20 +34,20 @@ public class SM_Room {
 
 
 	// From Museum-File
-	private String							myRoomName;
-	private String							myRealName;
-	private SM_ViewAngle[] 					myViewAngles;
-	private String							myDefaultViewAngle;
-	private LinkedHashMap<Character, SM_Wall> 					myWalls;
+	private String								myRoomName;
+	private String								myRealName;
+	private SM_ViewAngle[] 						myViewAngles;
+	private String								myDefaultViewAngle;
+	private LinkedHashMap<Character, SM_Wall> 	myWalls;
 
 	// upon init
-	private SM_RoomProjectView				myProjectView;
-	private SM_RoomArrangementView			myArrangementView;
-	private SmlFr							base;
-	private boolean							entered;
-	private File							myFilePath;
+	private SM_RoomProjectView					myProjectView;
+	private SM_RoomArrangementView				myArrangementView;
+	private SmlFr								base;
+	private boolean								entered;
+	private File								myFilePath;
 
-	private ArtworkUpdateRequestListener	requestListener;
+	private ArtworkUpdateRequestListener		requestListener;
 
 
 	public SM_Room(SmlFr _base, String _name, JSONObject _jRoom, File _filePath) {
@@ -343,6 +344,10 @@ public class SM_Room {
 
 	public PImage getShadowImage() {
 		return base.fm.getShadowImage();
+	}
+	
+	public File getThumbPath(String _artworkName) {
+		return base.fm.getFilePathForArtwork(_artworkName, awFileSize.THUMB);
 	}
 	
 	public SM_WindowManager getWindowManager() {

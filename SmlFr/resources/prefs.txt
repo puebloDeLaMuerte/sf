@@ -1,8 +1,8 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/xmpl_02/exmplproj.sfp",
-    "projectName": "The Default Project"
+    "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/uberprufen/uberprufen.sfp",
+    "projectName": "uberprufen"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/PROJEKTE/Föhr/exmplproj",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/PROJEKTE/Föhr/uberprufen",
   "museumData": "MuKuDeWe.sfm"
 }
