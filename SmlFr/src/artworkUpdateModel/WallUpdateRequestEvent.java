@@ -4,6 +4,11 @@ import java.util.EventObject;
 
 public class WallUpdateRequestEvent extends EventObject{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7297688609009917058L;
+	
 	private String		name;
 	private String		targetRoom;
 	private char		targetWall;

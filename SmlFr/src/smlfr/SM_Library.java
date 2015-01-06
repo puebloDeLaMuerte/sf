@@ -2,29 +2,25 @@ package smlfr;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Insets;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+//import java.awt.datatransfer.DataFlavor;
+//import java.awt.datatransfer.Transferable;
+//import java.awt.datatransfer.UnsupportedFlavorException;
+//import java.awt.dnd.DnDConstants;
+//import java.awt.dnd.DragGestureEvent;
+//import java.awt.dnd.DragGestureListener;
+//import java.awt.dnd.DragSource;
+//import java.awt.event.MouseAdapter;
+//import java.awt.event.MouseEvent;
+//import java.awt.event.MouseListener;
+//import java.awt.image.BufferedImage;
+//import java.io.File;
+//import java.io.IOException;
+//import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -94,7 +90,7 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
         JPanel artworkPanel = createArtworkPanel(artworks);
       
         JScrollPane contentPanel = new JScrollPane(artworkPanel);
-        artworkPanel.setPreferredSize(new Dimension(contentPanel.WIDTH, 1000));
+        artworkPanel.setPreferredSize(new Dimension(contentPanel.getWidth(), 1000));
         contentPanel.setBackground(Color.white);
         contentPanel.setBorder(new EmptyBorder(new Insets(10, 0, 0, 0)));
         contentPanel.setPreferredSize(this.getSize());

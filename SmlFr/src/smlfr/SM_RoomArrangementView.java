@@ -1,25 +1,19 @@
 package smlfr;
 
-import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.event.MenuDragMouseEvent;
-import javax.swing.event.MenuDragMouseListener;
-
 import processing.core.PShape;
 
-import SMUtils.Lang;
 import SMUtils.ViewMenuItem;
 
 public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3950035428584333737L;
 	private SM_ViewManager					vm;
 	private HashMap<Character, PShape>		wallsOverGfx;
 	private HashMap<Character, PShape>		wallsActiveGfx;

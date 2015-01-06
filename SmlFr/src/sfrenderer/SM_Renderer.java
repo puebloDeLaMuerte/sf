@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.image.BufferedImage;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -15,8 +13,7 @@ import javax.swing.JSeparator;
 
 //import org.multiply.processing.TimedEventGenerator;
 
-import artworkUpdateModel.ArtworkUpdateEvent;
-import artworkUpdateModel.ArtworkUpdateListener;
+
 
 import SMUtils.Lang;
 import SMUtils.Skewmator;
@@ -33,6 +30,10 @@ import smlfr.SM_ViewManager;
 
 public class SM_Renderer extends PApplet{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5902287327131409732L;
 	private SM_ViewManager			vm;
 	private JFrame					myFrame;
 	

@@ -89,11 +89,11 @@ public class SM_ViewAngle {
 	}
 	
 	public String getWallCharsAsString() {
-		String s = "";
-		
-		for(String n : wallSkew.keySet() ) {
-			s += n.charAt(n.length()-1);
-		}
+//		String s = "";
+//		
+//		for(String n : wallSkew.keySet() ) {
+//			s += n.charAt(n.length()-1);
+//		}
 		
 //		return s;
 		return myRealName;

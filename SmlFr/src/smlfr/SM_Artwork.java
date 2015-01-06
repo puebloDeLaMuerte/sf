@@ -2,9 +2,7 @@ package smlfr;
 
 import java.io.File;
 
-import com.sun.org.apache.bcel.internal.generic.LoadInstruction;
 
-import apple.laf.JRSUIConstants.Size;
 import processing.core.PImage;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
@@ -364,7 +362,7 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		else return true;
 	}
 	
-	public JSONObject getAsJsonObject(SM_FileManager fm) {
+	public JSONObject getAsJsonObjectForProject(SM_FileManager fm) {
 		JSONObject o = new JSONObject();
 		o.setString("invNr", invNr);
 		o.setBoolean("light", light);

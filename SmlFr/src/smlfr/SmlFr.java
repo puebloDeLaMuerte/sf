@@ -1,31 +1,14 @@
 package smlfr;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-
-import javax.media.nativewindow.util.Dimension;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-
-import com.sun.codemodel.internal.JLabel;
-
-import SMUtils.JsonCreator;
 import SMUtils.Lang;
 import SMUtils.SM_Frames;
 import SMUtils.awFileSize;
@@ -33,13 +16,24 @@ import SMUtils.progState;
 
 import processing.data.JSONArray;
 import processing.data.JSONObject;
+import smimport.SM_Import;
 
 
 
 public class SmlFr extends JFrame {
 
+
+	
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4943542664716794448L;
+	
+	
 	// Modules
 	public SmlFr 						base;
+	public SM_Import					in;
 	public SM_FileManager 				fm;
 	public SM_WindowManager				wm;
 	public SM_Library					lib;
@@ -77,7 +71,8 @@ public class SmlFr extends JFrame {
 			
 			fm = new SM_FileManager(this, warn);
 			wm = new SM_WindowManager(fm, this);
-
+			in = new SM_Import(fm, base);
+			
 			frameGfxs = new SM_Frames();
 			fm.loadFrames(frameGfxs);
 			// gui stuff here, keep in mind that you might have to step away from transparent windows and such...
@@ -115,7 +110,19 @@ public class SmlFr extends JFrame {
 		switch (i) {
 		case 0:
 			
+			String projectName = JOptionPane.showInputDialog(null,
+					  Lang.newProjectName,
+					  "",
+					  JOptionPane.QUESTION_MESSAGE);
+			
+			System.out.println("the NAME NEAM NESM NESAM  ----->> "+projectName);
+			
+			fm.newProject(projectName, new String[] { "S1", "S2", "S3"});
+			
 			System.out.println("neues Projekt ausgewählt");
+			
+			
+			
 			break;
 			
 		case 1:
@@ -139,6 +146,18 @@ public class SmlFr extends JFrame {
 			base.initialize();
 			return;
 		}
+		
+		
+		
+		/// TEMP TEMP TEMP
+		
+//		in.batchImport(fm.getArtLibraryPath());
+
+		
+		
+		
+		
+		
 		
 		
 		

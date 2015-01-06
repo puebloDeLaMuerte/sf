@@ -2,10 +2,6 @@ package smlfr;
 
 import java.awt.Dimension;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import SMUtils.ViewMenuItem;
 import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
 import artworkUpdateModel.ArtworkUpdateRequestEvent;
@@ -17,7 +13,11 @@ import processing.core.PVector;
 
 public class SM_WallArrangementView extends PApplet implements ArtworkUpdateListener {
 
-//	private JFrame			myFrame;
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8724642767602580803L;
+	//	private JFrame			myFrame;
 	private SM_Wall			myWall;
 	private SM_ViewManager  vm;
 	private Dimension		mySize;

@@ -3,6 +3,6 @@
     "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/xmpl_02/exmplproj.sfp",
     "projectName": "The Default Project"
   },
-  "fileChooserCurrentDirectory": " ",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/PROJEKTE/Föhr/exmplproj",
   "museumData": "MuKuDeWe.sfm"
 }

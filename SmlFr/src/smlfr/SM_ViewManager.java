@@ -6,17 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Set;
-
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
 
-import processing.core.PGraphics;
 import processing.core.PImage;
 
 import SMUtils.Lang;

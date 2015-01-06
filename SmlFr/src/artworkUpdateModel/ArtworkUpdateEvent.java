@@ -5,6 +5,11 @@ import java.util.LinkedHashMap;
 
 public class ArtworkUpdateEvent extends EventObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8317759613305521733L;
+	
 	private String artworkName;
 	private ArtworkUpdateType type;
 	private LinkedHashMap<String, Object> data;

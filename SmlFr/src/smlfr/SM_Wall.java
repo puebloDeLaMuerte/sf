@@ -1,6 +1,5 @@
 package smlfr;
 
-import java.awt.Color;
 import java.util.HashMap;
 
 import artworkUpdateModel.ArtworkUpdateEvent;

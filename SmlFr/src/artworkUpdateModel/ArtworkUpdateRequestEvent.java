@@ -6,6 +6,11 @@ import SMUtils.FrameStyle;
 
 public class ArtworkUpdateRequestEvent extends EventObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8434037640501633009L;
+	
 	private String 				awName;
 	private ArtworkUpdateType 	type;
 	

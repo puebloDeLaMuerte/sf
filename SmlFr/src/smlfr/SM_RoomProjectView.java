@@ -1,8 +1,6 @@
 package smlfr;
 
-import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.MouseInfo;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -18,35 +16,34 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
 import artworkUpdateModel.WallUpdateRequestEvent;
 
-import com.sun.tools.jdi.LinkedHashMap;
 
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
 
 import processing.core.PApplet;
 import processing.core.PShape;
-import processing.core.PVector;
 
 public class SM_RoomProjectView extends PApplet implements DropTargetListener, DragGestureListener, Transferable, ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -797918064517774209L;
+	
+	
 	SM_Room 									myRoom;
-	LinkedHashMap								myWalls;
+	LinkedHashMap<Character, SM_Wall>								myWalls;
     private DragSource							ds;
     private JPopupMenu							pMenu;
     private JMenuItem							pMenuRemoveArtwork, pMenuEnterExitRoom;

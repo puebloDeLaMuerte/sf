@@ -2,30 +2,28 @@ package smlfr;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
+//import java.awt.dnd.DropTargetDragEvent;
+//import java.awt.dnd.DropTargetDropEvent;
+//import java.awt.dnd.DropTargetEvent;
+//import java.awt.dnd.DropTargetListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.JFrame;
 
-import SMUtils.Lang;
 import SMUtils.progState;
 import artworkUpdateModel.ArtworkUpdateListener;
 import artworkUpdateModel.ArtworkUpdateRequestEvent;
 import artworkUpdateModel.WallUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateRequestListener;
 
-import com.sun.tools.jdi.LinkedHashMap;
+//import com.sun.tools.jdi.LinkedHashMap;
 
-import processing.core.PApplet;
 import processing.core.PImage;
-import processing.core.PShape;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 
@@ -39,7 +37,7 @@ public class SM_Room {
 	private String							myRealName;
 	private SM_ViewAngle[] 					myViewAngles;
 	private String							myDefaultViewAngle;
-	private LinkedHashMap 					myWalls;
+	private LinkedHashMap<Character, SM_Wall> 					myWalls;
 
 	// upon init
 	private SM_RoomProjectView				myProjectView;
@@ -74,7 +72,7 @@ public class SM_Room {
 		
 		System.out.println("the room wants to init "+count+" walls!");
 		
-		myWalls = new LinkedHashMap();
+		myWalls = new LinkedHashMap<Character, SM_Wall>();
 		count = 0;
 		it = _jRoom.keyIterator();
 		while( it.hasNext() ) {
@@ -87,7 +85,7 @@ public class SM_Room {
 			}
 		}
 		Map<Character, SM_Wall> tMap = new TreeMap<Character, SM_Wall>(myWalls);
-		myWalls = new LinkedHashMap(tMap);
+		myWalls = new LinkedHashMap<Character, SM_Wall>(tMap);
 
 		// Viewangles:
 		
@@ -258,7 +256,7 @@ public class SM_Room {
 		entered = true;
 	}
 	
-	public LinkedHashMap getWalls() {
+	public LinkedHashMap<Character, SM_Wall> getWalls() {
 		return myWalls;
 	}
 
@@ -277,7 +275,6 @@ public class SM_Room {
 
 	public boolean hasArtworkOnWall(String _name, char _wallChar) {
 		
-		int i=0;
 		for( Object c : myWalls.keySet() ) {
 			SM_Wall w = (SM_Wall)myWalls.get(c);
 			

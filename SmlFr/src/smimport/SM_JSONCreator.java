@@ -1,17 +1,18 @@
-package SMUtils;
+package smimport;
 
 
 import java.util.Iterator;
 
+import SMUtils.FrameStyle;
 import processing.data.*;
 import smlfr.SM_FileManager;
 
 
-public class JsonCreator  {
+public class SM_JSONCreator  {
 
 	private SM_FileManager fm;
 
-	public JsonCreator(SM_FileManager _fm){
+	public SM_JSONCreator(SM_FileManager _fm){
 		fm = _fm;
 	}
 
@@ -29,9 +30,10 @@ public class JsonCreator  {
 
 		JSONArray lib = new JSONArray();
 		proj.setJSONArray("artLibrary", lib);
-
-
-
+		
+		
+		
+		
 		JSONArray rooms = new JSONArray();
 
 		for(String r : _selectedRooms) {
@@ -66,8 +68,48 @@ public class JsonCreator  {
 		return proj;
 
 	}
+	
 
-	public void makeNewMuseumFile() {
+	public JSONObject makeNewArtworkFile( String _invNr, String _artist, String _title, int[] _size, int[] _frameSize, int[] _pptSize, FrameStyle _framsStyle ) {
+		JSONObject aw = new JSONObject();
+		
+		aw.setString("invNr", _invNr);
+		aw.setString("title", _title);
+		aw.setString("artist", _artist);
+		aw.setString("frameStyle", _framsStyle.toString());
+		
+		JSONArray fs = new JSONArray();
+		if( _frameSize.length > 0 ) {
+			fs.append(_frameSize[0]);
+			fs.append(_frameSize[1]);
+			fs.append(_frameSize[2]);
+			fs.append(_frameSize[3]);
+		}
+		aw.setJSONArray("frameSize", fs );
+		
+		JSONArray ps = new JSONArray();
+		if( _pptSize.length > 0 ) {
+			ps.append(_pptSize[0]);
+			ps.append(_pptSize[1]);
+			ps.append(_pptSize[2]);
+			ps.append(_pptSize[3]);
+		}
+		aw.setJSONArray("pasSize", ps );
+		
+		JSONArray sz = new JSONArray();
+		sz.append(_size[0]);
+		sz.append(_size[1]);
+		aw.setJSONArray("size", sz );
+		
+		
+		System.out.println("RETURNING THIS JSON ARTWORK:\n"+aw.toString());
+		
+		
+		return aw;
+	}
+	
+
+	public JSONObject makeNewMuseumFile() {
 
 		boolean areYouShure = false;
 
@@ -119,6 +161,9 @@ public class JsonCreator  {
 			museum.setString("museumName", "Museum Kunst Der Westküste");
 			museum.setJSONObject("architecture", architecture);
 
+			return museum;
+		} else {
+			return null;
 		}
 	}
 

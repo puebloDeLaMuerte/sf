@@ -1,15 +1,11 @@
 package smlfr;
 
-import java.awt.Color;
 import java.io.File;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JTextField;
 import javax.swing.event.EventListenerList;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import artworkUpdateModel.ArtworkUpdateEvent;
@@ -22,16 +18,19 @@ import artworkUpdateModel.ArtworkUpdateRequestListener;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.data.*;
+import smimport.SM_JSONCreator;
 
 import SMUtils.FrameStyle;
-import SMUtils.JsonCreator;
 import SMUtils.Lang;
 import SMUtils.SM_Frames;
-import SMUtils.awFileSize;
 
 public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListener {
 
-	private JsonCreator 	creator;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5625682259511650553L;
+	private SM_JSONCreator 	creator;
 	private ImageIcon		icon;
 	private JFileChooser	fc;
 
@@ -58,7 +57,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		base = _base;
 		icon = _icon;
-		creator = new JsonCreator(this);
+		creator = new SM_JSONCreator(this);
 		fc = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				Lang.SM_filetypes, "sfp");
@@ -306,7 +305,37 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 			System.out.println(fc.getSelectedFile());
 
-			saveJSONObject(creator.makeNewProjectFile(_name, _selectedRooms), fc.getSelectedFile()+".sfp");
+			JSONObject theNewProj = creator.makeNewProjectFile(_name, _selectedRooms); 
+			String[] importedAws;
+
+			int q = javax.swing.JOptionPane.showOptionDialog(null, Lang.importNowTitle, Lang.importNow, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, null, Lang.importNowBtns, 2);
+
+			switch (q) {
+			case 0:
+				System.out.println("NEIN GESAGT!");
+				break;
+			case 1:
+				
+				importedAws = base.in.batchImport(fc.getSelectedFile());
+				
+				JSONArray lib = new JSONArray();
+				
+				for( String aw : importedAws) {
+					lib.append(aw);
+				}
+				
+				theNewProj.setJSONArray("artLibrary", lib);
+				
+				break;
+			default:
+				break;
+			}
+			
+			String pFileName = fc.getSelectedFile()+_name+".sfp";
+			System.out.println("THE PROJECT WILL BE SAVED AS: "+pFileName);
+			
+			
+			saveJSONObject(theNewProj, pFileName);
 
 			updatePrefs("fileChooserCurrentDirectory", fc.getSelectedFile().toString());
 
@@ -384,6 +413,11 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 	}
 	
+	public synchronized File getArtLibraryPath() {
+		String tmp = projectPath.getAbsolutePath();
+		return new File(tmp.substring(0, tmp.lastIndexOf('.'))+"_lib");
+	}
+	
 	// ARTWORK
 	
 	public synchronized JSONObject loadArtwork(String _name) {
@@ -400,7 +434,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 		return aw;
 	}
-
+	
 	public synchronized File getFilePathForArtwork(String _artwork, SMUtils.awFileSize _size) {
 		
 		String sufx;
@@ -560,7 +594,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
 			JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
 			if(r.getString("roomName").equalsIgnoreCase(e.getTargetRoom())) {
-				r.getJSONObject(targetWall).getJSONArray("artworks").append(thisAw.getAsJsonObject(this));
+				r.getJSONObject(targetWall).getJSONArray("artworks").append(thisAw.getAsJsonObjectForProject(this));
 			}
 			if(r.getString("roomName").equalsIgnoreCase(e.getOriginRoom())) {
 				
