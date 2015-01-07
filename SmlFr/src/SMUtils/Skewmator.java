@@ -21,12 +21,7 @@ public class Skewmator extends PApplet {
 	public PGraphics drawCropImage(Float[] _cropValues) {
 		
 		PGraphics cropImage = createGraphics(baseX, baseY);
-//		int pw = _img.width;
-//		int ph = _img.height;
-//		_img.resize(baseX, baseY);
-//		PGraphics cropImage = _img;
-//		int w = cropImage.width;
-//		int h = cropImage.height;
+
 		
 		float fact = _cropValues[0] / baseX;
 		PVector smallPicAnchor = new PVector(baseX * ((fact-1)/2) , baseY * ((fact-1)/2));
@@ -42,39 +37,19 @@ public class Skewmator extends PApplet {
 		lu.sub(smallPicAnchor);
 		
 		cropImage.beginDraw();
-//		cropImage.background(0);
 		cropImage.noStroke();
-//		cropImage.stroke(255,0,111);
 		cropImage.fill(255);
-//		cropImage.fill(255,255,0);
 		cropImage.beginShape();
-//		
-//		cropImage.vertex(0,0);
-//		cropImage.vertex(w,0);
-//		cropImage.vertex(w,h);
-//		cropImage.vertex(0,h);
-//		cropImage.vertex(0,0);
-//								
-//		beginContour();
-//		
+
 		cropImage.vertex(lo.x, lo.y);
 		cropImage.vertex(ro.x, ro.y);
 		cropImage.vertex(ru.x, ru.y);
 		cropImage.vertex(lu.x, lu.y);
 		cropImage.vertex(lo.x, lo.y);
-//		
 
-//		cropImage.vertex(100, 100);
-//		cropImage.vertex(200, 100);
-//		cropImage.vertex(200, 200);
-//		cropImage.vertex(100, 200);
-//		cropImage.vertex(100, 100);
-		
-//		endContour();
-		
 		cropImage.endShape();
 		cropImage.endDraw();
-//		cropImage.resize(pw, ph);
+
 		return cropImage;
 	}
 	

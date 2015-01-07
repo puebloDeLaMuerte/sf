@@ -64,6 +64,13 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 
 		initViews();
 		
+		for(SM_ViewAngle va : viewAngles ) {
+			if( va.getName().equalsIgnoreCase(currentAngle)) {
+				view.setVisibleViews(va.getWallCharsAsString());
+			}
+		}
+		
+		
 //		initWallArrangementView('B');
 		
 	}
@@ -179,6 +186,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		view.setActiveViews(retStrg);
 	}
 	
+	
 	public synchronized int getNumberOfViewAngles() {
 		return viewAngles.length;
 	}
@@ -206,7 +214,8 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 	}
 	
 	public synchronized boolean isRendererMenuOpen() {
-		return renderer.isMenuOpen();
+		if( renderer != null ) return renderer.isMenuOpen();
+		else return false;
 	}
 	
 	public synchronized boolean isWallGfxReady(char _wl) {
@@ -264,6 +273,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 				
 				if( va.getWallCharsAsString().equalsIgnoreCase(v)) {
 					renderer.changeView(va);
+					view.setVisibleViews(va.getWallCharsAsString());
 				}
 			}
 			
@@ -452,7 +462,16 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 				Object o = w.get(s);
 				String os = (String)o;
 				if( ! os.contains("Library") ) {
-					renderer.updateArtworksLayer( (char)os.charAt(os.lastIndexOf('_')+1) );
+					
+					int i = os.lastIndexOf('_');
+					i++;
+					char ww = os.charAt(i);
+
+					if( renderer != null ) {
+						
+						renderer.updateArtworksLayer( ww );
+					}
+					
 				}
 			}
 		}

@@ -1,8 +1,8 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/uberprufen/uberprufen.sfp",
-    "projectName": "uberprufen"
+    "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/Kräftemessen/Kräftemessen.sfp",
+    "projectName": "Kräftemessen"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/PROJEKTE/Föhr/uberprufen",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/PROJEKTE/Föhr/Kräftemessen",
   "museumData": "MuKuDeWe.sfm"
 }

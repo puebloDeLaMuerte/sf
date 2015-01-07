@@ -95,6 +95,7 @@ public class SM_WindowManager{
 					base.lib.setLocation(0, raster.height*2);
 					
 					base.rooms.get(r).endView();
+					
 					base.rooms.get(r).initArrangementView(raster, new Dimension(raster.width*2,raster.height*2), fm);
 				}
 			}

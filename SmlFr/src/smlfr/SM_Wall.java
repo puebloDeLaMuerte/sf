@@ -18,6 +18,8 @@ public class SM_Wall implements ArtworkUpdateListener {
 	private float[]							myNavigatorPos;
 	private int								myNavigatorOrientation;
 	private int[]							mySize;
+	private int								myMidHeight = 1500;
+	
 	
 	// from Project:
 	private HashMap<String, SM_Artwork>		myArtworks;
@@ -90,6 +92,13 @@ public class SM_Wall implements ArtworkUpdateListener {
 		else return false;
 	}
 	
+	public SM_Artwork getArtwork(String _name) {
+		if(myArtworks.containsKey(_name)) {
+			return myArtworks.get(_name);
+		}
+		else return null;
+	}
+	
 	public SM_Artwork[] hasArtworks() {
 		
 		SM_Artwork[] aws = new SM_Artwork[myArtworks.keySet().size()];
@@ -108,6 +117,11 @@ public class SM_Wall implements ArtworkUpdateListener {
 	public int getHeight() {
 		return mySize[1];
 	}
+	
+	public int getMidHeight() {
+		return myMidHeight;
+	}
+
 	
 	public String getWallName() {
 		return myWallName;

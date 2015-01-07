@@ -2,6 +2,11 @@ package smlfr;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,16 +17,18 @@ import javax.swing.JSeparator;
 
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
+import SMUtils.SM_DataFlavor;
 import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
 import artworkUpdateModel.ArtworkUpdateRequestEvent;
+import artworkUpdateModel.WallUpdateRequestEvent;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
 
-public class SM_WallArrangementView extends PApplet implements ArtworkUpdateListener, ActionListener {
+public class SM_WallArrangementView extends PApplet implements DropTargetListener, ArtworkUpdateListener, ActionListener {
 
 /**
 	 * 
@@ -37,16 +44,20 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 
 	private float			scale;
 	private float 			xOffsetPx, yOffsetPx;
+	private int				myMidHeight;
 	
 	private SM_Artwork		awOver;
 	private boolean 		awDrag = false;
 	private boolean			horizontalLoc = false;
 	private PVector			awDragOfset;
+	private PVector			awDragStart;
 	
 	private JPopupMenu		pMenu;
 	private JMenuItem		putBack, snapToMidHeight, close;
 	private JMenuItem[]		frameStyles;
 	private JMenu			changeFrameStyle;
+	
+	private DropTarget		dt;
 	
 	private boolean			artworkUpdatePending = true;
 	private boolean			firstTime = true;
@@ -59,6 +70,8 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 	public SM_WallArrangementView(SM_Wall _myW, Dimension _size, SM_ViewManager _vm) {
 		super();
 		myWall = _myW;
+		dt = new DropTarget(this,this);
+		myMidHeight = myWall.getMidHeight();
 		
 		initMenu();
 		
@@ -122,7 +135,7 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 
 			frameStyles[i] = new JMenuItem(style);
 			frameStyles[i].addActionListener(this);
-			frameStyles[i].setEnabled(true);
+			frameStyles[i].setEnabled(false);
 			changeFrameStyle.add(frameStyles[i]);
 			i++;
 		}
@@ -178,7 +191,7 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 		// Mittelhšhe
 		pushStyle();
 		stroke(150);
-		line(0, wptos(0,myWall.getHeight()/2).y, wptos(myWall.getWidth(),0).x, wptos(0,myWall.getHeight()/2).y );
+		line(0, wptos(0,myMidHeight).y, wptos(myWall.getWidth(),0).x, wptos(0,myMidHeight).y );
 		popStyle();
 		
 
@@ -196,10 +209,7 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 			pushStyle();
 			fill(200,100,100,80);
 			noStroke();
-			rect( totalPos.x -5, totalPos.y-5, totalSize.x+9, totalSize.y+9 );
-			noFill();
-			stroke(200,100,100,120);
-			rect( totalPos.x -5, totalPos.y-5, totalSize.x+9, totalSize.y+9 );
+			rect( totalPos.x , totalPos.y, totalSize.x, totalSize.y );
 			popStyle();
 			
 		}
@@ -491,45 +501,44 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 	public void mousePressed() {
 		if( awOver != null ) {
 			awDrag = true;
+			awDragStart = new PVector(mouseX,mouseY);
 			awDragOfset = wptos(awOver.getTotalWallPos()[0],awOver.getTotalWallPos()[1]);
-			awDragOfset.sub(new PVector(mouseX,mouseY));
+			awDragOfset.sub(awDragStart);
 		}
 	}
 	
 	public void mouseReleased() {
 		if( awDrag ) {
 
-			int nposX;
-			int nposY;
-			PVector npos;
-			
-			ArtworkUpdateRequestEvent e;
-			
-			if( horizontalLoc ) {
-				npos = new PVector(mouseX, 0);
-				
-				npos.add(awDragOfset);
-				PVector nPos = ptowp(npos);
-				e = new ArtworkUpdateRequestEvent(this, awOver.getName(), (int)nPos.x, awOver.getTotalWallPos()[1]);
-				
-			} else {
-				npos = new PVector(mouseX,mouseY);
-				
-				npos.add(awDragOfset);
-				PVector nPos = ptowp(npos);
-				e = new ArtworkUpdateRequestEvent(this, awOver.getName(), (int)nPos.x, (int)nPos.y);
-			}
-						
-			myWall.myRoom.fireUpdateRequest(e);
 			awDrag = false;
+
+			if (mouseX != awDragStart.x || mouseY != awDragStart.y) {
+				int nposX;
+				int nposY;
+				PVector npos;
+				ArtworkUpdateRequestEvent e;
+				if (horizontalLoc) {
+					npos = new PVector(mouseX, 0);
+
+					npos.add(awDragOfset);
+					PVector nPos = ptowp(npos);
+					e = new ArtworkUpdateRequestEvent(this, awOver.getName(),
+							(int) nPos.x, awOver.getTotalWallPos()[1]);
+
+				} else {
+					npos = new PVector(mouseX, mouseY);
+
+					npos.add(awDragOfset);
+					PVector nPos = ptowp(npos);
+					e = new ArtworkUpdateRequestEvent(this, awOver.getName(),
+							(int) nPos.x, (int) nPos.y);
+				}
+				myWall.myRoom.fireUpdateRequest(e);
+			}
 		}
 	}
 	
-	public void mouseDraged() {
-		if( awDrag ) {
-			awDrag = false;
-		}
-	}
+
 	
 	public void mouseClicked() {
 		
@@ -539,7 +548,7 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 //			System.out.println("aw pos in wall: " +awOver.getPosInWall()[0] +" x "+awOver.getPosInWall()[1] );
 //			System.out.println("mousepos  wall: "+  ptowp(mouseX, mouseY).x+" x "+ ptowp(mouseX, mouseY).y  );
 //			System.out.println("mousepos  scrn: "+mouseX+" x "+mouseY);
-		} else {
+		} else if(mouseButton != RIGHT){
 			deselectAll();
 		}
 		
@@ -581,9 +590,80 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 		} else
 		if(action.equalsIgnoreCase(Lang.snapToMidHeight)) {
 			if( awOver != null ) {
-				ArtworkUpdateRequestEvent rq = new ArtworkUpdateRequestEvent(this, awOver.getName(), awOver.getTotalWallPos()[0], (myWall.getHeight()/2)+(awOver.getTotalHeight()/2)  );
+				ArtworkUpdateRequestEvent rq = new ArtworkUpdateRequestEvent(this, awOver.getName(), awOver.getTotalWallPos()[0], (myMidHeight)+(awOver.getTotalHeight()/2)  );
 				myWall.myRoom.fireUpdateRequest(rq);
 			}
 		}
+	}
+
+	@Override
+	public void dragEnter(DropTargetDragEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dragExit(DropTargetEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dragOver(DropTargetDragEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void drop(DropTargetDropEvent dtde) {
+		
+		if(dtde.getCurrentDataFlavors()[0] == SM_DataFlavor.SM_AW_Flavor) {
+
+			try {
+
+				String[] arr = (String[])dtde.getTransferable().getTransferData(SM_DataFlavor.SM_AW_Flavor);
+				String name = arr[0];
+				String originRoom = arr[1];
+				char originWall = arr[2].charAt(arr[2].length()-1);
+
+				// Artwork already on this wall?
+				if( myWall.hasArtwork(name) ) {
+					dtde.rejectDrop();
+					return;
+				}
+
+				// Artwork too big for this wall?
+				if( myWall.getWidth() < myWall.myRoom.getArtworkFromBase(name).getTotalWidth()  ) {
+
+					javax.swing.JOptionPane.showMessageDialog(this, Lang.artworkTooBigForWall_1 + myWall.myRoom.getArtworkFromBase(name).getTotalWidth() + Lang.artworkTooBigForWall_2 + myWall.getWidth() + Lang.artworkTooBigForWall_3, "Artwork doesn't fit!", javax.swing.JOptionPane.OK_OPTION);
+
+					dtde.rejectDrop();
+					return;
+				}
+
+				System.out.println("firing this update Request event: "+name+" "+ myWall.getWallChar()+" "+ myWall.myRoom.getName() +" "+ originRoom+" "+ originWall);
+
+				WallUpdateRequestEvent e = new WallUpdateRequestEvent(this, name, myWall.getWallChar(), myWall.myRoom.getName(), originRoom, originWall);
+
+				myWall.myRoom.fireUpdateRequest(e);
+
+				dtde.dropComplete(true);
+				dtde.acceptDrop(dtde.getDropAction());
+
+			} catch (Exception e) {
+
+				dtde.rejectDrop();
+				e.printStackTrace();
+			}
+		} else {
+
+			dtde.rejectDrop();
+		}
+	}
+
+	@Override
+	public void dropActionChanged(DropTargetDragEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

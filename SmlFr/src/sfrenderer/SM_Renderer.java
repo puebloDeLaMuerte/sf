@@ -291,8 +291,13 @@ public class SM_Renderer extends PApplet{
 
 								manualMask(wallGfxs[i], cropMask);
 								
+//								PImage maskedImg = wallGfxs[i].get();
+//								maskedImg.mask(cropMask);
+								
+								
 //								wallGfxs[i].beginDraw();
-//								wallGfxs[i].image(cropMask,0,0);
+//								wallGfxs[i].clear();
+//								wallGfxs[i].image(maskedImg,0,0);
 //								wallGfxs[i].endDraw();
 
 							}
@@ -323,6 +328,8 @@ public class SM_Renderer extends PApplet{
 	}
 	
 	private void manualMask(PGraphics display, PImage mask) {
+		
+		
 		  mask.loadPixels();
 		  display.beginDraw();
 		  display.loadPixels();
@@ -335,9 +342,13 @@ public class SM_Renderer extends PApplet{
 		    // display alpha
 		    int d_a = (d >> 24) & 0xFF;
 		    // output alpha (do not change alpha if already transparent)
-		    int o_a = (d_a == 0) ? d_a : m_a;
-		 
-		    display.pixels[i] = (o_a << 24) | (0x00FFFFFF & d);
+
+		    int o_a;
+		    if( m_a < d_a ) {
+		    	o_a = m_a;
+		    	display.pixels[i] = (o_a << 24) | (0x00FFFFFF & d);
+		    }
+		    
 		  }
 		  display.updatePixels();
 		  display.endDraw();
@@ -600,16 +611,20 @@ public class SM_Renderer extends PApplet{
 		tGen.setEnabled(false);
 		tGen.setEnabled(false);
 		
-		frame.setVisible(false);
+//		frame.setVisible(false);
+		
+		
 	}
 	
 	public void dispose() {
-		System.out.println("Renderer goodbye...");
+		System.err.println("Renderer goodbye...1");
 		
 		tGen.dispose();
 		
-//		myFrame.dispose();
+		frame.dispose();
+
 		super.dispose();
+
 	}
 
 	

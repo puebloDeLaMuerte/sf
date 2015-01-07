@@ -20,8 +20,8 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	
 	private boolean 						showViewMenuPreview = false;
 	private char[]							viewMenuCurrentHighlight;
-	
 	private char[]							activeViews;
+	private char[]							visibleViews;
 	
 
 	public SM_RoomArrangementView(int w, int h) {
@@ -37,6 +37,13 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		
 		wallsOverGfx = super.getWallsOverGfx();
 		wallsActiveGfx = super.getWallsActiveGfx();
+		
+		// disable wallGfx-file-style for custom color stuff etc
+//		for(Character c : wallsActiveGfx.keySet() ) {
+//			PShape s = wallsActiveGfx.get(c);
+//			s.disableStyle();
+//		}
+		
 	}
 
 	
@@ -47,7 +54,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		super.draw();
 
 		if(showViewMenuPreview) {
-			if( vm.isRendererMenuOpen() ) {
+			if( vm != null && vm.isRendererMenuOpen() ) {
 
 				for(char c : viewMenuCurrentHighlight ) {
 
@@ -58,13 +65,27 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 			
 		}
 		if( activeViews != null ) {
-
 			
+			// TODO this is temp - the Graphics fpr actie- visible- and over- need to be sorted out !!!
+
 			for( char v : activeViews ) {
+				shape(wallsOverGfx.get(v), 0,0);
+			}
+
+		}
+		if( visibleViews != null ) {
+
+			for( char v : visibleViews ) {
 				shape(wallsActiveGfx.get(v), 0,0);
 			}
-			
-			
+
+		}
+	}
+	
+	public void setVisibleViews( String _vv) {
+		visibleViews = new char[_vv.length()];
+		for( int i = 0; i< _vv.length(); i++ ) {
+			visibleViews[i] = _vv.charAt(i);
 		}
 	}
 	
@@ -114,8 +135,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	}
 	
 	public void dispose() {
-		System.out.println("1) closing this Arrview");
+		System.out.println("closing this Arrview");
 		super.dispose();
-		System.out.println("2) closing this Arrview");
 	}
 }
