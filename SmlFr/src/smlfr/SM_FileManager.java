@@ -305,7 +305,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				  Lang.newProjectNameTitle,
 				  JOptionPane.QUESTION_MESSAGE);
 		
-		if(projectName.length() == 0 ) return null;
+		if(projectName == null ) return null;
 		
 		System.out.println("the NAME NEAM NESM NESAM  ----->> "+projectName);
 		

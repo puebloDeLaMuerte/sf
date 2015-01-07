@@ -112,7 +112,7 @@ public class SmlFr extends JFrame {
 			
 			
 			File newProj = fm.newProject();
-			fm.loadProject(newProj);
+			if(newProj != null ) fm.loadProject(newProj);
 			System.out.println("neues Projekt ausgewählt");
 			
 			
