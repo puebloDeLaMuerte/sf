@@ -2,6 +2,7 @@ package smlfr;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -71,7 +72,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		int ofset = 0;
 		for( char w : renderer.getCurrentWallChars() ) {
 			System.out.println("getting arrview for "+w);
-			wallArrangementViews.put(""+w, initWallArrangementView(w, ofset));
+			wallArrangementViews.put(""+w, initWallArrangementView(w, 0/*ofset*/));
 			ofset += 40;
 //			renderer.updateArtworksLayer();
 			
@@ -138,25 +139,29 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
-//		f.setAlwaysOnTop(true);
 		f.addWindowListener(this);
-		Dimension s = wm.getRaster();
-//		s.width  *= 2;
-//		s.height *=2;
-		SM_WallArrangementView wallArr = new SM_WallArrangementView((SM_Wall)view.myWalls.get(_wall), s, new Dimension(400, 10), this );
+		
+		Dimension maxAvailableSpace;
+		
+		Point lpos = wm.getLibraryPosition();
+		Point rpos = renderer.getLocationOnScreen();
+		
+		if( lpos.y > 150 && rpos.x > 150 ) {
+			maxAvailableSpace = new Dimension(rpos.x, lpos.y-(rpos.y));		
+		} else {
+			maxAvailableSpace = wm.getRaster();
+		}
+		SM_WallArrangementView wallArr = new SM_WallArrangementView((SM_Wall)view.myWalls.get(_wall), maxAvailableSpace, this );
 		
 		
 		wallArr.frame = f;
-		
-
-
 		wallArr.resize(wallArr.getSize());
 		wallArr.setPreferredSize(wallArr.getSize());
 		wallArr.setMinimumSize(wallArr.getSize());
+		wallArr.frame.setResizable(false);
 		wallArr.frame.add(wallArr);
 		wallArr.init();
 		wallArr.frame.pack();
-//		wallArr.frame.setAlwaysOnTop(true);
 //		wallArr.frame.setVisible(true);
 		wallArr.frame.setLocation(0, _windowOfset);
 		wallArr.frame.setTitle(Lang.wall+" "+wallArr.getWallName().substring(wallArr.getWallName().lastIndexOf('_')+1));

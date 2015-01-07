@@ -1,7 +1,17 @@
 package smlfr;
 
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+
+import SMUtils.FrameStyle;
+import SMUtils.Lang;
 import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
 import artworkUpdateModel.ArtworkUpdateRequestEvent;
@@ -11,26 +21,32 @@ import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
 
-public class SM_WallArrangementView extends PApplet implements ArtworkUpdateListener {
+public class SM_WallArrangementView extends PApplet implements ArtworkUpdateListener, ActionListener {
 
 /**
 	 * 
 	 */
 	private static final long serialVersionUID = -8724642767602580803L;
-	//	private JFrame			myFrame;
+
 	private SM_Wall			myWall;
 	private SM_ViewManager  vm;
 	private Dimension		mySize;
 	private PGraphics		wlGfx;
-	private PImage			shadowGfx;
+
 	private boolean			ready = false;
-//	private PGraphics		bg;
+
 	private float			scale;
 	private float 			xOffsetPx, yOffsetPx;
 	
 	private SM_Artwork		awOver;
 	private boolean 		awDrag = false;
+	private boolean			horizontalLoc = false;
 	private PVector			awDragOfset;
+	
+	private JPopupMenu		pMenu;
+	private JMenuItem		putBack, snapToMidHeight, close;
+	private JMenuItem[]		frameStyles;
+	private JMenu			changeFrameStyle;
 	
 	private boolean			artworkUpdatePending = true;
 	private boolean			firstTime = true;
@@ -40,10 +56,12 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 	
 	int count = 0;
 	
-	public SM_WallArrangementView(SM_Wall _myW, Dimension _size, Dimension _location, SM_ViewManager _vm) {
+	public SM_WallArrangementView(SM_Wall _myW, Dimension _size, SM_ViewManager _vm) {
 		super();
 		myWall = _myW;
-		shadowGfx = myWall.getShadowImage();
+		
+		initMenu();
+		
 		
 		for( String a : myWall.getArtworks().keySet() ) {
 			SM_Artwork aw = myWall.getArtworks().get(a);
@@ -57,9 +75,72 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 		xOffsetPx = 0f;
 		yOffsetPx = 0f;
 		
+		// Calculate Window Size from Available Space:
+		
 		float aspect = (float)myWall.getHeight() / (float)myWall.getWidth();
-		int resultheight = (int)(_size.width * aspect);
-		mySize = new Dimension(_size.width, resultheight);
+		int resultHeight;
+		int resultWidth;
+
+		System.out.println("\n\navailable space: "+_size.width+" x "+_size.height);
+		
+		// Querformat
+		if( aspect <= 1) {   
+			
+			resultHeight = (int)(_size.width * aspect);
+			resultWidth = _size.width;
+			
+			if( resultHeight > _size.height) {
+				resultWidth = (int)(_size.height / aspect);
+				resultHeight = _size.height;
+			}
+		} else
+		
+		// Hochformat
+		{
+			resultWidth = (int)(_size.height / aspect);
+			resultHeight = _size.height;
+		}
+
+		
+		mySize = new Dimension(resultWidth, resultHeight);
+	}
+	
+	private void initMenu() {
+		pMenu = new JPopupMenu();
+		
+		putBack = new JMenuItem(Lang.RemoveArtwork);
+		putBack.addActionListener(this);
+		putBack.setEnabled(false);
+		
+		changeFrameStyle = new JMenu(Lang.changeFrameStyle);
+		changeFrameStyle.setEnabled(false);
+		int i=0;
+		frameStyles = new JMenuItem[ FrameStyle.values().length ];
+		for( FrameStyle fst : SMUtils.FrameStyle.values() ) {
+			
+			String style = fst.toString();
+
+			frameStyles[i] = new JMenuItem(style);
+			frameStyles[i].addActionListener(this);
+			frameStyles[i].setEnabled(true);
+			changeFrameStyle.add(frameStyles[i]);
+			i++;
+		}
+		
+		snapToMidHeight = new JMenuItem(Lang.snapToMidHeight);
+		snapToMidHeight.addActionListener(this);
+		snapToMidHeight.setEnabled(false);
+		
+		close = new JMenuItem(Lang.closeWall);
+		close.addActionListener(this);
+		close.setEnabled(true);
+		
+		pMenu.add(snapToMidHeight);
+		pMenu.add(putBack);
+		pMenu.add(changeFrameStyle);
+		pMenu.add(new JSeparator());
+		pMenu.add(close);
+		
 	}
 	
 	public Dimension getSize() {
@@ -127,9 +208,17 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 		
 		if( awOver != null && awDrag ) {
 			PVector wh = astos( new PVector(awOver.getTotalWidth(), awOver.getTotalHeight()));
+			
+			float y;
+			if( horizontalLoc ) {
+				y = wptos(0,awOver.getTotalWallPos()[1]).y;
+			} else {
+				y = mouseY+awDragOfset.y;
+			}
+			
 			pushStyle();
 			noFill();
-			rect(mouseX+awDragOfset.x, mouseY+awDragOfset.y, wh.x, wh.y);
+			rect(mouseX+awDragOfset.x, y, wh.x, wh.y);
 			popStyle();
 		}
 		
@@ -409,12 +498,28 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 	
 	public void mouseReleased() {
 		if( awDrag ) {
-//			awDragOfset.sub(new PVector(mouseX,mouseY));
-			PVector npos = new PVector(mouseX,mouseY);
-			npos.add(awDragOfset);
-			PVector nPos = ptowp(npos);
+
+			int nposX;
+			int nposY;
+			PVector npos;
 			
-			ArtworkUpdateRequestEvent e = new ArtworkUpdateRequestEvent(this, awOver.getName(), (int)nPos.x, (int)nPos.y);
+			ArtworkUpdateRequestEvent e;
+			
+			if( horizontalLoc ) {
+				npos = new PVector(mouseX, 0);
+				
+				npos.add(awDragOfset);
+				PVector nPos = ptowp(npos);
+				e = new ArtworkUpdateRequestEvent(this, awOver.getName(), (int)nPos.x, awOver.getTotalWallPos()[1]);
+				
+			} else {
+				npos = new PVector(mouseX,mouseY);
+				
+				npos.add(awDragOfset);
+				PVector nPos = ptowp(npos);
+				e = new ArtworkUpdateRequestEvent(this, awOver.getName(), (int)nPos.x, (int)nPos.y);
+			}
+						
 			myWall.myRoom.fireUpdateRequest(e);
 			awDrag = false;
 		}
@@ -428,7 +533,7 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 	
 	public void mouseClicked() {
 		
-		if( awOver != null ) {			
+		if( awOver != null && mouseButton != RIGHT) {			
 			awOver.toggleSelected();
 			
 //			System.out.println("aw pos in wall: " +awOver.getPosInWall()[0] +" x "+awOver.getPosInWall()[1] );
@@ -436,6 +541,49 @@ public class SM_WallArrangementView extends PApplet implements ArtworkUpdateList
 //			System.out.println("mousepos  scrn: "+mouseX+" x "+mouseY);
 		} else {
 			deselectAll();
+		}
+		
+		if( mouseButton == RIGHT ) {
+			
+			if( awOver != null ) {
+				putBack.setEnabled(true);
+				changeFrameStyle.setEnabled(true);
+				snapToMidHeight.setEnabled(true);
+			} else {
+				putBack.setEnabled(false);
+				changeFrameStyle.setEnabled(false);
+				snapToMidHeight.setEnabled(false);
+			}
+			
+			
+			pMenu.show(this, mouseX, mouseY);
+		}
+	}
+
+	public void keyPressed() {
+		if(keyCode == SHIFT) {
+			horizontalLoc = true;
+		}
+	}
+	
+	public void keyReleased() {
+		if(keyCode == SHIFT) {
+			horizontalLoc = false;
+		}
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String action = e.getActionCommand();
+		if(action.equalsIgnoreCase(Lang.closeWall)) {
+//			this.frame.setVisible(false);
+			vm.sleepWallArr(""+myWall.getWallChar());
+		} else
+		if(action.equalsIgnoreCase(Lang.snapToMidHeight)) {
+			if( awOver != null ) {
+				ArtworkUpdateRequestEvent rq = new ArtworkUpdateRequestEvent(this, awOver.getName(), awOver.getTotalWallPos()[0], (myWall.getHeight()/2)+(awOver.getTotalHeight()/2)  );
+				myWall.myRoom.fireUpdateRequest(rq);
+			}
 		}
 	}
 }

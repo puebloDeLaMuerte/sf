@@ -54,8 +54,11 @@ public class Lang {
 	public static String	importBtn = "Importieren";
 	public static String	deleteBtn = "Lšschen";
 	public static String 	RemoveArtwork = "von hier entfernen";
+	public static String	changeFrameStyle = "Rahmen Šndern";
+	public static String	snapToMidHeight = "auf Mittelhšhe setzen";
 	public static String 	enterRoom = "Raum betreten";
 	public static String 	exitRoom = "Raum verlassen";
+	public static String	closeWall = "Wand schlie§en";
 	public static String 	selectView = "WŠhlen Sie eine Ansicht:";
 	
 	}
