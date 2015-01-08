@@ -239,7 +239,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		if(myWall.hasArtworks().length > 0 ) {
 			for( SM_Artwork a : myWall.hasArtworks() ) {
 				
-				if(a.isSelected()) {
+				if(a != null && a.isSelected()) {
 				
 					PVector totalPos = wptos( new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]) );
 					PVector totalSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()));
@@ -508,6 +508,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	@Override
  	public void artworkUpdate(ArtworkUpdateEvent e) {
 		artworkUpdatePending = true;
+		awOver = null;
 	}
 	
 	public void mousePressed() {
@@ -612,7 +613,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		} else 
 			if( action.equalsIgnoreCase(Lang.RemoveArtwork) && awOver != null) {
 				WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, awOver.getName(), ' ', "Library", myWall.myRoom.getName(), awOver.getWallChar());
-
+				awOver = null;
 				myWall.myRoom.fireUpdateRequest(r);
 			}
 		
