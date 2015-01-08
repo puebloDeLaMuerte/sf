@@ -307,6 +307,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 	public synchronized void openWallArr(char _c) {
 		if(wallArrangementViews.get(""+_c) == null ) {
 			wallArrangementViews.put(""+_c, initWallArrangementView(_c, 0));
+			wallArrangementViews.get(""+_c).frame.setVisible(true);
 		} else if( wallArrangementViews.get(""+_c).isSleeping() ) {
 			wallArrangementViews.get(""+_c).frame.setVisible(true);
 			wallArrangementViews.get(""+_c).setEnabled(true);

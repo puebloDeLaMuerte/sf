@@ -3,6 +3,8 @@ package smlfr;
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.HashMap;
 import javax.swing.ImageIcon;
@@ -20,7 +22,7 @@ import smimport.SM_Import;
 
 
 
-public class SmlFr extends JFrame {
+public class SmlFr extends JFrame  {
 
 
 	
@@ -65,6 +67,10 @@ public class SmlFr extends JFrame {
 		
 		
 		if( firstStart ) {
+			
+			
+			
+			
 			
 			warn = new ImageIcon("resources/sf_warning_Transp.png");
 			
@@ -258,6 +264,12 @@ public class SmlFr extends JFrame {
 		if( wm != null) return wm;
 		else return null;
 	}
+
+
+	
+
+
+
 
 	
 }

@@ -45,6 +45,12 @@ public class Lang {
 	public static String	create = "erstellen";
 	public static String	newProjectLocation_1 = "Wohin mšchten Sie ";
 	public static String	newProjectLocation_2 = ".sfp speichern?";
+	public static String 	wantToSaveBeforExitTitle = "Projekt Speichern?";
+	public static String 	wantToSaveBeforExit = "Es bestehen ungespeicherte €nderungen,\nwollen Sie das Projekt sichern?";
+	public static Object[] 	saveOnExitOptions = new String[] {"Beenden", "Sichern"};
+	public static String	quitSF = "SimuFšhr beenden";
+	public static String	saveProject = "Projekt sichern";
+	public static String	saved = "Projekt erfolgreich gespeichert.";
 	
 	// Control Elements
 	public static String[]	initializeFromWhereButtons = new String[] { "Neues Projekt", "Projekt laden...", "letztes šffnen" };

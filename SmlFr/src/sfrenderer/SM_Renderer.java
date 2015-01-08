@@ -47,7 +47,7 @@ public class SM_Renderer extends PApplet{
 	private ViewMenuItem[]			pMenuViews;				
 	
 	private PImage[] layers;
-	private float r, g, b;
+	private float cr, cg, cb;
 	private boolean b1 = true;
 	private boolean b2 = false;
 	private boolean b3 = false;
@@ -73,7 +73,7 @@ public class SM_Renderer extends PApplet{
 	
 	public boolean 					setupRun = false;
 	
-	private pTimedEventGenerator	tGen;
+//	private pTimedEventGenerator	tGen;
 	private int 					tCount = 0;		
 	private boolean 				tStop = false;
 
@@ -83,7 +83,7 @@ public class SM_Renderer extends PApplet{
 		vm = _vm;
 		skewmator = new Skewmator(photoX, photoY);
 		skewmator.init();
-		tGen = new pTimedEventGenerator(this);
+//		tGen = new pTimedEventGenerator(this);
 		
 		initMenu();
 		
@@ -227,13 +227,14 @@ public class SM_Renderer extends PApplet{
 		// Farbe:
 
 		PGraphics t = createGraphics(layers[5].width,layers[5].height);
-		r=0;
-		g=104;
-		b=49;
+		cr=0;
+		cg=104;
+		cb=49;
 
 		t.beginDraw();
-		t.tint(r,g,b);
+		t.tint(cr,cg,cb);
 		t.image(layers[0],0,0,layers[5].width,layers[5].height);
+		g.removeCache(t);
 		t.endDraw();
 		layers[1] = t.get();
 		layers[1].filter(DILATE);
@@ -294,6 +295,7 @@ public class SM_Renderer extends PApplet{
 							wallGfxs[i].clear();
 //							wallGfxs[i].image(wallGfx,0,0);
 							wallGfxs[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, ySize), 0,0);
+							g.removeCache(wallGfxs[i]);
 							wallGfxs[i].endDraw();
 
 							if( currentView.isWallCrop(_wallChar) ) {
@@ -303,7 +305,7 @@ public class SM_Renderer extends PApplet{
 								
 								cropMask = skewmator.drawCropImage(cropValues);
 								cropMask.resize(wallGfxs[i].width, wallGfxs[i].height);
-
+								g.removeCache(cropMask);
 								manualMask(wallGfxs[i], cropMask);
 								
 //								PImage maskedImg = wallGfxs[i].get();
@@ -379,6 +381,8 @@ public class SM_Renderer extends PApplet{
 		if(b1) {
 			blendMode(BLEND);
 			image(layers[0], 0,0,width,height);
+			g.removeCache(g);
+			
 		}
 
 
@@ -389,6 +393,7 @@ public class SM_Renderer extends PApplet{
 			blendMode(BLEND);
 			tint(235,250);
 			image(layers[1], 0,0,width,height);
+			g.removeCache(g);
 			//blend(layers[1], 0, 0, width, height, 0, 0, width, height, MULTIPLY);
 			popStyle();
 		}
@@ -401,6 +406,7 @@ public class SM_Renderer extends PApplet{
 			//blendMode(ADD);
 			tint(255, 70);
 			image(layers[2], 0,0,width,height);
+			g.removeCache(g);
 			popStyle();
 		}  
 
@@ -412,6 +418,7 @@ public class SM_Renderer extends PApplet{
 			blendMode(BLEND);
 			for( PGraphics wg : wallGfxs) {
 				image(wg, 0,0,width,height);
+				g.removeCache(g);
 			}
 
 			popStyle();
@@ -424,6 +431,7 @@ public class SM_Renderer extends PApplet{
 			blendMode(BLEND);
 			tint(255, 65);
 			image(layers[4], 0,0,width,height);
+			g.removeCache(g);
 			popStyle();
 		}
 
@@ -477,18 +485,21 @@ public class SM_Renderer extends PApplet{
 	}
 
 	public void keyPressed() {
-
-		if( key == '1') b1 = !b1;
-		if( key == '2') b2 = !b2;
-		if( key == '3') b3 = !b3;
-		if( key == '4') b4 = !b4;
-		if( key == '5') b5 = !b5;
-
-		if( key == 'u') {
-			for( char w : wallGfxsId )
-				updateArtworksLayer(w);
+		if( keyCode == ESC) {
+			key = 0;
+		} else {
+			if( key == '1') b1 = !b1;
+			if( key == '2') b2 = !b2;
+			if( key == '3') b3 = !b3;
+			if( key == '4') b4 = !b4;
+			if( key == '5') b5 = !b5;
+	
+			if( key == 'u') {
+				for( char w : wallGfxsId )
+					updateArtworksLayer(w);
+			}
+			redraw();
 		}
-		redraw();
 	}
 
 	@Deprecated
@@ -598,8 +609,8 @@ public class SM_Renderer extends PApplet{
 	@Deprecated
 	public void onTimerEvent() {
 
-		tGen.setEnabled(true);
-		tGen.setEnabled(false);
+//		tGen.setEnabled(true);
+//		tGen.setEnabled(false);
 		
 		for(char w : currentView.getWallChars() ) {
 			updateArtworksLayer(w);
@@ -610,8 +621,8 @@ public class SM_Renderer extends PApplet{
 		
 		System.out.println("SET TIMER CALLED");
 		
-		tGen.setEnabled(true);
-		tGen.setIntervalMs(400);
+//		tGen.setEnabled(true);
+//		tGen.setIntervalMs(400);
 		tCount = 0;
 	}
 	
@@ -623,8 +634,8 @@ public class SM_Renderer extends PApplet{
 	public void prepareFrameForClosing() {
 		
 		tStop = true;
-		tGen.setEnabled(false);
-		tGen.setEnabled(false);
+//		tGen.setEnabled(false);
+//		tGen.setEnabled(false);
 		
 //		frame.setVisible(false);
 		
@@ -634,7 +645,7 @@ public class SM_Renderer extends PApplet{
 	public void dispose() {
 		System.err.println("Renderer goodbye...1");
 		
-		tGen.dispose();
+//		tGen.dispose();
 		
 		frame.dispose();
 
@@ -642,6 +653,6 @@ public class SM_Renderer extends PApplet{
 
 	}
 
-	
+
 
 }

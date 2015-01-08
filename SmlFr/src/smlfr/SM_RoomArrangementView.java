@@ -105,6 +105,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 				
 				vm.openWallArr(woc);
 				
+				
 			}
 		}
 		super.mouseClicked(e);
@@ -129,8 +130,9 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		}
 	}
 	
-	public void disposeVM() {
+	public void disposeVM(SM_Room rom) {
 		System.out.println("VM dispose called");
+		rom.unregisterUpdateListener(vm);
 		vm.dispose();
 	}
 	

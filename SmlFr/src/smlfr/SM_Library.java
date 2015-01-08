@@ -54,6 +54,8 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
 		artworks = _artworks;
 		fm = _fm;
 		standartColor = new Color(0.96f,0.96f,0.96f);
+		
+
 	}
 	
 	
@@ -192,5 +194,8 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener {
 		else setTitle("Library");
 	}
 
+	
+
+	
 	
 }

@@ -58,7 +58,7 @@ public class SM_Frames {
 
 
 		case STANDART:
-			return frame_wood_dark_brown;
+			return frame_pomp_gold_1;
 
 		case WOOD_DARK_BROWN:
 			return frame_wood_dark_brown;

@@ -352,6 +352,7 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 	
 	public void setGfx( PImage _g) {
 		myGfx = _g;
+		
 	}
 	
 	public PImage getGfx() {

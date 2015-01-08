@@ -46,7 +46,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	LinkedHashMap<Character, SM_Wall>			myWalls;
     private DragSource							ds;
     private JPopupMenu							pMenu;
-    private JMenuItem							pMenuRemoveArtwork, pMenuEnterExitRoom;
+    private JMenuItem							pMenuRemoveArtwork, pMenuEnterExitRoom, quitSF, savePr;
 
 	
 	// utils
@@ -93,9 +93,17 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		pMenuRemoveArtwork.addActionListener(this);
 		pMenuEnterExitRoom = new JMenuItem(Lang.enterRoom);
 		pMenuEnterExitRoom.addActionListener(this);
+		quitSF = new JMenuItem(Lang.quitSF);
+		quitSF.addActionListener(this);
+		savePr = new JMenuItem(Lang.saveProject);
+		savePr.addActionListener(this);
 		pMenu.add(pMenuRemoveArtwork);
 		pMenu.add(new JSeparator());
 		pMenu.add(pMenuEnterExitRoom);
+		pMenu.add(new JSeparator());
+		pMenu.add(savePr);
+		pMenu.add(new JSeparator());
+		pMenu.add(quitSF);
 		
 		bgr = 255;
 		bgg = 255;
@@ -548,7 +556,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		if( artOver != null ) pMenuRemoveArtwork.setEnabled(true);
 		else pMenuRemoveArtwork.setEnabled(false);
 		
-		if( mouseButton == RIGHT ) pMenu.show(this, mouseX, mouseY);
+		if( mouseButton == RIGHT ) {
+			if( myRoom.getSaveDirty() ) {
+				savePr.setEnabled(true);
+			} else {
+				savePr.setEnabled(false);
+			}
+			pMenu.show(this, mouseX, mouseY);
+		}
 		mX = MouseInfo.getPointerInfo().getLocation().x;
 		mY = MouseInfo.getPointerInfo().getLocation().y;
 	}
@@ -568,6 +583,9 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	public void keyPressed() {
 		if( keyCode == SHIFT) {
 			moveWindow = true;
+		}
+		if( keyCode == ESC ) {
+			key = 0;
 		}
 	}
 	
@@ -597,6 +615,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			
 			myRoom.requestRoomExit();
 			
+		} else if( e.getActionCommand().equalsIgnoreCase(Lang.quitSF)) {
+			myRoom.requestQuit();
+		} else if( e.getActionCommand().equalsIgnoreCase(Lang.saveProject)){
+			boolean saved = myRoom.requestSave();
+			
+			
+//			if(saved) javax.swing.JOptionPane.showConfirmDialog(null, Lang.saved, "", javax.swing.JOptionPane.OK_OPTION, javax.swing.JOptionPane.INFORMATION_MESSAGE);
+			if(saved) javax.swing.JOptionPane.showMessageDialog(null, Lang.saved);
 		}
 		
 	}
@@ -606,5 +632,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //		myFrame.dispose();
 		super.dispose();
 	}
+
+	
 
 }

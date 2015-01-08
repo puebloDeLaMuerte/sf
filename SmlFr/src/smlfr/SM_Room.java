@@ -323,7 +323,7 @@ public class SM_Room {
 			myProjectView = null;
 		} else if( myArrangementView != null) {
 			System.out.println("exiting ArrView"+myRoomName);
-			myArrangementView.disposeVM();
+			myArrangementView.disposeVM(this);
 			myArrangementView.dispose();
 			myArrangementView = null;
 			entered = false;
@@ -359,6 +359,29 @@ public class SM_Room {
 	}
 
 	public void unregisterUpdateListener(ArtworkUpdateListener _l) {
-		base.fm.registerUpdateListener(_l);
+		base.fm.unregisterUpdateListener(_l);
+	}
+
+//	public void unregisterArtworkUpdateListeners() {
+//		System.out.println("ROOM: unregistering listeners...");
+//		if( myProjectView != null ) {
+//			
+//			
+//			
+//		} else if( myArrangementView != null) {
+//			
+//		}
+//	}
+	
+	public void requestQuit() {
+		base.fm.requestQuit();
+	}
+	
+	public boolean getSaveDirty() {
+		return base.fm.isSaveDirty();
+	}
+	
+	public boolean requestSave() {
+		return base.fm.requestSave();
 	}
 }

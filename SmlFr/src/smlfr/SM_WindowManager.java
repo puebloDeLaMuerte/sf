@@ -85,17 +85,13 @@ public class SM_WindowManager{
 			
 			String[] rooms = fm.getRoomNamesInProject();
 			for(String r : rooms) {
-				if( !r.equalsIgnoreCase(_requestedRoom) ) {
+				
+//				base.rooms.get(r).unregisterArtworkUpdateListeners();
+				base.rooms.get(r).endView();
 					
-					base.rooms.get(r).endView();
-					
-				} else {
-
+				if( r.equalsIgnoreCase(_requestedRoom) ) {
 					base.lib.setSize(raster.width*2, screen.height-(raster.height*2 ));
 					base.lib.setLocation(0, raster.height*2);
-					
-					base.rooms.get(r).endView();
-					
 					base.rooms.get(r).initArrangementView(raster, new Dimension(raster.width*2,raster.height*2), fm);
 				}
 			}
@@ -125,6 +121,11 @@ public class SM_WindowManager{
 					break;
 				}
 			}
+			
+			fm.unregisterArrViewAWUpdateListeners();
+//			fm.unregisterViewManagerUpdateListeners();
+			
+			
 			
 			String[] rooms = fm.getRoomNamesInProject();
 			for(String r : rooms) {

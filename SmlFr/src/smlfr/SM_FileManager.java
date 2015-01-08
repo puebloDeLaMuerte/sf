@@ -260,19 +260,25 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	public synchronized boolean requestSave() {
 		
 		if( savedirty ) {
-			saveProject();
-			return true;
+			return saveProject();
+			
 		}
 		else return false;
 		
 		
 	}
 	
-	private void saveProject() {
+	private boolean saveProject() {
 		if(savedirty) {
-			saveJSONObject(project, projectPath.getAbsolutePath());
-			setSaveDirty(false);
+			try{
+				saveJSONObject(project, projectPath.getAbsolutePath());
+				setSaveDirty(false);
+				return true;
+			} catch( Exception e ) {
+				return false;
+			}
 		}
+		return false;
 	}
 	
 	private void saveTempProject() {
@@ -510,6 +516,45 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		//		updateListeners.remove(ArtworkUpdateListener.class, _listener);
 	}
 	
+	public synchronized void unregisterArrViewAWUpdateListeners() {
+		
+//		for( int i = updateListeners_ArrViews.getListenerCount(); i > 0; i--) {
+//			
+//			updateListeners_ArrViews.remove(t, l)
+//		}
+		
+		
+		Object[] lstnrs = updateListeners_ArrViews.getListeners(ArtworkUpdateListener.class);
+		
+		
+		for( Object l : lstnrs ) {
+			ArtworkUpdateListener ls = (ArtworkUpdateListener)l;
+			updateListeners_ArrViews.remove(ArtworkUpdateListener.class, ls);
+		}
+		
+
+	}
+	
+	public synchronized void unregisterViewManagerUpdateListeners() {
+
+		System.out.println("Trying to remove "+updateListeners_ArrViews.getListenerCount()+" Listeners");
+		
+		Object[] lstnrs = updateListeners.getListeners(ArtworkUpdateListener.class);
+		
+		System.out.println("i have gotten "+lstnrs.length+" listeners as array");
+		
+		for( Object l : lstnrs ) {
+			ArtworkUpdateListener ls = (ArtworkUpdateListener)l;
+			
+			if(ls.getClass().equals(SM_ViewManager.class)) {
+				System.out.println("removing view manager...");
+				updateListeners.remove(ArtworkUpdateListener.class, ls);
+			}
+		}
+		
+		System.out.println("removed some, now its "+updateListeners.getListenerCount()+" Listeners");
+	}
+	
 	public synchronized void updateRequested(ArtworkUpdateRequestEvent e) {
 		
 		ArtworkUpdateEvent e2;
@@ -654,6 +699,33 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 	}
 
+
+	
+	public void requestQuit() {
+		
+		if (savedirty) {
+			int choose = javax.swing.JOptionPane.showOptionDialog(null,
+					Lang.wantToSaveBeforExit, Lang.wantToSaveBeforExitTitle,
+					javax.swing.JOptionPane.YES_NO_OPTION,
+					javax.swing.JOptionPane.YES_NO_OPTION, null,
+					Lang.saveOnExitOptions, 0);
+			switch (choose) {
+			case 0:
+
+				break;
+			case 1:
+				System.out.println("eins gwlt");
+				saveProject();
+				break;
+
+			default:
+				break;
+			}
+		}
+		System.exit(0);
+	}
+
+	
 }
 
 

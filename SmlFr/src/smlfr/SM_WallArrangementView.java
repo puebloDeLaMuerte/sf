@@ -79,7 +79,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		for( String a : myWall.getArtworks().keySet() ) {
 			SM_Artwork aw = myWall.getArtworks().get(a);
-			aw.setGfx( loadImage(aw.getFilePath().getAbsolutePath())  );
+			PImage awimg = loadImage(aw.getFilePath().getAbsolutePath());
+			aw.setGfx( awimg  );
 		}
 		
 		vm = _vm;
@@ -270,7 +271,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		if( _mode == 0 ) gfx = wlGfx;
 		else			{gfx = createGraphics(width, height);
-		System.out.println("WallArrangementView: drawWall: "+myWall.getWallChar());
+//		System.out.println("WallArrangementView: drawWall: "+myWall.getWallChar());
 		}
 		
 		
@@ -359,6 +360,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				}
 				// draw artwork
 				gfx.image(a.getGfx(), artworkPos.x, artworkPos.y, artworkSize.x, artworkSize.y);
+				g.removeCache(gfx);
+
 				
 				
 			
@@ -579,8 +582,12 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	}
 
 	public void keyPressed() {
-		if(keyCode == SHIFT) {
-			horizontalLoc = true;
+		if( keyCode == ESC ) {
+			key =0;
+		} else {
+			if(keyCode == SHIFT) {
+				horizontalLoc = true;
+			}
 		}
 	}
 	
@@ -602,7 +609,13 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				ArtworkUpdateRequestEvent rq = new ArtworkUpdateRequestEvent(this, awOver.getName(), awOver.getTotalWallPos()[0], (myMidHeight)+(awOver.getTotalHeight()/2)  );
 				myWall.myRoom.fireUpdateRequest(rq);
 			}
-		}
+		} else 
+			if( action.equalsIgnoreCase(Lang.RemoveArtwork) && awOver != null) {
+				WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, awOver.getName(), ' ', "Library", myWall.myRoom.getName(), awOver.getWallChar());
+
+				myWall.myRoom.fireUpdateRequest(r);
+			}
+		
 	}
 
 	@Override

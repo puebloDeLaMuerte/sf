@@ -112,6 +112,7 @@ public class Skewmator extends PApplet {
 		skewGraphics = createGraphics((int)boxXsize, (int)boxYsize);
 		skewGraphics.beginDraw();
 		skewGraphics.image(inImage,0,0,skewGraphics.width, skewGraphics.height);
+		g.removeCache(skewGraphics);
 		skewGraphics.endDraw();
 		
 		PImage skewedImage = skewImage(skewGraphics, boxRelativeLO, boxRelativeRO, boxRelativeRU, boxRelativeLU);
@@ -132,6 +133,7 @@ public class Skewmator extends PApplet {
 		sizedReturnImage.beginDraw();
 
 		sizedReturnImage.image(skewedImage, boxAnchorSmallPicRelative.x*scale, boxAnchorSmallPicRelative.y*scale, skewedImage.width*scale, skewedImage.height*scale );
+		g.removeCache(sizedReturnImage);
 		sizedReturnImage.endDraw();
 		
 		// the image is now ready to be drawn onto any surface that 
