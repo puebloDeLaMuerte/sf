@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import javax.swing.JFrame;
 import artworkUpdateModel.ArtworkUpdateEvent;
@@ -21,7 +22,7 @@ import sfrenderer.SM_Renderer;
 
 public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUpdateListener {
 	
-	private SM_RoomArrangementView								view;
+	private SM_RoomArrangementView								myRoomArrView;
 	private SM_WindowManager									wm;
 
 	
@@ -37,13 +38,13 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 	
 	public SM_ViewManager(SM_RoomArrangementView _view, SM_WindowManager _wm, SM_ViewAngle[] _vas) {
 		
-		view = _view;
+		myRoomArrView = _view;
 		
 //		view.registerMethod("post", this);
 		
 		wm = _wm;
 		viewAngles = _vas;
-		currentAngle = view.myRoom.getDefaultView();
+		currentAngle = myRoomArrView.myRoom.getDefaultView();
 		registerUpdateListener(this);
 		
 		for( SM_ViewAngle va : viewAngles ) {
@@ -51,7 +52,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		}
 		
 		for(SM_ViewAngle va : viewAngles ) {
-			String defView = view.myRoom.getDefaultView();
+			String defView = myRoomArrView.myRoom.getDefaultView();
 			if( va.getName().equalsIgnoreCase(defView)) {
 				
 				initRenderer(va);
@@ -66,7 +67,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		
 		for(SM_ViewAngle va : viewAngles ) {
 			if( va.getName().equalsIgnoreCase(currentAngle)) {
-				view.setVisibleViews(va.getWallCharsAsString());
+				myRoomArrView.setVisibleViews(va.getWallCharsAsString());
 			}
 		}
 		
@@ -100,7 +101,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
-		renderer = new SM_Renderer(this,  _va, view.myRoom.getFilePath(), wm.getRaster().height*2);
+		renderer = new SM_Renderer(this,  _va, myRoomArrView.myRoom.getFilePath(), wm.getRaster().height*2);
 		System.out.println("renderer given this height: "+wm.getRaster().height*2);
 		
 		renderer.frame = f;
@@ -158,7 +159,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		} else {
 			maxAvailableSpace = wm.getRaster();
 		}
-		SM_WallArrangementView wallArr = new SM_WallArrangementView((SM_Wall)view.myWalls.get(_wall), maxAvailableSpace, this );
+		SM_WallArrangementView wallArr = new SM_WallArrangementView((SM_Wall)myRoomArrView.myWalls.get(_wall), maxAvailableSpace, this );
 		
 		
 		wallArr.frame = f;
@@ -183,7 +184,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		for(String w : wallArrangementViews.keySet()) {
 			if(wallArrangementViews.get(w) != null && !wallArrangementViews.get(w).isSleeping() ) retStrg += w;
 		}
-		view.setActiveViews(retStrg);
+		myRoomArrView.setActiveViews(retStrg);
 	}
 	
 	
@@ -210,7 +211,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 	}
 	
 	public synchronized SM_RoomArrangementView getView() {
-		return view;
+		return myRoomArrView;
 	}
 	
 	public synchronized boolean isRendererMenuOpen() {
@@ -241,7 +242,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 	}
 
 	public synchronized PImage getWallGfx(Character _wc, int _shdwOfset) {
-		System.out.println("this is the vm, we're getting from this: "+_wc);
+		System.out.println("VM: getWallGfx:"+_wc);
 
 		if( wallArrangementViews.get(""+_wc) != null ) {
 			return wallArrangementViews.get(""+_wc).drawWall( 1 , _shdwOfset );
@@ -256,33 +257,25 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 			System.out.println("This has happened: "+e.getActionCommand());
 			ViewMenuItem sourceItem = (ViewMenuItem)e.getSource();
 			
-			System.out.println("###\nlooking for this viewAngle: "+e.getActionCommand()+"\nin this list of viewAngles:");
-			for(SM_ViewAngle va : viewAngles ) {
-				System.out.println(va.getWallCharsAsString()+".");
-			}
-			
-			
-			
-			for(SM_ViewAngle va : viewAngles ) {
-				
-				String v = e.getActionCommand();
-				
-//				System.out.println();
-//				System.out.println("looking for this sequence from event:\n  "+v);
-//				System.out.println("comparing with this from view:\n  "+va.getWallCharsAsString());
-				
-				if( va.getWallCharsAsString().equalsIgnoreCase(v)) {
-					renderer.changeView(va);
-					view.setVisibleViews(va.getWallCharsAsString());
-				}
-			}
-			
-			
 			
 			for(String s : wallArrangementViews.keySet()) {
 
 				if( ! sourceItem.getActionCommand().contains(s)) {
 					if ( wallArrangementViews.get(s) != null ) {
+						
+						
+						
+						 // make Artwork Graphics null, hope for heapspace to be cleared!
+						//
+						SM_Wall w = wallArrangementViews.get(s).getWall();
+						HashMap<String, SM_Artwork> aws = w.getArtworks();
+						for( String as : aws.keySet() ) {
+							SM_Artwork aw = w.getArtwork(as);
+							aw.unloadGraphics();
+						}
+							
+						
+						
 						wallArrangementViews.get(s).setVisible(false);
 						wallArrangementViews.get(s).frame.setVisible(false);
 						wallArrangementViews.get(s).dispose();
@@ -294,6 +287,16 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 			for(char w : sourceItem.getActionCommand().toCharArray() ) {
 				if( wallArrangementViews.get(""+w) == null ) {
 					wallArrangementViews.put(""+w, initWallArrangementView(w, 0));
+				}
+			}
+			
+			for(SM_ViewAngle va : viewAngles ) {
+				
+				String v = e.getActionCommand();
+				
+				if( va.getWallCharsAsString().equalsIgnoreCase(v)) {
+					renderer.changeView(va);
+					myRoomArrView.setVisibleViews(va.getWallCharsAsString());
 				}
 			}
 			doActiveViews();
@@ -442,22 +445,21 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 	}
 
 	public void registerUpdateListener(ArtworkUpdateListener _l) {
-		view.myRoom.registerUpdateListener(_l);
+		myRoomArrView.myRoom.registerUpdateListener(_l);
 	}
 	
 	
 	public void unregisterUpdateListener(ArtworkUpdateListener _l) {
-		view.myRoom.unregisterUpdateListener(_l);
+		myRoomArrView.myRoom.unregisterUpdateListener(_l);
 	}
 
 	@Override
 	public void artworkUpdate(ArtworkUpdateEvent e) {
-		System.out.println("vm Is Receiving");
 		
 		LinkedHashMap<String, Object> w = e.getData();
 		
 		for( String s : w.keySet() ) {
-			System.out.println("vm empfängt ArtworkUpdateEvent,\nes finden sich folgende werte in data:\n   "+s+": "+w.get(s));
+			System.out.println("VM: receiving update request: "+s+": "+w.get(s));
 			if( s.contains("wall") ) {
 				Object o = w.get(s);
 				String os = (String)o;

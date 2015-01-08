@@ -35,7 +35,6 @@ public class SM_ViewAngle {
 	
 	public Float[] getWallSkew(Character _w) {
 		String querystrng = "w"+myName.substring(1, myName.lastIndexOf('_')+1)+_w;
-		System.out.println("wallSkew Query:\n  the char: "+_w+"\n  the generated query string: "+querystrng);
 		Float[] ar = wallSkew.get(querystrng);
 		if( ar != null && ar.length == 10) return ar;
 		else return null;
@@ -52,7 +51,6 @@ public class SM_ViewAngle {
 	
 	public Float[] getWallCrop(Character _w) {
 		String querystrng = "w"+myName.substring(1, myName.lastIndexOf('_')+1)+_w;
-		System.out.println("wallCrop Query:\n  the char: "+_w+"\n  the generated query string: "+querystrng);
 		Float[] ar = wallCrop.get(querystrng);
 		return ar;
 	}

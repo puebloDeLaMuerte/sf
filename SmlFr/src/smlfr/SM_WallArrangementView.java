@@ -1,5 +1,6 @@
 package smlfr;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.dnd.DropTarget;
@@ -260,13 +261,17 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	}
 	
 	public synchronized PGraphics drawWall( int _mode, int shadowOfset) {
+		
+		
 //		wlGfxReady = false;
 		loadMissingAWGraphics();
 		
 		PGraphics gfx;
 		
 		if( _mode == 0 ) gfx = wlGfx;
-		else			 gfx = createGraphics(width, height);
+		else			{gfx = createGraphics(width, height);
+		System.out.println("WallArrangementView: drawWall: "+myWall.getWallChar());
+		}
 		
 		
 		gfx.clear();
@@ -493,8 +498,12 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		return myWall.getWallName();
 	}
 
+	public SM_Wall getWall() {
+		return myWall;
+	}
+	
 	@Override
-	public void artworkUpdate(ArtworkUpdateEvent e) {
+ 	public void artworkUpdate(ArtworkUpdateEvent e) {
 		artworkUpdatePending = true;
 	}
 	
@@ -619,6 +628,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		if(dtde.getCurrentDataFlavors()[0] == SM_DataFlavor.SM_AW_Flavor) {
 
+			
 			try {
 
 				String[] arr = (String[])dtde.getTransferable().getTransferData(SM_DataFlavor.SM_AW_Flavor);

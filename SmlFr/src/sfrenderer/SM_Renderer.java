@@ -49,14 +49,14 @@ public class SM_Renderer extends PApplet{
 	private PImage[] layers;
 	private float r, g, b;
 	private boolean b1 = true;
-	private boolean b2 = true;
+	private boolean b2 = false;
 	private boolean b3 = false;
 	private boolean b4 = true;
 	private boolean b5 = true;
 
-	private PGraphics 				texture;
-	private PImage 					textureIMG;
-	private PImage 					bild ;
+//	private PGraphics 				texture;
+//	private PImage 					textureIMG;
+//	private PImage 					bild ;
 	
 	private PGraphics				cropMask;
 	private PGraphics[]				wallGfxs;
@@ -79,13 +79,14 @@ public class SM_Renderer extends PApplet{
 
 	
 	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath, int _YSize) {
-		super();
+//		super();
 		vm = _vm;
 		skewmator = new Skewmator(photoX, photoY);
 		skewmator.init();
 		tGen = new pTimedEventGenerator(this);
 		
 		initMenu();
+		
 		
 		generalPath = _filePath;
 		currentView = _defaultView;
@@ -104,13 +105,26 @@ public class SM_Renderer extends PApplet{
 		
 		System.out.println("\n\n\nVIEW CHANGED in rendddd   "+_view.getName());
 		
-		layers = null;
-		System.gc();
+//		layers = null;
+//		System.gc();
 		
 		currentView = _view;
 		currentViewString = currentView.getName();
 		setCurrentPath(currentViewString);
 		setup();
+		
+		while( !setupRun) {
+			System.out.println("SETUP IS NOT RUNNING");
+		}
+		
+		
+		
+		for( Character wc : _view.getWallChars() ) {
+			
+			vm.requestRendererUpdate(wc);
+			
+		}
+		System.gc();
 		redraw();
 	}
 	
@@ -146,6 +160,8 @@ public class SM_Renderer extends PApplet{
 	
 	public void setup() {
 		
+		setupRun = false;
+		
 		frame.setTitle(currentViewString.substring(2));
 		layers = new PImage[7];
 		layers[0] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Hintergrund.png");
@@ -178,8 +194,7 @@ public class SM_Renderer extends PApplet{
 		 */
 		layers[1] = new PImage(layers[0].width,layers[0].height);
 		layers[2] = new PImage(layers[0].width,layers[0].height); // VIEWMANAGER
-//		layers[3] = new PImage(layers[0].width,layers[0].height); // VIEWMANAGER
-		layers[3] = new PImage(layers[0].width,layers[0].height);
+		layers[3] = new PImage(layers[0].width,layers[0].height); // VIEWMANAGER
 		layers[4] = new PImage(layers[0].width,layers[0].height);
 		layers[5] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Farbe.png");
 		layers[6] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Schatten.png");
@@ -235,7 +250,7 @@ public class SM_Renderer extends PApplet{
 
 	public void updateArtworksLayer( char _wallChar) {
 		
-		System.out.println("updating... "+_wallChar);
+		System.out.println("RENDERER: updating... "+_wallChar);
 		
 //		artworksLayer.clear();
 		
@@ -259,9 +274,9 @@ public class SM_Renderer extends PApplet{
 				}
 				
 				PImage wallGfx = null;
-				while( ! vm.isWallGfxReady(_wallChar) ) {
+//				while( ! vm.isWallGfxReady(_wallChar) ) {
 //					 System.out.println("waiting for "+_wallChar);
-				}
+//				}
 				
 				wallGfx = vm.getWallGfx(_wallChar, shadowOfset);
 				
@@ -274,7 +289,7 @@ public class SM_Renderer extends PApplet{
 							
 							
 							
-							System.out.println("painting on wall ["+i+"] : +"+_wallChar);
+							System.out.println("RENDERER: painting on wall ["+i+"] : "+_wallChar);
 							wallGfxs[i].beginDraw();
 							wallGfxs[i].clear();
 //							wallGfxs[i].image(wallGfx,0,0);
@@ -412,7 +427,7 @@ public class SM_Renderer extends PApplet{
 			popStyle();
 		}
 
-		drawGUI();
+//		drawGUI();
 		
 	}
 

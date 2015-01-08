@@ -145,6 +145,7 @@ public class SM_WindowManager{
 			base.lib.setLocation(0, 0);
 			
 			state = progState.PROJECT;
+			System.gc();
 		}
 	}
 	

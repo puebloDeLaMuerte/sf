@@ -1,7 +1,7 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/dds/dds.sfp",
-    "projectName": "dds"
+    "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/Kräftemessen/Kräftemessen.sfp",
+    "projectName": "Kräftemessen"
   },
   "fileChooserCurrentDirectory": "/Users/philipptoegel/PROJEKTE/Föhr/dds",
   "museumData": "MuKuDeWe.sfm"

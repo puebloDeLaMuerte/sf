@@ -108,7 +108,6 @@ public class Skewmator extends PApplet {
 		// finally skew the image
 		// first, fill the skewbox with the image (distorting it)
 		
-		System.out.println("box: "+boxXsize+" X "+boxYsize);
 		
 		skewGraphics = createGraphics((int)boxXsize, (int)boxYsize);
 		skewGraphics.beginDraw();

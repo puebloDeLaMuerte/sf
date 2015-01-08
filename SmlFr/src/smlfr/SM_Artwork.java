@@ -363,6 +363,10 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		else return true;
 	}
 	
+	public void unloadGraphics() {
+		myGfx = null;
+	}
+	
 	public boolean hasThumb() {
 		if( myThumb == null ) return false;
 		else return true;
