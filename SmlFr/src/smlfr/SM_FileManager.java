@@ -630,7 +630,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 		
 		System.out.println("the Target is: "+targetWall);
-		System.out.println("the Origin is: "+targetWall);
+		System.out.println("the Origin is: "+originWall);
 		
 		// update artwork
 		// update room (Target)
