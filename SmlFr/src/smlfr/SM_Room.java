@@ -384,4 +384,54 @@ public class SM_Room {
 	public boolean requestSave() {
 		return base.fm.requestSave();
 	}
+
+	public void exportMeasures(Character[] _forWalls) {
+		
+		System.out.println("exporting room "+myRealName+" with selected Walls: "+_forWalls);
+		
+		SM_ExportWall[] exwls= new SM_ExportWall[_forWalls.length];
+		
+		// init export Walls and Artworks
+		
+		for( int i=0; i<_forWalls.length; i++) {
+			
+			System.out.println("init wall nr. "+i);
+			
+			SM_Wall wl 					= myWalls.get(_forWalls[i]);
+			
+			SM_Artwork[] aws 			= wl.hasArtworks();
+			SM_ExportArtwork[] exaws	= new SM_ExportArtwork[aws.length];
+			
+			for( int ii =0; ii< aws.length; ii++) {		
+				exaws[ii] = new SM_ExportArtwork(aws[ii].getName(), aws[ii].getTotalWallPos(), aws[ii].getTotalWidth(), aws[ii].getTotalHeight()); 
+			}
+			
+			exwls[i] = new SM_ExportWall(wl.getWallName(), exaws, wl.getWidth(), wl.getHeight());
+			
+		}
+		
+		SM_Exporter export = new SM_Exporter(exwls, "tempExport/Roomname.pdf", myRealName);
+		
+		export.init();
+		
+		
+		System.out.println("export should be done");
+		
+		
+		
+		
+	}
+
+	
+	
+	
+	
 }
+
+
+
+
+
+
+
+

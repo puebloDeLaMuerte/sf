@@ -1,8 +1,8 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/Kräftemessen/Kräftemessen.sfp",
+    "projectPath": "/Users/philipptoegel/Desktop/A2java/send/Kräftemessen/Kräftemessen.sfp",
     "projectName": "Kräftemessen"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/PROJEKTE/Föhr/dds",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/A2java/send/Kräftemessen",
   "museumData": "MuKuDeWe.sfm"
 }

@@ -46,7 +46,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	LinkedHashMap<Character, SM_Wall>			myWalls;
     private DragSource							ds;
     private JPopupMenu							pMenu;
-    private JMenuItem							pMenuRemoveArtwork, pMenuEnterExitRoom, quitSF, savePr;
+    private JMenuItem							pMenuRemoveArtwork, pMenuEnterExitRoom, quitSF, savePr, export;
 
 	
 	// utils
@@ -97,10 +97,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		quitSF.addActionListener(this);
 		savePr = new JMenuItem(Lang.saveProject);
 		savePr.addActionListener(this);
+		export = new JMenuItem(Lang.exportMenu);
+		export.addActionListener(this);
+		
 		pMenu.add(pMenuRemoveArtwork);
 		pMenu.add(new JSeparator());
 		pMenu.add(pMenuEnterExitRoom);
 		pMenu.add(new JSeparator());
+		pMenu.add(export);
 		pMenu.add(savePr);
 		pMenu.add(new JSeparator());
 		pMenu.add(quitSF);
@@ -623,6 +627,10 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			
 //			if(saved) javax.swing.JOptionPane.showConfirmDialog(null, Lang.saved, "", javax.swing.JOptionPane.OK_OPTION, javax.swing.JOptionPane.INFORMATION_MESSAGE);
 			if(saved) javax.swing.JOptionPane.showMessageDialog(null, Lang.saved);
+		} else if( e.getActionCommand().equalsIgnoreCase(Lang.exportMenu)){
+			
+			myRoom.exportMeasures(myWalls.keySet().toArray(new Character[myWalls.keySet().size()]));
+			
 		}
 		
 	}

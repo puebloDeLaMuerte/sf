@@ -6,7 +6,7 @@ public class Lang {
 	
 	// errors: File Loading
 	public static String	warning = "Warnung!";
-	public static String 	couldntFindResourceFolder = "Der Ordner \"resources\" konnte nicht gefunden werden.\nStellen Sie sicher, dass er sich im selben Verzeichnis mit SimulFöhr.exe befindet.";
+	public static String 	couldntFindResourceFolder = "Der Ordner \"resources\" konnte nicht gefunden werden.\nStellen Sie sicher, dass er sich im selben Verzeichnis mit SimuFöhr.exe befindet.";
 	public static String 	couldntFindPrefs = "Die Voreinstellungs-Datei konnte nicht gefunden werden! \nBitte überprüfen Sie, ob sie sich im Ordner \"resources\" befindet.";
 	public static String 	couldntLoadPrefs = "Die Voreinstellungs-Datei konnte nicht geladen werden.\nMöglicherweise ist die datei beschädigt.";
 	public static String 	couldntFindMuseum = "Die Museums-Datei konnte nicht gefunden werden! \nBitte überprüfen Sie, ob sie sich im Ordner \"resources\" befindet.";
@@ -29,7 +29,7 @@ public class Lang {
 	public static String	wall = "Wand";
 	
 	// questions
-	public static String 	initializeFromWhereTitle = "Willkommen zu SimulFöhr!";
+	public static String 	initializeFromWhereTitle = "Willkommen zu SimuFöhr!";
 	public static String 	initializeFromWhere_1 = "Zuletzt geöffnetes Projekt:\n\"";
 	public static String 	initializeFromWhere_2 = "\"\n\nMöchten Sie dieses Projekt öffnen, ein neues erstellen,\noder ein anderes Projekt laden?";
 	public static String	loadProjectTitle = "Projekt laden...";
@@ -54,7 +54,7 @@ public class Lang {
 	
 	// Control Elements
 	public static String[]	initializeFromWhereButtons = new String[] { "Neues Projekt", "Projekt laden...", "letztes öffnen" };
-	public static String	SM_filetypes = "Nur SimulFöhr Dateien";
+	public static String	SM_filetypes = "Nur SimuFöhr Dateien";
 	public static enum 		sortOptions { Künstler, Titel, InvNr, Größe };
 	public static String	sortLibBy = "sortieren nach:";
 	public static String	importBtn = "Importieren";
@@ -66,5 +66,9 @@ public class Lang {
 	public static String 	exitRoom = "Raum verlassen";
 	public static String	closeWall = "Wand schließen";
 	public static String 	selectView = "Wählen Sie eine Ansicht:";
+	
+	// Export
+	
+	public static String	exportMenu = "Maße exportieren...";
 	
 	}
