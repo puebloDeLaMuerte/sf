@@ -449,6 +449,14 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return new File(tmp.substring(0, tmp.lastIndexOf('.'))+"_lib");
 	}
 	
+	public String getProjectName() {
+		return currentProjectName;
+	}
+	
+	public String getProjectFolderPath() {
+		return projectPath.getParent();
+	}
+	
 	// ARTWORK
 	
 	public synchronized JSONObject loadArtwork(String _name) {
@@ -459,7 +467,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			aw = loadJSONObject(filePath);
 		}
 		else {
-			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntLoadArtwork, "couldn't load ...", javax.swing.JOptionPane.WARNING_MESSAGE, icon);
+			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntLoadArtwork+"\npath: "+filePath, "couldn't load ...", javax.swing.JOptionPane.WARNING_MESSAGE, icon);
 			System.exit(1);
 			aw=null;
 		}

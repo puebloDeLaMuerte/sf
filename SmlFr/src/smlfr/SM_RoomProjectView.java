@@ -388,6 +388,11 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		return wallsActiveGfx;
 	}
 	
+	public PShape getGreyWalls() {
+		if( greyRoom != null ) return greyRoom;
+		else return null;
+	}
+	
 	public char getWallOverChar() {
 		return wallOver;
 	}

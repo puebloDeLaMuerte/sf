@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import javax.swing.JFrame;
 
+import SMUtils.Lang;
 import SMUtils.awFileSize;
 import SMUtils.progState;
 import artworkUpdateModel.ArtworkUpdateListener;
@@ -25,6 +26,7 @@ import artworkUpdateModel.ArtworkUpdateRequestListener;
 //import com.sun.tools.jdi.LinkedHashMap;
 
 import processing.core.PImage;
+import processing.core.PShape;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 
@@ -387,7 +389,6 @@ public class SM_Room {
 
 	public void exportMeasures(Character[] _forWalls) {
 		
-		System.out.println("exporting room "+myRealName+" with selected Walls: "+_forWalls);
 		
 		SM_ExportWall[] exwls= new SM_ExportWall[_forWalls.length];
 		
@@ -406,18 +407,38 @@ public class SM_Room {
 				exaws[ii] = new SM_ExportArtwork(aws[ii].getName(), aws[ii].getTotalWallPos(), aws[ii].getTotalWidth(), aws[ii].getTotalHeight()); 
 			}
 			
-			exwls[i] = new SM_ExportWall(wl.getWallName(), exaws, wl.getWidth(), wl.getHeight());
+			exwls[i] = new SM_ExportWall(""+wl.getWallChar(), exaws, wl.getWidth(), wl.getHeight());
 			
 		}
 		
-		SM_Exporter export = new SM_Exporter(exwls, "tempExport/Roomname.pdf", myRealName);
+		PShape grundriss = null;
+		
+		if( myProjectView != null ) {
+			grundriss = myProjectView.getGreyWalls();
+		}
+		else if(myArrangementView != null ) {
+			grundriss = myArrangementView.getGreyWalls();
+		}
+		
+		String saveLoc = base.fm.getProjectFolderPath()+"/export/"+myRealName+".pdf";
+		System.out.println("The export will be saved to: "+saveLoc);
+		
+		SM_Exporter export = new SM_Exporter(exwls, saveLoc, myRealName, base.fm.getProjectName(), grundriss);
 		
 		export.init();
 		
+		while( !export.isExportDone ) {
+			try {
+				Thread.sleep(50);
+			} catch (Exception e) {
+
+			}
+		}
+		export.stop();
+		export.dispose();
+		export = null;
 		
-		System.out.println("export should be done");
-		
-		
+		javax.swing.JOptionPane.showMessageDialog(null, Lang.exportSuccess_1 + ".../"+base.fm.getProjectName()+"/export/"+myRealName+".pdf");
 		
 		
 	}

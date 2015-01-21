@@ -39,6 +39,7 @@ public class Lang {
 	public static String[]  importNowBtns = new String[] { "später", "Ja" };
 	public static String 	importNow = "Wollen Sie jetzt bereits Kunstwerke importieren,\noder ein leeres Projekt erstellen?";
 	public static Object 	importNowTitle = "Kunstwerke importieren?";
+	public static String	importPleaseWait = "Importiere Kunstwerke ...\nBitte haben Sie etwas Geduld.";
 	public static Object 	newProjectName = "Projektname:";
 	public static String 	newProjectNameTitle = "Neues Projekt...";
 	public static Object[]	newProjectOptions = new String[] {"abbrechen", "erstellen"};
@@ -69,6 +70,14 @@ public class Lang {
 	
 	// Export
 	
-	public static String	exportMenu = "Maße exportieren...";
+	public static String	exportMenu 			= "Maße exportieren...";
+	public static String	measureSheetTitle 	= "Projekt:";
+	public static String	exportRoomName 		= "Raum:";
+	public static String	exportWallName 		= "Wand:";
+	public static String	exportWallMeasures 	= "Wandmaß (mm):";
+	public static String	exportDate			= "Stand:";
+	public static String	exportListTitle	    = "Hängung-Listenansicht: (horizontal x vertikal in mm)";
+	public static String	exportSuccess_1		= "Die Vermaßungsdatei wurde erfolgreich exportiert.\n\nSie befindet sich in Projektordner unter\n";
+	public static String	exportSuccess_2		= "";
 	
 	}

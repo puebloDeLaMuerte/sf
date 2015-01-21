@@ -4,19 +4,27 @@ public class SM_ExportArtwork {
 	
 	
 	// upon init
-	int 				myWallPosX, myWallPosY;
-	int 				myWidth, myHeight;
-	String 				myName;
-	SM_ExportWall 		myWall;
+	private int 				myWallPosX, myWallPosY;
+	private int 				myWidth, myHeight;
+	private String 				myName;
+	private SM_ExportWall 		myWall;
 	
 	// calculated
-	SM_ExportArtwork 	myNearestNeighbourX;
-	int 				distanceToNeighbourX;
-	SM_ExportArtwork 	myNearestNeighbourY;
-	int 				distanceToNeighbourY;
+	private SM_ExportArtwork 	myNearestNeighbourX;
+	private int 				distanceToNeighbourX;
+	private SM_ExportArtwork 	myNearestNeighbourY;
+	private int 				distanceToNeighbourY;
 	
-	int[] 				myXDistDrawPos;
-	int[]				myYDistDrawPos;
+	private int[] 				myXDistDrawPos;
+	private int[]				myYDistDrawPos;
+	
+	private boolean				isRightmost;
+	private int					distanceToRight;
+	private boolean				isLowest;
+	private int					distanceToBottom;
+	
+	private int[]				distRightDrawPos;
+	private int[]				distBottomDrawPos;
 
 	public SM_ExportArtwork( String _myName, int[] _myWallPos, int _myWidth, int _myHeight) {
 		super();
@@ -55,6 +63,30 @@ public class SM_ExportArtwork {
 		return myName;
 	}
 	
+	public boolean isRightmost() {
+		return isRightmost;
+	}
+	
+	public boolean isLowest() {
+		return isLowest;
+	}
+	
+	public int getDistanceToBottom() {
+		return distanceToBottom;
+	}
+	
+	public int getDistanceToRight() {
+		return distanceToRight;
+	}
+	
+	public int[] getDistToRightDrawPos() {
+		return distRightDrawPos;
+	}
+	
+	public int[] getDistToBottomDrawPos() {
+		return distBottomDrawPos;
+	}
+	
 	public boolean hasNearestX() {
 		if( myNearestNeighbourX != null ) {
 			return true;
@@ -91,6 +123,7 @@ public class SM_ExportArtwork {
 		
 		int distance = myWall.getHeight();
 		SM_ExportArtwork nearest = null;
+		isLowest = true;
 		
 		for( SM_ExportArtwork it : artworks ) {
 			
@@ -106,6 +139,10 @@ public class SM_ExportArtwork {
 						distance = thisDistance;
 						nearest = it;
 					}
+					else if( thisDistance < 0 ) {
+						isLowest = false;
+					}
+					
 				}
 			}
 		}
@@ -120,7 +157,8 @@ public class SM_ExportArtwork {
 		
 		distance = myWall.getWidth();
 		nearest = null;
-
+		isRightmost = true;
+		
 		for( SM_ExportArtwork it : artworks ) {
 
 			if ( it != this ) {
@@ -133,6 +171,9 @@ public class SM_ExportArtwork {
 					if ( thisDistance >= 0 && thisDistance < distance) {
 						distance = thisDistance;
 						nearest = it;
+					}
+					else if( thisDistance < 0 ) {
+						isRightmost = false;
 					}
 				}
 			}
@@ -198,6 +239,30 @@ public class SM_ExportArtwork {
 //
 //			myXDistDrawPos[0] = myNearestNeighbourX.getWallPosX() + myNearestNeighbourX.getWidth();
 //			myXDistDrawPos[2] = myWallPosX;
+		}
+		
+		if( isRightmost ) {
+			distanceToRight = myWall.getWidth() - myWallPosX - myWidth;
+			
+			distRightDrawPos = new int[4];
+			
+			distRightDrawPos[0] = myWallPosX + myWidth;
+			distRightDrawPos[1] = myWallPosY + (myHeight/2);
+			distRightDrawPos[2] = myWall.getWidth();
+			distRightDrawPos[3] = distRightDrawPos[1];
+		}
+		
+		if( isLowest ) {
+			distanceToBottom = myWall.getHeight() - myWallPosY - myHeight;
+			
+			distBottomDrawPos = new int[4];
+			
+			distBottomDrawPos[0] = myWallPosX + (myWidth / 2);
+			distBottomDrawPos[1] = myWallPosY + myHeight;
+			distBottomDrawPos[2] = distBottomDrawPos[0];
+			distBottomDrawPos[3] = myWall.getHeight();
+					
+			
 		}
 		
 		

@@ -1,12 +1,18 @@
 package smimport;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.LinkedHashMap;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.data.JSONObject;
@@ -64,11 +70,21 @@ public class SM_Import extends PApplet  {
 	
 	public String[] batchImport(File _artLibSaveLocation) {
 		
+		
+		JFrame pan = new JFrame();
+		JTextArea txt = new JTextArea(Lang.importPleaseWait);
+		pan.add(txt);
+		pan.setSize(250, 80);
+		pan.setLocation(200, 200);
+		pan.setVisible(true);
+
 		System.out.println("will import artworks to this location: "+_artLibSaveLocation.getAbsolutePath());
 		
 		File excelLocation = ex.loadExcelData();
 		
 		System.out.println("we got our exel from here\n we'll get the images from here!\n"+excelLocation.getAbsolutePath());
+
+
 		
 		LinkedHashMap<String, JSONObject> importArtworks = new LinkedHashMap<String, JSONObject>();
 		ArrayList<String> unimportedArtworks = new ArrayList<String>();
@@ -187,6 +203,8 @@ public class SM_Import extends PApplet  {
 				
 				// Load the Image
 				
+				System.out.println("trying to load this image file: " + excelLocation.getAbsolutePath()+"/"+iNr+".png");
+				
 				PImage fullGfx = loadImage(excelLocation.getAbsolutePath()+"/"+iNr+".png");
 				if( fullGfx == null )   {
 					throw new EmptyStackException();
@@ -247,7 +265,6 @@ public class SM_Import extends PApplet  {
 //				File savelocation = excelLocation;
 				File saveLocation = _artLibSaveLocation;
 				
-				System.out.println("THE LIBRARY WILL BE SAVED HERE !!!" + _artLibSaveLocation.getAbsolutePath());
 				
 				
 				saveJSONObject(aw, saveLocation.getAbsolutePath()+"/"+iNr+".sfa");
@@ -273,6 +290,8 @@ public class SM_Import extends PApplet  {
 			
 		}
 		
+		pan.setVisible(false);
+		pan = null;
 		
 		
 		// Message: Success
@@ -289,6 +308,7 @@ public class SM_Import extends PApplet  {
 		uim += Lang.couldntImport_2;
 //		javax.swing.JOptionPane.showConfirmDialog(p, uim);
 		javax.swing.JOptionPane.showMessageDialog(p, uim, Lang.warning, javax.swing.JOptionPane.WARNING_MESSAGE);
+
 
 		
 		return sucessfulImports.toArray(new String[sucessCount]);
