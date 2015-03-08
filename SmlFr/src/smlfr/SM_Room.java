@@ -48,6 +48,7 @@ public class SM_Room {
 	private SmlFr								base;
 	private boolean								entered;
 	private File								myFilePath;
+	private int									myRoomColor;
 
 	private ArtworkUpdateRequestListener		requestListener;
 
@@ -59,7 +60,7 @@ public class SM_Room {
 		myRoomName = _name;
 		myRealName = _jRoom.getString("roomRealName");
 		myDefaultViewAngle = _jRoom.getString("defaultViewAngle");
-
+		myRoomColor = 0;
 		requestListener = base.getFileManager();
 
 		/// Walls:
@@ -73,7 +74,6 @@ public class SM_Room {
 			}
 		}
 		
-		System.out.println("the room wants to init "+count+" walls!");
 		
 		myWalls = new LinkedHashMap<Character, SM_Wall>();
 		count = 0;
@@ -82,7 +82,6 @@ public class SM_Room {
 			String str = (String)it.next();
 			if(str.startsWith("w_")) {
 				char key = str.charAt(str.length()-1);
-				System.out.println("...making wall nr "+count+" the char is: "+key);
 				myWalls.put(key, new SM_Wall(str, _jRoom.getJSONObject(str), this, base.fm));
 				count++;
 			}
@@ -116,7 +115,7 @@ public class SM_Room {
 				JSONArray relViews = _jRoom.getJSONObject(wallName).getJSONArray("relatedViews");
 				for( int v=0; v<relViews.size(); v++) {
 					if( relViews.getJSONObject(v).getString("viewName").equalsIgnoreCase(thisAngle) ){
-						System.out.println(""+thisAngle);
+
 						for(int f=0; f<10; f++) {
 							skews[f] = relViews.getJSONObject(v).getJSONArray("viewSkew").getFloat(f);
 						}
@@ -292,6 +291,17 @@ public class SM_Room {
 		w.addArtwork(_aw, _aw.getName());
 	}
 	
+	public void setRoomcolor( int _c) {
+		myRoomColor = _c;
+	}
+	
+	public int getRoomColor() {
+		if (myRoomColor == 0) {
+			return -1;
+		}
+		else return myRoomColor;
+	}
+	
 	public String getName() {
 		return myRoomName;
 	}
@@ -318,13 +328,13 @@ public class SM_Room {
 	}
 	
 	public void endView() {
-		System.out.println("i, the room, should now end my view...");
+
 		if( myProjectView != null ) {
-			System.out.println("exiting ProjView"+myRoomName);
+
 			myProjectView.dispose();
 			myProjectView = null;
 		} else if( myArrangementView != null) {
-			System.out.println("exiting ArrView"+myRoomName);
+
 			myArrangementView.disposeVM(this);
 			myArrangementView.dispose();
 			myArrangementView = null;
@@ -396,7 +406,6 @@ public class SM_Room {
 		
 		for( int i=0; i<_forWalls.length; i++) {
 			
-			System.out.println("init wall nr. "+i);
 			
 			SM_Wall wl 					= myWalls.get(_forWalls[i]);
 			

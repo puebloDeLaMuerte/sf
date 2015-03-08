@@ -82,6 +82,12 @@ public class SM_Import extends PApplet  {
 		
 		File excelLocation = ex.loadExcelData();
 		
+		if(excelLocation == null ) {
+			pan.setVisible(false);
+			pan = null;
+			return null;
+		}
+		
 		System.out.println("we got our exel from here\n we'll get the images from here!\n"+excelLocation.getAbsolutePath());
 
 
@@ -200,11 +206,29 @@ public class SM_Import extends PApplet  {
 			String iNr = aw.getString("invNr");
 			
 			try {
+
+				// check if artwork already exists in project
+				String[] presentArtworks = fm.getArtLibraryFromProject();
 				
-				// Load the Image
+				
+				for (int i = 0; i < presentArtworks.length; i++) {
+					String checkAw = presentArtworks[i];
+					if( checkAw.equalsIgnoreCase(iNr)) {
+						
+						String non = "";
+						non += iNr;
+						non += " - ";
+						non += aw.getString("title");
+						JPanel p = new JPanel();
+						
+						javax.swing.JOptionPane.showMessageDialog(p, Lang.importArtworkAlreadyExists + non, Lang.warning, javax.swing.JOptionPane.WARNING_MESSAGE);
+						throw new EmptyStackException();
+					}
+				}
 				
 				System.out.println("trying to load this image file: " + excelLocation.getAbsolutePath()+"/"+iNr+".png");
 				
+				// Load the Image
 				PImage fullGfx = loadImage(excelLocation.getAbsolutePath()+"/"+iNr+".png");
 				if( fullGfx == null )   {
 					throw new EmptyStackException();

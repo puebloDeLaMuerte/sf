@@ -128,6 +128,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		renderer.frame.pack();
 		renderer.frame.setVisible(true);
 		renderer.frame.setLocation(wm.getScreen().width-renderer.getSize().width,0);
+		renderer.frame.setResizable(false);
 		
 //		f.setSize(renderer.getSize());
 		

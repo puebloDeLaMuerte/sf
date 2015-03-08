@@ -7,6 +7,7 @@ import processing.core.PImage;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 import SMUtils.FrameStyle;
+import SMUtils.Lang;
 import SMUtils.SM_Frames;
 
 public class SM_Artwork {
@@ -199,6 +200,16 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 	
 	public String getWall() {
 		return isInWall;
+	}
+	
+	public String getWallRealName() {
+		if( isInWall != null ) {
+			String r = isInWall.substring(isInWall.indexOf('_')+2, isInWall.lastIndexOf('_'));
+			String w = isInWall.substring(isInWall.lastIndexOf('_')+1, isInWall.length());
+			
+			return Lang.room+" " + r + " "+ Lang.wall+" " + w;
+		}
+		else return null;
 	}
 	
 	public char getWallChar() {

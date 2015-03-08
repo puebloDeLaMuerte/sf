@@ -54,12 +54,16 @@ public class SmlFr extends JFrame  {
 	
 	public static void main(String _args[]) {
 
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				SmlFr app = new SmlFr();
 				app.initialize();
+
+				
 			}
 		});
+		
 	}
 
 	
@@ -67,10 +71,7 @@ public class SmlFr extends JFrame  {
 		
 		
 		if( firstStart ) {
-			
-			
-			
-			
+
 			
 			warn = new ImageIcon("resources/sf_warning_Transp.png");
 			
@@ -93,7 +94,6 @@ public class SmlFr extends JFrame  {
 			Rectangle realscreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 			base.setSize(realscreen.width, realscreen.height);
 
-			// maybe have a rounded logo that's always displayed?
 			base.setUndecorated(true);
 			base.setBackground(new Color(1f,1f,1f));
 //			base.setBackground(new Color(1.0f,1.0f,1.0f,0.0f));
@@ -102,36 +102,54 @@ public class SmlFr extends JFrame  {
 //			base.setEnabled(false);
 			base.setVisible(true);
 			firstStart = false;
+			
+			// The SHUTDOWN HOOK
+			
+//			final Thread mainThread = Thread.currentThread();
+//				Runtime.getRuntime().addShutdownHook(new Thread() {
+//					public void run() {
+//						
+//						System.err.println("SHUTDOWNHOOK WAS CALLED!");
+//						fm.requestQuit();
+//						
+//						try {
+//							
+//							mainThread.join();
+//						} catch (InterruptedException e) {
+//							System.err.println("THE MUCH DREADED ERROR HAS OCCURED");
+//							e.printStackTrace();
+//						}
+//					}
+//				});
 		}
 		
 		if( !wm.isLoading() ) return;
 
 		
 		
+
+		
 		
 		// DIALOG Message: load a project - 
-		String msg = Lang.initializeFromWhere_1+fm.getPreviousProject()[0]+Lang.initializeFromWhere_2;
+		
+		String[] prev = fm.getPreviousProject();
+		String msg = Lang.initializeFromWhere_1 + prev[0] + Lang.initializeFromWhere_2;
+		
+		
 		int i = javax.swing.JOptionPane.showOptionDialog(null, msg, Lang.initializeFromWhereTitle, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, icon, Lang.initializeFromWhereButtons, 2);
 		
 		switch (i) {
 		case 0:
-			
-			
+						
 			File newProj = fm.newProject();
 			if(newProj != null ) fm.loadProject(newProj);
-			System.out.println("neues Projekt ausgewählt");
-			
-			
-			
 			break;
 			
 		case 1:
-			System.out.println("projekt laden ausgewählt");
 			fm.loadProject(null);
 			break;
 			
 		case 2:
-			System.out.println("letztes öffnen ausgewählt");
 			fm.loadProject(new File(fm.getPreviousProject()[1]));
 			break;
 			
@@ -146,16 +164,6 @@ public class SmlFr extends JFrame  {
 			base.initialize();
 			return;
 		}
-		
-		
-		
-		/// TEMP TEMP TEMP
-		
-//		in.batchImport(fm.getArtLibraryPath());
-
-		
-		
-		
 		
 		
 		
@@ -183,17 +191,17 @@ public class SmlFr extends JFrame  {
 		
 		// PROJECT INIT
 		
-		// // init Artworks (general)
+		// // init (general) Artworks 
 		
 		String[] aws = fm.getArtLibraryFromProject();
 		artworks = new HashMap<String, SM_Artwork>();
 		for(int a=0;a<aws.length; a++) {
-//			System.out.println(aws[a]);
+
 			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]), fm.getFilePathForArtwork(aws[a], awFileSize.MEDIUM), frameGfxs ));	
 		}
 		
 	
-		// // init Artworks (in Rooms)
+		// // init (in Rooms) Artworks
 		
 		JSONArray jRooms = fm.getRoomsInProject();
 		// rooms
@@ -213,20 +221,47 @@ public class SmlFr extends JFrame  {
 				
 				smWall.setArtworks( jWall.getJSONArray("artworks") );
 				
-				
-				Integer colorInt = 255;//jWall.getString("colorInt");  // TODO Implement Color Integer!
-				String colorBrillux = jWall.getString("colorBrillux");
-				
-				smWall.setColor( colorInt, colorBrillux );
-				
 			}
 			
 			
 		}
 		
+		// // init WallColor for Rooms and Walls if present
 		
 		
+		jRooms = fm.getRoomsInProject();
 		
+		// rooms
+		for( int r = 0; r<jRooms.size(); r++ ) {
+			
+			// get Room - set Room Color if in file:
+			
+			JSONObject jRoom = jRooms.getJSONObject(r);
+			SM_Room sfRoom = rooms.get(jRoom.getString("roomName"));
+			try {
+				int c = jRoom.getInt("roomColor");
+				sfRoom.setRoomcolor(c);
+			} catch (Exception e) {
+				sfRoom.setRoomcolor(sfRoom.getRoomColor());
+			}
+
+			// get Walls - set Wall Color if in file:
+			
+			for( Object w : sfRoom.getWalls().keySet() ) {
+				SM_Wall smWall = (SM_Wall)sfRoom.getWalls().get(w);
+				String thisWallName = smWall.getWallName();
+				JSONObject jWall = jRoom.getJSONObject(thisWallName);
+				
+				try {
+					int c = jWall.getInt("colorInt");
+					smWall.setColor(c);
+				} catch (Exception e) {
+
+					smWall.setColor(smWall.getColor());
+				}
+			}
+
+		}
 		
 		
 		

@@ -24,6 +24,7 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
+import processing.event.MouseEvent;
 import smlfr.SM_ViewAngle;
 import smlfr.SM_ViewManager;
 
@@ -69,7 +70,8 @@ public class SM_Renderer extends PApplet{
 	private int 					ySize = 600;
 	private int						photoX = 1200;
 	private int						photoY = 800;
-//	private int 					tint  = 30;
+	private float					zoomFact;
+	private int						xOffset, yOffset;
 	
 	public boolean 					setupRun = false;
 	
@@ -86,7 +88,10 @@ public class SM_Renderer extends PApplet{
 //		tGen = new pTimedEventGenerator(this);
 		
 		initMenu();
+
+		int c = color(123);
 		
+		System.err.println(c);
 		
 		generalPath = _filePath;
 		currentView = _defaultView;
@@ -168,19 +173,23 @@ public class SM_Renderer extends PApplet{
 		
 		scale = (float)ySize / (float)layers[0].width;
 		
+		zoomFact = 1.0f;
+		xOffset = 0;
+		yOffset = 0;
+		
 		String w = currentView.getWallCharsAsString();
 		wallGfxs = new PGraphics[w.length()];
 		wallGfxsId = new char[w.length()];
 		
 		for( int i=0; i< w.length(); i++ ) {
 			wallGfxs[i]   = createGraphics(layers[0].width, layers[0].height);
+			wallGfxs[i].beginDraw();
+			wallGfxs[i].background(0,0);
+			wallGfxs[i].endDraw();
 			wallGfxsId[i] =  w.charAt(i);
 		}
 		
-//		artworksLayer = createGraphics(layers[0].width, layers[0].height);
-//		artworksLayer.beginDraw();
-//		artworksLayer.background(50,190,0);
-//		artworksLayer.endDraw();
+
 
 
 		/* 
@@ -205,12 +214,12 @@ public class SM_Renderer extends PApplet{
 
 
 		
-		for( PImage l : layers) {
-			l.resize( (int)(ySize * aspect), ySize);
-		}
-		for( PGraphics wg : wallGfxs ) {
-			wg.resize( (int)(ySize * aspect), ySize);
-		}
+//		for( PImage l : layers) {
+//			l.resize( (int)(ySize * aspect), ySize);
+//		}
+//		for( PGraphics wg : wallGfxs ) {
+//			wg.resize( (int)(ySize * aspect), ySize);
+//		}
 	
 
 		// schatten Maske:
@@ -223,6 +232,7 @@ public class SM_Renderer extends PApplet{
 		layers[6].filter(INVERT);
 		layers[4].mask(layers[6]);
 		layers[4].filter(ERODE);
+		
 
 		// Farbe:
 
@@ -241,6 +251,11 @@ public class SM_Renderer extends PApplet{
 		layers[5].filter(DILATE);
 		layers[1].mask(layers[5]);
 
+		// clear memory:
+		layers[6] = null;
+		layers[5] = null;
+		
+		
 		noLoop();
 //		frameRate(5);
 //		smooth();
@@ -262,8 +277,9 @@ public class SM_Renderer extends PApplet{
 				
 				
 				Float[] skewValues = currentView.getWallSkew(_wallChar);
-//				System.out.println(skewValues.toString());
+
 				int shadowOfset = 0;
+				
 				// determine shadow ofset
 				float left = ( skewValues[9]-skewValues[3] );
 				float right =( skewValues[7]-skewValues[5] );
@@ -275,26 +291,25 @@ public class SM_Renderer extends PApplet{
 				}
 				
 				PImage wallGfx = null;
-//				while( ! vm.isWallGfxReady(_wallChar) ) {
-//					 System.out.println("waiting for "+_wallChar);
-//				}
+
 				
 				wallGfx = vm.getWallGfx(_wallChar, shadowOfset);
 				
 				if( /*artworksLayer != null && */ wallGfx != null) {
 					
-//					System.out.println("  painting...");
 					
 					for(int i=0; i<wallGfxs.length; i++) {
 						if( wallGfxsId[i] == _wallChar ) {
 							
 							
-							
 							System.out.println("RENDERER: painting on wall ["+i+"] : "+_wallChar);
+							
+							int wgWidth = wallGfxs[i].height;
+							
 							wallGfxs[i].beginDraw();
 							wallGfxs[i].clear();
 //							wallGfxs[i].image(wallGfx,0,0);
-							wallGfxs[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, ySize), 0,0);
+							wallGfxs[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, wgWidth), 0,0);
 							g.removeCache(wallGfxs[i]);
 							wallGfxs[i].endDraw();
 
@@ -373,14 +388,21 @@ public class SM_Renderer extends PApplet{
 	
 	public void draw(){
 
+		
+		
 		background(255);
 
-
+		int displW = (int)(width  * zoomFact);
+		int displH = (int)(height * zoomFact);
+		
+		int xOff = xOffset;
+		int yOff = yOffset;
+		
 		// draw Base
 
 		if(b1) {
 			blendMode(BLEND);
-			image(layers[0], 0,0,width,height);
+			image(layers[0], xOff, yOff,displW,displH);
 			g.removeCache(g);
 			
 		}
@@ -392,7 +414,7 @@ public class SM_Renderer extends PApplet{
 			pushStyle();
 			blendMode(BLEND);
 			tint(235,250);
-			image(layers[1], 0,0,width,height);
+			image(layers[1], xOff, yOff,displW,displH);
 			g.removeCache(g);
 			//blend(layers[1], 0, 0, width, height, 0, 0, width, height, MULTIPLY);
 			popStyle();
@@ -405,7 +427,7 @@ public class SM_Renderer extends PApplet{
 			pushStyle();
 			//blendMode(ADD);
 			tint(255, 70);
-			image(layers[2], 0,0,width,height);
+			image(layers[2], xOff, yOff,displW,displH);
 			g.removeCache(g);
 			popStyle();
 		}  
@@ -417,7 +439,7 @@ public class SM_Renderer extends PApplet{
 			pushStyle();
 			blendMode(BLEND);
 			for( PGraphics wg : wallGfxs) {
-				image(wg, 0,0,width,height);
+				image(wg, xOff, yOff,displW,displH);
 				g.removeCache(g);
 			}
 
@@ -430,7 +452,7 @@ public class SM_Renderer extends PApplet{
 			pushStyle();
 			blendMode(BLEND);
 			tint(255, 65);
-			image(layers[4], 0,0,width,height);
+			image(layers[4], xOff, yOff,displW,displH);
 			g.removeCache(g);
 			popStyle();
 		}
@@ -480,7 +502,59 @@ public class SM_Renderer extends PApplet{
 		}
 	}
 
-	public boolean isMenuOpen() {
+	public void mouseDragged() {
+		xOffset += mouseX-pmouseX;
+		yOffset += mouseY-pmouseY;
+		System.out.println("da");
+		offsetBounds();
+		redraw();
+	}
+	
+	public void mouseWheel(MouseEvent event) {
+		
+		float e = event.getCount();
+		
+		float f = 0;
+		
+		if( e < 0) {
+			f = -0.07f;
+			xOffset -= (int)(0.5f * ((float)width*f));
+			yOffset -= (int)(0.5f * ((float)height*f));
+
+		}
+		else if( e > 0 ) { 
+			f =  0.04f;
+			xOffset -= (int)(((float)mouseX / (float)width) * ((float)width*f));
+			yOffset -= (int)(((float)mouseY / (float)height) * ((float)height*f));
+
+			
+		}
+		zoomFact += f;
+//		xOffset -= (int)(((float)mouseX / (float)width) * ((float)width*f));
+//		yOffset -= (int)(((float)mouseY / (float)height) * ((float)height*f));
+		
+		if(zoomFact < 1.0f) {
+			zoomFact = 1.0f;
+			xOffset = 0;
+			yOffset = 0;
+		}
+		
+		
+		offsetBounds();
+
+		System.out.println(xOffset);
+		redraw();
+	}
+	
+	private void offsetBounds() {
+		if((xOffset+(width*zoomFact)) < width ) xOffset += width - (xOffset+(width*zoomFact));
+		if( xOffset > 0 ) xOffset = 0;
+		
+		if((yOffset+(height*zoomFact)) < height ) yOffset += height - (yOffset+(height*zoomFact));
+		if( yOffset > 0 ) yOffset = 0;
+	}
+	
+ 	public boolean isMenuOpen() {
 		return pMenu.isVisible();
 	}
 

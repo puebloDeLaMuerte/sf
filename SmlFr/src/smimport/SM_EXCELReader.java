@@ -15,6 +15,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 
+import SMUtils.Lang;
+
 public class SM_EXCELReader {
 
 	private JPanel										pane;
@@ -40,11 +42,12 @@ public class SM_EXCELReader {
 	public File loadExcelData() {
 
 		chooser.setMultiSelectionEnabled(false);
+		chooser.setDialogTitle(Lang.whereIsExcelFile);
 		int returnVal = chooser.showOpenDialog( pane );
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			System.out.println("You chose to open this file: " +
 					chooser.getSelectedFile().getName());
-		}
+		} else return null;
 
 		FileInputStream stream = null;
 		try {

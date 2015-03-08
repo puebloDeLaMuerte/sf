@@ -630,7 +630,6 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			boolean saved = myRoom.requestSave();
 			
 			
-//			if(saved) javax.swing.JOptionPane.showConfirmDialog(null, Lang.saved, "", javax.swing.JOptionPane.OK_OPTION, javax.swing.JOptionPane.INFORMATION_MESSAGE);
 			if(saved) javax.swing.JOptionPane.showMessageDialog(null, Lang.saved);
 		} else if( e.getActionCommand().equalsIgnoreCase(Lang.exportMenu)){
 			

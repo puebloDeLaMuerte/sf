@@ -1,6 +1,7 @@
 package smlfr;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
@@ -8,6 +9,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.sun.xml.internal.bind.v2.TODO;
 
 import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
@@ -24,6 +27,7 @@ import smimport.SM_JSONCreator;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.SM_Frames;
+import SMUtils.awFileSize;
 
 public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListener {
 
@@ -39,6 +43,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	private File 			museumPath;
 	private File			projectPath;
 	private File			tempProjectPath;
+	private File			resourcesPath;
 
 	private JSONObject		preferences;
 	private JSONObject 		museum;
@@ -75,8 +80,9 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 
 		// init file paths and load files:
+		resourcesPath   = new File("resources");
 		preferencesPath = new File("resources/prefs.txt");
-		tempProjectPath = preferencesPath;
+		tempProjectPath = new File(resourcesPath.getAbsolutePath());
 		preferences = loadPrefs();
 		museumPath = new File("resources/"+preferences.getString("museumData"));
 		museum = loadMuseumData();
@@ -273,6 +279,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			try{
 				saveJSONObject(project, projectPath.getAbsolutePath());
 				setSaveDirty(false);
+				deleteTempProject(null);
 				return true;
 			} catch( Exception e ) {
 				return false;
@@ -281,17 +288,70 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return false;
 	}
 	
+	private void deleteTempProject(File _tmp) {
+		
+		File tmp;
+		if (_tmp == null) {
+			tmp = tempProjectPath;
+		} else {
+			tmp = _tmp;
+		}
+		
+		if(tmp.exists()) {
+			tmp.delete();
+			System.out.println("TEMP FILE DELETED: "+tmp.getAbsolutePath());
+		}
+		else System.err.println("TEMP FILE DIDN'T EXIST!");
+		
+	}
+	
 	private void saveTempProject() {
 		setSaveDirty(true);
 		
 		String tempProjFileName = projectPath.getAbsoluteFile().getName()+".tmp";
 		
-		tempProjectPath = new File(preferencesPath.getParent()+"/"+tempProjFileName);
-		System.out.println("the tempProject was saved as "+tempProjectPath);
-		saveJSONObject(project, tempProjectPath.getAbsolutePath());
+		tempProjectPath = new File(resourcesPath+"/"+tempProjFileName);
+
+		JSONObject tmpJ = new JSONObject();
+		tmpJ.setJSONObject("projectFile", project);
+		tmpJ.setString("projectPath", projectPath.getAbsolutePath());
+		
+		saveJSONObject(tmpJ, tempProjectPath.getAbsolutePath());
 		
 	}
 
+	public File checkForTemp(File _f) {
+		
+		File[] allFiles = tempProjectPath.listFiles();
+		
+		String loadingProjName = _f.getAbsoluteFile().getName();
+		loadingProjName = loadingProjName.substring(0,  loadingProjName.indexOf('.'));
+		
+		String loadingProjPath = _f.getAbsolutePath();
+		
+		for (File file : allFiles){
+			
+			String fileString = file.getAbsoluteFile().getName();
+			
+			if (fileString.endsWith(".tmp")) {
+				
+				fileString = fileString.substring(0, fileString.indexOf('.'));
+				String tmpProjectDenotedPath = loadJSONObject(file).getString("projectPath"); 
+				
+				if( 
+						fileString.equals(loadingProjName) && 
+						file.lastModified() > _f.lastModified() &&
+						tmpProjectDenotedPath.equals(loadingProjPath)
+				   ) {
+					
+					return file;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 	public synchronized String[] getPreviousProject() {
 
 		String[] pp = new String[2];
@@ -299,7 +359,8 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		pp[0] = preferences.getJSONObject("previousProject").getString("projectName");
 		pp[1] = preferences.getJSONObject("previousProject").getString("projectPath");
 
-		return pp;
+		
+		return pp;		
 	}
 
 	public File newProject() {
@@ -378,6 +439,29 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 	public synchronized void loadProject(File _f) {
 
+		// first, check for .tmp files that are named like the current proj to be loaded
+		
+		File tempF = checkForTemp(_f);
+	
+		if(tempF != null) {
+			int i = javax.swing.JOptionPane.showOptionDialog(null, Lang.restoreProjectMessage, Lang.restoreProjectTitle, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, base.warn, Lang.restoreProjectOptions, 0);
+						
+			switch (i) {
+			case 0:
+				loadFromTmp(tempF);
+				return;
+				
+			case -1:
+				return;
+				
+			case 1:
+				deleteTempProject(tempF);
+				break;
+			}
+			
+		}
+		
+		
 		if( _f == null ) {
 			fc.setDialogTitle(Lang.loadProjectTitle);
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -390,6 +474,11 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			} else { loaded = false; return; }
 		}
 
+		loadRegular(_f);
+	}
+	
+	private synchronized void loadRegular(File _f) {
+		
 		if( _f.exists() ) {
 			System.out.println("loading this project:\n"+_f.getAbsolutePath());
 			project = loadJSONObject(_f);
@@ -400,20 +489,38 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			javax.swing.JOptionPane.showMessageDialog(this,msg, "couldn't find...", javax.swing.JOptionPane.WARNING_MESSAGE);
 			loaded = false;
 		}
-
-
+		
+		
 		if( loaded ) {
 			JSONObject p = new JSONObject();
 			p.setString("projectPath", _f.getAbsolutePath());
 			p.setString("projectName", getCurrentProjectName());
 			updatePrefs("previousProject", p.toString());
-
+			
 			projectPath = _f;
 			System.out.println("projectPath: "+projectPath.getAbsolutePath());
 			currentProjectName = p.getString("projectName");
 		}
 	}
 
+	private synchronized void loadFromTmp(File _f) {
+		
+		JSONObject tmpData = loadJSONObject(_f);
+		
+		project = tmpData.getJSONObject("projectFile");
+		projectPath = new File(tmpData.getString("projectPath"));
+		currentProjectName = getCurrentProjectName();
+		tempProjectPath = _f;
+		
+		JSONObject p = new JSONObject();
+		p.setString("projectPath", tmpData.getString("projectPath"));
+		p.setString("projectName", getCurrentProjectName());
+		updatePrefs("previousProject", p.toString());
+		
+		savedirty = true;
+		loaded = true;
+	}
+	
 	public synchronized String[] getRoomNamesInProject() {
 
 		String[] rms;
@@ -440,7 +547,11 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	
 	public synchronized String[] getArtLibraryFromProject() {
 		
-		return project.getJSONArray("artLibrary").getStringArray();
+		if(project != null ) {
+		
+			return project.getJSONArray("artLibrary").getStringArray();
+		}
+		else return new String[0];
 		
 	}
 	
@@ -449,10 +560,12 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return new File(tmp.substring(0, tmp.lastIndexOf('.'))+"_lib");
 	}
 	
+	// TODO synchronize??
 	public String getProjectName() {
 		return currentProjectName;
 	}
 	
+	// TODO synchronize??
 	public String getProjectFolderPath() {
 		return projectPath.getParent();
 	}
@@ -500,6 +613,42 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return new File(filePath);
 	}
 
+	public synchronized void importArtworks() {
+		
+		String[] importedAws;
+		File artLibraryPath = new File(getProjectFolderPath() + "/" +getProjectName()+"_lib");
+		
+		importedAws = base.in.batchImport(artLibraryPath);
+		
+		if( importedAws == null || importedAws.length == 0 ) return;
+		
+		// create new Artwork-Objects and append to the current Artworks[]
+		
+		for (int i = 0; i < importedAws.length; i++) {
+			
+			base.artworks.put(importedAws[i], new SM_Artwork( loadArtwork(importedAws[i]), getFilePathForArtwork(importedAws[i], awFileSize.MEDIUM), base.frameGfxs ));	
+		}
+		
+		
+		// Append the imported Artworks to the project-File-Library
+		
+		for (int i = 0; i < importedAws.length; i++) {
+			JSONArray projLib = project.getJSONArray("artLibrary");
+			projLib.append(importedAws[i]);
+			project.setJSONArray("artLibrary", projLib);
+		}
+		setSaveDirty(true);
+		saveProject();
+		
+		// Update the library
+		
+		unregisterUpdateListener(base.lib);
+		base.lib.setVisible(false);
+		base.lib.dispose();
+		base.lib = base.wm.createLibrary(base.artworks);
+		registerUpdateListener(base.lib);
+		
+	}
 	
 	// UPDATE Event handling
 
@@ -711,28 +860,39 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	
 	public void requestQuit() {
 		
+		System.err.println("QUIT REQUESTED");
+		
 		if (savedirty) {
 			int choose = javax.swing.JOptionPane.showOptionDialog(null,
 					Lang.wantToSaveBeforExit, Lang.wantToSaveBeforExitTitle,
-					javax.swing.JOptionPane.YES_NO_OPTION,
-					javax.swing.JOptionPane.YES_NO_OPTION, null,
-					Lang.saveOnExitOptions, 0);
+					javax.swing.JOptionPane.YES_NO_CANCEL_OPTION,
+					javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, null,
+					Lang.saveOnExitOptions, 2);
+			
+			System.out.println("returnvalue: "+choose);
+			
 			switch (choose) {
-			case 0:
-
-				break;
 			case 1:
-				System.out.println("eins gwlt");
+				deleteTempProject(null);
+				System.exit(0);
+				break;
+			case 2:
 				saveProject();
+				System.exit(0);
 				break;
 
 			default:
 				break;
 			}
 		}
-		System.exit(0);
+		else {
+			System.err.println("exiting");
+			System.exit(0);
+		}
+		System.err.println("QUIT REQUEST SHOULD BE HANDELED");
 	}
 
+	
 	
 }
 

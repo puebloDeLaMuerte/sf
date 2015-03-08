@@ -193,7 +193,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		// Mittelhšhe
 		pushStyle();
 		stroke(150);
-		line(0, wptos(0,myMidHeight).y, wptos(myWall.getWidth(),0).x, wptos(0,myMidHeight).y );
+		line(0, wptos(0,myMidHeight, scale).y, wptos(myWall.getWidth(),0,scale).x, wptos(0,myMidHeight, scale).y );
 		popStyle();
 		
 
@@ -205,8 +205,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		// DRAW mouseOver
 		
 		if( awOver != null) {
-			PVector totalPos = wptos( new PVector(awOver.getTotalWallPos()[0], awOver.getTotalWallPos()[1]) );
-			PVector totalSize = astos( new PVector(awOver.getTotalWidth(), awOver.getTotalHeight()));
+			PVector totalPos = wptos( new PVector(awOver.getTotalWallPos()[0], awOver.getTotalWallPos()[1]), scale );
+			PVector totalSize = astos( new PVector(awOver.getTotalWidth(), awOver.getTotalHeight()), scale);
 			
 			pushStyle();
 			fill(200,100,100,80);
@@ -219,11 +219,11 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		// DRAW drag
 		
 		if( awOver != null && awDrag ) {
-			PVector wh = astos( new PVector(awOver.getTotalWidth(), awOver.getTotalHeight()));
+			PVector wh = astos( new PVector(awOver.getTotalWidth(), awOver.getTotalHeight()), scale);
 			
 			float y;
 			if( horizontalLoc ) {
-				y = wptos(0,awOver.getTotalWallPos()[1]).y;
+				y = wptos(0,awOver.getTotalWallPos()[1], scale).y;
 			} else {
 				y = mouseY+awDragOfset.y;
 			}
@@ -241,8 +241,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				
 				if(a != null && a.isSelected()) {
 				
-					PVector totalPos = wptos( new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]) );
-					PVector totalSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()));
+					PVector totalPos = wptos( new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]), scale );
+					PVector totalSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), scale);
 				
 					pushStyle();
 					strokeWeight(3);
@@ -263,15 +263,20 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	
 	public synchronized PGraphics drawWall( int _mode, int shadowOfset) {
 		
+		float drawScale;
 		
 //		wlGfxReady = false;
 		loadMissingAWGraphics();
 		
 		PGraphics gfx;
 		
-		if( _mode == 0 ) gfx = wlGfx;
-		else			{gfx = createGraphics(width, height);
-//		System.out.println("WallArrangementView: drawWall: "+myWall.getWallChar());
+		if( _mode == 0 ) {
+			gfx = wlGfx;
+			drawScale = scale;
+		}
+		else{
+			gfx = createGraphics(width, height);
+			drawScale = ((float)gfx.width ) / ((float)myWall.getWidth());
 		}
 		
 		
@@ -289,8 +294,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				for( SM_Artwork a : myWall.hasArtworks() ) {
 
 					int[] tmpPos = a.getTotalWallPos();
-					PVector totalPos = wptos( new PVector(tmpPos[0]-shadowAmount-(shadowOfsetAmount * shadowOfset), tmpPos[1]-shadowAmount-(shadowAmount*2)) );
-					PVector totalSize = astos( new PVector(a.getTotalWidth()+(shadowAmount*2), a.getTotalHeight()+(shadowAmount*0.5f)));
+					PVector totalPos = wptos( new PVector(tmpPos[0]-shadowAmount-(shadowOfsetAmount * shadowOfset), tmpPos[1]-shadowAmount-(shadowAmount*2)), drawScale );
+					PVector totalSize = astos( new PVector(a.getTotalWidth()+(shadowAmount*2), a.getTotalHeight()+(shadowAmount*0.5f)), drawScale);
 
 					gfx.pushStyle();
 					gfx.fill(50);
@@ -312,22 +317,22 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 				
 				int[] tmpPos = a.getTotalWallPos();
-				PVector totalPos = wptos( new PVector(tmpPos[0], tmpPos[1]) );
+				PVector totalPos = wptos( new PVector(tmpPos[0], tmpPos[1]), drawScale );
 
-				PVector totalSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()));
+				PVector totalSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), drawScale);
 				
 				
 				int[] tmpPos2 = a.getPptWallPos();
-				PVector pptPos = wptos( new PVector(tmpPos2[0], tmpPos2[1]) );
+				PVector pptPos = wptos( new PVector(tmpPos2[0], tmpPos2[1]), drawScale );
 				
 				int[] tmpPos3= a.getPptSize();
-				PVector pptSize = astos(new PVector(tmpPos3[0], tmpPos3[1]));
+				PVector pptSize = astos(new PVector(tmpPos3[0], tmpPos3[1]), drawScale);
 				
 				int[] tmpPos4 = a.getArtworkWallPos();
-				PVector artworkPos = wptos( new PVector(tmpPos4[0], tmpPos4[1]) );
+				PVector artworkPos = wptos( new PVector(tmpPos4[0], tmpPos4[1]), drawScale );
 				
 				int[] tmpPos5 = a.getArtworkSize();
-				PVector artworkSize = astos(new PVector(tmpPos5[0], tmpPos5[1]));
+				PVector artworkSize = astos(new PVector(tmpPos5[0], tmpPos5[1]), drawScale);
 				
 				if( !awDrag ) {
 					if( mouseX > totalPos.x && mouseX < (totalPos.x + totalSize.x) ) {
@@ -376,59 +381,54 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	
 	
 	// artwork Size to Screen
-	private PVector astos(int _inX, int _inY) {
-		return wptos(new PVector(_inX, _inY) );
+	private PVector astos(int _inX, int _inY, float scl) {
+		return wptos(new PVector(_inX, _inY), scl );
 	}
-	private PVector astos(PVector _inpos) {
+	private PVector astos(PVector _inpos, float scl) {
 
-		_inpos.mult(scale);		
+		_inpos.mult(scl);		
 		return _inpos;
 	}
 	
 	// wall Position to Screen
-	private PVector wptos(int _inX, int _inY) {
-		return wptos(new PVector(_inX, _inY) );
+	private PVector wptos(int _inX, int _inY, float scl) {
+		return wptos(new PVector(_inX, _inY), scl );
 	}
-	private PVector wptos(PVector _inpos) {
-		
-		
-		_inpos.mult(scale);
-		_inpos = invLogicScaled(_inpos);
-		
-
-		///  UNTESTED!!!!
-//		_inpos.add(new PVector(xkOffsetPx, yOffsetPx));
+	private PVector wptos(PVector _inpos, float scl) {
+			
+		_inpos.mult(scl);
+		_inpos = invLogicScaled(_inpos, scl);
 				
 		return _inpos;
 	}
 	
 	// WallPsoitionLogic to ScreenLogic
-	private PVector invLogicScaled(int _wX, int _wY){
-		return invLogicScaled(new PVector(_wX, _wY));
+	private PVector invLogicScaled(int _wX, int _wY, float scl){
+		return invLogicScaled(new PVector(_wX, _wY), scl);
 	}
-	private PVector invLogicScaled(PVector _inpos) {
+	private PVector invLogicScaled(PVector _inpos, float scl) {
 		
-		return new PVector(_inpos.x, myWall.getHeight()*scale-_inpos.y);
+		return new PVector(_inpos.x, myWall.getHeight()*scl-_inpos.y);
 	}
 
 	// ScreenLogic to WallPositionLogic
-	private PVector ptowp(int _wX, int _wY){
-		return ptowp(new PVector(_wX, _wY));
+	private PVector ptowp(int _wX, int _wY, float scl){
+		return ptowp(new PVector(_wX, _wY), scl);
 	}
-	private PVector ptowp(PVector _inpos) {
+	private PVector ptowp(PVector _inpos, float scl) {
 		
 		/// UNTESTED!!!!
 //		_inpos.sub(new PVector(xOffsetPx, yOffsetPx));
 		
-		_inpos.div(scale);
+		_inpos.div(scl);
 		
 		return new PVector(_inpos.x, myWall.getHeight()-_inpos.y);
 	}
 
 	private boolean checkMouseOver(SM_Artwork a) {
 		
-		PVector pos = wptos( new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]) );
-		PVector sze = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()));
+		PVector pos = wptos( new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]), scale );
+		PVector sze = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), scale);
 		
 		
 		if( mouseX > pos.x && mouseX < (pos.x + sze.x) ) {
@@ -515,7 +515,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		if( awOver != null ) {
 			awDrag = true;
 			awDragStart = new PVector(mouseX,mouseY);
-			awDragOfset = wptos(awOver.getTotalWallPos()[0],awOver.getTotalWallPos()[1]);
+			awDragOfset = wptos(awOver.getTotalWallPos()[0],awOver.getTotalWallPos()[1], scale);
 			awDragOfset.sub(awDragStart);
 		}
 	}
@@ -534,7 +534,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 					npos = new PVector(mouseX, 0);
 
 					npos.add(awDragOfset);
-					PVector nPos = ptowp(npos);
+					PVector nPos = ptowp(npos, scale);
 					e = new ArtworkUpdateRequestEvent(this, awOver.getName(),
 							(int) nPos.x, awOver.getTotalWallPos()[1]);
 
@@ -542,7 +542,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 					npos = new PVector(mouseX, mouseY);
 
 					npos.add(awDragOfset);
-					PVector nPos = ptowp(npos);
+					PVector nPos = ptowp(npos, scale);
 					e = new ArtworkUpdateRequestEvent(this, awOver.getName(),
 							(int) nPos.x, (int) nPos.y);
 				}

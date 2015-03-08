@@ -23,7 +23,7 @@ public class SM_Wall implements ArtworkUpdateListener {
 	
 	// from Project:
 	private HashMap<String, SM_Artwork>		myArtworks;
-	private Integer							myColor;
+	private Integer							myWallColor;
 	
 	
 	// upon init
@@ -37,15 +37,22 @@ public class SM_Wall implements ArtworkUpdateListener {
 		myNavigatorBoundingBox = _w.getJSONArray("navigatorBoundingBox").getFloatArray();
 		myNavigatorPos = _w.getJSONArray("navigatorPos").getFloatArray();
 		myNavigatorOrientation = _w.getInt("navigatorOrientation");
+		myWallColor = 0;
 		mySize = _w.getJSONArray("wallSize").getIntArray();
 		_fm.registerUpdateListener(this);
 		
 		
 	}
 	
-	public void setColor( Integer _cInt, String _colorBrillux ) {
-		myColor = _cInt;   
-		// TODO   BRILLUX NOT IMPLEMENTED
+	public void setColor( int _cInt ) {
+		myWallColor = _cInt;
+	}
+	
+	public int getColor() {
+		if (myWallColor == 0) {
+			return -1;
+		}
+		else return myWallColor;
 	}
 	
 	public void setArtworks(JSONArray _awks) {
