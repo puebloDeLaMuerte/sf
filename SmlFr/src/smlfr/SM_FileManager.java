@@ -439,7 +439,22 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 	public synchronized void loadProject(File _f) {
 
-		// first, check for .tmp files that are named like the current proj to be loaded
+		// if no file specified: Load Dialog
+		
+		if( _f == null ) {
+			fc.setDialogTitle(Lang.loadProjectTitle);
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			int i = fc.showOpenDialog(this);
+			if( i == JFileChooser.APPROVE_OPTION) {
+				
+				_f = fc.getSelectedFile();
+				
+				
+			} else { loaded = false; return; }
+		}
+		
+		
+		// check for .tmp files that are named like the current proj to be loaded
 		
 		File tempF = checkForTemp(_f);
 	
@@ -462,17 +477,6 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 		
 		
-		if( _f == null ) {
-			fc.setDialogTitle(Lang.loadProjectTitle);
-			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			int i = fc.showOpenDialog(this);
-			if( i == JFileChooser.APPROVE_OPTION) {
-
-				_f = fc.getSelectedFile();
-
-
-			} else { loaded = false; return; }
-		}
 
 		loadRegular(_f);
 	}
