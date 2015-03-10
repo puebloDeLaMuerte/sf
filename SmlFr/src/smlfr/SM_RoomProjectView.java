@@ -1,6 +1,12 @@
 package smlfr;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -18,18 +24,41 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JColorChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
+import javax.swing.text.MaskFormatter;
+
+import org.apache.poi.hssf.util.HSSFColor.BLACK;
+
+import artworkUpdateModel.ArtworkUpdateEvent;
+import artworkUpdateModel.ArtworkUpdateRequestEvent;
+import artworkUpdateModel.ArtworkUpdateType;
+import artworkUpdateModel.WallColorUpdateRequestEvent;
 import artworkUpdateModel.WallUpdateRequestEvent;
 
 
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
+import SMUtils.WallColorChooser;
 
 import processing.core.PApplet;
 import processing.core.PShape;
@@ -46,7 +75,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	LinkedHashMap<Character, SM_Wall>			myWalls;
     private DragSource							ds;
     private JPopupMenu							pMenu;
-    private JMenuItem							pMenuRemoveArtwork, pMenuEnterExitRoom, quitSF, savePr, export;
+    private JMenuItem							pMenuChangeColor, pMenuRemoveArtwork, pMenuEnterExitRoom, quitSF, savePr, export;
 
 	
 	// utils
@@ -89,6 +118,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		ds.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, this);
 		
 		pMenu = new JPopupMenu();
+		pMenuChangeColor = new JMenuItem(Lang.changeColor);
+		pMenuChangeColor.addActionListener(this);
 		pMenuRemoveArtwork = new JMenuItem(Lang.RemoveArtwork);
 		pMenuRemoveArtwork.addActionListener(this);
 		pMenuEnterExitRoom = new JMenuItem(Lang.enterRoom);
@@ -101,6 +132,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		export.addActionListener(this);
 		
 		pMenu.add(pMenuRemoveArtwork);
+		pMenu.add(pMenuChangeColor);
 		pMenu.add(new JSeparator());
 		pMenu.add(pMenuEnterExitRoom);
 		pMenu.add(new JSeparator());
@@ -379,6 +411,20 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //		super.init();
 //	}
 	
+	public void wallColorCallback(int _color, boolean _singleWall, char wallChar) {
+		
+		WallColorUpdateRequestEvent e = null;
+		
+		if( ! _singleWall ) {
+
+			LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+			data.put("color", _color);
+			e = new WallColorUpdateRequestEvent(this);
+		}
+		
+		myRoom.fireUpdateRequest(e);
+	}
+	
 	public HashMap<Character, PShape> getWallsOverGfx() {
 		return wallsOverGfx;
 	}
@@ -611,7 +657,12 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		if( artOver != null && e.getActionCommand().equalsIgnoreCase(Lang.RemoveArtwork)) {
+		if( e.getActionCommand().equalsIgnoreCase(Lang.changeColor)) {
+		
+			WallColorChooser colorChooser = new WallColorChooser(this, wallOver, myRoom.getRoomColor());
+			
+			
+		} else if( artOver != null && e.getActionCommand().equalsIgnoreCase(Lang.RemoveArtwork)) {
 			
 			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, artOver.getName(), ' ', "Library", myRoom.getName(), artOver.getWallChar());
 
@@ -638,6 +689,9 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		}
 		
 	}
+
+	
+	
 
 	public void dispose() {
 		frame.dispose();

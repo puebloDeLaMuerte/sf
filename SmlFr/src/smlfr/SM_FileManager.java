@@ -16,6 +16,7 @@ import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
 import artworkUpdateModel.ArtworkUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateType;
+import artworkUpdateModel.WallColorUpdateRequestEvent;
 import artworkUpdateModel.WallUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateRequestListener;
 
@@ -860,7 +861,14 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 	}
 
-
+	@Override
+	public synchronized void updateRequested(WallColorUpdateRequestEvent e) {
+		
+		
+		System.out.println("the fileManager has received an update request: WallColor");
+		
+		
+	}
 	
 	public void requestQuit() {
 		

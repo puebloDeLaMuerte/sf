@@ -50,7 +50,7 @@ public class SM_Renderer extends PApplet{
 	private PImage[] layers;
 	private float cr, cg, cb;
 	private boolean b1 = true;
-	private boolean b2 = false;
+	private boolean b2 = true;
 	private boolean b3 = false;
 	private boolean b4 = true;
 	private boolean b5 = true;
@@ -232,24 +232,13 @@ public class SM_Renderer extends PApplet{
 		layers[6].filter(INVERT);
 		layers[4].mask(layers[6]);
 		layers[4].filter(ERODE);
+//		layers[4].filter(DILATE);
 		
 
 		// Farbe:
 
-		PGraphics t = createGraphics(layers[5].width,layers[5].height);
-		cr=0;
-		cg=104;
-		cb=49;
-
-		t.beginDraw();
-		t.tint(cr,cg,cb);
-		t.image(layers[0],0,0,layers[5].width,layers[5].height);
-		g.removeCache(t);
-		t.endDraw();
-		layers[1] = t.get();
-		layers[1].filter(DILATE);
-		layers[5].filter(DILATE);
-		layers[1].mask(layers[5]);
+		updateRoomColorLayer();
+		
 
 		// clear memory:
 		layers[6] = null;
@@ -264,6 +253,26 @@ public class SM_Renderer extends PApplet{
 		
 	}
 
+	public void updateRoomColorLayer() {
+		PGraphics t = createGraphics(layers[5].width,layers[5].height);
+		
+		int c = vm.getRoomColor();
+		
+		cr= red(c);
+		cg= blue(c);
+		cb= green(c);
+
+		t.beginDraw();
+		t.tint(cr,cg,cb);
+		t.image(layers[0],0,0,layers[5].width,layers[5].height);
+		g.removeCache(t);
+		t.endDraw();
+		layers[1] = t.get();
+//		layers[1].filter(DILATE);
+//		layers[5].filter(DILATE);
+		layers[1].mask(layers[5]);
+	}
+	
 	public void updateArtworksLayer( char _wallChar) {
 		
 		System.out.println("RENDERER: updating... "+_wallChar);
@@ -413,7 +422,7 @@ public class SM_Renderer extends PApplet{
 		if(b2){
 			pushStyle();
 			blendMode(BLEND);
-			tint(235,250);
+//			tint(vm.getRoomColor());
 			image(layers[1], xOff, yOff,displW,displH);
 			g.removeCache(g);
 			//blend(layers[1], 0, 0, width, height, 0, 0, width, height, MULTIPLY);

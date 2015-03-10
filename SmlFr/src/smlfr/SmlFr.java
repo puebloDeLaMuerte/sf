@@ -242,7 +242,8 @@ public class SmlFr extends JFrame  {
 				int c = jRoom.getInt("roomColor");
 				sfRoom.setRoomcolor(c);
 			} catch (Exception e) {
-				sfRoom.setRoomcolor(sfRoom.getRoomColor());
+//				sfRoom.setRoomcolor(sfRoom.getRoomColor());
+				sfRoom.setRoomcolor(-3644296);
 			}
 
 			// get Walls - set Wall Color if in file:

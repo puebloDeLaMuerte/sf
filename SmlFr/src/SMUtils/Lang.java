@@ -69,11 +69,21 @@ public class Lang {
 	public static String	SM_filetypes = "Nur SimuFöhr Dateien";
 	
 	public static enum 		/* REFACTOR THIS FOR CHANGES!!!*/ sortOptions { Künstler, Titel, InvNr, Größe }; // REFACTOR!!!!!
+	public static String	ok = "Ok";
+	public static String	cancel = "Abrechen";
 	public static String	sortLibBy = "sortieren nach:";
 	public static String	importBtn = "Importieren";
 	public static String	deleteBtn = "Löschen";
 	public static String 	RemoveArtwork = "von hier entfernen";
 	public static String	changeFrameStyle = "Rahmen ändern";
+	public static String	changeColor = "Wandfarbe ändern...";
+	public static String	changeColorTitle = "Wandfarbe ändern";
+	public static String	colorPicker = "Farbwähler...";
+	public static String	changeColorMessage = "Geben Sie den RGB Wert (0-255) für die Wandfarbe ein:";
+	public static String	changeRoomColor = "Farbe für den gesamten Raum ändern";
+	public static String	changeSingleWallColor_1 = "Nur Farbe für Wand ";
+	public static String	changeSingleWallColor_2 = " ändern";
+	public static String	changeColorInvalidValues = "Die eingegebenen Werte sind ungültig!\nDie Eingabe darf nur aus Ziffern bestehen.";
 	public static String	snapToMidHeight = "auf Mittelhöhe setzen";
 	public static String 	enterRoom = "Raum betreten";
 	public static String 	exitRoom = "Raum verlassen";

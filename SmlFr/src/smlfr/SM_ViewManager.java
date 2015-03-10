@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import javax.swing.JFrame;
 import artworkUpdateModel.ArtworkUpdateEvent;
 import artworkUpdateModel.ArtworkUpdateListener;
+import artworkUpdateModel.ArtworkUpdateType;
 
 import processing.core.PImage;
 
@@ -215,6 +216,10 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		return myRoomArrView;
 	}
 	
+	public int getRoomColor() {
+		return myRoomArrView.myRoom.getRoomColor();
+	}
+	
 	public synchronized boolean isRendererMenuOpen() {
 		if( renderer != null ) return renderer.isMenuOpen();
 		else return false;
@@ -304,6 +309,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		}
 		System.gc();
 	}
+	
 	
 	public synchronized void openWallArr(char _c) {
 		if(wallArrangementViews.get(""+_c) == null ) {
@@ -458,28 +464,42 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 	@Override
 	public void artworkUpdate(ArtworkUpdateEvent e) {
 		
-		LinkedHashMap<String, Object> w = e.getData();
-		
-		for( String s : w.keySet() ) {
-			System.out.println("VM: receiving update request: "+s+": "+w.get(s));
-			if( s.contains("wall") ) {
-				Object o = w.get(s);
-				String os = (String)o;
-				if( ! os.contains("Library") ) {
-					
-					int i = os.lastIndexOf('_');
-					i++;
-					char ww = os.charAt(i);
+		ArtworkUpdateType type = e.getType();
+		LinkedHashMap<String, Object> data = e.getData();
 
-					if( renderer != null ) {
-						
-						renderer.updateArtworksLayer( ww );
+		switch (type) {
+		
+		case POS_IN_WALL:
+			
+			for (String s : data.keySet()) {
+				System.out.println("VM: receiving update request: " + s + ": " + data.get(s));
+				if (s.contains("wall")) {
+					Object o = data.get(s);
+					String os = (String) o;
+					if (!os.contains("Library")) {
+
+						int i = os.lastIndexOf('_');
+						i++;
+						char ww = os.charAt(i);
+
+						if (renderer != null) {
+
+							renderer.updateArtworksLayer(ww);
+						}
+
 					}
-					
 				}
 			}
+			break;
+			
+		
+		default:
+			break;
 		}
 		
+		
+		
+
 	}
 	
 	public synchronized void requestRendererUpdate( char _wc) {

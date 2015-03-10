@@ -20,6 +20,7 @@ import SMUtils.awFileSize;
 import SMUtils.progState;
 import artworkUpdateModel.ArtworkUpdateListener;
 import artworkUpdateModel.ArtworkUpdateRequestEvent;
+import artworkUpdateModel.WallColorUpdateRequestEvent;
 import artworkUpdateModel.WallUpdateRequestEvent;
 import artworkUpdateModel.ArtworkUpdateRequestListener;
 
@@ -318,6 +319,10 @@ public class SM_Room {
 		requestListener.updateRequested(e);
 	}
 
+	public void fireUpdateRequest(WallColorUpdateRequestEvent e) {
+		requestListener.updateRequested(e);
+	}
+	
 	public void requestRoomEnter() {
 		base.wm.requestStateChange(progState.ROOM, myRoomName);
 	}
