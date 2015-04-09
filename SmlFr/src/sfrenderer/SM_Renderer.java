@@ -1,6 +1,7 @@
 package sfrenderer;
 
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
@@ -237,12 +238,12 @@ public class SM_Renderer extends PApplet{
 
 		// Farbe:
 
-		updateRoomColorLayer();
+		updateRoomColorLayer(null);
 		
 
 		// clear memory:
 		layers[6] = null;
-		layers[5] = null;
+//		layers[5] = null;
 		
 		
 		noLoop();
@@ -253,15 +254,25 @@ public class SM_Renderer extends PApplet{
 		
 	}
 
-	public void updateRoomColorLayer() {
+	public void updateRoomColorLayer( Integer _previewColor ) {
+		
 		PGraphics t = createGraphics(layers[5].width,layers[5].height);
 		
-		int c = vm.getRoomColor();
+		int c;
 		
-		cr= red(c);
-		cg= blue(c);
-		cb= green(c);
+		if( _previewColor == null ) c = vm.getRoomColor();
+		else c = _previewColor;
+		
+//		cr= red(c);
+//		cg= blue(c);
+//		cb= green(c);
 
+		Color clr = new Color(c);
+		
+		cr= clr.getRed();
+		cg = clr.getGreen();
+		cb = clr.getBlue();
+		
 		t.beginDraw();
 		t.tint(cr,cg,cb);
 		t.image(layers[0],0,0,layers[5].width,layers[5].height);
@@ -271,6 +282,8 @@ public class SM_Renderer extends PApplet{
 //		layers[1].filter(DILATE);
 //		layers[5].filter(DILATE);
 		layers[1].mask(layers[5]);
+		
+		if(setupRun) redraw();
 	}
 	
 	public void updateArtworksLayer( char _wallChar) {

@@ -23,6 +23,7 @@ public class SM_Artwork {
 	private int[]			passepartoutSize;
 	
 	private File			myPath;
+	private SM_Frames		frames;
 	
 	// init from project
 	private String			isInWall;
@@ -38,6 +39,7 @@ public class SM_Artwork {
 
 	SM_Artwork(JSONObject _j, File _path, SM_Frames _frames) {
 		myPath = _path;
+		frames = _frames;
 		
 		artist = _j.getString("artist");
 		title = _j.getString("title");
@@ -190,6 +192,10 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 	
 	public void setFrameStyle(FrameStyle _fStyle) {
 		frameStyle = _fStyle;
+		
+		myFrameGfx = frames.getFrameImg(frameStyle);
+
+		
 	}
 	
 	public int[] getFrameMeasure() {
@@ -239,7 +245,7 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		int pX = x;
 		int pY = y;
 		
-		if( frameSize.length > 0 ) {
+		if( frameSize.length > 0  && frameStyle != FrameStyle.NONE) {
 			pX += frameSize[2];
 			pY -= frameSize[0];
 		}
@@ -262,7 +268,7 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 			p[0] = artworkPosInWall[0];
 			p[1] = artworkPosInWall[1];
 			
-			if( frameSize.length > 0 ) {
+			if( frameSize.length > 0  && frameStyle != FrameStyle.NONE) {
 				p[0] -= frameSize[2];
 				p[1] +=	frameSize[0];
 			}
@@ -315,7 +321,7 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		
 		int w = mySize[0];
 		
-		if( frameSize.length > 0 ) {
+		if( frameSize.length > 0 && frameStyle != FrameStyle.NONE) {
 			w += frameSize[2];
 			w += frameSize[3];
 		}
@@ -331,7 +337,7 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		
 		int h = mySize[1];
 
-		if( frameSize.length > 0 ) {
+		if( frameSize.length > 0 && frameStyle != FrameStyle.NONE) {
 			h += frameSize[0];
 			h += frameSize[1];
 		}

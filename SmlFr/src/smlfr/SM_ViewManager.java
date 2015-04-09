@@ -10,9 +10,6 @@ import java.awt.event.WindowListener;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import javax.swing.JFrame;
-import artworkUpdateModel.ArtworkUpdateEvent;
-import artworkUpdateModel.ArtworkUpdateListener;
-import artworkUpdateModel.ArtworkUpdateType;
 
 import processing.core.PImage;
 
@@ -20,8 +17,11 @@ import SMUtils.Lang;
 import SMUtils.ViewMenuItem;
 
 import sfrenderer.SM_Renderer;
+import updateModel.UpdateEvent;
+import updateModel.UpdateListener;
+import updateModel.UpdateType;
 
-public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUpdateListener {
+public class SM_ViewManager implements ActionListener, WindowListener, UpdateListener {
 	
 	private SM_RoomArrangementView								myRoomArrView;
 	private SM_WindowManager									wm;
@@ -452,19 +452,19 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 		}
 	}
 
-	public void registerUpdateListener(ArtworkUpdateListener _l) {
+	public void registerUpdateListener(UpdateListener _l) {
 		myRoomArrView.myRoom.registerUpdateListener(_l);
 	}
 	
 	
-	public void unregisterUpdateListener(ArtworkUpdateListener _l) {
+	public void unregisterUpdateListener(UpdateListener _l) {
 		myRoomArrView.myRoom.unregisterUpdateListener(_l);
 	}
 
 	@Override
-	public void artworkUpdate(ArtworkUpdateEvent e) {
+	public void doUpdate(UpdateEvent e) {
 		
-		ArtworkUpdateType type = e.getType();
+		UpdateType type = e.getType();
 		LinkedHashMap<String, Object> data = e.getData();
 
 		switch (type) {
@@ -492,6 +492,44 @@ public class SM_ViewManager implements ActionListener, WindowListener, ArtworkUp
 			}
 			break;
 			
+		case FRAME_STYLE:
+			
+			for (String s : data.keySet()) {
+				System.out.println("VM: receiving update request: " + s + ": " + data.get(s));
+				if (s.contains("wall")) {
+					
+					Object o = data.get(s);
+					String os = (String) o;
+
+					int i = os.lastIndexOf('_');
+					i++;
+					char ww = os.charAt(i);
+
+					if (renderer != null) {
+
+					renderer.updateArtworksLayer(ww);
+					}
+				}
+			}
+			break;
+			
+		case ROOM_COLOR:
+			
+			if (renderer != null) {
+				renderer.updateRoomColorLayer(null);
+			}
+			break;
+			
+		case ROOM_COLOR_PREVIEW:
+			
+			if(renderer != null) {
+								
+				Integer c = (Integer)e.getData().get("color");
+				
+				renderer.updateRoomColorLayer( c );
+			}
+			
+			break;
 		
 		default:
 			break;

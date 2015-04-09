@@ -18,11 +18,6 @@ import javax.swing.JFrame;
 import SMUtils.Lang;
 import SMUtils.awFileSize;
 import SMUtils.progState;
-import artworkUpdateModel.ArtworkUpdateListener;
-import artworkUpdateModel.ArtworkUpdateRequestEvent;
-import artworkUpdateModel.WallColorUpdateRequestEvent;
-import artworkUpdateModel.WallUpdateRequestEvent;
-import artworkUpdateModel.ArtworkUpdateRequestListener;
 
 //import com.sun.tools.jdi.LinkedHashMap;
 
@@ -30,6 +25,11 @@ import processing.core.PImage;
 import processing.core.PShape;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
+import updateModel.UpdateListener;
+import updateModel.ArtworkUpdateRequestEvent;
+import updateModel.ArtworkUpdateRequestListener;
+import updateModel.WallColorUpdateRequestEvent;
+import updateModel.WallUpdateRequestEvent;
 
 
 
@@ -307,6 +307,10 @@ public class SM_Room {
 		return myRoomName;
 	}
 
+	public String getRealName() {
+		return myRealName;
+	}
+	
 	public SM_Artwork getArtworkFromBase(String _invNr) {
 		return base.artworks.get(_invNr);
 	}
@@ -371,11 +375,11 @@ public class SM_Room {
 		return base.getWindowManager();
 	}
 
-	public void registerUpdateListener(ArtworkUpdateListener _l){
+	public void registerUpdateListener(UpdateListener _l){
 		base.fm.registerUpdateListener(_l);
 	}
 
-	public void unregisterUpdateListener(ArtworkUpdateListener _l) {
+	public void unregisterUpdateListener(UpdateListener _l) {
 		base.fm.unregisterUpdateListener(_l);
 	}
 

@@ -2,14 +2,14 @@ package smlfr;
 
 import java.util.HashMap;
 
-import artworkUpdateModel.ArtworkUpdateEvent;
-import artworkUpdateModel.ArtworkUpdateListener;
 
 import processing.core.PImage;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
+import updateModel.UpdateEvent;
+import updateModel.UpdateListener;
 
-public class SM_Wall implements ArtworkUpdateListener {
+public class SM_Wall implements UpdateListener {
 	
 	// from file:
 	private String							myWallName;
@@ -165,7 +165,7 @@ public class SM_Wall implements ArtworkUpdateListener {
 	}
 	
 	@Override
-	public void artworkUpdate(ArtworkUpdateEvent e) {
+	public void doUpdate(UpdateEvent e) {
 		switch (e.getType()) {
 		case WALL:
 			

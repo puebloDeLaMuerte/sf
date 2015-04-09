@@ -30,15 +30,16 @@ import java.util.Set;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import artworkUpdateModel.ArtworkUpdateEvent;
-import artworkUpdateModel.ArtworkUpdateListener;
+import updateModel.UpdateEvent;
+import updateModel.UpdateListener;
+
 
 import SMUtils.AWPanel;
 import SMUtils.Lang;
 import SMUtils.awFileSize;
 
 
-public class SM_Library extends JFrame implements ArtworkUpdateListener, ActionListener {
+public class SM_Library extends JFrame implements UpdateListener, ActionListener {
 	
 	/**
 	 * 
@@ -53,16 +54,16 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener, ActionL
 	
 	private Color							standartColor;
 	
-	private int labelX = 120;
-	private int labelY = 120;
-	private Font font = new Font(null, Font.PLAIN, 10);
+	private int 		labelX = 120;
+	private int 		labelY = 120;
+	private Font 		font = new Font(null, Font.PLAIN, 10);
 	
-	private JPanel artworksPanel;
+	private JPanel 		artworksPanel;
 	private JScrollPane scrollPanel;
 	
-	private JComboBox sort;
-	private JButton importBtn;
-	private JButton deleteBtn;
+	private JComboBox 	sort;
+	private JButton 	importBtn;
+	private JButton 	deleteBtn;
 	
 	public SM_Library (SM_FileManager _fm, HashMap<String, SM_Artwork> _artworks ) {
 		
@@ -128,6 +129,9 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener, ActionL
         pack();
 
         setTitle("Library");
+        boolean sd = fm.isSaveDirty();
+        setSaveDirtyMark(sd);
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
@@ -268,7 +272,7 @@ public class SM_Library extends JFrame implements ArtworkUpdateListener, ActionL
 	}
 	
 	@Override
-	public void artworkUpdate(ArtworkUpdateEvent e) {
+	public void doUpdate(UpdateEvent e) {
 		
 		switch (e.getType()) {
 		case WALL:

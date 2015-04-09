@@ -1,4 +1,4 @@
-package artworkUpdateModel;
+package updateModel;
 
 import java.util.EventObject;
 
@@ -12,7 +12,7 @@ public class ArtworkUpdateRequestEvent extends EventObject {
 	private static final long serialVersionUID = -8434037640501633009L;
 	
 	private String 				awName;
-	private ArtworkUpdateType 	type;
+	private UpdateType 	type;
 	
 	private int 				newPosX, newPosY;
 	
@@ -26,7 +26,7 @@ public class ArtworkUpdateRequestEvent extends EventObject {
 	public ArtworkUpdateRequestEvent(Object source, String _awName, int _newPosX, int _newPosY) {
 		super(source);
 		awName = _awName;
-		type = ArtworkUpdateType.POS_IN_WALL;
+		type = UpdateType.POS_IN_WALL;
 		newPosX = _newPosX;
 		newPosY = _newPosY;
 	}
@@ -34,25 +34,25 @@ public class ArtworkUpdateRequestEvent extends EventObject {
 	public ArtworkUpdateRequestEvent(Object source, String _awName, boolean _light) {
 		super(source);
 		awName = _awName;
-		type = ArtworkUpdateType.LIGHT;
+		type = UpdateType.LIGHT;
 		newLight = _light;
 	}
 	
 	public  ArtworkUpdateRequestEvent(Object source, String _awName, FrameStyle _newStyle) {
 		super(source);
 		awName = _awName;
-		type = ArtworkUpdateType.FRAME_STYLE;
+		type = UpdateType.FRAME_STYLE;
 		newFrameStyle = _newStyle;
 	}
 	
 	public  ArtworkUpdateRequestEvent(Object source, String _awName, int[] _newFrameSize) {
 		super(source);
 		awName = _awName;
-		type = ArtworkUpdateType.FRAME_SIZE;
+		type = UpdateType.FRAME_SIZE;
 		newFrameSize = _newFrameSize;
 	}
 	
-	public ArtworkUpdateType getType() {
+	public UpdateType getType() {
 		return type;
 	}
 	
@@ -61,27 +61,27 @@ public class ArtworkUpdateRequestEvent extends EventObject {
 	}
 	
 	public int getNewPosX() {
-		if( type == ArtworkUpdateType.POS_IN_WALL ) return newPosX;
+		if( type == UpdateType.POS_IN_WALL ) return newPosX;
 		else return -1;
 	}
 	
 	public int getNewPosY() {
-		if( type == ArtworkUpdateType.POS_IN_WALL ) return newPosY;
+		if( type == UpdateType.POS_IN_WALL ) return newPosY;
 		else return -1;
 	}
 	
 	public boolean getNewLight() {
-		if( type == ArtworkUpdateType.LIGHT ) return newLight;
+		if( type == UpdateType.LIGHT ) return newLight;
 		else return false;
 	}
 	
 	public FrameStyle getNewFrameStyle() {
-		if( type == ArtworkUpdateType.FRAME_STYLE ) return newFrameStyle;
+		if( type == UpdateType.FRAME_STYLE ) return newFrameStyle;
 		else return null;
 	}
 	
 	public int[] getNewFrameSize() {
-		if( type == ArtworkUpdateType.FRAME_SIZE ) return newFrameSize;
+		if( type == UpdateType.FRAME_SIZE ) return newFrameSize;
 		else return null;
 	}
 }

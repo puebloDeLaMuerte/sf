@@ -3,6 +3,6 @@
     "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/Kräftemessen/Kräftemessen.sfp",
     "projectName": "Kräftemessen"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/Ihr Projekt",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/Test6",
   "museumData": "MuKuDeWe.sfm"
 }

@@ -49,11 +49,6 @@ import javax.swing.text.MaskFormatter;
 
 import org.apache.poi.hssf.util.HSSFColor.BLACK;
 
-import artworkUpdateModel.ArtworkUpdateEvent;
-import artworkUpdateModel.ArtworkUpdateRequestEvent;
-import artworkUpdateModel.ArtworkUpdateType;
-import artworkUpdateModel.WallColorUpdateRequestEvent;
-import artworkUpdateModel.WallUpdateRequestEvent;
 
 
 import SMUtils.Lang;
@@ -62,6 +57,11 @@ import SMUtils.WallColorChooser;
 
 import processing.core.PApplet;
 import processing.core.PShape;
+import updateModel.UpdateEvent;
+import updateModel.ArtworkUpdateRequestEvent;
+import updateModel.UpdateType;
+import updateModel.WallColorUpdateRequestEvent;
+import updateModel.WallUpdateRequestEvent;
 
 public class SM_RoomProjectView extends PApplet implements DropTargetListener, DragGestureListener, Transferable, ActionListener {
 
@@ -411,18 +411,22 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //		super.init();
 //	}
 	
-	public void wallColorCallback(int _color, boolean _singleWall, char wallChar) {
+	public void wallColorCallback(int _color, boolean _singleWall, char wallChar, boolean _preview) {
 		
 		WallColorUpdateRequestEvent e = null;
 		
 		if( ! _singleWall ) {
 
-			LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
-			data.put("color", _color);
-			e = new WallColorUpdateRequestEvent(this);
+			e = new WallColorUpdateRequestEvent(this, myRoom.getName(), _color, _preview);
 		}
 		
 		myRoom.fireUpdateRequest(e);
+	}
+	
+	private void wallColorPreview( int _color) {
+		
+		
+		
 	}
 	
 	public HashMap<Character, PShape> getWallsOverGfx() {

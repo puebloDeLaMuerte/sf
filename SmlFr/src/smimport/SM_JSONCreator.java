@@ -42,6 +42,7 @@ public class SM_JSONCreator  {
 
 			JSONObject thisRoom = new JSONObject();
 			thisRoom.setString("roomName", r);
+			thisRoom.setInt("roomColor", -1);
 
 			// this Rooms walls
 			Iterator<?> keys = thisSourceRoom.keyIterator();

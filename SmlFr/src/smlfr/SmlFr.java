@@ -31,6 +31,7 @@ public class SmlFr extends JFrame  {
 	 * 
 	 */
 	private static final long serialVersionUID = -4943542664716794448L;
+	public static final String versionString = "0.2.0";
 	
 	
 	// Modules
@@ -242,8 +243,20 @@ public class SmlFr extends JFrame  {
 				int c = jRoom.getInt("roomColor");
 				sfRoom.setRoomcolor(c);
 			} catch (Exception e) {
+				try {
+					String c = jRoom.getString("roomColor");
+					
+					if( c.equalsIgnoreCase("white") ) JOptionPane.showMessageDialog(null, Lang.prevVersion_WallColor, Lang.warning, JOptionPane.ERROR_MESSAGE);
+				} catch (Exception e2) {
+
+					JOptionPane.showMessageDialog(null, Lang.errorLoadingWallColor_1 + sfRoom.getRealName() + Lang.errorLoadingWallColor_2, Lang.warning, JOptionPane.ERROR_MESSAGE);
+					
+					jRoom.setInt("roomColor", new Color(1f, 1f, 1f).getRGB());
+					fm.setSaveDirty(true);
+					
+				}
 //				sfRoom.setRoomcolor(sfRoom.getRoomColor());
-				sfRoom.setRoomcolor(-3644296);
+				sfRoom.setRoomcolor(new Color(1f, 1f, 1f).getRGB());
 			}
 
 			// get Walls - set Wall Color if in file:

@@ -35,6 +35,9 @@ public class SM_Frames {
 		case WOOD_LIGHT_GREY:
 			frame_wood_light_grey = _i;
 			break;
+		case WOOD_DARK_GREY:
+			frame_wood_dark_grey = _i;
+			break;
 		case POMP_GOLD_1:
 			frame_pomp_gold_1 = _i;
 			break;

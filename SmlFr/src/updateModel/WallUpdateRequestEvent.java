@@ -1,4 +1,4 @@
-package artworkUpdateModel;
+package updateModel;
 
 import java.util.EventObject;
 

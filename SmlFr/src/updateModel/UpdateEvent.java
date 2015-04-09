@@ -1,9 +1,9 @@
-package artworkUpdateModel;
+package updateModel;
 
 import java.util.EventObject;
 import java.util.LinkedHashMap;
 
-public class ArtworkUpdateEvent extends EventObject {
+public class UpdateEvent extends EventObject {
 	
 	/**
 	 * 
@@ -11,17 +11,17 @@ public class ArtworkUpdateEvent extends EventObject {
 	private static final long serialVersionUID = 8317759613305521733L;
 	
 	private String artworkName;
-	private ArtworkUpdateType type;
+	private UpdateType type;
 	private LinkedHashMap<String, Object> data;
 	
-	public ArtworkUpdateEvent(Object source, String artworkName, ArtworkUpdateType type, LinkedHashMap<String, Object> _data) {
+	public UpdateEvent(Object source, String artworkName, UpdateType type, LinkedHashMap<String, Object> _data) {
 		super(source);
 		this.artworkName = artworkName;
 		this.type = type;
 		this.data = _data;
 	}
 	
-	public ArtworkUpdateType getType() {
+	public UpdateType getType() {
 		return type;
 	}
 	

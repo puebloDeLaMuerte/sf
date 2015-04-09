@@ -1,4 +1,4 @@
-package artworkUpdateModel;
+package updateModel;
 
 public interface ArtworkUpdateRequestListener {
 	

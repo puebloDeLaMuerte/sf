@@ -1,5 +1,8 @@
 package smimport;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -73,9 +76,11 @@ public class SM_Import extends PApplet  {
 		
 		JFrame pan = new JFrame();
 		JTextArea txt = new JTextArea(Lang.importPleaseWait);
+		pan.setBackground(Color.LIGHT_GRAY);
 		pan.add(txt);
 		pan.setSize(250, 80);
-		pan.setLocation(200, 200);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();		
+		pan.setLocation(dim.width/2 - 175, dim.height/2-40);
 		pan.setVisible(true);
 
 		System.out.println("will import artworks to this location: "+_artLibSaveLocation.getAbsolutePath());

@@ -19,24 +19,25 @@ import javax.swing.JSeparator;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
-import artworkUpdateModel.ArtworkUpdateEvent;
-import artworkUpdateModel.ArtworkUpdateListener;
-import artworkUpdateModel.ArtworkUpdateRequestEvent;
-import artworkUpdateModel.WallUpdateRequestEvent;
+import SMUtils.SM_Frames;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
+import updateModel.UpdateEvent;
+import updateModel.UpdateListener;
+import updateModel.ArtworkUpdateRequestEvent;
+import updateModel.WallUpdateRequestEvent;
 
-public class SM_WallArrangementView extends PApplet implements DropTargetListener, ArtworkUpdateListener, ActionListener {
+public class SM_WallArrangementView extends PApplet implements DropTargetListener, UpdateListener, ActionListener {
 
 /**
 	 * 
 	 */
 	private static final long serialVersionUID = -8724642767602580803L;
 
-	private SM_Wall			myWall;
+	private SM_Wall			myWall; 
 	private SM_ViewManager  vm;
 	private Dimension		mySize;
 	private PGraphics		wlGfx;
@@ -47,7 +48,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	private float 			xOffsetPx, yOffsetPx;
 	private int				myMidHeight;
 	
-	private SM_Artwork		awOver;
+	private SM_Artwork		awOver, menuAW;
 	private boolean 		awDrag = false;
 	private boolean			horizontalLoc = false;
 	private PVector			awDragOfset;
@@ -56,7 +57,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	private JPopupMenu		pMenu;
 	private JMenuItem		putBack, snapToMidHeight, close;
 	private JMenuItem[]		frameStyles;
-	private JMenu			changeFrameStyle;
+	private JMenu			editArtwork;
+	private JMenuItem		editMeasurements;
 	
 	private DropTarget		dt;
 	
@@ -127,20 +129,26 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		putBack.addActionListener(this);
 		putBack.setEnabled(false);
 		
-		changeFrameStyle = new JMenu(Lang.changeFrameStyle);
-		changeFrameStyle.setEnabled(false);
+		editArtwork = new JMenu(Lang.editArtwork);
+		editArtwork.setEnabled(true);
 		int i=0;
 		frameStyles = new JMenuItem[ FrameStyle.values().length ];
 		for( FrameStyle fst : SMUtils.FrameStyle.values() ) {
 			
-			String style = fst.toString();
+			String style = fst.toString(); 
 
 			frameStyles[i] = new JMenuItem(style);
 			frameStyles[i].addActionListener(this);
-			frameStyles[i].setEnabled(false);
-			changeFrameStyle.add(frameStyles[i]);
+			frameStyles[i].setEnabled(true);
+			editArtwork.add(frameStyles[i]);
 			i++;
 		}
+
+		editMeasurements = new JMenuItem(Lang.editMeasurements);
+		editMeasurements.addActionListener(this);
+											editMeasurements.setEnabled(false);
+		editArtwork.add(new JSeparator());
+		editArtwork.add(editMeasurements);
 		
 		snapToMidHeight = new JMenuItem(Lang.snapToMidHeight);
 		snapToMidHeight.addActionListener(this);
@@ -152,7 +160,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		pMenu.add(snapToMidHeight);
 		pMenu.add(putBack);
-		pMenu.add(changeFrameStyle);
+		pMenu.add(editArtwork);
 		pMenu.add(new JSeparator());
 		pMenu.add(close);
 		
@@ -446,14 +454,14 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	}
 	
 	public void loadMissingAWGraphics() {
-		if( true ){
-			for( String a : myWall.getArtworks().keySet() ) {
-				SM_Artwork aw = myWall.getArtworks().get(a);
-				if( ! aw.hasGfx() ) {
-					aw.setGfx( loadImage(aw.getFilePath().getAbsolutePath())  );
-				}
+		
+		for( String a : myWall.getArtworks().keySet() ) {
+			SM_Artwork aw = myWall.getArtworks().get(a);
+			if( ! aw.hasGfx() ) {
+				aw.setGfx( loadImage(aw.getFilePath().getAbsolutePath())  );
 			}
 		}
+		
 	}
 	
 	public boolean isWallGfxReady() {
@@ -506,10 +514,11 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	}
 	
 	@Override
- 	public void artworkUpdate(ArtworkUpdateEvent e) {
+ 	public void doUpdate(UpdateEvent e) {
 		artworkUpdatePending = true;
 		awOver = null;
 	}
+
 	
 	public void mousePressed() {
 		if( awOver != null ) {
@@ -550,9 +559,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			}
 		}
 	}
-	
-
-	
+		
 	public void mouseClicked() {
 		
 		if( awOver != null && mouseButton != RIGHT) {			
@@ -568,12 +575,13 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		if( mouseButton == RIGHT ) {
 			
 			if( awOver != null ) {
+				menuAW = awOver;
 				putBack.setEnabled(true);
-				changeFrameStyle.setEnabled(true);
+				editArtwork.setEnabled(true);
 				snapToMidHeight.setEnabled(true);
 			} else {
 				putBack.setEnabled(false);
-				changeFrameStyle.setEnabled(false);
+				editArtwork.setEnabled(false);
 				snapToMidHeight.setEnabled(false);
 			}
 			
@@ -597,10 +605,13 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			horizontalLoc = false;
 		}
 	}
+
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
 		String action = e.getActionCommand();
+		
 		if(action.equalsIgnoreCase(Lang.closeWall)) {
 //			this.frame.setVisible(false);
 			vm.sleepWallArr(""+myWall.getWallChar());
@@ -611,11 +622,40 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				myWall.myRoom.fireUpdateRequest(rq);
 			}
 		} else 
-			if( action.equalsIgnoreCase(Lang.RemoveArtwork) && awOver != null) {
-				WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, awOver.getName(), ' ', "Library", myWall.myRoom.getName(), awOver.getWallChar());
-				awOver = null;
-				myWall.myRoom.fireUpdateRequest(r);
+		if( action.equalsIgnoreCase(Lang.RemoveArtwork) && awOver != null) {
+			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, awOver.getName(), ' ', "Library", myWall.myRoom.getName(), awOver.getWallChar());
+			awOver = null;
+			myWall.myRoom.fireUpdateRequest(r);
+		}
+		else
+		if( action.equalsIgnoreCase(Lang.editMeasurements) ) {
+			
+			SMUtils.ArtworkMeasurementChooser chooser = new SMUtils.ArtworkMeasurementChooser(this, menuAW );
+			chooser.setSize(400, 200);
+			chooser.setVisible(true);
+		}
+	
+		// if it's none of the above it must have been a frameStyle selected. Let's find out which one!
+		else {
+
+
+			for (JMenuItem item : frameStyles) {
+				if( e.getActionCommand().equalsIgnoreCase(item.getText())) {
+					
+					FrameStyle style = FrameStyle.valueOf(item.getText());
+					
+					ArtworkUpdateRequestEvent request = new ArtworkUpdateRequestEvent(this, menuAW.getName(), style);
+					System.out.println(menuAW.getName());
+					
+					myWall.myRoom.fireUpdateRequest(request);
+					
+					break;
+				}
 			}
+		}
+	}
+	
+	public void artworkMeasurementCallback() {
 		
 	}
 

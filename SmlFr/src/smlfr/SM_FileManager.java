@@ -12,18 +12,18 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.sun.xml.internal.bind.v2.TODO;
 
-import artworkUpdateModel.ArtworkUpdateEvent;
-import artworkUpdateModel.ArtworkUpdateListener;
-import artworkUpdateModel.ArtworkUpdateRequestEvent;
-import artworkUpdateModel.ArtworkUpdateType;
-import artworkUpdateModel.WallColorUpdateRequestEvent;
-import artworkUpdateModel.WallUpdateRequestEvent;
-import artworkUpdateModel.ArtworkUpdateRequestListener;
 
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.data.*;
 import smimport.SM_JSONCreator;
+import updateModel.UpdateEvent;
+import updateModel.UpdateListener;
+import updateModel.ArtworkUpdateRequestEvent;
+import updateModel.ArtworkUpdateRequestListener;
+import updateModel.UpdateType;
+import updateModel.WallColorUpdateRequestEvent;
+import updateModel.WallUpdateRequestEvent;
 
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
@@ -111,9 +111,11 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return savedirty;
 	}
 	
-	private void setSaveDirty(boolean _sd) {
+	public void setSaveDirty(boolean _sd) {
 		savedirty = _sd;
-		base.lib.setSaveDirtyMark(_sd);
+		if (base.lib != null) {
+			base.lib.setSaveDirtyMark(_sd);
+		}
 	}
 	
 	public void loadFrames(SM_Frames f) {
@@ -134,6 +136,9 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				break;
 			case WOOD_LIGHT_GREY:
 				i = loadImage("resources/Frames/Rahmen_Holz_Dunkelgrau_2.png");
+				break;
+			case WOOD_DARK_GREY:
+				i = loadImage("resources/Frames/Rahmen_Holz_Dunkelgrau_1.png");
 				break;
 			case POMP_GOLD_1:
 				i = loadImage("resources/Frames/Rahmen_Prunk_Gold_1.png");
@@ -657,25 +662,25 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	
 	// UPDATE Event handling
 
-	public synchronized void registerUpdateListener(ArtworkUpdateListener _listener) {
+	public synchronized void registerUpdateListener(UpdateListener _listener) {
 		
 		if(_listener.getClass() == (SM_WallArrangementView.class)) {
 			
-			updateListeners_ArrViews.add(ArtworkUpdateListener.class, _listener);
+			updateListeners_ArrViews.add(UpdateListener.class, _listener);
 		} else {
-			updateListeners.add(ArtworkUpdateListener.class, _listener);
+			updateListeners.add(UpdateListener.class, _listener);
 		}
 
 	}
 	
-	public synchronized void unregisterUpdateListener(ArtworkUpdateListener _listener) {
+	public synchronized void unregisterUpdateListener(UpdateListener _listener) {
 		if(_listener.getClass() == (SM_WallArrangementView.class)) {
 
-			updateListeners_ArrViews.remove(ArtworkUpdateListener.class, _listener);
+			updateListeners_ArrViews.remove(UpdateListener.class, _listener);
 		} else {
-			updateListeners.remove(ArtworkUpdateListener.class, _listener);
+			updateListeners.remove(UpdateListener.class, _listener);
 		}
-		//		updateListeners.remove(ArtworkUpdateListener.class, _listener);
+		//		updateListeners.remove(UpdateListener.class, _listener);
 	}
 	
 	public synchronized void unregisterArrViewAWUpdateListeners() {
@@ -686,12 +691,12 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 //		}
 		
 		
-		Object[] lstnrs = updateListeners_ArrViews.getListeners(ArtworkUpdateListener.class);
+		Object[] lstnrs = updateListeners_ArrViews.getListeners(UpdateListener.class);
 		
 		
 		for( Object l : lstnrs ) {
-			ArtworkUpdateListener ls = (ArtworkUpdateListener)l;
-			updateListeners_ArrViews.remove(ArtworkUpdateListener.class, ls);
+			UpdateListener ls = (UpdateListener)l;
+			updateListeners_ArrViews.remove(UpdateListener.class, ls);
 		}
 		
 
@@ -701,16 +706,16 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 		System.out.println("Trying to remove "+updateListeners_ArrViews.getListenerCount()+" Listeners");
 		
-		Object[] lstnrs = updateListeners.getListeners(ArtworkUpdateListener.class);
+		Object[] lstnrs = updateListeners.getListeners(UpdateListener.class);
 		
 		System.out.println("i have gotten "+lstnrs.length+" listeners as array");
 		
 		for( Object l : lstnrs ) {
-			ArtworkUpdateListener ls = (ArtworkUpdateListener)l;
+			UpdateListener ls = (UpdateListener)l;
 			
 			if(ls.getClass().equals(SM_ViewManager.class)) {
 				System.out.println("removing view manager...");
-				updateListeners.remove(ArtworkUpdateListener.class, ls);
+				updateListeners.remove(UpdateListener.class, ls);
 			}
 		}
 		
@@ -719,16 +724,18 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	
 	public synchronized void updateRequested(ArtworkUpdateRequestEvent e) {
 		
-		ArtworkUpdateEvent e2;
+		UpdateEvent e2;
 		String eventAW       = e.getName();
+		
+		SM_Artwork thisAw = base.getArtwork(this, (eventAW));
+		LinkedHashMap<String, Object> data;
 		
 		switch (e.getType()) {
 		case POS_IN_WALL:
 
 			
 			// Update Artwork
-			
-			SM_Artwork thisAw = base.getArtwork(this, (eventAW));
+						
 			thisAw.setTotalWallPos(e.getNewPosX(), e.getNewPosY());
 			
 			// Update Project-Json
@@ -752,30 +759,55 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				
 			}
 			String notifyWall = base.artworks.get(eventAW).getWall();
-			LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+			data = new LinkedHashMap<String, Object>();
 			data.put("wall", notifyWall);
 
-			e2 = new ArtworkUpdateEvent(this, eventAW, ArtworkUpdateType.POS_IN_WALL, data);
+			e2 = new UpdateEvent(this, eventAW, UpdateType.POS_IN_WALL, data);
+			
+			setSaveDirty(true);
+			saveTempProject();
+			
+			break;
+			
+			
+		case FRAME_STYLE:
+
+			// Update Artwork
+			
+			thisAw.setFrameStyle(e.getNewFrameStyle());
+						
+			// Update Artwork-Json
+			
+			File artLibraryPath = new File(getProjectFolderPath() + "/" +getProjectName()+"_lib");
+			File thisAwFile = new File(artLibraryPath.getAbsolutePath() + "/" +eventAW + ".sfa");
+			
+			JSONObject thisAWjson = loadJSONObject(thisAwFile);
+			thisAWjson.setString("frameStyle", e.getNewFrameStyle().name() );	
+			saveJSONObject(thisAWjson, thisAwFile.getAbsolutePath());
+			
+			String wall = base.artworks.get(eventAW).getWall();
+			data = new LinkedHashMap<String, Object>();
+			data.put("wall", wall);
+			
+			e2 = new UpdateEvent(this, eventAW, UpdateType.FRAME_STYLE, data);
+
+			
 			break;
 
 		default:
-			e2 = new ArtworkUpdateEvent(this, eventAW, ArtworkUpdateType.BLANK, null);
-
+			e2 = new UpdateEvent(this, eventAW, UpdateType.BLANK, null);
 			break;
 		}
 		
-		setSaveDirty(true);
-		saveTempProject();
 		
-		System.out.println(e2);
-		
-		for(ArtworkUpdateListener lsnr : updateListeners.getListeners(ArtworkUpdateListener.class) ) {
-			lsnr.artworkUpdate(e2);
-			System.out.println("fire regular  " + lsnr.getClass());
+				
+		for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+			lsnr.doUpdate(e2);
+
 		}
-		for(ArtworkUpdateListener lsnr : updateListeners_ArrViews.getListeners(ArtworkUpdateListener.class) ) {
-			lsnr.artworkUpdate(e2);
-			System.out.println("fire arrView  " + lsnr.getClass());
+		for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+			lsnr.doUpdate(e2);
+
 		}
 		
 	}
@@ -849,14 +881,14 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		data.put("wall_1", targetWall);
 		data.put("wall_2", originWall);
 		
-		ArtworkUpdateEvent e2 = new ArtworkUpdateEvent(this, e.getName(), ArtworkUpdateType.WALL, data);
+		UpdateEvent e2 = new UpdateEvent(this, e.getName(), UpdateType.WALL, data);
 		System.out.println(e2);
-		for(ArtworkUpdateListener lsnr : updateListeners.getListeners(ArtworkUpdateListener.class) ) {
-			lsnr.artworkUpdate(e2);
+		for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+			lsnr.doUpdate(e2);
 			System.out.println("fire regular  " + lsnr.getClass());
 		}
-		for(ArtworkUpdateListener lsnr : updateListeners_ArrViews.getListeners(ArtworkUpdateListener.class) ) {
-			lsnr.artworkUpdate(e2);
+		for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+			lsnr.doUpdate(e2);
 			System.out.println("fire arrView  " + lsnr.getClass());
 		}
 	}
@@ -866,8 +898,60 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		
 		System.out.println("the fileManager has received an update request: WallColor");
+		System.out.println("for room: "+ e.getRoomName());
+		System.out.println("color: "+e.getColor());
+		if( e.isPreview() ) System.out.println("it is a preview");
+		else System.out.println("it is not a preview - it's for real!");
 		
+		if(!e.isPreview()) {
+			
 		
+			// Set Room Color:
+			
+			SM_Room thisRoom = base.getRoom(this, e.getRoomName());
+			thisRoom.setRoomcolor(e.getColor());
+			
+			// update JSON:
+			
+			for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
+				JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
+				if(r.getString("roomName").equalsIgnoreCase(e.getRoomName())) {
+	
+					r.setInt("roomColor", e.getColor());
+				}
+			}
+			setSaveDirty(true);
+			saveTempProject();
+			
+			LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+			data.put("roomName", e.getRoomName());
+			
+			UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.ROOM_COLOR, data);
+			
+			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+				lsnr.doUpdate(e2);
+			}
+			for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+				lsnr.doUpdate(e2);
+			}
+		}
+		
+		else // send preview event:
+			
+		{
+			LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+			data.put("roomName", e.getRoomName());
+			data.put("color", e.getColor());
+			
+			UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.ROOM_COLOR_PREVIEW, data);
+			
+			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+				lsnr.doUpdate(e2);
+			}
+			for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+				lsnr.doUpdate(e2);
+			}
+		}
 	}
 	
 	public void requestQuit() {

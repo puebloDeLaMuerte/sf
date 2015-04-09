@@ -21,9 +21,16 @@ public class Lang {
 	public static String	couldntLoadArtwork = "Die Library-Dateien konnten nicht geladen werden.\nStellen Sie sicher, dass sich der Ordner mit dem\nSuffix \"_lib\" im selben Ordner wie die Projektadtei befindet.";
 	public static String	couldntImport_1 = "Diese Kunstwerke konnten leider nicht importiert werden:\n\n";
 	public static String	couldntImport_2 = "\nÜberprüfen Sie die Excel-Tabelle auf fehlerhafte Einträge" +
-			"\nund stellen Sie sicher, dass sich die angegebenen" +
-			"\nBildateien im selben Ordner mit der Tabelle befinden." +
-			"\n\nAlle übrigen Kunstwerke wurden erfolgreich importiert!";
+												"\nund stellen Sie sicher, dass sich die angegebenen" +
+												"\nBildateien im selben Ordner mit der Tabelle befinden." +
+												"\n\nAlle übrigen Kunstwerke wurden erfolgreich importiert!";
+	public static String	prevVersion_WallColor = "Diese Projektdatei wurde von einer früheren SimuFöhr Version erstellt. (v0.1.11 oder früher)" +
+													"In dieser Version ist es möglich, die Wandfarbe zu editieren." +
+													"Die Wandfarbe wurde auf Weiß (255,255,255) gesetzt. Sie können diese nun ändern.";
+	public static String	errorLoadingWallColor_1 = "Die Wandfarbe für \"";
+	public static String	errorLoadingWallColor_2	=	"\" konnte nicht aus der Projektdatei gelesen werden." +
+													"\nEs wird versucht, das Projekt trotzdem zu laden." +
+													"\nFalls Probleme auftreten, wenden Sie sich bitte an den Support.";
 	public static String	successfulImport = " Kunstwerke wurden erfolgreich Importiert.";
 	
 	// errors: Programm Handling
@@ -46,7 +53,7 @@ public class Lang {
 	public static String[]  importNowBtns = new String[] { "später", "Ja" };
 	public static String 	importNow = "Wollen Sie jetzt bereits Kunstwerke importieren,\noder ein leeres Projekt erstellen?";
 	public static Object 	importNowTitle = "Kunstwerke importieren?";
-	public static String	importPleaseWait = "Importiere Kunstwerke ...\nBitte haben Sie etwas Geduld.";
+	public static String	importPleaseWait = "\n  Importiere Kunstwerke ...\n  Bitte haben Sie etwas Geduld.";
 	public static Object 	newProjectName = "Projektname:";
 	public static String 	newProjectNameTitle = "Neues Projekt...";
 	public static Object[]	newProjectOptions = new String[] {"abbrechen", "erstellen"};
@@ -75,10 +82,10 @@ public class Lang {
 	public static String	importBtn = "Importieren";
 	public static String	deleteBtn = "Löschen";
 	public static String 	RemoveArtwork = "von hier entfernen";
-	public static String	changeFrameStyle = "Rahmen ändern";
 	public static String	changeColor = "Wandfarbe ändern...";
 	public static String	changeColorTitle = "Wandfarbe ändern";
 	public static String	colorPicker = "Farbwähler...";
+	public static String	preview = "Vorschau";
 	public static String	changeColorMessage = "Geben Sie den RGB Wert (0-255) für die Wandfarbe ein:";
 	public static String	changeRoomColor = "Farbe für den gesamten Raum ändern";
 	public static String	changeSingleWallColor_1 = "Nur Farbe für Wand ";
@@ -89,6 +96,18 @@ public class Lang {
 	public static String 	exitRoom = "Raum verlassen";
 	public static String	closeWall = "Wand schließen";
 	public static String 	selectView = "Wählen Sie eine Ansicht:";
+	
+	// EditArtwork
+	
+	public static String	editArtwork = "Kunstwerk editieren...";
+	public static String	editMeasurements = "Maße ändern...";
+	public static String	frame = "Rahmen";
+	public static String	passepartout = "Passepartout";
+	public static String	artwork	= "Kunstwerk";
+	public static String	width = "Breite:";
+	public static String	height = "Höhe:";
+	public static String	prevValue = "ursprünglicher Wert: ";
+
 	
 	// Export
 	
