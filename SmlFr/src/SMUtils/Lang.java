@@ -104,10 +104,21 @@ public class Lang {
 	public static String	frame = "Rahmen";
 	public static String	passepartout = "Passepartout";
 	public static String	artwork	= "Kunstwerk";
-	public static String	width = "Breite:";
-	public static String	height = "Höhe:";
+	public static String	width = "Breite (mm):";
+	public static String	height = "Höhe (mm):";
 	public static String	prevValue = "ursprünglicher Wert: ";
 
+	// Import
+	
+	public static String	importTitle = "Kunstwerk importieren";
+	public static String	invNr = "Inventarnummer:";
+	public static String	title = "Titel:";
+	public static String	artist = "Künstler:";
+	public static String	frameMeasure  = "Rahmenmaß:";
+	public static String	artworkMeasure = "Bildgröße:";
+	public static String	pptMeasure = "Passepartoutmaß:";
+	public static String	imageFile = "Bilddatei:";
+	public static String	browse = "durchsuchen...";
 	
 	// Export
 	

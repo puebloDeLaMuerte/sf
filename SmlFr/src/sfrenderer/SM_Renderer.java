@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.image.BufferedImage;
 
 import java.io.File;
-import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
@@ -19,8 +18,6 @@ import javax.swing.JSeparator;
 import SMUtils.Lang;
 import SMUtils.Skewmator;
 import SMUtils.ViewMenuItem;
-import SMUtils.pTimedEventGenerator;
-
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -77,8 +74,8 @@ public class SM_Renderer extends PApplet{
 	public boolean 					setupRun = false;
 	
 //	private pTimedEventGenerator	tGen;
-	private int 					tCount = 0;		
-	private boolean 				tStop = false;
+//	private int 					tCount = 0;		
+//	private boolean 				tStop = false;
 
 	
 	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath, int _YSize) {
@@ -719,7 +716,7 @@ public class SM_Renderer extends PApplet{
 		
 //		tGen.setEnabled(true);
 //		tGen.setIntervalMs(400);
-		tCount = 0;
+//		tCount = 0;
 	}
 	
 	public char[] getCurrentWallChars() {
@@ -729,7 +726,7 @@ public class SM_Renderer extends PApplet{
 	
 	public void prepareFrameForClosing() {
 		
-		tStop = true;
+//		tStop = true;
 //		tGen.setEnabled(false);
 //		tGen.setEnabled(false);
 		

@@ -71,6 +71,12 @@ public class SM_Import extends PApplet  {
 		
 	}
 	
+	public void singleImport(File _artLibSaveLocation) {
+		
+		SM_SingleImportDialog in = new SM_SingleImportDialog(this);
+		
+	}
+	
 	public String[] batchImport(File _artLibSaveLocation) {
 		
 		
@@ -234,7 +240,30 @@ public class SM_Import extends PApplet  {
 				System.out.println("trying to load this image file: " + excelLocation.getAbsolutePath()+"/"+iNr+".png");
 				
 				// Load the Image
-				PImage fullGfx = loadImage(excelLocation.getAbsolutePath()+"/"+iNr+".png");
+				
+				boolean testPNG = false;
+				boolean testJPG = false;
+				
+				try {
+					File test1 = new File(excelLocation.getAbsolutePath()+"/"+iNr+".png");
+					File test2 = new File(excelLocation.getAbsolutePath()+"/"+iNr+".jpg");
+					if( test1.exists()) testPNG = true;
+					if( test2.exists()) testJPG = true;
+
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				
+				PImage fullGfx = null;
+				
+				
+				if( testPNG ) {
+					fullGfx = loadImage(excelLocation.getAbsolutePath()+"/"+iNr+".png");
+				}
+				else if( testJPG ) {
+					fullGfx = loadImage(excelLocation.getAbsolutePath()+"/"+iNr+".jpg");
+				}
+								
 				if( fullGfx == null )   {
 					throw new EmptyStackException();
 				}
@@ -267,7 +296,7 @@ public class SM_Import extends PApplet  {
 //				javax.swing.JOptionPane.showMessageDialog(prevpnl, msgs, "Import", javax.swing.JOptionPane.INFORMATION_MESSAGE, prev);
 
 				
-				// Resize to MEDIUM:
+				// Resize to THUMB:
 				fact = 1;
 				PImage thumbGfx = (PImage)medGfx.clone();
 

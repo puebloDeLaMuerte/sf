@@ -177,6 +177,7 @@ public class SM_Room {
 		myProjectView.init(fl, this);
 		myProjectView.frame.pack();
 		myProjectView.frame.setVisible(true);
+		myProjectView.frame.setResizable(false);
 		myProjectView.frame.setLocation(_loc.width, _loc.height);
 		myProjectView.frame.setTitle(myRealName);
 		
@@ -254,6 +255,7 @@ public class SM_Room {
 		myArrangementView.setMenuExit();
 		myArrangementView.frame.pack();
 		myArrangementView.frame.setVisible(true);
+		myArrangementView.frame.setResizable(false);
 		myArrangementView.frame.setLocation(_loc.width, _loc.height);
 		myArrangementView.frame.setTitle(myRealName);
 		entered = true;

@@ -124,6 +124,9 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 		if(wallOver == ' ') wallOver = 'X';
 		changeWall = new JRadioButton(Lang.changeSingleWallColor_1 + wallOver + Lang.changeSingleWallColor_2);
 		if(wallOver == 'X') changeWall.setEnabled(false);
+		
+		// TODO Beat! Implement single Wall Color
+		changeWall.setEnabled(false);
 			
 		radioBtns.add(changeRoom);
 		radioBtns.add(changeWall);

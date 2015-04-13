@@ -630,6 +630,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		importedAws = base.in.batchImport(artLibraryPath);
 		
+//		base.in.singleImport(artLibraryPath);
+//		importedAws = null;
+		
+		
 		if( importedAws == null || importedAws.length == 0 ) return;
 		
 		// create new Artwork-Objects and append to the current Artworks[]

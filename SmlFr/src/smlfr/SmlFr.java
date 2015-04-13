@@ -31,7 +31,7 @@ public class SmlFr extends JFrame  {
 	 * 
 	 */
 	private static final long serialVersionUID = -4943542664716794448L;
-	public static final String versionString = "0.2.0";
+	public static final String versionString = "0.2.1";
 	
 	
 	// Modules
@@ -151,7 +151,13 @@ public class SmlFr extends JFrame  {
 			break;
 			
 		case 2:
-			fm.loadProject(new File(fm.getPreviousProject()[1]));
+			File prevProj = new File(fm.getPreviousProject()[1]);
+			
+			if( prevProj.exists() ) {
+				fm.loadProject( prevProj );
+			} else {
+				fm.loadProject(null);
+			}
 			break;
 			
 		default:
