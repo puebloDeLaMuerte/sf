@@ -132,4 +132,10 @@ public class Lang {
 	public static String	exportSuccess_1		= "Die Verma§ungsdatei wurde erfolgreich exportiert.\n\nSie befindet sich in Projektordner unter\n";
 	public static String	exportSuccess_2		= "";
 	
+	// Errors
+	
+	public static String	err_loadImageFile = "Bilddatei konnte nicht geladen werden";
+	public static String	err_InvNrAlreadyExists = "Es existiert bereits ein Kunstwerk mit dieser Inventarnummer";
+	public static String	err_noImageSize = "Es wurden keine Ma§e in der Tabelle gefunden";
+	
 	}

@@ -1,8 +1,8 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/Kräftemessen/Kräftemessen.sfp",
-    "projectName": "Kräftemessen"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/barnabas/barnabas.sfp",
+    "projectName": "barnabas"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/Test6",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/barnabas",
   "museumData": "MuKuDeWe.sfm"
 }

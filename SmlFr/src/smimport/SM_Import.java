@@ -40,8 +40,9 @@ public class SM_Import extends PApplet  {
 	private SM_EXCELReader  		ex;
 	private SM_JSONCreator 			cr;
 	
-	int mediumSize = 350;
-	int thumbSize = 50;
+	private final int fullSize = 600;
+	private final int mediumSize = 350;
+	private final int thumbSize = 50;
 
 	public SM_Import (SM_FileManager _fm, SmlFr _base) {
 //		base = _base;
@@ -124,20 +125,21 @@ public class SM_Import extends PApplet  {
 				title						= ex.getTitle(i);
 				
 				//--    H…HE x BREITE (museumLogik) -->  BREITE x H…HE (SimulFšhrLogik)
-				int[]		tmpSize			= ex.getImageSize(i, "imageSize");
+				int[]		tmpSize			= ex.getSizeValues(i, "imageSize");
+				if( tmpSize == null ) throw new Exception(Lang.err_noImageSize);
 				int[]		size			= new int[2];
 							size[0] 		= tmpSize[1];
 							size[1] 		= tmpSize[0];
 				//--
 							
-				int[]		tmpFrameSize		= ex.getImageSize(i, "frameSize");
+				int[]		tmpFrameSize		= ex.getSizeValues(i, "frameSize");
 				int[]		frameSize			= new int[2];
 				if( tmpFrameSize != null) {
 							frameSize[0]		= tmpFrameSize[1];
 							frameSize[1]		= tmpFrameSize[0];
 				}
 				
-				int[]		tmpPptSize			= ex.getImageSize(i, "passepartoutSize");
+				int[]		tmpPptSize			= ex.getSizeValues(i, "passepartoutSize");
 				int[]		pptSize				= new int[2];
 				if( tmpPptSize != null ) {
 							pptSize[0]	= tmpPptSize[1];
@@ -200,6 +202,8 @@ public class SM_Import extends PApplet  {
 				non += invNr ;
 				non += " - ";
 				non += title;
+				non += " - ";
+				non += e.getMessage();
 				unimportedArtworks.add(non);
 			}	
 		}
@@ -232,8 +236,8 @@ public class SM_Import extends PApplet  {
 						non += aw.getString("title");
 						JPanel p = new JPanel();
 						
-						javax.swing.JOptionPane.showMessageDialog(p, Lang.importArtworkAlreadyExists + non, Lang.warning, javax.swing.JOptionPane.WARNING_MESSAGE);
-						throw new EmptyStackException();
+//						javax.swing.JOptionPane.showMessageDialog(p, Lang.importArtworkAlreadyExists + non, Lang.warning, javax.swing.JOptionPane.WARNING_MESSAGE);
+						throw new Exception(Lang.err_InvNrAlreadyExists);
 					}
 				}
 				
@@ -265,8 +269,29 @@ public class SM_Import extends PApplet  {
 				}
 								
 				if( fullGfx == null )   {
-					throw new EmptyStackException();
+					Exception e = new Exception(Lang.err_loadImageFile);
+					throw e;
 				}
+				
+				// resize to standart size 
+				
+				float fact = 1;
+				if( !(fullGfx.width == 600 || fullGfx.height == 600 ) ) {
+					
+					if( fullGfx.width > fullGfx.height ) {
+						fact = (float)fullSize / (float)fullGfx.width;
+					} else
+					if( fullGfx.height > fullGfx.width ) {
+						fact = (float)fullSize / (float)fullGfx.height;
+					}
+					
+					fullGfx.resize( (int)(fullGfx.width * fact), (int)(fullGfx.height * fact));
+									
+				}
+				
+				
+				
+				
 				
 				// Display the Image
 //				String msgs = aw.getString("artist");
@@ -277,7 +302,7 @@ public class SM_Import extends PApplet  {
 
 				
 				// Resize to MEDIUM:
-				float fact = 1;
+				fact = 1;
 				PImage medGfx = (PImage)fullGfx.clone(); 
 				
 				if( fullGfx.width > fullGfx.height ) {
@@ -342,6 +367,8 @@ public class SM_Import extends PApplet  {
 				non += iNr;
 				non += " - ";
 				non += aw.getString("title");
+				non += " - ";
+				non += e.getMessage();
 				unimportedArtworks.add(non);
 				
 			}
@@ -358,14 +385,18 @@ public class SM_Import extends PApplet  {
 		javax.swing.JOptionPane.showMessageDialog(p, sucessCount+Lang.successfulImport, "Import", javax.swing.JOptionPane.INFORMATION_MESSAGE);
 		
 		// Messagr: Errors
-		String uim = Lang.couldntImport_1;
-		for( String s : unimportedArtworks ) {
-			System.err.println( "couldn't import "+s );
-			uim += "	- "+s+"\n";
+		
+		if( unimportedArtworks.size() > 0) {
+			
+			String uim = Lang.couldntImport_1;
+			for( String s : unimportedArtworks ) {
+				System.err.println( "couldn't import "+s );
+				uim += "	- "+s+"\n";
+			}
+			uim += Lang.couldntImport_2;
+	//		javax.swing.JOptionPane.showConfirmDialog(p, uim);
+			javax.swing.JOptionPane.showMessageDialog(p, uim, Lang.warning, javax.swing.JOptionPane.WARNING_MESSAGE);
 		}
-		uim += Lang.couldntImport_2;
-//		javax.swing.JOptionPane.showConfirmDialog(p, uim);
-		javax.swing.JOptionPane.showMessageDialog(p, uim, Lang.warning, javax.swing.JOptionPane.WARNING_MESSAGE);
 
 
 		

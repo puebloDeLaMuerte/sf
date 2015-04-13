@@ -80,40 +80,63 @@ public class SM_EXCELReader {
 
 				LinkedHashMap<String, String> ln = new LinkedHashMap<String, String>();
 
-				for (int j = 0; j < 7; j++) {
+				// validate row
+				
+				boolean validRow = false;
+				
+				// test if the invNr field contains more than nothing (empty string)
+				
+				Cell testCell = theRow.getCell(0);
+				String testString = null;
+				if( testCell != null) {
+					testString = testCell.getStringCellValue();
+					if( !testString.isEmpty() ) validRow = true;
+				}				
+				System.out.println("this string: "+testString+" evaluated to "+validRow);
+				
+				// transfer cell data to "lines" (internal data storage)
+				
+				if (validRow) {
+					for (int j = 0; j < 7; j++) {
 
-					Cell cell = theRow.getCell(j);
+						Cell cell = theRow.getCell(j);
 
-					if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING ) {
+						if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
 
-						switch (j) {
-						case 0:
-							ln.put("inv-Nr", theRow.getCell(0).getStringCellValue() );
-							break;
-						case 1:
-							ln.put("artist", theRow.getCell(1).getStringCellValue() );
-							break;
-						case 2:
-							ln.put("title", theRow.getCell(2).getStringCellValue() );
-							break;
-						case 3:
-							ln.put("imageSize", theRow.getCell(3).getStringCellValue() );
-							break;
-						case 4:
-							ln.put("frameSize", theRow.getCell(4).getStringCellValue() );
-							break;
-						case 5:
-							ln.put("passepartoutSize", theRow.getCell(5).getStringCellValue() );
-							break;
-						case 6:
-							ln.put("fileName", theRow.getCell(6).getStringCellValue() );
-							break;
+							switch (j) {
+							case 0:
+								ln.put("inv-Nr", theRow.getCell(0)
+										.getStringCellValue());
+								break;
+							case 1:
+								ln.put("artist", theRow.getCell(1)
+										.getStringCellValue());
+								break;
+							case 2:
+								ln.put("title", theRow.getCell(2)
+										.getStringCellValue());
+								break;
+							case 3:
+								ln.put("imageSize", theRow.getCell(3)
+										.getStringCellValue());
+								break;
+							case 4:
+								ln.put("frameSize", theRow.getCell(4)
+										.getStringCellValue());
+								break;
+							case 5:
+								ln.put("passepartoutSize", theRow.getCell(5)
+										.getStringCellValue());
+								break;
+							case 6:
+								ln.put("fileName", theRow.getCell(6)
+										.getStringCellValue());
+								break;
+							}
 						}
 					}
+					lines.add(ln);
 				}
-
-				lines.add(ln);
-				System.out.println("added line nr: " + r);
 			}
 		}
 		return chooser.getSelectedFile().getParentFile();
@@ -131,7 +154,7 @@ public class SM_EXCELReader {
 		return lines.get(_idx).get("title").trim();
 	}
 	
-	public int[] getImageSize(int _idx, String _what) {
+	public int[] getSizeValues(int _idx, String _what) {
 		
 		String nb = lines.get(_idx).get(_what);
 		
