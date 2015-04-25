@@ -411,7 +411,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				break;
 			case 1:
 				
-				importedAws = base.in.batchImport(artLibSaveLocation);
+				importedAws = base.in.batchImport(artLibSaveLocation, false);
 				
 				JSONArray lib = new JSONArray();
 				
@@ -623,15 +623,13 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return new File(filePath);
 	}
 
-	public synchronized void importArtworks() {
+	public synchronized void requestImport() {
 		
-		String[] importedAws;
 		File artLibraryPath = new File(getProjectFolderPath() + "/" +getProjectName()+"_lib");
-		
-		importedAws = base.in.batchImport(artLibraryPath);
-		
-//		base.in.singleImport(artLibraryPath);
-//		importedAws = null;
+		base.in.startImport(artLibraryPath);
+	}
+	
+	public synchronized void importedArtworksIntoProject(String[] importedAws) {
 		
 		
 		if( importedAws == null || importedAws.length == 0 ) return;

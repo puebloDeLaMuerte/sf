@@ -119,6 +119,7 @@ public class Lang {
 	public static String	pptMeasure = "Passepartoutma§:";
 	public static String	imageFile = "Bilddatei:";
 	public static String	browse = "durchsuchen...";
+	public static String	batchImport = "Aus Tabelle...";
 	
 	// Export
 	

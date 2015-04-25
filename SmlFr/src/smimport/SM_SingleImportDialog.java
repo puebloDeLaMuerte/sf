@@ -6,35 +6,58 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.text.NumberFormat;
+import java.text.ParseException;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.NumberFormatter;
 
 import SMUtils.Lang;
 
-public class SM_SingleImportDialog extends JFrame implements ActionListener, PropertyChangeListener {
+public class SM_SingleImportDialog extends JFrame implements ActionListener, DocumentListener {
 
+	private JTextField[]				requiredFields, textFields, requiredNumberFields;
 	
 	private JTextField					TF_invNr, TF_title, TF_artist, TF_imageLocation;
 	private JLabel						L_invNr, L_title, L_artist, L_imageFile, L_width, L_height, L_artworkMeasure, L_frameMeasure, L_pptMeasure;
 	private JFormattedTextField			NF_artworkWidth, NF_artworkHeight, NF_frameWidth, NF_frameHeight, NF_pptWidth, NF_pptHeight;
-	private JButton						okBtn, cancelBtn, browseBtn;
+	private JButton						okBtn, cancelBtn, browseBtn, batchBtn;
+	
+	private JFileChooser				fc;
+	
+	private boolean						hasValidData;
+	private int[]						size, frameSize, pptSize;
+	private File						imageFolder;
+	private String						imageName;
 	
 	private SM_Import					parent;
+	private File						artLibrarySaveLocation;
 	
-	public SM_SingleImportDialog(SM_Import parent) {
+	
+	public SM_SingleImportDialog(SM_Import parent, File _libraryLoc) {
 		
 		this.parent = parent;
+		this.artLibrarySaveLocation = _libraryLoc;
 		
 		
+		// init FileChooser
+		
+		
+		fc = new JFileChooser();
+		FileFilter filter = new FileNameExtensionFilter("Bilder", "png", "jpg");
+		fc.setFileFilter(filter);
 		
 		// init TextFiels:
 		
@@ -43,10 +66,10 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Pro
 		TF_artist = new JTextField();
 		TF_imageLocation = new JTextField();
 		
-		TF_invNr.addPropertyChangeListener(this);
-		TF_title.addPropertyChangeListener(this);
-		TF_artist.addPropertyChangeListener(this);
-		TF_imageLocation.addPropertyChangeListener(this);
+		TF_invNr.getDocument().addDocumentListener(this);
+		TF_title.getDocument().addDocumentListener(this);
+		TF_artist.getDocument().addDocumentListener(this);
+		TF_imageLocation.getDocument().addDocumentListener(this);
 		
 		TF_invNr.setColumns(100);
 		TF_title.setColumns(100);
@@ -55,24 +78,19 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Pro
 		
 		// init NumberFields:
 		
-		NumberFormat format = NumberFormat.getNumberInstance();
-		format.setGroupingUsed(false);
-		format.setMinimumIntegerDigits(1);
-		format.setMaximumFractionDigits(0);
-		
-		NF_artworkWidth 	= new JFormattedTextField(format);
-		NF_artworkHeight 	= new JFormattedTextField(format);
-		NF_frameWidth 		= new JFormattedTextField(format);
-		NF_frameHeight 		= new JFormattedTextField(format);
-		NF_pptWidth 		= new JFormattedTextField(format);
-		NF_pptHeight 		= new JFormattedTextField(format);
-		
-		NF_artworkWidth.addPropertyChangeListener(this);
-		NF_artworkHeight.addPropertyChangeListener(this);
-		NF_frameWidth.addPropertyChangeListener(this);
-		NF_frameHeight.addPropertyChangeListener(this);
-		NF_pptWidth.addPropertyChangeListener(this);
-		NF_pptHeight.addPropertyChangeListener(this);
+		NF_artworkWidth 	= makeNumberField();
+		NF_artworkHeight 	= makeNumberField();
+		NF_frameWidth 		= makeNumberField();
+		NF_frameHeight 		= makeNumberField();
+		NF_pptWidth 		= makeNumberField();
+		NF_pptHeight 		= makeNumberField();
+				
+		NF_artworkWidth.getDocument().addDocumentListener(this);
+		NF_artworkHeight.getDocument().addDocumentListener(this);
+		NF_frameWidth.getDocument().addDocumentListener(this);
+		NF_frameHeight.getDocument().addDocumentListener(this);
+		NF_pptWidth.getDocument().addDocumentListener(this);
+		NF_pptHeight.getDocument().addDocumentListener(this);
 		
 		NF_artworkWidth.setColumns(5);
 		NF_artworkHeight.setColumns(5);
@@ -81,6 +99,30 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Pro
 		NF_pptWidth.setColumns(5);
 		NF_pptHeight.setColumns(5);
 		
+		// setup textField Arrays
+		
+		requiredFields = new JTextField[6];
+		
+		requiredFields[0] = TF_invNr;
+		requiredFields[1] = TF_title;
+		requiredFields[2] = TF_artist;
+		requiredFields[3] = TF_imageLocation;
+		requiredFields[4] = NF_artworkWidth;
+		requiredFields[5] = NF_artworkHeight;
+
+		
+		textFields = new JTextField[4];
+		
+		textFields[0] = TF_invNr;	
+		textFields[1] = TF_title;
+		textFields[2] = TF_artist;
+		textFields[3] = TF_imageLocation;
+		
+		requiredNumberFields = new JTextField[2];
+		
+		requiredNumberFields[0] = NF_artworkWidth;
+		requiredNumberFields[1] = NF_artworkHeight;
+		 
 		// init TextLabels:
 		
 		L_invNr 			= new JLabel(Lang.invNr);
@@ -102,6 +144,8 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Pro
 		cancelBtn.addActionListener(this);
 		browseBtn = new JButton(Lang.browse);
 		browseBtn.addActionListener(this);
+		batchBtn = new JButton(Lang.batchImport);
+		batchBtn.addActionListener(this);
 		
 		// do Layout
 		
@@ -214,12 +258,13 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Pro
 		// frame Layout
 		
 		this.setLayout(new BorderLayout());
-		this.setSize(600, 350);
+		this.setSize(600, 400);
 		
 		this.add(inputPanel, BorderLayout.CENTER);
 		
 		JPanel btnPanel = new JPanel();
 		
+		btnPanel.add(batchBtn);
 		btnPanel.add(cancelBtn);
 		btnPanel.add(okBtn);
 		
@@ -234,12 +279,69 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Pro
 	}
 	
 	private boolean evaluateInput() {
-		boolean valid = false;
+		
+		boolean valid = true;
+		
+		// check if all Fields are filled with non Whitespace
+		for( JTextField field : requiredFields ) {
+
+			if( SM_Validator.isOnlyWhitespaceOrEmpty( field.getText()) ) valid = false;
+		}
+		
+		// check for correct numbers
+		for( JTextField field : requiredNumberFields ) {
+			if ( !SM_Validator.isValidNumber( field.getText()) ) valid = false;
+		}
+		
+		
+		// check if optional values are paired right
+		boolean nf1 = SM_Validator.isValidNumber( NF_frameWidth .getText());
+		boolean nf2 = SM_Validator.isValidNumber( NF_frameHeight.getText());
+		if( nf1 != nf2 ) valid = false;
+		
+		nf1 = SM_Validator.isValidNumber( NF_frameWidth .getText());
+		nf2 = SM_Validator.isValidNumber( NF_frameHeight.getText());
+		if( nf1 != nf2 ) valid = false;
+		
+		// check if file exists
+		File testFile = new File(TF_imageLocation.getText());
+		if( !testFile.exists() ) valid = false;
+		
 		return valid;
 	}
 	
-	private void packAndSendImportData() {
+	private void packImportData() {
 		
+		size = new int[2];
+		size[0] = Integer.parseInt(NF_artworkHeight.getText());
+		size[1] = Integer.parseInt(NF_artworkWidth .getText());
+		
+		frameSize = null;
+		if( SM_Validator.isValidNumber(NF_frameWidth.getText()) && SM_Validator.isValidNumber(NF_frameHeight.getText()) ) {
+			
+			frameSize = new int[2];
+			frameSize[0] = Integer.parseInt(NF_frameHeight.getText());
+			frameSize[1] = Integer.parseInt(NF_frameWidth .getText());
+		}
+		
+		pptSize = null;
+		if( SM_Validator.isValidNumber(NF_pptWidth.getText()) && SM_Validator.isValidNumber(NF_pptHeight.getText()) ) {
+			
+			pptSize = new int[2];
+			pptSize[0] = Integer.parseInt(NF_pptHeight.getText());
+			pptSize[1] = Integer.parseInt(NF_pptWidth .getText());
+		}
+		
+		imageFolder = new File(TF_imageLocation.getText());
+		imageName = imageFolder.getName();
+		imageName = imageName.substring(0, imageName.lastIndexOf('.'));
+		imageFolder = imageFolder.getParentFile();
+		
+		System.out.println("here we have these values:");
+		System.out.println("filename: "+imageName);
+		System.out.println("filepath: "+imageFolder.getAbsolutePath());
+			
+		hasValidData = true;
 	}
 	
 	@Override
@@ -247,21 +349,145 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Pro
 		
 		
 		if( e.getSource() == okBtn ) {
-			packAndSendImportData();
+			
+			packImportData();
+			parent.singleImport(artLibrarySaveLocation, this);
+			this.setVisible(false);
 			
 		} else
 		if( e.getSource() == cancelBtn) {
 			
 			this.setVisible(false);
 		}
+		else
+		if( e.getSource() == batchBtn) {
+			
+			this.setVisible(false);
+			parent.batchImport(artLibrarySaveLocation, true);
+		}
+		else
+		if ( e.getSource() == browseBtn ) {
+			
+			fc.showOpenDialog(this);			
+			TF_imageLocation.setText(fc.getSelectedFile().getAbsolutePath());
+		}
 	}
 
+	private void evaluateAndSetOkBtn() {
+
+		if( evaluateInput() ) {
+			okBtn.setEnabled(true);
+		}
+		else {
+			okBtn.setEnabled(false);
+			hasValidData = false;
+		}
+	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void changedUpdate(DocumentEvent arg0) {
+		
+		evaluateAndSetOkBtn();		
+	}
 
-		if( evaluateInput() ) okBtn.setEnabled(true);
-		else okBtn.setEnabled(false);
+	@Override
+	public void insertUpdate(DocumentEvent arg0) {
+		evaluateAndSetOkBtn();		
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent arg0) {
+		evaluateAndSetOkBtn();		
+	}
+
+	private JFormattedTextField makeNumberField() {
+		
+		NumberFormat format = NumberFormat.getNumberInstance();
+		format.setGroupingUsed(false);
+		format.setMinimumIntegerDigits(0);
+		format.setMaximumFractionDigits(0);
+		
+		return new JFormattedTextField(new NumberFormatter(format) {
+		    @Override
+		    public Object stringToValue(String text) throws ParseException {
+		        if(text.trim().isEmpty())
+		            return null;
+		        return super.stringToValue(text);
+		    }
+		});
 	}
 	
+	public int[] getArtworkSize() {
+		
+		if (hasValidData) {
+			return size;
+		}
+		else {
+			return null;
+		}
+			
+	}
+
+	public int[] getFrameSize() {
+		
+		if (hasValidData) {
+			return frameSize;
+		}
+		else {
+			return null;
+		}
+	}
+
+	public int[] getPptSize() {
+		
+		if (hasValidData) {
+			return pptSize;
+		}
+		else {
+			return null;
+		}
+	}
+
+	public String getInvNr() {
+		if (hasValidData) {
+			return TF_invNr.getText().trim();
+		}
+		else {
+			return null;
+		}
+	}
+
+	public String getArtist() {
+		if(hasValidData) {
+			return TF_artist.getText().trim();
+		}else{
+			return null;
+		}
+	}
+	
+	public String getTitle() {
+		if (hasValidData) {
+			return TF_title.getText().trim();
+		}
+		else {
+			return null;
+		}
+	}
+
+	public File getImageFolder() {
+		if(hasValidData) {
+			return imageFolder;
+		} else {
+			return null;
+		}
+		
+	}
+
+	public String getImageName() {
+		if(hasValidData) {
+			return imageName;
+		}else{
+			return null;
+		}
+	}
 }

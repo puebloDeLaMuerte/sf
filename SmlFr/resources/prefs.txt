@@ -1,8 +1,8 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/Desktop/ffff/barnabas/barnabas.sfp",
-    "projectName": "barnabas"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/gernod/gernod.sfp",
+    "projectName": "gernod"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/barnabas",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/gernod",
   "museumData": "MuKuDeWe.sfm"
 }

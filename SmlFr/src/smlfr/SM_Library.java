@@ -304,8 +304,8 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 
 		
 		if(e.getActionCommand().equalsIgnoreCase(Lang.importBtn)) {
-			
-			fm.importArtworks();	
+				
+			fm.requestImport();
 		}
 		if (e.getSource() == sort) {
 			sortAWPanels();
