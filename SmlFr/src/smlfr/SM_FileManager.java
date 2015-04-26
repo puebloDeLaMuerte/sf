@@ -281,17 +281,16 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	}
 	
 	private boolean saveProject() {
-		if(savedirty) {
-			try{
-				saveJSONObject(project, projectPath.getAbsolutePath());
-				setSaveDirty(false);
-				deleteTempProject(null);
-				return true;
-			} catch( Exception e ) {
-				return false;
-			}
+		
+		try{
+			saveJSONObject(project, projectPath.getAbsolutePath());
+			setSaveDirty(false);
+			deleteTempProject(null);
+			return true;
+		} catch( Exception e ) {
+			return false;
 		}
-		return false;
+		
 	}
 	
 	private void deleteTempProject(File _tmp) {
@@ -629,7 +628,45 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		base.in.startImport(artLibraryPath);
 	}
 	
-	public synchronized void importedArtworksIntoProject(String[] importedAws) {
+	public synchronized void deleteArtwork (SM_Artwork _aw) {
+		
+		// remove from internal array
+				
+		base.artworks.remove(_aw.getName());
+				
+		// remove from project-Library
+		
+		JSONArray lib = project.getJSONArray("artLibrary");
+
+		int i = 0;
+		for(String awString : lib.getStringArray()) {
+			
+			if( awString.equals(_aw.getName())) break;
+			i++;
+		}
+		lib.remove(i);
+
+		project.setJSONArray("artLibrary", lib);
+		
+		// remove Files
+		
+		File artworkFile	= new File(projectPath.getParentFile().getAbsolutePath()+"/"+currentProjectName+"_lib/"+_aw.getName()+".sfa");
+		File artworkFolder	= new File(projectPath.getParentFile().getAbsolutePath()+"/"+currentProjectName+"_lib/"+_aw.getName());
+		File thumb 			= new File(projectPath.getParentFile().getAbsolutePath()+"/"+currentProjectName+"_lib/"+_aw.getName()+"/"+_aw.getName()+"_thumb.png");
+		File med			= new File(projectPath.getParentFile().getAbsolutePath()+"/"+currentProjectName+"_lib/"+_aw.getName()+"/"+_aw.getName()+"_med.png");
+		File full			= new File(projectPath.getParentFile().getAbsolutePath()+"/"+currentProjectName+"_lib/"+_aw.getName()+"/"+_aw.getName()+"_full.png");
+		
+		artworkFile.delete();
+		thumb.delete();
+		med.delete();
+		full.delete();
+		artworkFolder.delete();
+				
+		
+		saveProject();
+	}
+	
+ 	public synchronized void importedArtworksIntoProject(String[] importedAws) {
 		
 		
 		if( importedAws == null || importedAws.length == 0 ) return;

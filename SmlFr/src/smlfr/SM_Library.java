@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 //import java.io.File;
 //import java.io.IOException;
 //import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,8 +31,12 @@ import java.util.Set;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import com.sun.xml.internal.bind.v2.TODO;
+
+import updateModel.ArtworkUpdateRequestEvent;
 import updateModel.UpdateEvent;
 import updateModel.UpdateListener;
+import updateModel.WallUpdateRequestEvent;
 
 
 import SMUtils.AWPanel;
@@ -85,6 +90,8 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
         
         sort = new JComboBox( Lang.sortOptions.values() );
+        Dimension sortMax = new Dimension(150,50);
+        sort.setMaximumSize(sortMax);
         sort.setSelectedIndex(1);
         sort.setFocusable(false);
         sort.addActionListener(this);
@@ -96,10 +103,16 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
         
         deleteBtn = new JButton(Lang.deleteBtn);
         deleteBtn.setFocusable(false);
+        deleteBtn.addActionListener(this);
              
         controlPanel.add(importBtn);
         controlPanel.add(deleteBtn);
-        controlPanel.add(Box.createRigidArea(new Dimension(100, 0)));
+        
+        Dimension minSize = new Dimension(5, 5);
+        Dimension prefSize = new Dimension(5, 5);
+        Dimension maxSize = new Dimension(Short.MAX_VALUE, 5);
+        controlPanel.add(new Box.Filler(minSize, prefSize, maxSize));
+        
         controlPanel.add(sortTxt);
         controlPanel.add(sort);
         
@@ -198,11 +211,9 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 						
 		
 		AWPanel[] sortPans = new AWPanel[panels.size()];
-		String[]  values = new String[panels.size()];
 		int x = 0;
 		for( AWPanel p : panels.values()) {
 			sortPans[x] = p;
-			values[x] = ""+p.getSizeSquared();
 			x++;
 		}
 				
@@ -226,15 +237,10 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 			}
 		}
 		
-//		for (int i = 0; i < sortPans.length; i++) {
-//			artworksPanel.remove(sortPans[i]);
-//			artworksPanel.repaint();
-//		}
 		artworksPanel.removeAll();
 		artworksPanel.validate();
 		for (int i = 0; i< sortPans.length; i++) {
 			artworksPanel.add(sortPans[i]);
-			values[i] = ""+sortPans[i].getSizeSquared();
 		}
 		artworksPanel.validate();
 		artworksPanel.repaint();
@@ -310,10 +316,67 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		if (e.getSource() == sort) {
 			sortAWPanels();
 		}
+		if( e.getSource() == deleteBtn) {
+			deleteArtworks();
+		}
 	}
 
-	
+	private void deleteArtworks() {
+		
+		int decide = JOptionPane.showConfirmDialog(this, Lang.deleteMessage, Lang.deleteTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
+		
+		if( decide == 0) {
+
+			SM_Artwork[] aws = getSelectedArtworks();
+			
+			for(SM_Artwork aw : aws) {
+				;
+				
+				// Bild abhŠngen, falls an Wand
+				
+				if( aw.getWall() != null) {
+					
+					String wallInfo = aw.getWall();
+					String roomName = wallInfo.substring(0, wallInfo.lastIndexOf('_'));
+					roomName = roomName.substring(roomName.lastIndexOf('_')+1);
+									
+					WallUpdateRequestEvent e = new WallUpdateRequestEvent(this, aw.getName(), ' ', "Library", roomName, aw.getWallChar());
+					fm.updateRequested(e);
+				}
+				
+				// File manager removes the rest (from programm lists and Files on drive)
+				
+				fm.deleteArtwork(aw);
+								
+				
+				artworksPanel.remove(panels.get(aw.getName()));
+		
+				panels.remove(aw.getName());
+				
+			}
+		}
+		
+        this.validate();
+
+		
+	}
 	
+	public SM_Artwork[] getSelectedArtworks() {
+		
+		ArrayList<SM_Artwork> selectedArtworks = new ArrayList<SM_Artwork>();
+
+		for(AWPanel pan : panels.values()) {
+			if( pan.isSelected() ) selectedArtworks.add(pan.getArtwork());
+		}
+		
+		SM_Artwork[] returnArray = selectedArtworks.toArray(new SM_Artwork[selectedArtworks.size()]);
+		
+		return returnArray;
+	}
+
+	public void updateArtworksMap(HashMap<String, SM_Artwork> _artworks) {
+		artworks = _artworks;
+	}
 	
 }

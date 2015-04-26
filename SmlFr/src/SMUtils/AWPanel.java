@@ -52,6 +52,14 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
     	return myArtwork.getName();
     }
     
+    public SM_Artwork getArtwork() {
+    	return myArtwork;
+    }
+    
+    public boolean isSelected() {
+    	return isHighlighted;
+    }
+    
     public int getSizeSquared() {
     	int[] s = myArtwork.getArtworkSize();
     	return s[0] * s[1];

@@ -1,7 +1,7 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/Desktop/ffff/gernod/gernod.sfp",
-    "projectName": "gernod"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/terminans/terminans.sfp",
+    "projectName": "terminans"
   },
   "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/gernod",
   "museumData": "MuKuDeWe.sfm"

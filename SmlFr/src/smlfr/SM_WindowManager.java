@@ -153,13 +153,31 @@ public class SM_WindowManager{
 	public SM_Library createLibrary( HashMap<String, SM_Artwork> _artworks) {
 		
 		SM_Library tLib = new SM_Library(fm, _artworks);
-		tLib.setSize(raster.width, (raster.height*3 -50));
+		
+		switch (state) {
+		
+		case PROJECT:
+			tLib.setSize(raster.width, (raster.height*3 -50));		
+			tLib.setLocation(0, 0);
+			break;
+			
+		case ROOM:
+			tLib.setSize(raster.width*2, raster.height);
+			tLib.setLocation(0, raster.height*2);
+			break;
+
+		default:
+			tLib.setSize(raster.width, (raster.height*3 -50));
+			tLib.setLocation(0, 0);
+			break;
+		}
+		
+		
+//		tLib.setSize(raster.width, (raster.height*3 -50));
 		tLib.setResizable(true);
-//		tLib.setUndecorated(true);
-		tLib.setBackground(Color.DARK_GRAY);
-//		tLib.setAlwaysOnTop(true);
+		tLib.setBackground(Color.LIGHT_GRAY);
 		tLib.setVisible(true);
-		tLib.setLocation(0, 0);
+//		tLib.setLocation(0, 0);
 		tLib.setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 
 		tLib.initUI();

@@ -138,5 +138,9 @@ public class Lang {
 	public static String	err_loadImageFile = "Bilddatei konnte nicht geladen werden";
 	public static String	err_InvNrAlreadyExists = "Es existiert bereits ein Kunstwerk mit dieser Inventarnummer";
 	public static String	err_noImageSize = "Es wurden keine Maße in der Tabelle gefunden";
+	public static Object 	deleteMessage = "Sie müssen das Projekt sichern, bevor Sie Kunstwerke löschen können." +
+											"\n" +
+											"\nWollen Sie das Projekt jetzt sichern?";
+	public static String deleteTitle = "Kunstwerke löschen...";
 	
 	}
