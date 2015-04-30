@@ -204,7 +204,7 @@ public class SmlFr extends JFrame  {
 		artworks = new HashMap<String, SM_Artwork>();
 		for(int a=0;a<aws.length; a++) {
 
-			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]), fm.getFilePathForArtwork(aws[a], awFileSize.MEDIUM), frameGfxs ));	
+			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]), fm.getImageFilePathForArtwork(aws[a], awFileSize.MEDIUM), frameGfxs ));	
 		}
 		
 	

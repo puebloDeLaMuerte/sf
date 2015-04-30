@@ -596,7 +596,15 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return aw;
 	}
 	
-	public synchronized File getFilePathForArtwork(String _artwork, SMUtils.awFileSize _size) {
+	public synchronized File getJSONFilePathForArtwork(String _name) {
+		
+		String filePath = projectPath.getAbsolutePath().substring(0, projectPath.getAbsolutePath().length()-4)+"_lib/"+_name+".sfa";
+		File file = new File(filePath);
+		if( file.exists() ) return file;
+		else return null;
+	}
+	
+	public synchronized File getImageFilePathForArtwork(String _artwork, SMUtils.awFileSize _size) {
 		
 		String sufx;
 		switch (_size) {
@@ -675,7 +683,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		for (int i = 0; i < importedAws.length; i++) {
 			
-			base.artworks.put(importedAws[i], new SM_Artwork( loadArtwork(importedAws[i]), getFilePathForArtwork(importedAws[i], awFileSize.MEDIUM), base.frameGfxs ));	
+			base.artworks.put(importedAws[i], new SM_Artwork( loadArtwork(importedAws[i]), getImageFilePathForArtwork(importedAws[i], awFileSize.MEDIUM), base.frameGfxs ));	
 		}
 		
 		
@@ -699,6 +707,122 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 	}
 	
+	public synchronized void changeArtworkData(SM_Artwork aw, LinkedHashMap<String, Object> data) {
+		
+		System.out.println("the file manager will go to work and change the artwork as requested, sir.");
+		
+		String awName 		= (String)	data.get("Name");
+		int[] awSize		= (int[])	data.get("size");
+		int[] frameSize		= (int[])	data.get("frame");
+		int[] pptSize		= (int[])	data.get("ppt");
+		
+		boolean light;
+		if( data.get("light").toString().equalsIgnoreCase("true") ) {
+			light = true;
+		} else {
+			light = false;
+		}
+		
+		boolean shadow;
+		if( data.get("shadow").toString().equalsIgnoreCase("true")) {
+			shadow = true;
+		} else {
+			shadow = false;
+		}
+		
+		System.out.println("NAME:	"+awName);
+		System.out.println("SIZE:	"+awSize[0]+" , "+awSize[1]);
+		if(frameSize.length > 0) {
+		System.out.println("FRAME:	"+frameSize[0]+" , "+frameSize[1]+" , "+frameSize[2]+" , "+frameSize[3]);
+		} else {
+		System.out.println("FRAME:	 none");
+		}
+		if(pptSize.length > 0) {
+		System.out.println("PPT:	"+pptSize[0]+" , "+pptSize[1]+" , "+pptSize[2]+" , "+pptSize[3]);
+		} else {
+		System.out.println("PPT      none");
+		}
+		System.out.println("LIGHT:	"+light);
+		System.out.println("SHADOW:	"+shadow);
+		
+		
+		// changes in AW-file (+Object)
+		
+		File awPath = getJSONFilePathForArtwork(awName);
+		JSONObject awFile = loadJSONObject(awPath);
+		
+		// change frameSize
+		
+		JSONArray fs = new JSONArray();
+		if( frameSize.length > 0 ) {
+			fs.append(frameSize[0]);
+			fs.append(frameSize[1]);
+			fs.append(frameSize[2]);
+			fs.append(frameSize[3]);
+			
+			if( aw.getFrameStyle() == FrameStyle.NONE ) {
+				aw.setFrameStyle(FrameStyle.STANDART);
+			}
+		}
+		awFile.setJSONArray("frameSize", fs);
+		
+		aw.setFrameMeasure(frameSize);
+		
+		// change Passepartout
+		
+		JSONArray ps = new JSONArray();
+		if( pptSize.length > 0 ) {
+			ps.append(pptSize[0]);
+			ps.append(pptSize[1]);
+			ps.append(pptSize[2]);
+			ps.append(pptSize[3]);
+		}
+		awFile.setJSONArray("pasSize", ps);
+		
+		aw.setPassepartoutMeasure(pptSize);
+		
+		saveJSONObject(awFile, awPath.getAbsolutePath());
+
+		
+		// changes in Project File (+Object)
+		
+		String wall = aw.getWall();
+		String room = aw.getRoom();
+		
+		JSONArray rooms = project.getJSONArray("rooms");
+		
+		for( int i = 0; i< rooms.size(); i++ ) {
+			JSONObject r = rooms.getJSONObject(i);
+			
+			if( r.getString("roomName").equals(room)) {
+				
+				JSONArray aws = r.getJSONObject(wall).getJSONArray("artworks");
+				
+				for( int x = 0; x < aws.size(); x++ ) {
+					
+					JSONObject jsAW = aws.getJSONObject(x);
+					
+					if( jsAW.getString("invNr").equals(awName) ) {
+						
+						
+						jsAW.setBoolean("light", light);
+						jsAW.setBoolean("shadow", shadow);
+						
+						break;
+						
+					}
+					
+				}
+			}
+		}
+
+		setSaveDirty(true);
+		
+		aw.setLight(light);
+		aw.setShadow(shadow);
+		
+	}
+
 	// UPDATE Event handling
 
 	public synchronized void registerUpdateListener(UpdateListener _listener) {
@@ -833,6 +957,18 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 			break;
 
+		case GENERAL_AW_DATA:
+			
+			changeArtworkData(thisAw, e.getAwData() );
+			
+			String w = base.artworks.get(eventAW).getWall();
+			data = new LinkedHashMap<String, Object>();
+			data.put("wall", w);
+			
+			e2 = new UpdateEvent(this, eventAW, UpdateType.GENERAL_AW_DATA, data);
+
+			break;
+			
 		default:
 			e2 = new UpdateEvent(this, eventAW, UpdateType.BLANK, null);
 			break;
@@ -1026,6 +1162,8 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 		System.err.println("QUIT REQUEST SHOULD BE HANDELED");
 	}
+
+
 
 	
 	

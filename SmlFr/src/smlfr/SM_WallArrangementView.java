@@ -10,7 +10,9 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
 
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -123,6 +125,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	}
 	
 	private void initMenu() {
+		
 		pMenu = new JPopupMenu();
 		
 		putBack = new JMenuItem(Lang.RemoveArtwork);
@@ -131,6 +134,20 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		editArtwork = new JMenu(Lang.editArtwork);
 		editArtwork.setEnabled(true);
+
+		editMeasurements = new JMenuItem(Lang.editMeasurements);
+		editMeasurements.addActionListener(this);
+		editMeasurements.setEnabled(true);
+		editArtwork.add(editMeasurements);
+
+		editArtwork.add(new JSeparator());
+		
+//		JLabel select = new JLabel(Lang.changeFrameStyle);
+		JMenuItem select = new JMenuItem(Lang.changeFrameStyle);
+		select.setFont(select.getFont().deriveFont(Font.ITALIC));
+		select.setEnabled(false);
+		editArtwork.add( select );
+		
 		int i=0;
 		frameStyles = new JMenuItem[ FrameStyle.values().length ];
 		for( FrameStyle fst : SMUtils.FrameStyle.values() ) {
@@ -143,12 +160,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			editArtwork.add(frameStyles[i]);
 			i++;
 		}
-
-		editMeasurements = new JMenuItem(Lang.editMeasurements);
-		editMeasurements.addActionListener(this);
-											editMeasurements.setEnabled(false);
-		editArtwork.add(new JSeparator());
-		editArtwork.add(editMeasurements);
 		
 		snapToMidHeight = new JMenuItem(Lang.snapToMidHeight);
 		snapToMidHeight.addActionListener(this);
@@ -631,13 +642,13 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		if( action.equalsIgnoreCase(Lang.editMeasurements) ) {
 			
 			SMUtils.ArtworkMeasurementChooser chooser = new SMUtils.ArtworkMeasurementChooser(this, menuAW );
-			chooser.setSize(400, 200);
-			chooser.setVisible(true);
+
+			
+
 		}
 	
 		// if it's none of the above it must have been a frameStyle selected. Let's find out which one!
 		else {
-
 
 			for (JMenuItem item : frameStyles) {
 				if( e.getActionCommand().equalsIgnoreCase(item.getText())) {
@@ -655,8 +666,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 	
-	public void artworkMeasurementCallback() {
-		
+	public void artworkMeasurementCallback(LinkedHashMap<String, Object> data) {
+		ArtworkUpdateRequestEvent e = new ArtworkUpdateRequestEvent(this, data);
+		myWall.myRoom.fireUpdateRequest(e);
 	}
 
 	@Override

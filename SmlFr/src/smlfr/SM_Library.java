@@ -164,7 +164,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 	
 	private void createSingleAWPanel(String awName, JPanel artworksPanel) {
 		
-		ImageIcon icn = new ImageIcon( fm.getFilePathForArtwork(awName, awFileSize.THUMB ).getAbsolutePath());
+		ImageIcon icn = new ImageIcon( fm.getImageFilePathForArtwork(awName, awFileSize.THUMB ).getAbsolutePath());
 
 		JLabel imgLbl = new JLabel(icn);
 		imgLbl.setMinimumSize(new Dimension(50,50));
@@ -323,12 +323,15 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 
 	private void deleteArtworks() {
 		
-		int decide = JOptionPane.showConfirmDialog(this, Lang.deleteMessage, Lang.deleteTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-
+		SM_Artwork[] aws = getSelectedArtworks();
+		String message = Lang.deleteMessage_1;
+		for( SM_Artwork a : aws){
+			message += "\n- "+a.getTitle();
+		}
+		message += Lang.deleteMessage_2;
 		
+		int decide = JOptionPane.showConfirmDialog(this, message, Lang.deleteTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if( decide == 0) {
-
-			SM_Artwork[] aws = getSelectedArtworks();
 			
 			for(SM_Artwork aw : aws) {
 				;

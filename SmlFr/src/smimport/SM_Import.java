@@ -101,7 +101,7 @@ public class SM_Import extends PApplet  {
 			frameSize 		= convertedMeasures.get("frame");
 			pptSize 		= convertedMeasures.get("ppt");
 			
-			if( frameSize != null ) frameStyle = FrameStyle.STANDART;
+			if( frameSize.length > 0 ) frameStyle = FrameStyle.STANDART;
 			else frameStyle = FrameStyle.NONE;
 			
 			JSONObject aw = cr.makeNewArtworkFile(invNr, artist, title, size, frameSize, pptSize, frameStyle);
@@ -205,7 +205,7 @@ public class SM_Import extends PApplet  {
 				frameSize 		= convertedMeasures.get("frame");
 				pptSize 		= convertedMeasures.get("ppt");
 				
-				if( frameSize != null ) frameStyle = FrameStyle.STANDART;
+				if( frameSize.length > 0 ) frameStyle = FrameStyle.STANDART;
 				else frameStyle = FrameStyle.NONE;
 				
 				
@@ -334,16 +334,22 @@ public class SM_Import extends PApplet  {
 		size[1] 		= _tmpSize[0];
 		
 				
-		int[] frameSize = new int[2];
+		int[] frameSize;
 		if( _tmpFrameSize != null) {
+			frameSize = new int[2];
 			frameSize[0]		= _tmpFrameSize[1];
 			frameSize[1]		= _tmpFrameSize[0];
+		} else {
+			frameSize = new int[0];
 		}
 		
-		int[] pptSize	= new int[2];
+		int[] pptSize;
 		if( _tmpPptSize != null ) {
+			pptSize	= new int[2];
 			pptSize[0]	= _tmpPptSize[1];
 			pptSize[1] = _tmpPptSize[0];
+		} else {
+			pptSize	= new int[0];
 		}
 		
 		
@@ -355,13 +361,13 @@ public class SM_Import extends PApplet  {
 			
 			pptFormat = new int[4];
 			
-			int xsize = (pptSize[1] - size[1]) / 2;
-			int ysize = (pptSize[0] - size[0]) / 2;
+			int ysize = (pptSize[1] - size[1]) / 2;
+			int xsize = (pptSize[0] - size[0]) / 2;
 			
-			pptFormat[0] = xsize-(xsize/8);
-			pptFormat[1] = xsize+(xsize/8);
-			pptFormat[2] = ysize;
-			pptFormat[3] = ysize;	
+			pptFormat[0] = ysize-(ysize/8);
+			pptFormat[1] = ysize+(ysize/8);
+			pptFormat[2] = xsize;
+			pptFormat[3] = xsize;
 		}
 		
 		// frameSize to SimulFormat:

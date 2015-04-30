@@ -1,5 +1,7 @@
 package SMUtils;
 
+import javax.swing.Icon;
+
 public class Lang {
 	
 	public enum langs {DE};
@@ -18,7 +20,7 @@ public class Lang {
 	public static String 	couldntLoadMuseumData = "Die Museumsdaten konnten nicht geladen werden.\nDie Datei scheint beschädigt zu sein.";
 	public static String	couldntLoadProject_1 = "Das Projekt konnte nicht geladen werden.\nStellen Sie sicher dass sich die Datei ";
 	public static String	couldntLoadProject_2 = " in diesem Ordner befindet: \n";
-	public static String	couldntLoadArtwork = "Die Library-Dateien konnten nicht geladen werden.\nStellen Sie sicher, dass sich der Ordner mit dem\nSuffix \"_lib\" im selben Ordner wie die Projektadtei befindet.";
+	public static String	couldntLoadArtwork = "Die folgenden Library-Dateien konnten nicht geladen werden.\nStellen Sie sicher, dass sich der Ordner mit dem\nSuffix \"_lib\" im selben Ordner wie die Projektadtei befindet.";
 	public static String	couldntImport_1 = "Diese Kunstwerke konnten leider nicht importiert werden:\n\n";
 	public static String	couldntImport_2 = "\nÜberprüfen Sie die Excel-Tabelle auf fehlerhafte Einträge" +
 												"\nund stellen Sie sicher, dass sich die angegebenen" +
@@ -99,27 +101,38 @@ public class Lang {
 	
 	// EditArtwork
 	
-	public static String	editArtwork = "Kunstwerk editieren...";
-	public static String	editMeasurements = "Maße ändern...";
-	public static String	frame = "Rahmen";
-	public static String	passepartout = "Passepartout";
-	public static String	artwork	= "Kunstwerk";
-	public static String	width = "Breite (mm):";
-	public static String	height = "Höhe (mm):";
-	public static String	prevValue = "ursprünglicher Wert: ";
-
+	public static String	editArtwork 						= "Kunstwerk editieren: ";
+	public static String	editMeasurements 					= "Maße ändern...";
+	public static String	changeFrameStyle					= "Rahmen wählen:";
+	public static String	frame 								= "Rahmen";
+	public static String	passepartout 						= "Passepartout";
+	public static String	artwork								= "Kunstwerk";
+	public static String	width 								= "Breite (mm):";
+	public static String	height 								= "Höhe (mm):";
+	public static String	prevValue 							= "ursprünglicher Wert: ";
+	public static String	light 								= "Kunstwerk ausleuchten";
+	public static String	shadow 								= "Schatten anzeigen";
+	public static String	editAwErrorTitle 					= "ungültige Werte";
+	public static String	editAwErrorMessage_1 				= "Bitte korrigieren Sie folgende fehlerhafte Eingaben um fortzufahren:\n";
+	public static String	errFrameArtworkWidth 				= "\n- Die Breite des Rahmenmaß darf die des Kunstwerks nicht unterschreiten";
+	public static String	errFrameArtworkHeight 				= "\n- Die Höhe des Rahmenmaß darf die des Kunstwerks nicht unterschreiten";
+	public static String	errPptWidthSmallerArtwork 			= "\n- Die Breite des Passepartout darf die des Kunstwerks nicht unterschreiten";
+	public static String	errPptHeightSmallerArtwork 			= "\n- Die Höhe des Passepartout darf die des Kunstwerks nicht unterschreiten";
+	public static String	errFrameWidthSmallerPpt				= "\n- Die Breite des Rahmens darf die des Passepartout nicht unterschreiten";
+	public static String	errFrameHeightSmallerPpt			= "\n- Die Höhe des Rahmens darf die des Passepartout nicht unterschreiten";
+	
 	// Import
 	
-	public static String	importTitle = "Kunstwerk importieren";
-	public static String	invNr = "Inventarnummer:";
-	public static String	title = "Titel:";
-	public static String	artist = "Künstler:";
-	public static String	frameMeasure  = "Rahmenmaß:";
-	public static String	artworkMeasure = "Bildgröße:";
-	public static String	pptMeasure = "Passepartoutmaß:";
-	public static String	imageFile = "Bilddatei:";
-	public static String	browse = "durchsuchen...";
-	public static String	batchImport = "Aus Tabelle...";
+	public static String	importTitle 		= "Kunstwerk importieren";
+	public static String	invNr 				= "Inventarnummer:";
+	public static String	title 				= "Titel:";
+	public static String	artist 				= "Künstler:";
+	public static String	frameMeasure 		= "Rahmenmaß:";
+	public static String	artworkMeasure 		= "Bildgröße:";
+	public static String	pptMeasure 			= "Passepartoutmaß:";
+	public static String	imageFile 			= "Bilddatei:";
+	public static String	browse 				= "durchsuchen...";
+	public static String	batchImport 		= "Aus Tabelle...";
 	
 	// Export
 	
@@ -135,12 +148,13 @@ public class Lang {
 	
 	// Errors
 	
-	public static String	err_loadImageFile = "Bilddatei konnte nicht geladen werden";
-	public static String	err_InvNrAlreadyExists = "Es existiert bereits ein Kunstwerk mit dieser Inventarnummer";
-	public static String	err_noImageSize = "Es wurden keine Maße in der Tabelle gefunden";
-	public static Object 	deleteMessage = "Sie müssen das Projekt sichern, bevor Sie Kunstwerke löschen können." +
-											"\n" +
-											"\nWollen Sie das Projekt jetzt sichern?";
-	public static String deleteTitle = "Kunstwerke löschen...";
+	public static String	err_loadImageFile 			= "Bilddatei konnte nicht geladen werden";
+	public static String	err_InvNrAlreadyExists 		= "Es existiert bereits ein Kunstwerk mit dieser Inventarnummer";
+	public static String	err_noImageSize 			= "Es wurden keine Maße in der Tabelle gefunden";
+	public static String 	deleteMessage_1 			= "Wollen Sie folgende Kunstwerke wirklich löschen?\n" +
+															"Beachten Sie dass das Projekt dabei gesichert werden muss.\n";
+	public static String 	deleteMessage_2				= "\n\nProjekt jetzt sichern und Kunstwerke löschen?";
+	public static String 	deleteTitle 				= "Kunstwerke löschen...";
+	
 	
 	}

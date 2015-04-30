@@ -1,8 +1,8 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/Desktop/ffff/terminans/terminans.sfp",
-    "projectName": "terminans"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/Milliardenfurzler/Milliardenfurzler.sfp",
+    "projectName": "Milliardenfurzler"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/gernod",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/Milliardenfurzler",
   "museumData": "MuKuDeWe.sfm"
 }

@@ -67,10 +67,20 @@ public class SM_Wall implements UpdateListener {
 			
 			int posX = aw.getJSONArray("pos").getInt(0);
 			int posY = aw.getJSONArray("pos").getInt(1);
-			boolean light = aw.getBoolean("light");		
+			boolean light = aw.getBoolean("light");
+			
+			// things that were not there in the first published version should be handled with care:
+			
+			boolean shadow;
+			
+			try {
+				shadow = aw.getBoolean("shadow");
+			} catch (Exception e) {
+				shadow = true;
+			}
 			
 			myArtworks.put(id, myRoom.getArtworkFromBase(id));
-			myArtworks.get(id).initProjectData(myWallName, posX, posY, light);
+			myArtworks.get(id).initProjectData(myWallName, posX, posY, light, shadow);
 		}
 	}
 	

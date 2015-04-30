@@ -66,7 +66,7 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
     }
 
     public void setToolTipText() {
-    	super.setToolTipText(myArtwork.getWallRealName());
+    	super.setToolTipText(myArtwork.getWallHumanReadable());
     }
 
 

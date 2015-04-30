@@ -2,6 +2,8 @@ package smlfr;
 
 import java.io.File;
 
+import com.sun.tools.javac.jvm.Code.StackMapFormat;
+
 
 import processing.core.PImage;
 import processing.data.JSONArray;
@@ -29,6 +31,7 @@ public class SM_Artwork {
 	private String			isInWall;
 	private int[]			artworkPosInWall;
 	private boolean			light;
+	private boolean			shadow;
 	
 	private PImage			myGfx;
 	private PImage			myThumb;
@@ -56,6 +59,7 @@ public class SM_Artwork {
 		isInWall = null;
 		artworkPosInWall = new int[2];
 		light = false;
+		shadow = true;
 		
 	}
 
@@ -111,13 +115,13 @@ public class SM_Artwork {
 //	}
 	}
 	
-public void initProjectData( String _isInWall, int _posX, int _posY, boolean _hasLight) {
+public void initProjectData( String _isInWall, int _posX, int _posY, boolean _hasLight, boolean _drawShadow) {
 		isInWall = _isInWall;
 		artworkPosInWall = new int[2];
 		setTotalWallPos(_posX, _posY);
-//		artworkPosInWall[0] = _posX;
-//		artworkPosInWall[1] = _posY;
+
 		light = _hasLight;
+		shadow = _drawShadow;
 	}
 
 	
@@ -143,6 +147,14 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		light = _onOff;
 	}
 	
+	public boolean hasShadow() {
+		
+		return shadow;
+	}
+	
+	public void setShadow( boolean _onOff) {
+		shadow = _onOff;
+	}
 	
 	/// Passepartout
 	
@@ -158,15 +170,19 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		return passepartoutSize;
 	}
 	
+	public void setPassepartoutMeasure( int[] pas) {
+		passepartoutSize = pas;
+	}
+	
 	/// Frame
 	
 	public boolean hasFrame() {
 		
 
-		if(frameStyle != FrameStyle.NONE) {
-			return true;
-		} else {
+		if(frameStyle == FrameStyle.NONE || frameSize.length == 0) {
 			return false;
+		} else {
+			return true;
 		}
 	}
 	
@@ -202,14 +218,27 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		return frameSize;
 	}
 	
+	public void setFrameMeasure(int[] f) {
+		frameSize = f;
+		if( frameSize.length == 0 ) {
+			frameStyle = FrameStyle.NONE;
+		}
+	}
+	
 	///
 	
 	public String getWall() {
 		return isInWall;
 	}
 	
-	public String getWallRealName() {
+	public String getRoom() {
+
+		return isInWall.substring(isInWall.indexOf('_')+1, isInWall.lastIndexOf('_'));
+	}
+	
+	public String getWallHumanReadable() {
 		if( isInWall != null ) {
+						
 			String r = isInWall.substring(isInWall.indexOf('_')+2, isInWall.lastIndexOf('_'));
 			String w = isInWall.substring(isInWall.lastIndexOf('_')+1, isInWall.length());
 			
@@ -242,8 +271,8 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 	
 	public void setTotalWallPos(int x, int y) {		
 		
-		int pX = x;
 		int pY = y;
+		int pX = x;
 		
 		if( frameSize.length > 0  && frameStyle != FrameStyle.NONE) {
 			pX += frameSize[2];
@@ -402,6 +431,7 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		JSONObject o = new JSONObject();
 		o.setString("invNr", invNr);
 		o.setBoolean("light", light);
+		o.setBoolean("shadow", shadow);
 		JSONArray pos = new JSONArray();
 		pos.append(artworkPosInWall[0]);
 		pos.append(artworkPosInWall[1]);

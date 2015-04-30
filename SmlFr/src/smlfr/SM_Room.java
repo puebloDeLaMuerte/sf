@@ -15,6 +15,9 @@ import java.util.TreeMap;
 
 import javax.swing.JFrame;
 
+import com.sun.tools.javac.comp.Todo;
+import com.sun.xml.internal.bind.v2.TODO;
+
 import SMUtils.Lang;
 import SMUtils.awFileSize;
 import SMUtils.progState;
@@ -141,8 +144,6 @@ public class SM_Room {
 		return "Hi, this is room "+myRealName+" ("+myRoomName+") \nI have "+myViewAngles.length+" ViewAngles.\nI also have as many as "+myWalls.size()+" Walls.\n\n";
 	}
 	
-	
-
 
 	public void initProjectView(Dimension _size, Dimension _loc, SM_FileManager _fm) {
 		
@@ -370,7 +371,7 @@ public class SM_Room {
 	}
 	
 	public File getThumbPath(String _artworkName) {
-		return base.fm.getFilePathForArtwork(_artworkName, awFileSize.THUMB);
+		return base.fm.getImageFilePathForArtwork(_artworkName, awFileSize.THUMB);
 	}
 	
 	public SM_WindowManager getWindowManager() {
@@ -463,7 +464,10 @@ public class SM_Room {
 		
 	}
 
-	
+//	public void changeArtworkMeasurements(LinkedHashMap<String, Object> data) {
+//		
+//		base.fm.changeArtworkData(data);				
+//	}
 	
 	
 	

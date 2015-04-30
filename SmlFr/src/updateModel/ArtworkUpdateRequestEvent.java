@@ -1,6 +1,7 @@
 package updateModel;
 
 import java.util.EventObject;
+import java.util.LinkedHashMap;
 
 import SMUtils.FrameStyle;
 
@@ -14,13 +15,15 @@ public class ArtworkUpdateRequestEvent extends EventObject {
 	private String 				awName;
 	private UpdateType 	type;
 	
-	private int 				newPosX, newPosY;
+	private int 					newPosX, newPosY;
 	
-	private boolean 			newLight;
+	private boolean 				newLight;
 	
-	private FrameStyle			newFrameStyle;
+	private FrameStyle				newFrameStyle;
 	
-	private int[]				newFrameSize;
+	private int[]					newFrameSize;
+	
+	LinkedHashMap<String, Object> 	newData;
 	
 	
 	public ArtworkUpdateRequestEvent(Object source, String _awName, int _newPosX, int _newPosY) {
@@ -50,6 +53,13 @@ public class ArtworkUpdateRequestEvent extends EventObject {
 		awName = _awName;
 		type = UpdateType.FRAME_SIZE;
 		newFrameSize = _newFrameSize;
+	}
+	
+	public ArtworkUpdateRequestEvent(Object source, LinkedHashMap<String, Object> _data) {
+		super(source);
+		awName = (String)_data.get("Name");
+		type = UpdateType.GENERAL_AW_DATA;
+		newData = _data;
 	}
 	
 	public UpdateType getType() {
@@ -83,5 +93,12 @@ public class ArtworkUpdateRequestEvent extends EventObject {
 	public int[] getNewFrameSize() {
 		if( type == UpdateType.FRAME_SIZE ) return newFrameSize;
 		else return null;
+	}
+
+	
+	public LinkedHashMap<String, Object> getAwData() {
+
+		if( type == UpdateType.GENERAL_AW_DATA) return newData;
+		return null;
 	}
 }
