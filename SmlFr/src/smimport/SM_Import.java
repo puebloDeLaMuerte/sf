@@ -482,7 +482,7 @@ public class SM_Import extends PApplet  {
 		}
 	}
 
-	private boolean checkAlreadyInProject(String invNr) {
+	public boolean checkAlreadyInProject(String invNr) {
 		
 		String[] presentArtworks = fm.getArtLibraryFromProject();
 		boolean exists = false;

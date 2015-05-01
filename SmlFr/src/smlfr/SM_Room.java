@@ -335,7 +335,7 @@ public class SM_Room {
 	}
 
 	public void requestRoomExit() {
-		// TODO Auto-generated method stub
+
 		base.wm.requestStateChange(progState.PROJECT, null);
 	}
 	
@@ -441,7 +441,8 @@ public class SM_Room {
 			grundriss = myArrangementView.getGreyWalls();
 		}
 		
-		String saveLoc = base.fm.getProjectFolderPath()+"/export/"+myRealName+".pdf";
+		String saveLoc = getExportPath().getAbsolutePath()+"/"+myRealName+".pdf";
+		
 		System.out.println("The export will be saved to: "+saveLoc);
 		
 		SM_Exporter export = new SM_Exporter(exwls, saveLoc, myRealName, base.fm.getProjectName(), grundriss);
@@ -464,10 +465,10 @@ public class SM_Room {
 		
 	}
 
-//	public void changeArtworkMeasurements(LinkedHashMap<String, Object> data) {
-//		
-//		base.fm.changeArtworkData(data);				
-//	}
+	public File getExportPath() {
+		File exportLoc = new File(base.fm.getProjectFolderPath()+"/export");
+		return exportLoc;
+	}
 	
 	
 	

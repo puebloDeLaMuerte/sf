@@ -43,6 +43,7 @@ public class SM_Renderer extends PApplet{
 	private String					currentFileStub;
 	
 	private JPopupMenu				pMenu;
+	private JMenuItem				savePreview;
 	private ViewMenuItem[]			pMenuViews;				
 	
 	private PImage[] layers;
@@ -144,6 +145,7 @@ public class SM_Renderer extends PApplet{
 	}
 	
 	public void initMenu() {
+		
 		pMenu = new JPopupMenu();
 		JMenuItem title = new JMenuItem(Lang.selectView);
 		title.setFont(title.getFont().deriveFont(Font.ITALIC));
@@ -159,6 +161,11 @@ public class SM_Renderer extends PApplet{
 			pMenu.add(pMenuViews[i]);
 			i++;
 		}
+		
+		pMenu.add(new JSeparator());
+		savePreview = new JMenuItem(Lang.savePreviewImage);
+		savePreview.addActionListener(vm);
+		pMenu.add(savePreview);
 	}
 	
 	public void setup() {
@@ -506,6 +513,79 @@ public class SM_Renderer extends PApplet{
 		popStyle();
 	}
 
+	public boolean renderPreviewImage( String filename) {
+		
+		int w = layers[0].width;
+		int h = layers[1].height;
+		
+		PGraphics img = createGraphics(w, h);
+		
+		img.beginDraw();
+		
+		if(b1) {
+			img.blendMode(BLEND);
+			img.image(layers[0], 0, 0, w, h);
+//			img.removeCache(img);
+			
+		}
+
+
+		// draw Farbe
+
+		if(b2){
+			img.pushStyle();
+			img.blendMode(BLEND);
+//			tint(vm.getRoomColor());
+			img.image(layers[1], 0, 0, w, h);
+//			img.removeCache(img);
+			//blend(layers[1], 0, 0, width, height, 0, 0, width, height, MULTIPLY);
+			img.popStyle();
+		}
+
+
+		// draw Licht
+
+		if(b3) {
+			img.pushStyle();
+			//blendMode(ADD);
+			img.tint(255, 70);
+			img.image(layers[2], 0, 0, w, h);
+//			img.removeCache(img);
+			img.popStyle();
+		}  
+
+
+		// draw Bild
+
+		if(b4) {
+			img.pushStyle();
+			img.blendMode(BLEND);
+			for( PGraphics wg : wallGfxs) {
+				img.image(wg, 0, 0, w, h);
+//				img.removeCache(img);
+			}
+
+			img.popStyle();
+		}
+
+		// draw Schatten
+
+		if(b5) {
+			img.pushStyle();
+			img.blendMode(BLEND);
+			img.tint(255, 65);
+			img.image(layers[4], 0, 0, w, h);
+//			img.removeCache(img);
+			img.popStyle();
+		}
+		
+		img.endDraw();
+		
+		img.save(filename);
+		
+		return true;
+	}
+	
 	public void mousePressed() {
 		if( mouseButton == RIGHT ) {
 			for( JMenuItem m : pMenuViews) {
@@ -561,7 +641,6 @@ public class SM_Renderer extends PApplet{
 		
 		offsetBounds();
 
-		System.out.println(xOffset);
 		redraw();
 	}
 	
@@ -596,7 +675,7 @@ public class SM_Renderer extends PApplet{
 	}
 
 	@Deprecated
-	private PImage skewImage(PImage inputImage, PVector lo, PVector ro, PVector ru, PVector lu) {
+	private PImage skewimage(PImage inputImage, PVector lo, PVector ro, PVector ru, PVector lu) {
 		
 		
 		PImage wall, mask;

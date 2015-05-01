@@ -30,8 +30,8 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 
 	
 	public void init(File _filePath, SM_Room _room, SM_ViewAngle[] _vas) {
-		super.init(_filePath, _room);
 		
+		super.init(_filePath, _room);
 		
 		vm = new SM_ViewManager(this, myRoom.getWindowManager(), _vas);
 		

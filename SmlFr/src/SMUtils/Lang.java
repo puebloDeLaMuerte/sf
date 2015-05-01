@@ -72,32 +72,36 @@ public class Lang {
 	public static String	restoreProjectTitle = "Projekt Wiederherstellen?";
 	public static String	restoreProjectMessage = "\n<html><body style='width: 300px'><b>Es wurde eine Wiederherstellungsdatei für dieses Projekt gefunden!</b><br><br>Wurde SimuFöhr beim letzten mal unvorhergesehen beendet? Falls dies der Fall ist, haben Sie jetzt die Möglichkeit, unngesicherte Speicherstände der letzten Sitzung wiederherzustellen.<br><br><b>HINWEIS!</b><br><i>Bitte beenden Sie SimuFöhr immer über den Menüpunkt <b>\"Simuföhr beenden...\"</b> um diese Meldung in Zukunft zu vermeiden.</i>";
 	public static Object[]	restoreProjectOptions = new String[] {"Wiederherstellen", "Nein, danke!"};
+	public static String	overwrite_1 = "Es existiert bereits eine Datei mit dem Namen \"";
+	public static String	overwrite_2 = "\"\n\nWollen Sie die Datei überschreiben?";
+	public static String	overwriteTitle = "Datei überschreiben?";
 	
 	// Control Elements
-	public static String[]	initializeFromWhereButtons = new String[] { "Neues Projekt", "Projekt laden...", "letztes öffnen" };
-	public static String	SM_filetypes = "Nur SimuFöhr Dateien";
+	public static String[]	initializeFromWhereButtons 	= new String[] { "Neues Projekt", "Projekt laden...", "letztes öffnen" };
+	public static String	SM_filetypes 				= "Nur SimuFöhr Dateien";
 	
 	public static enum 		/* REFACTOR THIS FOR CHANGES!!!*/ sortOptions { Künstler, Titel, InvNr, Größe }; // REFACTOR!!!!!
-	public static String	ok = "Ok";
-	public static String	cancel = "Abrechen";
-	public static String	sortLibBy = "sortieren nach:";
-	public static String	importBtn = "Importieren";
-	public static String	deleteBtn = "Löschen";
-	public static String 	RemoveArtwork = "von hier entfernen";
-	public static String	changeColor = "Wandfarbe ändern...";
-	public static String	changeColorTitle = "Wandfarbe ändern";
-	public static String	colorPicker = "Farbwähler...";
-	public static String	preview = "Vorschau";
-	public static String	changeColorMessage = "Geben Sie den RGB Wert (0-255) für die Wandfarbe ein:";
-	public static String	changeRoomColor = "Farbe für den gesamten Raum ändern";
-	public static String	changeSingleWallColor_1 = "Nur Farbe für Wand ";
-	public static String	changeSingleWallColor_2 = " ändern";
-	public static String	changeColorInvalidValues = "Die eingegebenen Werte sind ungültig!\nDie Eingabe darf nur aus Ziffern bestehen.";
-	public static String	snapToMidHeight = "auf Mittelhöhe setzen";
-	public static String 	enterRoom = "Raum betreten";
-	public static String 	exitRoom = "Raum verlassen";
-	public static String	closeWall = "Wand schließen";
-	public static String 	selectView = "Wählen Sie eine Ansicht:";
+	public static String	ok 							= "Ok";
+	public static String	cancel 						= "Abrechen";
+	public static String	sortLibBy 					= "sortieren nach:";
+	public static String	importBtn 					= "Importieren";
+	public static String	deleteBtn 					= "Löschen";
+	public static String 	RemoveArtwork 				= "von hier entfernen";
+	public static String	changeColor 				= "Wandfarbe ändern...";
+	public static String	changeColorTitle 			= "Wandfarbe ändern";
+	public static String	colorPicker 				= "Farbwähler...";
+	public static String	preview 					= "Vorschau";
+	public static String	changeColorMessage 			= "Geben Sie den RGB Wert (0-255) für die Wandfarbe ein:";
+	public static String	changeRoomColor 			= "Farbe für den gesamten Raum ändern";
+	public static String	changeSingleWallColor_1 	= "Nur Farbe für Wand ";
+	public static String	changeSingleWallColor_2 	= " ändern";
+	public static String	changeColorInvalidValues 	= "Die eingegebenen Werte sind ungültig!\nDie Eingabe darf nur aus Ziffern bestehen.";
+	public static String	snapToMidHeight 			= "auf Mittelhöhe setzen";
+	public static String 	enterRoom 					= "Raum betreten";
+	public static String 	exitRoom 					= "Raum verlassen";
+	public static String	closeWall 					= "Wand schließen";
+	public static String 	selectView 					= "Wählen Sie eine Ansicht:";
+	public static String 	savePreviewImage 			= "Vorschaubild speichern";
 	
 	// EditArtwork
 	

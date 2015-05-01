@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -142,11 +143,11 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 		editArtwork.add(new JSeparator());
 		
-//		JLabel select = new JLabel(Lang.changeFrameStyle);
 		JMenuItem select = new JMenuItem(Lang.changeFrameStyle);
 		select.setFont(select.getFont().deriveFont(Font.ITALIC));
 		select.setEnabled(false);
 		editArtwork.add( select );
+		editArtwork.add(Box.createRigidArea(new Dimension(0	, 10)) );
 		
 		int i=0;
 		frameStyles = new JMenuItem[ FrameStyle.values().length ];
@@ -312,15 +313,16 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 				for( SM_Artwork a : myWall.hasArtworks() ) {
 
-					int[] tmpPos = a.getTotalWallPos();
-					PVector totalPos = wptos( new PVector(tmpPos[0]-shadowAmount-(shadowOfsetAmount * shadowOfset), tmpPos[1]-shadowAmount-(shadowAmount*2)), drawScale );
-					PVector totalSize = astos( new PVector(a.getTotalWidth()+(shadowAmount*2), a.getTotalHeight()+(shadowAmount*0.5f)), drawScale);
-
-					gfx.pushStyle();
-					gfx.fill(50);
-					gfx.rect( totalPos.x, totalPos.y, totalSize.x, totalSize.y );
-					gfx.popStyle();
-
+					if( a.hasShadow() ) {	
+						int[] tmpPos = a.getTotalWallPos();
+						PVector totalPos = wptos( new PVector(tmpPos[0]-shadowAmount-(shadowOfsetAmount * shadowOfset), tmpPos[1]-shadowAmount-(shadowAmount*2)), drawScale );
+						PVector totalSize = astos( new PVector(a.getTotalWidth()+(shadowAmount*2), a.getTotalHeight()+(shadowAmount*0.5f)), drawScale);
+	
+						gfx.pushStyle();
+						gfx.fill(50);
+						gfx.rect( totalPos.x, totalPos.y, totalSize.x, totalSize.y );
+						gfx.popStyle();
+					}
 				}
 			}
 

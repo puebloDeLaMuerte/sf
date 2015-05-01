@@ -15,6 +15,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
@@ -309,6 +310,7 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		
 		return valid;
 	}
+
 	
 	private void packImportData() {
 		
@@ -350,9 +352,14 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		
 		if( e.getSource() == okBtn ) {
 			
-			packImportData();
-			parent.singleImport(artLibrarySaveLocation, this);
-			this.setVisible(false);
+			if( !parent.checkAlreadyInProject( TF_invNr.getText()) ) {
+			
+				packImportData();
+				parent.singleImport(artLibrarySaveLocation, this);
+				this.setVisible(false);
+			} else {
+				JOptionPane.showMessageDialog(this, Lang.err_InvNrAlreadyExists, Lang.editAwErrorTitle, JOptionPane.WARNING_MESSAGE);
+			}
 			
 		} else
 		if( e.getSource() == cancelBtn) {

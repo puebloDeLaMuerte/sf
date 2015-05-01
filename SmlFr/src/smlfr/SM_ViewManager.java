@@ -7,9 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import processing.core.PImage;
 
@@ -259,6 +263,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	
 	@Override
 	public synchronized void actionPerformed(ActionEvent e) {
+		
 		if( e.getSource().getClass().equals(ViewMenuItem.class)) {
 			System.out.println("This has happened: "+e.getActionCommand());
 			ViewMenuItem sourceItem = (ViewMenuItem)e.getSource();
@@ -279,8 +284,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 							SM_Artwork aw = w.getArtwork(as);
 							aw.unloadGraphics();
 						}
-							
-						
+					
 						
 						wallArrangementViews.get(s).setVisible(false);
 						wallArrangementViews.get(s).frame.setVisible(false);
@@ -307,6 +311,42 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			}
 			doActiveViews();
 		}
+		
+		if( e.getActionCommand().equals(Lang.savePreviewImage)){
+			
+			System.out.println("saving preview image now");
+			
+			String name = "preview";
+			name = myRoomArrView.myRoom.getRealName();
+			for( SM_ViewAngle a : viewAngles ) {
+				if( a.getName().equalsIgnoreCase(currentAngle)) {
+					name += " "+a.getRealName();
+				}
+			}
+			
+			File exportLoc = new File(myRoomArrView.myRoom.getExportPath().getAbsolutePath()+"/"+name+".png");
+			
+
+			JFileChooser ch = new JFileChooser(exportLoc);
+			ch.setSelectedFile(exportLoc);
+			ch.showSaveDialog(null);
+			
+			exportLoc = ch.getSelectedFile();
+			
+			int overwrite = 99;
+			String message = Lang.overwrite_1 + exportLoc.getName() + Lang.overwrite_2;
+			if( exportLoc.exists() ) overwrite = JOptionPane.showConfirmDialog(null, message , Lang.overwriteTitle, JOptionPane.YES_NO_OPTION);
+			
+			
+			boolean success = false;
+			if (overwrite == 0 || overwrite == 99) {
+				String filename = exportLoc.getAbsolutePath();
+				success = renderer.renderPreviewImage(filename);
+			}
+			
+			System.out.println("success: "+success);
+		}
+		
 		System.gc();
 	}
 	
@@ -529,6 +569,47 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 				renderer.updateRoomColorLayer( c );
 			}
 			
+			break;
+			
+		case WALL:
+			
+			for (String s : data.keySet()) {
+				System.out.println("VM: receiving update request: " + s + ": " + data.get(s));
+				if (s.contains("wall")) {
+					
+					Object o = data.get(s);
+					String os = (String) o;
+
+					int i = os.lastIndexOf('_');
+					i++;
+					char ww = os.charAt(i);
+
+					if (renderer != null) {
+
+					renderer.updateArtworksLayer(ww);
+					}
+				}
+			}
+			break;
+			
+		case GENERAL_AW_DATA:
+			for (String s : data.keySet()) {
+				System.out.println("VM: receiving update request: " + s + ": " + data.get(s));
+				if (s.contains("wall")) {
+					
+					Object o = data.get(s);
+					String os = (String) o;
+
+					int i = os.lastIndexOf('_');
+					i++;
+					char ww = os.charAt(i);
+
+					if (renderer != null) {
+
+					renderer.updateArtworksLayer(ww);
+					}
+				}
+			}
 			break;
 		
 		default:
