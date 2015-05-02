@@ -553,10 +553,16 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			}
 			break;
 			
+		case ORIGINAL_COLOR:
+			if (renderer != null) {
+				renderer.updateRoomColorLayer(null, null, null);
+			}
+			break;
+			
 		case ROOM_COLOR:
 			
 			if (renderer != null) {
-				renderer.updateRoomColorLayer(null);
+				renderer.updateRoomColorLayer(null, null, null);
 			}
 			break;
 			
@@ -566,11 +572,29 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 								
 				Integer c = (Integer)e.getData().get("color");
 				
-				renderer.updateRoomColorLayer( c );
+				renderer.updateRoomColorLayer( c, null, null );
 			}
 			
 			break;
 			
+		case WALL_COLOR_PREVIEW:
+			
+			if(renderer != null) {
+				
+				Character w = (Character)e.getData().get("wallChar");
+				Integer c = (Integer)e.getData().get("color");
+				
+				renderer.updateRoomColorLayer( null, w, c );
+			}
+			break;
+			
+		case WALL_COLOR:
+			
+			if (renderer != null) {
+				renderer.updateRoomColorLayer(null, null, null);
+			}
+			break;
+						
 		case WALL:
 			
 			for (String s : data.keySet()) {
@@ -626,6 +650,16 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			System.out.println("requesting Update");
 			renderer.updateArtworksLayer(_wc);
 		}
+	}
+
+	
+	public boolean hasWallColor(char wc) {
+		
+		return myRoomArrView.myWalls.get((Character)wc).hasColor();
+	}
+	
+	public int getWallColor(char wc) {
+		return myRoomArrView.myWalls.get((Character)wc).getColor();
 	}
 
 }

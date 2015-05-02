@@ -91,6 +91,7 @@ public class Lang {
 	public static String	changeColorTitle 			= "Wandfarbe ändern";
 	public static String	colorPicker 				= "Farbwähler...";
 	public static String	preview 					= "Vorschau";
+	public static String	noWallColor					= "wie Raum";
 	public static String	changeColorMessage 			= "Geben Sie den RGB Wert (0-255) für die Wandfarbe ein:";
 	public static String	changeRoomColor 			= "Farbe für den gesamten Raum ändern";
 	public static String	changeSingleWallColor_1 	= "Nur Farbe für Wand ";

@@ -24,6 +24,7 @@ public class SM_Wall implements UpdateListener {
 	// from Project:
 	private HashMap<String, SM_Artwork>		myArtworks;
 	private Integer							myWallColor;
+	private boolean							hasColor;
 	
 	
 	// upon init
@@ -34,10 +35,10 @@ public class SM_Wall implements UpdateListener {
 		myRoom = _room;
 		myWallName = _name;
 		myWallChar = myWallName.charAt(myWallName.length()-1);
+		hasColor = false;
 		myNavigatorBoundingBox = _w.getJSONArray("navigatorBoundingBox").getFloatArray();
 		myNavigatorPos = _w.getJSONArray("navigatorPos").getFloatArray();
 		myNavigatorOrientation = _w.getInt("navigatorOrientation");
-		myWallColor = 0;
 		mySize = _w.getJSONArray("wallSize").getIntArray();
 		_fm.registerUpdateListener(this);
 		
@@ -46,13 +47,19 @@ public class SM_Wall implements UpdateListener {
 	
 	public void setColor( int _cInt ) {
 		myWallColor = _cInt;
+		hasColor = true;
+	}
+	
+	public void removeColor() {
+		hasColor = false;
 	}
 	
 	public int getColor() {
-		if (myWallColor == 0) {
-			return -1;
-		}
-		else return myWallColor;
+		return myWallColor;
+	}
+
+	public boolean hasColor() {
+		return hasColor;
 	}
 	
 	public void setArtworks(JSONArray _awks) {

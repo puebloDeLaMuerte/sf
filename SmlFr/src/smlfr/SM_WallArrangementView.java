@@ -303,6 +303,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		gfx.clear();
 		gfx.beginDraw();
 		
+//		gfx.background(0,255,0);
 		
 		// DRAW Schatten
 		

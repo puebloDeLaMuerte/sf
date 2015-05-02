@@ -277,7 +277,7 @@ public class SmlFr extends JFrame  {
 					smWall.setColor(c);
 				} catch (Exception e) {
 
-					smWall.setColor(smWall.getColor());
+					//smWall.setColor(smWall.getColor());
 				}
 			}
 

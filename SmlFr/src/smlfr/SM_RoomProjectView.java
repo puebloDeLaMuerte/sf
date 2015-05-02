@@ -411,22 +411,40 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //		super.init();
 //	}
 	
-	public void wallColorCallback(int _color, boolean _singleWall, char wallChar, boolean _preview) {
+	public void originalColorCallback() {
+
+		WallColorUpdateRequestEvent e = null;
+
+		e = new WallColorUpdateRequestEvent(this, myRoom.getName());
+
+		myRoom.fireUpdateRequest(e);
+	}
+	
+	public void roomColorCallback(int _color, boolean _preview) {
 		
 		WallColorUpdateRequestEvent e = null;
-		
-		if( ! _singleWall ) {
 
-			e = new WallColorUpdateRequestEvent(this, myRoom.getName(), _color, _preview);
-		}
+		e = new WallColorUpdateRequestEvent(this, myRoom.getName(), _color, _preview);
+
+		myRoom.fireUpdateRequest(e);
+	}
+	
+	public void wallColorCallback(Integer _color, char wallChar, boolean _preview) {
+		
+		WallColorUpdateRequestEvent e = null;
+	
+		e = new WallColorUpdateRequestEvent(this, myRoom.getName(), (Character) wallChar, _color, _preview);
 		
 		myRoom.fireUpdateRequest(e);
 	}
 	
-	private void wallColorPreview( int _color) {
+	public void deleteWallColorCallback( char wallChar) {
 		
+		WallColorUpdateRequestEvent e = null;
 		
+		e = new WallColorUpdateRequestEvent(this, myRoom.getName(), (Character) wallChar );
 		
+		myRoom.fireUpdateRequest(e);
 	}
 	
 	public HashMap<Character, PShape> getWallsOverGfx() {
@@ -663,7 +681,12 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		
 		if( e.getActionCommand().equalsIgnoreCase(Lang.changeColor)) {
 		
-			WallColorChooser colorChooser = new WallColorChooser(this, wallOver, myRoom.getRoomColor());
+			int wallColor = 0;
+			if( wallOver != ' ' &&  myWalls.get((Character)wallOver).hasColor() ) {
+				wallColor = myWalls.get((Character)wallOver).getColor();
+			}
+			
+			new WallColorChooser(this, wallOver, myRoom.getRoomColor(), wallColor);
 			
 			
 		} else if( artOver != null && e.getActionCommand().equalsIgnoreCase(Lang.RemoveArtwork)) {

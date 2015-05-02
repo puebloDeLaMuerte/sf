@@ -1,5 +1,6 @@
 package smlfr;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -1068,63 +1069,224 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 	}
 
+	
 	@Override
 	public synchronized void updateRequested(WallColorUpdateRequestEvent e) {
 		
-		
+		System.out.println();
 		System.out.println("the fileManager has received an update request: WallColor");
 		System.out.println("for room: "+ e.getRoomName());
-		System.out.println("color: "+e.getColor());
+		if( e.isSingleWall() ) System.out.println("it's for this wall only: " + e.getWallCharacter());
+		else System.out.println("for the entire room");
+		Color temp = new Color(e.getColor());
+		System.out.println("color: "+e.getColor()+": ["+temp.getRed()+","+temp.getGreen()+","+temp.getBlue()+"]");
 		if( e.isPreview() ) System.out.println("it is a preview");
-		else System.out.println("it is not a preview - it's for real!");
+		else System.out.println("it's for real!");
 		
-		if(!e.isPreview()) {
-			
+		/**
+		 *  
+		 *  Lieber Pip aus der Zukunft.
+		 *  
+		 *  Durch die unten stehende abfrage aus dem Event: e.isOriginalColorRequested() kann man sich
+		 *  das ganze e.isPreview() sparen. Alles wird dadurch einfacher: hier, aber auch im Update-Type,
+		 *  der sich ja durch alles mögliche durchzieht!
+		 * 
+		 *  Man müsste dafür zunächst im WallColorChooser die stellen durch den OriginalColorCallback ersetzen,
+		 *  die bisher die alte ".isPreview" Methode benutzen... dann die ganze Kette von da aufrollen.
+		 *  
+		 * 	Das könnte man mal ändern, wenn der singleWallColor Commit gemacht ist!
+		 * 
+		 * 	dein pip
+		 * 
+		 */
 		
-			// Set Room Color:
+		
+		if( e.isOriginalColorRequested()) {
 			
-			SM_Room thisRoom = base.getRoom(this, e.getRoomName());
-			thisRoom.setRoomcolor(e.getColor());
+			System.out.println("FM: isOriginalColorRequested");
 			
-			// update JSON:
-			
-			for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
-				JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
-				if(r.getString("roomName").equalsIgnoreCase(e.getRoomName())) {
-	
-					r.setInt("roomColor", e.getColor());
-				}
-			}
-			setSaveDirty(true);
-			saveTempProject();
-			
-			LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
-			data.put("roomName", e.getRoomName());
-			
-			UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.ROOM_COLOR, data);
+			UpdateEvent o = new UpdateEvent(this, null, UpdateType.ORIGINAL_COLOR, null);
 			
 			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
-				lsnr.doUpdate(e2);
+				lsnr.doUpdate(o);
 			}
 			for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
-				lsnr.doUpdate(e2);
+				lsnr.doUpdate(o);
 			}
 		}
 		
-		else // send preview event:
+		else 
+
+		
+		if( !e.isSingleWall() ) {
 			
-		{
-			LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
-			data.put("roomName", e.getRoomName());
-			data.put("color", e.getColor());
+			System.out.println("FM: isRoom");
 			
-			UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.ROOM_COLOR_PREVIEW, data);
+			if(!e.isPreview()) {
+				
+				System.out.println("FM: is NO preview");
 			
-			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
-				lsnr.doUpdate(e2);
+				// Set Room Color:
+				
+				SM_Room thisRoom = base.getRoom(this, e.getRoomName());
+				thisRoom.setRoomcolor(e.getColor());
+				
+				// update JSON:
+				
+				for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
+					JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
+					if(r.getString("roomName").equalsIgnoreCase(e.getRoomName())) {
+		
+						r.setInt("roomColor", e.getColor());
+					}
+				}
+				setSaveDirty(true);
+				saveTempProject();
+				
+				LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+				data.put("roomName", e.getRoomName());
+				
+				UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.ROOM_COLOR, data);
+				
+				for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+					lsnr.doUpdate(e2);
+				}
+				for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+					lsnr.doUpdate(e2);
+				}
 			}
-			for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
-				lsnr.doUpdate(e2);
+			
+			else // send preview event:
+			{
+				System.out.println("FM: isPreview");
+				
+				LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+				data.put("roomName", e.getRoomName());
+				data.put("color", e.getColor());
+				
+				UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.ROOM_COLOR_PREVIEW, data);
+				
+				for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+					lsnr.doUpdate(e2);
+				}
+				for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+					lsnr.doUpdate(e2);
+				}
+			}
+		}
+		
+		if( e.isSingleWall() ) {
+			
+			System.out.println("FM: isSingleWall");
+
+			
+			if( e.isDeleteWallColor() ) {
+				
+				System.out.println("FM: DELETE SAYS THE FILE MANAGER");
+				
+				// update Wall-Object
+				
+				base.getRoom(this, e.getRoomName()).getWalls().get(e.getWallCharacter()).removeColor();
+				
+				// update JSON:
+				
+				for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
+					JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
+					if(r.getString("roomName").equalsIgnoreCase(e.getRoomName())) {
+						
+						
+						String wallName = "w_" + e.getRoomName() + "_" + e.getWallCharacter();
+						
+						JSONObject wall = r.getJSONObject( wallName );
+						
+//						wall.setInt("colorInt", e.getColor() );
+						wall.setString("colorInt", "none");
+						
+						
+					}
+				}
+				setSaveDirty(true);
+				saveTempProject();
+				
+				UpdateEvent o = new UpdateEvent(this, null, UpdateType.ORIGINAL_COLOR, null);
+
+				for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+					lsnr.doUpdate(o);
+				}
+				for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+					lsnr.doUpdate(o);
+				}
+				
+			}
+			
+			else 
+			
+			{
+			
+				if( ! e.isPreview() ) {
+					
+					System.out.println("FM: is NO preview");
+					
+					// update JSON
+					
+					for(int i=0; i<project.getJSONArray("rooms").size(); i++) {
+						JSONObject r = project.getJSONArray("rooms").getJSONObject(i);
+						if(r.getString("roomName").equalsIgnoreCase(e.getRoomName())) {
+							
+							
+							String wallName = "w_" + e.getRoomName() + "_" + e.getWallCharacter();
+							
+							JSONObject wall = r.getJSONObject( wallName );
+							
+							wall.setInt("colorInt", e.getColor() );
+							
+							
+						}
+					}
+					setSaveDirty(true);
+					saveTempProject();
+					
+					// update Wall
+					
+					base.getRoom(this, e.getRoomName()).getWalls().get(e.getWallCharacter()).setColor(e.getColor());
+					
+					
+					LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+					data.put("roomName", e.getRoomName());
+					data.put("wallChar", e.getWallCharacter());
+					data.put("color", e.getColor());
+					
+					UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.WALL_COLOR, data);
+					
+					for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+						lsnr.doUpdate(e2);
+					}
+					for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+						lsnr.doUpdate(e2);
+					}
+				}
+				
+				else // send preview event only
+					
+				{
+					
+					System.out.println("FM: isPreview");
+
+					
+					LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+					data.put("roomName", e.getRoomName());
+					data.put("wallChar", e.getWallCharacter());
+					data.put("color", e.getColor());
+					
+					UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.WALL_COLOR_PREVIEW, data);
+					
+					for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+						lsnr.doUpdate(e2);
+					}
+					for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+						lsnr.doUpdate(e2);
+					}
+				}
 			}
 		}
 	}

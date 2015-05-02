@@ -35,20 +35,20 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 
 	
 	private JPanel 					content, input, buttons				;
-	private JLabel 					msg, r, g, b						;
-	private JFormattedTextField 	fieldRed, fieldGreen, fieldBlue		;
-	private ButtonGroup 			radioBtns							;
-	private JRadioButton 			changeRoom, changeWall				;
-	private JCheckBox				preview								;
-	private JButton					okBtn, cancelBtn, colorBtn			;
-	private Color					color, originalColor				;
-	private int						redInt, greenInt, blueInt			;
-	private char					wallOver							;
+	private JLabel 					msg, r, g, b						  	;
+	private JFormattedTextField 	fieldRed, fieldGreen, fieldBlue		    	;
+	private ButtonGroup 			radioBtns							      		;	
+	private JRadioButton 			changeRoom, changeWall				        		;
+	private JCheckBox				preview								        			;
+	private JButton					okBtn, cancelBtn, colorBtn, noWallColorBtn 					;
+	private Color					color, originalColor, wallColor, roomColor				    	;
+	private int						redInt, greenInt, blueInt			  								;
+	private char					wallOver																;
 	
 	private boolean					approved = false, canceled = false;
 	private SM_RoomProjectView		parent;
 	
-	public WallColorChooser(SM_RoomProjectView _pa, char _wallOver, int _wallColor) throws HeadlessException {
+	public WallColorChooser(SM_RoomProjectView _pa, char _wallOver, int _roomColor, int _wallColor) throws HeadlessException {
 		
 		wallOver = _wallOver;
 		parent = _pa;
@@ -66,13 +66,29 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 
 		
 		// Color Fields and Button:
+				
+		roomColor = new Color(_roomColor);
+		if( _wallColor == 0 ) {
+			wallColor = roomColor;
+		} else {			
+			wallColor = new Color(_wallColor);
+		}
 		
-		color = new Color(_wallColor);
-		originalColor = new Color(_wallColor);
+		if(_wallOver == ' ') {
+			color = roomColor;
+			originalColor = roomColor;
+		} else {
+			color = wallColor;
+			originalColor = wallColor;
+		}
 		
-		redInt   = (int)_wallColor >> 16 & 0xFF;
-		greenInt = (int)_wallColor >>  8 & 0xFF;
-		blueInt  = (int)_wallColor       & 0xFF;
+//		redInt   = (int)_wallColor >> 16 & 0xFF;
+//		greenInt = (int)_wallColor >>  8 & 0xFF;
+//		blueInt  = (int)_wallColor       & 0xFF;
+		
+		redInt   = color.getRed();
+		greenInt = color.getGreen();
+		blueInt  = color.getBlue();
 			
 		r = new JLabel("r:");
 		g = new JLabel("g:");
@@ -119,14 +135,18 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 		radioBtns = new ButtonGroup();
 		changeRoom = new JRadioButton(Lang.changeRoomColor);
 		changeRoom.setSelected(true);
+		changeRoom.addActionListener(this);
 		
 		
-		if(wallOver == ' ') wallOver = 'X';
-		changeWall = new JRadioButton(Lang.changeSingleWallColor_1 + wallOver + Lang.changeSingleWallColor_2);
-		if(wallOver == 'X') changeWall.setEnabled(false);
-		
-		// TODO Beat! Implement single Wall Color
-		changeWall.setEnabled(false);
+		if(wallOver == ' ') {
+			changeWall = new JRadioButton(Lang.changeSingleWallColor_1 + "XXX" + Lang.changeSingleWallColor_2);
+			changeWall.setEnabled(false);
+		} else {
+			changeWall = new JRadioButton(Lang.changeSingleWallColor_1 + wallOver + Lang.changeSingleWallColor_2);
+			changeWall.setSelected(true);
+			changeRoom.setSelected(false);
+		}
+		changeWall.addActionListener(this);
 			
 		radioBtns.add(changeRoom);
 		radioBtns.add(changeWall);
@@ -143,6 +163,14 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 		preview.setFocusable(false);
 		preview.addActionListener(this);
 		
+		noWallColorBtn = new JButton(Lang.noWallColor);
+		if(wallOver == ' ') {
+			noWallColorBtn.setEnabled(false);
+		} else {
+			noWallColorBtn.setEnabled(true);
+		}
+		noWallColorBtn.addActionListener(this);
+		
 		okBtn = new JButton(Lang.ok);
 		okBtn.addActionListener(this);
 		
@@ -150,6 +178,7 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 		cancelBtn.addActionListener(this);
 		
 		buttons.add(preview);
+		buttons.add(noWallColorBtn);
 		buttons.add(cancelBtn);
 		buttons.add(okBtn);
 		
@@ -194,22 +223,34 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 			
 			
 			if (! color.equals(originalColor)) {
-				boolean singleWall;
-				if (!changeRoom.isSelected())
-					singleWall = true;
-				else
-					singleWall = false;
-				parent.wallColorCallback(color.getRGB(), singleWall, wallOver, false);
+
+				if (changeRoom.isSelected()) {
+					parent.roomColorCallback(color.getRGB(), false);
+				} else {
+					parent.wallColorCallback(color.getRGB(), wallOver, false);
+				}
+				
 			}
 			this.setVisible(false);
 		}
+		
+		
 		else if(e.getSource() == cancelBtn) {
 			
 			// make Renderer display the data held by the room:
-			parent.wallColorCallback(originalColor.getRGB(), false, wallOver, true);
+//			parent.roomColorCallback(originalColor.getRGB(),true);
+			parent.originalColorCallback();
+			
 			canceled = true;
 			this.setVisible(false);
 		}
+		
+		else if( e.getSource() == noWallColorBtn) {
+			parent.deleteWallColorCallback( wallOver );
+			canceled = true;
+			this.setVisible(false);
+		}
+		
 		else if( e.getSource() == colorBtn) {
 						
 			Color newColor = JColorChooser.showDialog(
@@ -217,57 +258,121 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
                     Lang.changeColorTitle,
                     color);
 			
-			redInt   = (int)newColor.getRed();
-			greenInt = (int)newColor.getGreen();
-			blueInt  = (int)newColor.getBlue();
-			
-			fieldRed.setText(""+redInt);
-			fieldGreen.setText(""+greenInt);
-			fieldBlue.setText(""+blueInt);
-			
+			if( newColor != null) {
+				redInt   = (int)newColor.getRed();
+				greenInt = (int)newColor.getGreen();
+				blueInt  = (int)newColor.getBlue();
+				
+				fieldRed.setText(""+redInt);
+				fieldGreen.setText(""+greenInt);
+				fieldBlue.setText(""+blueInt);
+			}
 		}
 		
+		
 		else if( e.getSource() == preview ) {
-			if( preview.isSelected() ) {
-				parent.wallColorCallback(color.getRGB(), !changeRoom.isSelected(), wallOver, true);
-			}
-			else {
-				parent.wallColorCallback(originalColor.getRGB(), !changeRoom.isSelected(), wallOver, true);
-			}
+			
+//			propertyChange(null);
+			sendPreviewCallbacks();
+			
+//			if( preview.isSelected() ) {
+//				parent.wallColorCallback(color.getRGB(), !changeRoom.isSelected(), wallOver, true);
+//			}
+//			else {
+//				parent.wallColorCallback(originalColor.getRGB(), !changeRoom.isSelected(), wallOver, true);
+//			}
+		}
+		
+		
+		else if( e.getSource() == changeRoom ) {
+			
+			originalColor = roomColor;
+			noWallColorBtn.setEnabled(false);
+			evaluateFields();
+			sendPreviewCallbacks();
+		}
+		
+		else if( e.getSource() == changeWall ) {
+			
+			originalColor = wallColor;
+			noWallColorBtn.setEnabled(true);
+			evaluateFields();
+			sendPreviewCallbacks();
 		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent pe) {
 
+		Object s = pe.getSource();
+		
+		
+		
+		if(s == fieldRed || s == fieldGreen || s == fieldBlue) {
+			
+			evaluateFields();
+			sendPreviewCallbacks();
+		}
+	}
+	
+	private void evaluateFields() {
 		
 		Integer r = Integer.parseInt(fieldRed.getText());
 		Integer g = Integer.parseInt(fieldGreen.getText());
 		Integer b = Integer.parseInt(fieldBlue.getText());
 		
-		if( r<0 || r>255 || g<0 || g>255 || b<0 || b>255 ) {
+		if( r<0 || r>255 ) {
 			
 			r = Math.max(0, Math.min(255, r));
-			g = Math.max(0, Math.min(255, g));
-			b = Math.max(0, Math.min(255, b));
-			
 			fieldRed.setText(""+r);
+		}
+
+		if( g<0 || g>255 ) {
+
+			g = Math.max(0, Math.min(255, g));
 			fieldGreen.setText(""+g);
+		}
+
+		if( b<0 || b>255 ) {
+
+			b = Math.max(0, Math.min(255, b));
 			fieldBlue.setText(""+b);
 		}
 		
-		
+
 		color = new Color(r, g, b);
+	}
+	
+	private void sendPreviewCallbacks() {
 		
 		if(!canceled){
-			if( preview.isSelected() ) {
-				parent.wallColorCallback(color.getRGB(), !changeRoom.isSelected(), wallOver, true);
+			
+			// Room Color
+			if( changeRoom.isSelected() ) {
+				
+				if( preview.isSelected() ) {
+					parent.roomColorCallback(color.getRGB(), true);
+				} else {
+					parent.originalColorCallback();
+				}
+				
+				
 			}
+			
+			// Wall Color
 			else {
-				parent.wallColorCallback(originalColor.getRGB(), !changeRoom.isSelected(), wallOver, true);
+				
+				if( preview.isSelected() ) {
+					
+					parent.wallColorCallback(color.getRGB(), wallOver, true);
+
+				} else {
+
+					parent.originalColorCallback();
+//					parent.wallColorCallback(color.getRGB(), ' ', true);
+				}
 			}
 		}
 	}
-	
 	
 }

@@ -48,11 +48,14 @@ public class SM_Renderer extends PApplet{
 	
 	private PImage[] layers;
 	private float cr, cg, cb;
+	
 	private boolean b1 = true;
 	private boolean b2 = true;
 	private boolean b3 = false;
 	private boolean b4 = true;
 	private boolean b5 = true;
+	
+	
 
 //	private PGraphics 				texture;
 //	private PImage 					textureIMG;
@@ -73,6 +76,8 @@ public class SM_Renderer extends PApplet{
 	private int						xOffset, yOffset;
 	
 	public boolean 					setupRun = false;
+	
+	private boolean 				devGUI = true;
 	
 //	private pTimedEventGenerator	tGen;
 //	private int 					tCount = 0;		
@@ -242,7 +247,7 @@ public class SM_Renderer extends PApplet{
 
 		// Farbe:
 
-		updateRoomColorLayer(null);
+		updateRoomColorLayer(null, null, null);
 		
 
 		// clear memory:
@@ -258,18 +263,25 @@ public class SM_Renderer extends PApplet{
 		
 	}
 
-	public void updateRoomColorLayer( Integer _previewColor ) {
+	
+	/**
+	 * 
+	 * 
+	 * @param _previewColor if null the previous roomColor will be used
+	 * @param _previewWall if null no WallColorPreview will be drawn
+	 * @param _previewWallColor
+	 */
+	public void updateRoomColorLayer( Integer _previewColor, Character _previewWall, Integer _previewWallColor ) {
 		
-		PGraphics t = createGraphics(layers[5].width,layers[5].height);
+		int w = layers[5].width;
+		int h = layers[5].height;
+		
 		
 		int c;
 		
 		if( _previewColor == null ) c = vm.getRoomColor();
 		else c = _previewColor;
-		
-//		cr= red(c);
-//		cg= blue(c);
-//		cb= green(c);
+
 
 		Color clr = new Color(c);
 		
@@ -277,17 +289,111 @@ public class SM_Renderer extends PApplet{
 		cg = clr.getGreen();
 		cb = clr.getBlue();
 		
+		PGraphics t = createGraphics(w,h);
 		t.beginDraw();
+		
+		t.pushStyle();
 		t.tint(cr,cg,cb);
-		t.image(layers[0],0,0,layers[5].width,layers[5].height);
+		t.image(layers[0],0,0,w,h);
+		t.popStyle();
+		
+		// Draw Single Wall Colors:
+		
+		for(char wc : currentView.getWallChars() ) {
+						
+			boolean hasWallColor  = vm.hasWallColor(wc); 
+			boolean isPreviewWall = ( (Character)wc == _previewWall);
+			
+//			System.out.println("isPrreviewWall calculated for \""+wc+"\" and previewWall \""+_previewWall+"\" ---> "+isPreviewWall);
+			
+			if( hasWallColor || isPreviewWall ) {
+
+				Color col ;
+				
+				if( isPreviewWall ) {
+					col = new Color(_previewWallColor);
+				} else {					
+					col = new Color(vm.getWallColor(wc));
+				}
+				
+				 
+				
+				
+				// offset skew values to display values
+				
+				Float[] skewValues = new Float[10];
+				
+				boolean useCrop = false;
+				if( currentView.getWallCrop((Character)wc)[0] != -1 ) useCrop = true;
+				
+				for (int i = 0; i < skewValues.length; i++) {
+					
+					if( !useCrop ) {
+						skewValues[i] = currentView.getWallSkew((Character)wc)[i];
+					} else {
+						skewValues[i] = currentView.getWallCrop((Character)wc)[i];
+					}
+				}
+				
+				Float xOffset = ( (skewValues[0] - photoX) / 2 );
+				Float yOffset = ( (skewValues[1] - photoY) / 2 );
+
+				
+				for (int i = 0; i < skewValues.length -1; i+=2) {
+					
+					skewValues[i] 	-= xOffset;
+					skewValues[i+1]	-= yOffset;
+				}
+
+				// zeichnen der Farbe fŸr eine Wand::
+				
+				PGraphics wcGfx = createGraphics(w,h);
+				
+				wcGfx.beginDraw();
+				wcGfx.tint(col.getRed(), col.getGreen(), col.getBlue());
+				wcGfx.image(layers[0], 0, 0, w, h);
+				wcGfx.endDraw();
+				
+				PGraphics shape = createGraphics(w, h);
+				shape.beginDraw();
+				shape.fill(0);
+				shape.stroke(0);
+				shape.strokeWeight(1);
+				shape.beginShape();
+				for (int i = 2; i < skewValues.length -1; i+=2) {
+					shape.vertex(skewValues[i], skewValues[i+1]);
+				}
+				shape.vertex(skewValues[2], skewValues[3]);
+				shape.endShape();
+				shape.endDraw();
+				
+				manualWallColorMask(shape, layers[4]);
+				
+				manualWallColorMask(wcGfx, shape.get());
+				
+				
+				// gfx auf "t" zeichnen
+
+				t.image(wcGfx,0,0,w,h);
+
+				
+			}
+		}
+		
 		g.removeCache(t);
 		t.endDraw();
+		
 		layers[1] = t.get();
+		
 //		layers[1].filter(DILATE);
 //		layers[5].filter(DILATE);
+		
 		layers[1].mask(layers[5]);
 		
 		if(setupRun) redraw();
+		
+		
+		
 	}
 	
 	public void updateArtworksLayer( char _wallChar) {
@@ -412,6 +518,39 @@ public class SM_Renderer extends PApplet{
 		  display.endDraw();
 		}
 	
+	private void manualWallColorMask(PGraphics display, PImage mask) {
+		
+		
+		  mask.loadPixels();
+		  display.beginDraw();
+		  display.loadPixels();
+		  for (int i = 0; i < display.pixels.length; i++) {
+		 
+		    int d = display.pixels[i];
+		 
+		    // mask apha
+		    int m_a = (mask.pixels[i] >> 24) /*>> 16*/ & 0xFF;
+		  
+		    // display alpha
+		    int d_a = (d >> 24) & 0xFF;
+		  
+		    // output alpha (make display transparent where mask is 100% transparent)
+
+		    int o_a;
+		    if( m_a == 0 ) {
+		    	o_a = 0;
+		    } else {
+		    	o_a = d_a;
+		    }
+		    
+		    
+		    display.pixels[i] = (o_a << 24) | (0x00FFFFFF & d);
+
+		  }
+		  display.updatePixels();
+		  display.endDraw();
+		}
+	
 	public void draw(){
 
 		
@@ -483,34 +622,47 @@ public class SM_Renderer extends PApplet{
 			popStyle();
 		}
 
-//		drawGUI();
+		drawGUI();
 		
 	}
 
 	void drawGUI() {
-		pushStyle();
-		stroke(0);
-		blendMode(BLEND);
-		if( b1) fill(20,180,20); else fill(180,20,20); 
-		//rect(10,10,15,15);
-		text("1: basis", 10,20);
-
-		if( b2) fill(20,180,20); else fill(180,20,20);
-		//rect(30,10,15,15);
-		text("2: farbe",10,40);
-
-		if( b3) fill(20,180,20); else fill(180,20,20);
-		//rect(50,10,15,15);
-		text("3: licht", 10,60);
-
-		if( b4) fill(20,180,20); else fill(180,20,20);
-		//rect(70, 10, 15,15);
-		text("4: bild", 10,80);
-
-		if( b5) fill(20,180,20); else fill(180,20,20);
-		//rect(90, 10, 15,15);
-		text("5: schatten", 10,100);
-		popStyle();
+		if (devGUI) {
+			pushStyle();
+			stroke(0);
+			blendMode(BLEND);
+			if (b1)
+				fill(20, 180, 20);
+			else
+				fill(180, 20, 20);
+			//rect(10,10,15,15);
+			text("1: basis", 10, 20);
+			if (b2)
+				fill(20, 180, 20);
+			else
+				fill(180, 20, 20);
+			//rect(30,10,15,15);
+			text("2: farbe", 10, 40);
+			if (b3)
+				fill(20, 180, 20);
+			else
+				fill(180, 20, 20);
+			//rect(50,10,15,15);
+			text("3: licht", 10, 60);
+			if (b4)
+				fill(20, 180, 20);
+			else
+				fill(180, 20, 20);
+			//rect(70, 10, 15,15);
+			text("4: bild", 10, 80);
+			if (b5)
+				fill(20, 180, 20);
+			else
+				fill(180, 20, 20);
+			//rect(90, 10, 15,15);
+			text("5: schatten", 10, 100);
+			popStyle();
+		}
 	}
 
 	public boolean renderPreviewImage( String filename) {
@@ -660,12 +812,18 @@ public class SM_Renderer extends PApplet{
 		if( keyCode == ESC) {
 			key = 0;
 		} else {
-			if( key == '1') b1 = !b1;
-			if( key == '2') b2 = !b2;
-			if( key == '3') b3 = !b3;
-			if( key == '4') b4 = !b4;
-			if( key == '5') b5 = !b5;
-	
+			if (devGUI) {
+				if (key == '1')
+					b1 = !b1;
+				if (key == '2')
+					b2 = !b2;
+				if (key == '3')
+					b3 = !b3;
+				if (key == '4')
+					b4 = !b4;
+				if (key == '5')
+					b5 = !b5;
+			}
 			if( key == 'u') {
 				for( char w : wallGfxsId )
 					updateArtworksLayer(w);
