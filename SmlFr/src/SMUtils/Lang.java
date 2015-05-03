@@ -12,69 +12,71 @@ public class Lang {
 	public static String	room = "Saal";
 	
 	// errors: File Loading
-	public static String	warning = "Warnung!";
+	public static String	warning = 					"Warnung!";
 	public static String 	couldntFindResourceFolder = "Der Ordner \"resources\" konnte nicht gefunden werden.\nStellen Sie sicher, dass er sich im selben Verzeichnis mit SimuFöhr.exe befindet.";
-	public static String 	couldntFindPrefs = "Die Voreinstellungs-Datei konnte nicht gefunden werden! \nBitte überprüfen Sie, ob sie sich im Ordner \"resources\" befindet.";
-	public static String 	couldntLoadPrefs = "Die Voreinstellungs-Datei konnte nicht geladen werden.\nMöglicherweise ist die datei beschädigt.";
-	public static String 	couldntFindMuseum = "Die Museums-Datei konnte nicht gefunden werden! \nBitte überprüfen Sie, ob sie sich im Ordner \"resources\" befindet.";
-	public static String 	couldntLoadMuseumData = "Die Museumsdaten konnten nicht geladen werden.\nDie Datei scheint beschädigt zu sein.";
-	public static String	couldntLoadProject_1 = "Das Projekt konnte nicht geladen werden.\nStellen Sie sicher dass sich die Datei ";
-	public static String	couldntLoadProject_2 = " in diesem Ordner befindet: \n";
-	public static String	couldntLoadArtwork = "Die folgenden Library-Dateien konnten nicht geladen werden.\nStellen Sie sicher, dass sich der Ordner mit dem\nSuffix \"_lib\" im selben Ordner wie die Projektadtei befindet.";
-	public static String	couldntImport_1 = "Diese Kunstwerke konnten leider nicht importiert werden:\n\n";
-	public static String	couldntImport_2 = "\nÜberprüfen Sie die Excel-Tabelle auf fehlerhafte Einträge" +
-												"\nund stellen Sie sicher, dass sich die angegebenen" +
-												"\nBildateien im selben Ordner mit der Tabelle befinden." +
-												"\n\nAlle übrigen Kunstwerke wurden erfolgreich importiert!";
-	public static String	prevVersion_WallColor = "Diese Projektdatei wurde von einer früheren SimuFöhr Version erstellt. (v0.1.11 oder früher)" +
-													"In dieser Version ist es möglich, die Wandfarbe zu editieren." +
-													"Die Wandfarbe wurde auf Weiß (255,255,255) gesetzt. Sie können diese nun ändern.";
-	public static String	errorLoadingWallColor_1 = "Die Wandfarbe für \"";
-	public static String	errorLoadingWallColor_2	=	"\" konnte nicht aus der Projektdatei gelesen werden." +
-													"\nEs wird versucht, das Projekt trotzdem zu laden." +
-													"\nFalls Probleme auftreten, wenden Sie sich bitte an den Support.";
-	public static String	successfulImport = " Kunstwerke wurden erfolgreich Importiert.";
+	public static String 	couldntFindPrefs = 			"Die Voreinstellungs-Datei konnte nicht gefunden werden! \nBitte überprüfen Sie, ob sie sich im Ordner \"resources\" befindet.";
+	public static String 	couldntLoadPrefs = 			"Die Voreinstellungs-Datei konnte nicht geladen werden.\nMöglicherweise ist die datei beschädigt.";
+	public static String 	couldntFindMuseum = 		"Die Museums-Datei konnte nicht gefunden werden! \nBitte überprüfen Sie, ob sie sich im Ordner \"resources\" befindet.";
+	public static String 	couldntLoadMuseumData = 	"Die Museumsdaten konnten nicht geladen werden.\nDie Datei scheint beschädigt zu sein.";
+	public static String	couldntLoadProject_1 = 		"Das Projekt konnte nicht geladen werden.\nStellen Sie sicher dass sich die Datei ";
+	public static String	couldntLoadProject_2 = 		" in diesem Ordner befindet: \n";
+	public static String	couldntLoadArtwork = 		"Die folgenden Library-Dateien konnten nicht geladen werden.\nStellen Sie sicher, dass sich der Ordner mit dem\nSuffix \"_lib\" im selben Ordner wie die Projektadtei befindet.";
+	public static String	couldntImport_1 = 			"Diese Kunstwerke konnten leider nicht importiert werden:\n\n";
+	public static String	couldntImport_2 = 			"\nÜberprüfen Sie die Excel-Tabelle auf fehlerhafte Einträge" +
+														"\nund stellen Sie sicher, dass sich die angegebenen" +
+														"\nBildateien im selben Ordner mit der Tabelle befinden." +
+														"\n\nAlle übrigen Kunstwerke wurden erfolgreich importiert!";
+	public static String	prevVersion_WallColor = 	"Diese Projektdatei wurde von einer früheren SimuFöhr Version erstellt. (v0.1.11 oder früher)" +
+														"In der aktuellen Version ist es möglich, die Wandfarbe zu editieren." +
+														"Die Wandfarbe wurde auf Weiß (255,255,255) gesetzt. Sie können diese nun ändern.";
+	public static String	errorLoadingWallColor_1 = 	"Die Wandfarbe für \"";
+	public static String	errorLoadingWallColor_2	=	"\" konnte nicht aus der Projektdatei gelesen werden.\n" +
+														"\nWarscheinlich wurde die Projektdatei mit einer früheren Version von SimuFöhr" +
+														"\nerstellt (v0.1.11 oder früher). In der aktuellen Version ist es nun möglich," +
+														"\ndie Farbe einzelner Wände zu editieren.\n" +
+														"\nFalls Probleme auftreten, wenden Sie sich bitte an den Support.";
+	public static String	successfulImport = 			" Kunstwerke wurden erfolgreich Importiert.";
 	
 	// errors: Programm Handling
 	
-	public static String	artworkTooBigForWall_1  = "Dieses Kunstwerk passt nicht an diese Wand.\n	Breite des Kunstwerks: ";
-	public static String	artworkTooBigForWall_2  = " mm\n	Breite der Wand; ";
-	public static String	artworkTooBigForWall_3  = " mm.";
-	public static String	importArtworkAlreadyExists = "Dieses Kunstwerk konnte nicht importiert werden,\n" +
-														 "da sich bereits ein Kunstwerk mit derselben Inventarnummer\n" +
-														 "in diesem Projekt befindet.\n\n";
+	public static String	artworkTooBigForWall_1  = 		"Dieses Kunstwerk passt nicht an diese Wand.\n	Breite des Kunstwerks: ";
+	public static String	artworkTooBigForWall_2  = 		" mm\n	Breite der Wand; ";
+	public static String	artworkTooBigForWall_3  = 		" mm.";
+	public static String	importArtworkAlreadyExists = 	"Dieses Kunstwerk konnte nicht importiert werden,\n" +
+														 	"da sich bereits ein Kunstwerk mit derselben Inventarnummer\n" +
+														 	"in diesem Projekt befindet.\n\n";
 	
 	// questions
-	public static String 	initializeFromWhereTitle = "Willkommen zu SimuFöhr!";
-	public static String 	initializeFromWhere_1 = "Zuletzt geöffnetes Projekt:\n\"";
-	public static String 	initializeFromWhere_2 = "\"\n\nMöchten Sie dieses Projekt öffnen, ein neues erstellen,\noder ein anderes Projekt laden?";
-	public static String	loadProjectTitle = "Projekt laden...";
-	public static String 	unsavedChangesTitle = "Änderungen speichern?";
-	public static Object 	unsavedChanges = "Es wurden ungesicherte Änderungen vorgenommen,\nwollen Sie das Projekt jetzt speichern?";
-	public static String[]	yesNoCancelOptions = new String[] { "Abbrechen", "Nein", "Ja" };
-	public static String[]  importNowBtns = new String[] { "später", "Ja" };
-	public static String 	importNow = "Wollen Sie jetzt bereits Kunstwerke importieren,\noder ein leeres Projekt erstellen?";
-	public static Object 	importNowTitle = "Kunstwerke importieren?";
-	public static String	importPleaseWait = "\n  Importiere Kunstwerke ...\n  Bitte haben Sie etwas Geduld.";
-	public static Object 	newProjectName = "Projektname:";
-	public static String 	newProjectNameTitle = "Neues Projekt...";
-	public static Object[]	newProjectOptions = new String[] {"abbrechen", "erstellen"};
-	public static String	create = "erstellen";
-	public static String	newProjectLocation_1 = "Wohin möchten Sie ";
-	public static String	newProjectLocation_2 = ".sfp speichern?";
-	public static String 	wantToSaveBeforExitTitle = "SimuFöhr beenden?";
-	public static String 	wantToSaveBeforExit = "Wollen Sie SimuFöhr wirklich beenden?\nUngespeicherte Änderungen gehen dabei verloren.";
-	public static Object[] 	saveOnExitOptions = new String[] {"Abbrechen", "Beenden", "Sichern"};
-	public static String	quitSF = "SimuFöhr beenden";
-	public static String	saveProject = "Projekt sichern";
-	public static String	saved = "Projekt erfolgreich gespeichert.";
-	public static String	whereIsExcelFile = "Wo befindet sich die Excel-Tabelle?";
-	public static String	restoreProjectTitle = "Projekt Wiederherstellen?";
-	public static String	restoreProjectMessage = "\n<html><body style='width: 300px'><b>Es wurde eine Wiederherstellungsdatei für dieses Projekt gefunden!</b><br><br>Wurde SimuFöhr beim letzten mal unvorhergesehen beendet? Falls dies der Fall ist, haben Sie jetzt die Möglichkeit, unngesicherte Speicherstände der letzten Sitzung wiederherzustellen.<br><br><b>HINWEIS!</b><br><i>Bitte beenden Sie SimuFöhr immer über den Menüpunkt <b>\"Simuföhr beenden...\"</b> um diese Meldung in Zukunft zu vermeiden.</i>";
-	public static Object[]	restoreProjectOptions = new String[] {"Wiederherstellen", "Nein, danke!"};
-	public static String	overwrite_1 = "Es existiert bereits eine Datei mit dem Namen \"";
-	public static String	overwrite_2 = "\"\n\nWollen Sie die Datei überschreiben?";
-	public static String	overwriteTitle = "Datei überschreiben?";
+	public static String 	initializeFromWhereTitle 		= "Willkommen zu SimuFöhr!";
+	public static String 	initializeFromWhere_1 			= "Zuletzt geöffnetes Projekt:\n\"";
+	public static String 	initializeFromWhere_2 			= "\"\n\nMöchten Sie dieses Projekt öffnen, ein neues erstellen,\noder ein anderes Projekt laden?";
+	public static String	loadProjectTitle 				= "Projekt laden...";
+	public static String 	unsavedChangesTitle 			= "Änderungen speichern?";
+	public static Object 	unsavedChanges 					= "Es wurden ungesicherte Änderungen vorgenommen,\nwollen Sie das Projekt jetzt speichern?";
+	public static String[]	yesNoCancelOptions 				= new String[] { "Abbrechen", "Nein", "Ja" };
+	public static String[]  importNowBtns 					= new String[] { "später", "Ja" };
+	public static String 	importNow 						= "Wollen Sie jetzt bereits Kunstwerke importieren,\noder ein leeres Projekt erstellen?";
+	public static Object 	importNowTitle 					= "Kunstwerke importieren?";
+	public static String	importPleaseWait			 	= "\n  Importiere Kunstwerke ...\n  Bitte haben Sie etwas Geduld.";
+	public static Object 	newProjectName 					= "Projektname:";
+	public static String 	newProjectNameTitle 			= "Neues Projekt...";
+	public static Object[]	newProjectOptions 				= new String[] {"abbrechen", "erstellen"};
+	public static String	create 							= "erstellen";
+	public static String	newProjectLocation_1 			= "Wohin möchten Sie ";
+	public static String	newProjectLocation_2 			= ".sfp speichern?";
+	public static String 	wantToSaveBeforExitTitle 		= "SimuFöhr beenden?";
+	public static String 	wantToSaveBeforExit 			= "Wollen Sie SimuFöhr wirklich beenden?\nUngespeicherte Änderungen gehen dabei verloren.";
+	public static Object[] 	saveOnExitOptions 				= new String[] {"Abbrechen", "Beenden", "Sichern"};
+	public static String	quitSF 							= "SimuFöhr beenden";
+	public static String	saveProject 					= "Projekt sichern";
+	public static String	saved 							= "Projekt erfolgreich gespeichert.";
+	public static String	whereIsExcelFile 				= "Wo befindet sich die Excel-Tabelle?";
+	public static String	restoreProjectTitle 			= "Projekt Wiederherstellen?";
+	public static String	restoreProjectMessage 			= "\n<html><body style='width: 300px'><b>Es wurde eine Wiederherstellungsdatei für dieses Projekt gefunden!</b><br><br>Wurde SimuFöhr beim letzten mal unvorhergesehen beendet? Falls dies der Fall ist, haben Sie jetzt die Möglichkeit, unngesicherte Speicherstände der letzten Sitzung wiederherzustellen.<br><br><b>HINWEIS!</b><br><i>Bitte beenden Sie SimuFöhr immer über den Menüpunkt <b>\"Simuföhr beenden...\"</b> um diese Meldung in Zukunft zu vermeiden.</i>";
+	public static Object[]	restoreProjectOptions 			= new String[] {"Wiederherstellen", "Nein, danke!"};
+	public static String	overwrite_1 					= "Es existiert bereits eine Datei mit dem Namen \"";
+	public static String	overwrite_2 					= "\"\n\nWollen Sie die Datei überschreiben?";
+	public static String	overwriteTitle 					= "Datei überschreiben?";
 	
 	// Control Elements
 	public static String[]	initializeFromWhereButtons 	= new String[] { "Neues Projekt", "Projekt laden...", "letztes öffnen" };

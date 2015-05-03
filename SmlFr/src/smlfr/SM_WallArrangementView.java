@@ -478,27 +478,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 	}
 	
-	public boolean isWallGfxReady() {
-		return ready;
-	}
-	
-	public PImage getWallGfx() {
-		if( ready ) {
-//
-//			try {
-//				return (PImage)wlGfx.clone();
-//			} catch (CloneNotSupportedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//				return null;
-//			}
-		}
-		else {
-			return null;
-		}
-		return null;
-	}
-	
 	
 	public void dispose() {
 		

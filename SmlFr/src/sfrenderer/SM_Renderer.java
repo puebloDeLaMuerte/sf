@@ -56,11 +56,6 @@ public class SM_Renderer extends PApplet{
 	private boolean b5 = true;
 	
 	
-
-//	private PGraphics 				texture;
-//	private PImage 					textureIMG;
-//	private PImage 					bild ;
-	
 	private PGraphics				cropMask;
 	private PGraphics[]				wallGfxs;
 	private char[]					wallGfxsId;
@@ -79,9 +74,7 @@ public class SM_Renderer extends PApplet{
 	
 	private boolean 				devGUI = true;
 	
-//	private pTimedEventGenerator	tGen;
-//	private int 					tCount = 0;		
-//	private boolean 				tStop = false;
+
 
 	
 	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath, int _YSize) {
@@ -448,7 +441,7 @@ public class SM_Renderer extends PApplet{
 							if( currentView.isWallCrop(_wallChar) ) {
 								
 								Float[] cropValues = currentView.getWallCrop(_wallChar);
-								float f = cropValues[0] / photoX;
+//								float f = cropValues[0] / photoX;
 								
 								cropMask = skewmator.drawCropImage(cropValues);
 								cropMask.resize(wallGfxs[i].width, wallGfxs[i].height);
@@ -756,7 +749,7 @@ public class SM_Renderer extends PApplet{
 	public void mouseDragged() {
 		xOffset += mouseX-pmouseX;
 		yOffset += mouseY-pmouseY;
-		System.out.println("da");
+
 		offsetBounds();
 		redraw();
 	}
@@ -832,130 +825,10 @@ public class SM_Renderer extends PApplet{
 		}
 	}
 
-	@Deprecated
-	private PImage skewimage(PImage inputImage, PVector lo, PVector ro, PVector ru, PVector lu) {
-		
-		
-		PImage wall, mask;
-		XTImage  img;
-	
-		System.out.println("in: " + inputImage.width+" x "+inputImage.height);
-		
-		// Use Buffered Image to convert from PImage to javaxt.io.image
-		
-//		BufferedImage bi = new BufferedImage(inputImage.width, inputImage.height, BufferedImage.TYPE_INT_ARGB);
-//		bi.getGraphics().drawImage((java.awt.Image) inputImage.getNative(), 0, 0 , null);
-//		img = new javaxt.io.Image(inputImage.width, inputImage.height);
-//		img.addImage(bi, 0, 0, true);
-//		
-		
-		// Works as well
-		
-//		javaxt.io.Image source = new javaxt.io.Image( new File("data/2_Bild_Crop.png") );
-//		img = new javaxt.io.Image(inputImage.width, inputImage.height);
-//		img.addImage(source, 100, 100, true);
-		
-		// This is the shortes working way:
-		// 	(They all have the transparency right!)
-		
-		img = new XTImage((BufferedImage)inputImage.getNative());
-		
-//		File sf = new File("temp/secondtest.png");
-//		img.saveAs(sf);
-//		System.out.println("xt: "+img.getWidth()+" x "+img.getHeight());
-
-
-		
-		// skew the image
-		img.setCorners((int)lo.x , (int)lo.y, (int)ro.x, (int)ro.y, (int)ru.x, (int)ru.y, (int)lu.x, (int)lu.y);
-		
-		System.out.println("sk: "+img.getWidth()+" x "+img.getHeight());
-		
-		// set up the mask
-//		PGraphics m = createGraphics(img.getWidth(), img.getHeight());
-//		m.beginDraw();
-//		m.noStroke();
-//		m.background(0);
-//		m.fill(255);
-//		m.beginShape();
-//		m.vertex(lo.x, lo.y);
-//		m.vertex(ro.x, ro.y);
-//		m.vertex(ru.x, ru.y);
-//		m.vertex(lu.x, lu.y);
-//		m.vertex(lo.x, lo.y);
-//		m.endShape();
-//		m.endDraw();
-//		mask = m.get();
-		
-
-		// convert the skewed image back to PImage by manually drawing
-		
-		PGraphics pg = createGraphics(img.getWidth(), img.getHeight());
-		pg.beginDraw();
-		for(int x = 0; x < pg.width; x++) {
-			for(int y = 0; y < pg.height; y++) {
-				
-				pg.set(x, y, img.getColor(x, y).getRGB() );
-				
-			}
-		}
-		pg.endDraw();
-		wall = pg.get();
-				
-		// mask the image		
-		//wall.mask(mask);
-		
-		System.out.println("nd: "+wall.width+" x "+wall.height);
-		
-		return wall;
-		
-	}
-
 	public Dimension getSize() {
 		return new Dimension((int)(ySize * aspect), ySize);
 	}
 
-	@Deprecated
-	private void checkForWallGfx() {
-		System.out.println("RENDERER CHECK:");
-		
-		char wc = currentView.getWallChars()[0];
-		
-		
-		boolean check = false;
-		while(!check) {
-			check = vm.isWallGfxReady( wc );
-			
-			if( !check ){
-				System.out.println("waiting for "+wc+"to come up with graphics");
-			}
-			else {
-				System.out.println("jayyyyyyy");
-			}
-		}
-		System.out.println("RENDERER CHECK FINISHED");
-	}
-	
-	@Deprecated
-	public void onTimerEvent() {
-
-//		tGen.setEnabled(true);
-//		tGen.setEnabled(false);
-		
-		for(char w : currentView.getWallChars() ) {
-			updateArtworksLayer(w);
-		}	
-	}
-	
-	public void setTimer() {
-		
-		System.out.println("SET TIMER CALLED");
-		
-//		tGen.setEnabled(true);
-//		tGen.setIntervalMs(400);
-//		tCount = 0;
-	}
-	
 	public char[] getCurrentWallChars() {
 		System.out.println(currentFileStub);
 		return currentFileStub.substring(currentFileStub.lastIndexOf('_')+1).toCharArray();

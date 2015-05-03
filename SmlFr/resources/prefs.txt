@@ -1,7 +1,7 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/Desktop/ffff/Milliardenfurzler/Milliardenfurzler.sfp",
-    "projectName": "Milliardenfurzler"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/Kräftemessen Kopie/Kräftemessen.sfp",
+    "projectName": "Kräftemessen"
   },
   "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/Milliardenfurzler",
   "museumData": "MuKuDeWe.sfm"

@@ -228,28 +228,6 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		if( renderer != null ) return renderer.isMenuOpen();
 		else return false;
 	}
-	
-	public synchronized boolean isWallGfxReady(char _wl) {
-
-		if( wallArrangementViews != null ) {
-			boolean retBool = false;
-			for(String s : wallArrangementViews.keySet()) {
-				if( s.equalsIgnoreCase(""+_wl) ) {
-
-					if ( wallArrangementViews.get(s) != null ) {
-						
-						retBool = wallArrangementViews.get(s).isWallGfxReady();
-						return retBool;
-					}
-					
-				}
-			} return false;
-			
-		}
-		else return false;
-		
-		
-	}
 
 	public synchronized PImage getWallGfx(Character _wc, int _shdwOfset) {
 		System.out.println("VM: getWallGfx:"+_wc);
@@ -461,42 +439,10 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		
 	}
 
-	
-	public void setRendererUpdate() {
-		rendererUpdate = true;
-	}
-	
-	@Deprecated
-	public void post() {
-		checkRendererUpdate();
-	}
-	
-	@Deprecated
-	public synchronized void checkRendererUpdate() {
-		
-		/*
-		 * 
-		 * 	eventuell hier nen kleinen check, ob alle schon ein bild gemalt haben? 
-		 * 
-		 * 
-		 *  hmmm?
-		 * 
-		 * 
-		 */
-		
-		if( rendererUpdate ) {
-			System.out.println("VM: rendererUpdate Detected\ntelling renderer to update");
-			renderer.updateArtworksLayer( ' ' );
-			renderer.setTimer();
-			rendererUpdate = false;
-		}
-	}
-
 	public void registerUpdateListener(UpdateListener _l) {
 		myRoomArrView.myRoom.registerUpdateListener(_l);
 	}
-	
-	
+		
 	public void unregisterUpdateListener(UpdateListener _l) {
 		myRoomArrView.myRoom.unregisterUpdateListener(_l);
 	}
