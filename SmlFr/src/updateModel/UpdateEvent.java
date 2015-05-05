@@ -1,6 +1,8 @@
 package updateModel;
 
+import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 public class UpdateEvent extends EventObject {
@@ -10,15 +12,18 @@ public class UpdateEvent extends EventObject {
 	 */
 	private static final long serialVersionUID = 8317759613305521733L;
 	
-	private String artworkName;
+
 	private UpdateType type;
-	private LinkedHashMap<String, Object> data;
+	private ArrayList<LinkedHashMap<String, Object>> data;
 	
-	public UpdateEvent(Object source, String artworkName, UpdateType type, LinkedHashMap<String, Object> _data) {
+	private int pointer;
+	
+	public UpdateEvent(Object source, UpdateType type, ArrayList<LinkedHashMap<String, Object>> _data) {
 		super(source);
-		this.artworkName = artworkName;
 		this.type = type;
 		this.data = _data;
+		
+		pointer = 0;
 	}
 	
 	public UpdateType getType() {
@@ -26,11 +31,31 @@ public class UpdateEvent extends EventObject {
 	}
 	
 	public String getName() {
-		return artworkName;
+		String name;
+		try {
+			name = (String) data.get(pointer).get("name");
+			return name;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public LinkedHashMap<String, Object> getData() {
-		return data;
+		LinkedHashMap<String, Object> returnData;
+		try {
+			returnData = data.get(pointer);
+		} catch (Exception e) {
+			return null;
+		}
+		return returnData;
+	}
+	
+	public boolean next() {
+		
+		pointer++;
+		
+		if(pointer >= data.size()) return false;
+		else return true;
 	}
 
 }

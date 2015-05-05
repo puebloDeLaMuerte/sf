@@ -37,28 +37,33 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	 * 
 	 */
 	private static final long serialVersionUID = -5625682259511650553L;
-	private SM_JSONCreator 	creator;
-	private ImageIcon		icon;
-	private JFileChooser	fc;
-
-	private File 			preferencesPath;
-	private File 			museumPath;
-	private File			projectPath;
-	private File			tempProjectPath;
-	private File			resourcesPath;
-
-	private JSONObject		preferences;
-	private JSONObject 		museum;
-	private JSONObject		project;
 	
-	private String			currentProjectName;
+	private SM_JSONCreator 					creator;
+	private ImageIcon						icon;
+	private JFileChooser					fc;
 
-	private SmlFr			base;
-	EventListenerList		updateListeners;
-	EventListenerList		updateListeners_ArrViews;
+	private File 							preferencesPath;
+	private File 							museumPath;
+	private File							projectPath;
+	private File							tempProjectPath;
+	private File							resourcesPath;
 
-	private boolean			loaded = false;
-	private boolean			savedirty = false;
+	private JSONObject						preferences;
+	private JSONObject 						museum;
+	private JSONObject						project;
+	
+	private String							currentProjectName;
+
+	private SmlFr							base;
+	EventListenerList						updateListeners;
+	EventListenerList						updateListeners_ArrViews;
+
+	private boolean							loaded = false;
+	private boolean							savedirty = false;
+	
+	private UpdateType									queueType;
+	private int											updatesQueued;
+	private ArrayList<LinkedHashMap<String, Object>>	dataQueue;
 	
 
 	public SM_FileManager(SmlFr _base, ImageIcon _icon) {
@@ -89,9 +94,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		museumPath = new File("resources/"+preferences.getString("museumData"));
 		museum = loadMuseumData();
 
-
-		//		System.out.println("\nTHE MUSEUM FROM FILE:\n\n"+museum.toString());
-		//		System.out.println("\nTHE PREFERENCES FROM FILE:\n\n"+preferences.toString());
+		// update Queue
+		
+		updatesQueued = 0;
+		dataQueue = new ArrayList<LinkedHashMap<String, Object>>();
 	}
 
 
@@ -886,13 +892,23 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		System.out.println("removed some, now its "+updateListeners.getListenerCount()+" Listeners");
 	}
 	
-	public synchronized void updateRequested(ArtworkUpdateRequestEvent e) {
+	public synchronized boolean updateRequested(ArtworkUpdateRequestEvent e) {
 		
-		UpdateEvent e2;
-		String eventAW       = e.getName();
+		if( queueType != null &&  e.getType() != queueType ) return false;
 		
-		SM_Artwork thisAw = base.getArtwork(this, (eventAW));
+		
+		queueType = e.getType();
+		
+		if( e.isMultiple() ) {
+			updatesQueued += e.getMultiple();
+		} else {
+			updatesQueued++;
+		}
+		
 		LinkedHashMap<String, Object> data;
+		String eventAW       = e.getName();
+		SM_Artwork thisAw = base.getArtwork(this, (eventAW));
+		
 		
 		switch (e.getType()) {
 		case POS_IN_WALL:
@@ -924,9 +940,13 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			}
 			String notifyWall = base.artworks.get(eventAW).getWall();
 			data = new LinkedHashMap<String, Object>();
+			
+			data.put("artwork", eventAW);
 			data.put("wall", notifyWall);
-
-			e2 = new UpdateEvent(this, eventAW, UpdateType.POS_IN_WALL, data);
+			
+			dataQueue.add(data);
+			
+//			e2 = new UpdateEvent(this, eventAW, UpdateType.POS_IN_WALL, data);
 			
 			setSaveDirty(true);
 			saveTempProject();
@@ -951,10 +971,13 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 			String wall = base.artworks.get(eventAW).getWall();
 			data = new LinkedHashMap<String, Object>();
+			
+			data.put("artwork", eventAW);
 			data.put("wall", wall);
 			
-			e2 = new UpdateEvent(this, eventAW, UpdateType.FRAME_STYLE, data);
-
+			dataQueue.add(data);
+			
+//			e2 = new UpdateEvent(this, eventAW, UpdateType.FRAME_STYLE, data);
 			
 			break;
 
@@ -964,28 +987,52 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 			String w = base.artworks.get(eventAW).getWall();
 			data = new LinkedHashMap<String, Object>();
+			data.put("artwork", eventAW);
 			data.put("wall", w);
 			
-			e2 = new UpdateEvent(this, eventAW, UpdateType.GENERAL_AW_DATA, data);
+			dataQueue.add(data);
+			
+//			e2 = new UpdateEvent(this, eventAW, UpdateType.GENERAL_AW_DATA, data);
 
 			break;
 			
 		default:
-			e2 = new UpdateEvent(this, eventAW, UpdateType.BLANK, null);
+			
+//			e2 = new UpdateEvent(this, eventAW, UpdateType.BLANK, null);
 			break;
 		}
 		
 		
-				
-		for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
-			lsnr.doUpdate(e2);
-
-		}
-		for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
-			lsnr.doUpdate(e2);
-
+		// fire update? or wait for queue?
+		
+		updatesQueued--;
+		
+		if( updatesQueued == 0 ){
+			
+			UpdateEvent e2;
+			
+			if( dataQueue.size() == 0 ) {  // fire blank
+				e2 = new UpdateEvent(this, UpdateType.BLANK, null);
+			}
+			
+			e2 = new UpdateEvent(this, queueType, dataQueue);
+	
+					
+			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+				lsnr.doUpdate(e2);
+	
+			}
+			for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+				lsnr.doUpdate(e2);
+	
+			}
+			
+			queueType = null;
+			dataQueue = new ArrayList<LinkedHashMap<String, Object>>();
 		}
 		
+		
+		return true;
 	}
 	
 	@Override
@@ -1054,10 +1101,15 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		
 		LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
+		data.put("name", e.getName());
 		data.put("wall_1", targetWall);
 		data.put("wall_2", originWall);
 		
-		UpdateEvent e2 = new UpdateEvent(this, e.getName(), UpdateType.WALL, data);
+		ArrayList<LinkedHashMap<String, Object>> dataList = new ArrayList<LinkedHashMap<String,Object>>(1);
+		dataList.add(data);
+		
+		UpdateEvent e2 = new UpdateEvent(this, UpdateType.WALL, dataList);
+		
 		System.out.println(e2);
 		for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 			lsnr.doUpdate(e2);
@@ -1105,7 +1157,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 			System.out.println("FM: isOriginalColorRequested");
 			
-			UpdateEvent o = new UpdateEvent(this, null, UpdateType.ORIGINAL_COLOR, null);
+			UpdateEvent o = new UpdateEvent(this, UpdateType.ORIGINAL_COLOR, null);
 			
 			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 				lsnr.doUpdate(o);
@@ -1146,7 +1198,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
 				data.put("roomName", e.getRoomName());
 				
-				UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.ROOM_COLOR, data);
+				ArrayList<LinkedHashMap<String, Object>> dataList = new ArrayList<LinkedHashMap<String,Object>>(1);
+				dataList.add(data);
+				
+				UpdateEvent e2 = new UpdateEvent(this, UpdateType.ROOM_COLOR, dataList);
 				
 				for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 					lsnr.doUpdate(e2);
@@ -1164,7 +1219,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				data.put("roomName", e.getRoomName());
 				data.put("color", e.getColor());
 				
-				UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.ROOM_COLOR_PREVIEW, data);
+				ArrayList<LinkedHashMap<String, Object>> dataList = new ArrayList<LinkedHashMap<String,Object>>(1);
+				dataList.add(data);
+				
+				UpdateEvent e2 = new UpdateEvent(this, UpdateType.ROOM_COLOR_PREVIEW, dataList);
 				
 				for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 					lsnr.doUpdate(e2);
@@ -1208,7 +1266,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				setSaveDirty(true);
 				saveTempProject();
 				
-				UpdateEvent o = new UpdateEvent(this, null, UpdateType.ORIGINAL_COLOR, null);
+				UpdateEvent o = new UpdateEvent(this, UpdateType.ORIGINAL_COLOR, null);
 
 				for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 					lsnr.doUpdate(o);
@@ -1256,7 +1314,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 					data.put("wallChar", e.getWallCharacter());
 					data.put("color", e.getColor());
 					
-					UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.WALL_COLOR, data);
+					ArrayList<LinkedHashMap<String, Object>> dataList = new ArrayList<LinkedHashMap<String,Object>>(1);
+					dataList.add(data);
+					
+					UpdateEvent e2 = new UpdateEvent(this, UpdateType.WALL_COLOR, dataList);
 					
 					for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 						lsnr.doUpdate(e2);
@@ -1278,7 +1339,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 					data.put("wallChar", e.getWallCharacter());
 					data.put("color", e.getColor());
 					
-					UpdateEvent e2 = new UpdateEvent(this, null, UpdateType.WALL_COLOR_PREVIEW, data);
+					ArrayList<LinkedHashMap<String, Object>> dataList = new ArrayList<LinkedHashMap<String,Object>>(1);
+					dataList.add(data);
+					
+					UpdateEvent e2 = new UpdateEvent(this, UpdateType.WALL_COLOR_PREVIEW, dataList);
 					
 					for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 						lsnr.doUpdate(e2);

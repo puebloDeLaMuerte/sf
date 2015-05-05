@@ -260,8 +260,8 @@ public class SM_Renderer extends PApplet{
 	/**
 	 * 
 	 * 
-	 * @param _previewColor if null the previous roomColor will be used
-	 * @param _previewWall if null no WallColorPreview will be drawn
+	 * @param _previewColor if null no roomColor<b>Preview</b> will be drawn
+	 * @param _previewWall if null no WallColor<b>Preview</b> will be drawn
 	 * @param _previewWallColor
 	 */
 	public void updateRoomColorLayer( Integer _previewColor, Character _previewWall, Integer _previewWallColor ) {

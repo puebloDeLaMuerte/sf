@@ -123,7 +123,7 @@ public class SM_Wall implements UpdateListener {
 		else return null;
 	}
 	
-	public SM_Artwork[] hasArtworks() {
+	public SM_Artwork[] getArtworksArray() {
 		
 		SM_Artwork[] aws = new SM_Artwork[myArtworks.keySet().size()];
 		int i=0;

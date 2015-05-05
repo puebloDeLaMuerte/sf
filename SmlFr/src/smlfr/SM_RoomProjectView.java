@@ -251,14 +251,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //			line( wl.getNavPos()[0] * width, wl.getNavPos()[1] * height, wl.getNavPos()[2] * width, wl.getNavPos()[3] * height );
 			
 			
-			if( wl.hasArtworks().length > 0 ) {
+			if( wl.getArtworksArray().length > 0 ) {
 
 				//PShape s = wallsActiveGfx.get(wl.getWallChar());
 
 				pushStyle();
 				rectMode(CORNERS);
 				noStroke();
-				for(SM_Artwork aw : wl.hasArtworks()) {
+				for(SM_Artwork aw : wl.getArtworksArray()) {
 					
 					
 					

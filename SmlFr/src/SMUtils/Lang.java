@@ -85,6 +85,7 @@ public class Lang {
 	public static enum 		/* REFACTOR THIS FOR CHANGES!!!*/ sortOptions { Künstler, Titel, InvNr, Größe }; // REFACTOR!!!!!
 	public static String	ok 							= "Ok";
 	public static String	cancel 						= "Abrechen";
+	public static String	apply						= "Anwenden";
 	public static String	sortLibBy 					= "sortieren nach:";
 	public static String	importBtn 					= "Importieren";
 	public static String	deleteBtn 					= "Löschen";
@@ -127,6 +128,18 @@ public class Lang {
 	public static String	errPptHeightSmallerArtwork 			= "\n- Die Höhe des Passepartout darf die des Kunstwerks nicht unterschreiten";
 	public static String	errFrameWidthSmallerPpt				= "\n- Die Breite des Rahmens darf die des Passepartout nicht unterschreiten";
 	public static String	errFrameHeightSmallerPpt			= "\n- Die Höhe des Rahmens darf die des Passepartout nicht unterschreiten";
+
+	public static String	allign								= "Ausrichten";
+	public static String	allignMidHor						= "mittig Horizontal";
+	public static String	allignMidVert						= "mittig Vertikal";
+	public static String	allignTop							= "an Oberkante";
+	public static String	allignBottom						= "an Unterkante";
+	public static String	allignLeft							= "linksbündig";
+	public static String	allignRight							= "rechtsbündig";
+	public static String	distance							= "Abstände verteilen...";
+	public static String	distanceSelection					= "gleichmäßig";
+	public static String	distanceFixed						= "fester Wert";
+	public static String	distTxt								= "Abstand in mm";
 	
 	// Import
 	

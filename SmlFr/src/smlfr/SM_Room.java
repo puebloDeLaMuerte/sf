@@ -421,7 +421,7 @@ public class SM_Room {
 			
 			SM_Wall wl 					= myWalls.get(_forWalls[i]);
 			
-			SM_Artwork[] aws 			= wl.hasArtworks();
+			SM_Artwork[] aws 			= wl.getArtworksArray();
 			SM_ExportArtwork[] exaws	= new SM_ExportArtwork[aws.length];
 			
 			for( int ii =0; ii< aws.length; ii++) {		

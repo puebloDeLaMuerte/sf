@@ -10,6 +10,7 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import javax.swing.Box;
@@ -19,6 +20,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
+import SMUtils.AllignmentTypes;
+import SMUtils.DistanceChooser;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
@@ -40,36 +43,39 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	 */
 	private static final long serialVersionUID = -8724642767602580803L;
 
-	private SM_Wall			myWall; 
-	private SM_ViewManager  vm;
-	private Dimension		mySize;
-	private PGraphics		wlGfx;
+	private SM_Wall					myWall; 
+	private SM_ViewManager  		vm;
+	private Dimension				mySize;
+	private PGraphics				wlGfx;
+	
+	private boolean					ready = false;
 
-	private boolean			ready = false;
-
-	private float			scale;
-	private float 			xOffsetPx, yOffsetPx;
-	private int				myMidHeight;
+	private float					scale;
+	private float 					xOffsetPx, yOffsetPx;
+	private int						myMidHeight;
 	
-	private SM_Artwork		awOver, menuAW;
-	private boolean 		awDrag = false;
-	private boolean			horizontalLoc = false;
-	private PVector			awDragOfset;
-	private PVector			awDragStart;
+	private SM_Artwork				awOver, menuAW;
+//	private ArrayList<SM_Artwork> 	selectedAws;
+	private boolean 				awDrag = false;
+	private boolean					horizontalLoc = false;
+	private PVector					awDragOfset;
+	private PVector					awDragStart;
 	
-	private JPopupMenu		pMenu;
-	private JMenuItem		putBack, snapToMidHeight, close;
-	private JMenuItem[]		frameStyles;
-	private JMenu			editArtwork;
-	private JMenuItem		editMeasurements;
+	private JPopupMenu				pMenu;
+	private JMenuItem				putBack, snapToMidHeight, close;
+	private JMenuItem				allignMidHoriz, allignMidVert, allignTop, allignBottom, allignLeft, allignRight;
+	private JMenuItem				distEqual, distValue;
+	private JMenuItem[]				frameStyles;
+	private JMenu					editArtwork, allign, distance;
+	private JMenuItem				editMeasurements;
 	
-	private DropTarget		dt;
+	private DropTarget				dt;
 	
-	private boolean			artworkUpdatePending = true;
-	private boolean			firstTime = true;
-	
-	int 					shadowAmount = 8;
-	int 					shadowOfsetAmount = 5;
+	private boolean					artworkUpdatePending = true;
+	private boolean					firstTime = true;
+		
+	int 							shadowAmount = 8;
+	int 							shadowOfsetAmount = 5;
 	
 	int count = 0;
 	
@@ -133,6 +139,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		putBack.addActionListener(this);
 		putBack.setEnabled(false);
 		
+		snapToMidHeight = new JMenuItem(Lang.snapToMidHeight);
+		snapToMidHeight.addActionListener(this);
+		snapToMidHeight.setEnabled(false);
+		
 		editArtwork = new JMenu(Lang.editArtwork);
 		editArtwork.setEnabled(true);
 
@@ -162,9 +172,44 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			i++;
 		}
 		
-		snapToMidHeight = new JMenuItem(Lang.snapToMidHeight);
-		snapToMidHeight.addActionListener(this);
-		snapToMidHeight.setEnabled(false);
+		allign = new JMenu(Lang.allign);
+
+		allignMidHoriz = new JMenuItem(Lang.allignMidHor);
+		allignMidHoriz.addActionListener(this);
+		
+		allignMidVert = new JMenuItem(Lang.allignMidVert);
+		allignMidVert.addActionListener(this);
+		
+		allignTop = new JMenuItem(Lang.allignTop);
+		allignTop.addActionListener(this);
+		
+		allignBottom = new JMenuItem(Lang.allignBottom);
+		allignBottom.addActionListener(this);
+		
+		allignLeft = new JMenuItem(Lang.allignLeft);
+		allignLeft.addActionListener(this);
+		
+		allignRight = new JMenuItem(Lang.allignRight);
+		allignRight.addActionListener(this);
+		
+		allign.add(allignMidHoriz);
+		allign.add(allignMidVert);
+		allign.add(allignTop);
+		allign.add(allignBottom);
+		allign.add(allignLeft);
+		allign.add(allignRight);
+		
+		distance = new JMenu(Lang.distance);
+		
+		distEqual = new JMenuItem(Lang.distanceSelection);
+		distEqual.addActionListener(this);
+		
+		distValue = new JMenuItem(Lang.distanceFixed);
+		distValue.addActionListener(this);
+		
+		distance.add(distEqual);
+		distance.add(distValue);
+
 		
 		close = new JMenuItem(Lang.closeWall);
 		close.addActionListener(this);
@@ -174,12 +219,23 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		pMenu.add(putBack);
 		pMenu.add(editArtwork);
 		pMenu.add(new JSeparator());
+		pMenu.add(allign);
+		pMenu.add(distance);
+		pMenu.add(new JSeparator());
 		pMenu.add(close);
 		
 	}
 	
 	public Dimension getSize() {
 		return mySize;
+	}
+		
+	public String getWallName() {
+		return myWall.getWallName();
+	}
+
+	public SM_Wall getWall() {
+		return myWall;
 	}
 	
 	
@@ -256,8 +312,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		// DRAW selected
 		
-		if(myWall.hasArtworks().length > 0 ) {
-			for( SM_Artwork a : myWall.hasArtworks() ) {
+		if(myWall.getArtworksArray().length > 0 ) {
+			for( SM_Artwork a : myWall.getArtworksArray() ) {
 				
 				if(a != null && a.isSelected()) {
 				
@@ -308,11 +364,11 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		// DRAW Schatten
 		
 		if( _mode == 1 ) {
-			if(myWall.hasArtworks().length > 0 ) {
+			if(myWall.getArtworksArray().length > 0 ) {
 
 				if(!awDrag) awOver = null;
 
-				for( SM_Artwork a : myWall.hasArtworks() ) {
+				for( SM_Artwork a : myWall.getArtworksArray() ) {
 
 					if( a.hasShadow() ) {	
 						int[] tmpPos = a.getTotalWallPos();
@@ -331,11 +387,11 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 		
 //		gfx.background(50,90,10,100);
-		if(myWall.hasArtworks().length > 0 ) {
+		if(myWall.getArtworksArray().length > 0 ) {
 			
 			if(!awDrag) awOver = null;
 			
-			for( SM_Artwork a : myWall.hasArtworks() ) {
+			for( SM_Artwork a : myWall.getArtworksArray() ) {
 
 				
 				int[] tmpPos = a.getTotalWallPos();
@@ -447,6 +503,18 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		return new PVector(_inpos.x, myWall.getHeight()-_inpos.y);
 	}
 
+	public void loadMissingAWGraphics() {
+		
+		for( String a : myWall.getArtworks().keySet() ) {
+			SM_Artwork aw = myWall.getArtworks().get(a);
+			if( ! aw.hasGfx() ) {
+				aw.setGfx( loadImage(aw.getFilePath().getAbsolutePath())  );
+			}
+		}
+		
+	}
+	
+	
 	private boolean checkMouseOver(SM_Artwork a) {
 		
 		PVector pos = wptos( new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]), scale );
@@ -462,57 +530,22 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		else return false;
 	}
 	
-	private void deselectAll() {
+	private SM_Artwork[] getSelectedArtworks() {
 		
-		for( SM_Artwork a : myWall.hasArtworks() ) a.setSelected(false);
-	}
-	
-	public void loadMissingAWGraphics() {
+		ArrayList<SM_Artwork> selectedList = new ArrayList<SM_Artwork>();
 		
-		for( String a : myWall.getArtworks().keySet() ) {
-			SM_Artwork aw = myWall.getArtworks().get(a);
-			if( ! aw.hasGfx() ) {
-				aw.setGfx( loadImage(aw.getFilePath().getAbsolutePath())  );
-			}
+		for( SM_Artwork aw : myWall.getArtworksArray() ) {
+			if( aw.isSelected() ) selectedList.add(aw);
 		}
 		
+		return selectedList.toArray(new SM_Artwork[selectedList.size()]);
 	}
 	
-	
-	public void dispose() {
+	private void deselectAll() {
 		
-		
-		vm.unregisterUpdateListener(this);
-		
-//		frame.setVisible(false);
-		super.dispose();
-//		if( frame == null ) System.out.println("frame is null, again... ");
-//		
-//		frame.dispose();
-//		frame.setVisible(false);
-		frame = null;
-	}
-	
-	public boolean isSleeping(){
-		if(frame.isVisible() ) return false;
-		else return true;
-	}
-	
-	public String getWallName() {
-		return myWall.getWallName();
+		for( SM_Artwork a : myWall.getArtworksArray() ) a.setSelected(false);
 	}
 
-	public SM_Wall getWall() {
-		return myWall;
-	}
-	
-	@Override
- 	public void doUpdate(UpdateEvent e) {
-		artworkUpdatePending = true;
-		awOver = null;
-	}
-
-	
 	public void mousePressed() {
 		if( awOver != null ) {
 			awDrag = true;
@@ -537,15 +570,14 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 					npos.add(awDragOfset);
 					PVector nPos = ptowp(npos, scale);
-					e = new ArtworkUpdateRequestEvent(this, awOver.getName(),
-							(int) nPos.x, awOver.getTotalWallPos()[1]);
+					e = new ArtworkUpdateRequestEvent(this, false, -1, awOver.getName(), (int) nPos.x, awOver.getTotalWallPos()[1]);
 
 				} else {
 					npos = new PVector(mouseX, mouseY);
 
 					npos.add(awDragOfset);
 					PVector nPos = ptowp(npos, scale);
-					e = new ArtworkUpdateRequestEvent(this, awOver.getName(),
+					e = new ArtworkUpdateRequestEvent(this, false, -1, awOver.getName(),
 							(int) nPos.x, (int) nPos.y);
 				}
 				myWall.myRoom.fireUpdateRequest(e);
@@ -556,11 +588,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	public void mouseClicked() {
 		
 		if( awOver != null && mouseButton != RIGHT) {			
+
 			awOver.toggleSelected();
-			
-//			System.out.println("aw pos in wall: " +awOver.getPosInWall()[0] +" x "+awOver.getPosInWall()[1] );
-//			System.out.println("mousepos  wall: "+  ptowp(mouseX, mouseY).x+" x "+ ptowp(mouseX, mouseY).y  );
-//			System.out.println("mousepos  scrn: "+mouseX+" x "+mouseY);
+
 		} else if(mouseButton != RIGHT){
 			deselectAll();
 		}
@@ -576,6 +606,15 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				putBack.setEnabled(false);
 				editArtwork.setEnabled(false);
 				snapToMidHeight.setEnabled(false);
+			}
+			
+			if( getSelectedArtworks().length > 1 ) {
+				allign.setEnabled(true);
+				distance.setEnabled(true);
+				snapToMidHeight.setEnabled(true);
+			} else {
+				allign.setEnabled(false);
+				distance.setEnabled(false);
 			}
 			
 			
@@ -599,6 +638,11 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 
+	@Override
+ 	public void doUpdate(UpdateEvent e) {
+		artworkUpdatePending = true;
+		awOver = null;
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -608,19 +652,25 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		if(action.equalsIgnoreCase(Lang.closeWall)) {
 //			this.frame.setVisible(false);
 			vm.sleepWallArr(""+myWall.getWallChar());
-		} else
+		}
+		
+		else
+		
 		if(action.equalsIgnoreCase(Lang.snapToMidHeight)) {
-			if( awOver != null ) {
-				ArtworkUpdateRequestEvent rq = new ArtworkUpdateRequestEvent(this, awOver.getName(), awOver.getTotalWallPos()[0], (myMidHeight)+(awOver.getTotalHeight()/2)  );
-				myWall.myRoom.fireUpdateRequest(rq);
-			}
-		} else 
+				
+			snapToMidHeight();
+		}
+		
+		else 
+		
 		if( action.equalsIgnoreCase(Lang.RemoveArtwork) && awOver != null) {
 			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, awOver.getName(), ' ', "Library", myWall.myRoom.getName(), awOver.getWallChar());
 			awOver = null;
 			myWall.myRoom.fireUpdateRequest(r);
 		}
+		
 		else
+			
 		if( action.equalsIgnoreCase(Lang.editMeasurements) ) {
 			
 			SMUtils.ArtworkMeasurementChooser chooser = new SMUtils.ArtworkMeasurementChooser(this, menuAW );
@@ -628,6 +678,17 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			
 
 		}
+		
+		else if( e.getSource() == allignMidHoriz) allignArtworks( getSelectedArtworks(), AllignmentTypes.MID_HORIZONTAL);
+		else if( e.getSource() == allignMidVert	) allignArtworks( getSelectedArtworks(), AllignmentTypes.MID_VERTICAL);
+		else if( e.getSource() == allignTop		) allignArtworks( getSelectedArtworks(), AllignmentTypes.TOP);
+		else if( e.getSource() == allignBottom	) allignArtworks( getSelectedArtworks(), AllignmentTypes.BOTTOM);
+		else if( e.getSource() == allignLeft	) allignArtworks( getSelectedArtworks(), AllignmentTypes.LEFT);
+		else if( e.getSource() == allignRight	) allignArtworks( getSelectedArtworks(), AllignmentTypes.RIGHT);
+		
+		else if( e.getSource() == distEqual	) distanceEqual( getSelectedArtworks() ); 
+		else if( e.getSource() == distValue ) distanceValue( getSelectedArtworks() );
+		
 	
 		// if it's none of the above it must have been a frameStyle selected. Let's find out which one!
 		else {
@@ -637,7 +698,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 					
 					FrameStyle style = FrameStyle.valueOf(item.getText());
 					
-					ArtworkUpdateRequestEvent request = new ArtworkUpdateRequestEvent(this, menuAW.getName(), style);
+					ArtworkUpdateRequestEvent request = new ArtworkUpdateRequestEvent(this, false, -1,  menuAW.getName(), style);
 					System.out.println(menuAW.getName());
 					
 					myWall.myRoom.fireUpdateRequest(request);
@@ -648,8 +709,331 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 	
+	private void allignArtworks( SM_Artwork[] aws, AllignmentTypes type) {
+		
+		
+		switch (type) {
+		
+		case MID_HORIZONTAL:
+			
+			
+			int averageMid = 0;
+			for(SM_Artwork a : aws ) {
+				
+				averageMid += a.getArtworkWallPos()[1] - ( a.getArtworkSize()[1] / 2 );
+			}
+			averageMid /= aws.length;			
+			
+			boolean first = true;
+			for( SM_Artwork a : aws ) {
+				
+				int offsetY =  a.getArtworkWallPos()[1] - ( a.getArtworkSize()[1] / 2 ) - averageMid;
+				
+				int newY = a.getTotalWallPos()[1] - offsetY;
+				int newX = a.getTotalWallPos()[0];
+				
+				ArtworkUpdateRequestEvent r;
+				if(first) {
+					r = new ArtworkUpdateRequestEvent(this, true, aws.length, a.getName(), newX, newY);
+				} else {
+					r = new ArtworkUpdateRequestEvent(this, true, 0, a.getName(), newX, newY);
+				}
+				first = false;
+				
+				myWall.myRoom.fireUpdateRequest(r);
+			}
+			break;
+
+		case MID_VERTICAL:
+			
+			averageMid = 0;
+			for(SM_Artwork a : aws ) {
+				
+				averageMid += a.getArtworkWallPos()[0] + ( a.getArtworkSize()[0] / 2 );
+			}
+			averageMid /= aws.length;			
+			
+			first = true;
+			for( SM_Artwork a : aws ) {
+				
+				int offsetX =  a.getArtworkWallPos()[0] + ( a.getArtworkSize()[0] / 2 ) - averageMid;
+				
+				int newY = a.getTotalWallPos()[1];
+				int newX = a.getTotalWallPos()[0] - offsetX;
+				
+				ArtworkUpdateRequestEvent r;
+				if(first) {
+					r = new ArtworkUpdateRequestEvent(this, true, aws.length, a.getName(), newX, newY);
+				} else {
+					r = new ArtworkUpdateRequestEvent(this, true, 0, a.getName(), newX, newY);
+				}
+				first = false;
+				
+				myWall.myRoom.fireUpdateRequest(r);
+			}
+			break;
+			
+		case TOP:
+			
+			// finde die oberkante
+		
+			int topYpos = aws[0].getTotalWallPos()[1];
+			for( SM_Artwork a: aws) {
+				if( a.getTotalWallPos()[1] > topYpos) topYpos = a.getTotalWallPos()[1];
+			}
+			
+			// wieviele multiple updates werden es sein?
+			
+			int multipleCount = 0;
+			for( SM_Artwork a : aws ) {	
+				if( a.getTotalWallPos()[1] < topYpos ) {
+					multipleCount++;
+				}
+			}
+			
+			// feuer
+			
+			first = true;
+			for( SM_Artwork a : aws ) {
+				if( a.getTotalWallPos()[1] < topYpos ) {
+					
+					ArtworkUpdateRequestEvent r;
+					if(first) {
+						r = new ArtworkUpdateRequestEvent(this, true, multipleCount, a.getName(), a.getTotalWallPos()[0], topYpos);
+					} else {
+						r = new ArtworkUpdateRequestEvent(this, true, 0, a.getName(), a.getTotalWallPos()[0], topYpos);
+					}
+					first = false;
+					
+					myWall.myRoom.fireUpdateRequest(r);
+				}
+			}
+			
+			break;
+			
+		case BOTTOM:
+			
+			// finde tiefstes
+			
+			int lowest = aws[0].getTotalWallPos()[1] - aws[0].getTotalHeight();
+			
+			for( SM_Artwork a: aws) {
+				
+				int thisLower = (a.getTotalWallPos()[1] - a.getTotalHeight());
+				
+				if( thisLower  < lowest) lowest = thisLower;
+			}
+			
+			// wieviele Updates werden kommen?
+			
+			multipleCount = 0;
+			for( SM_Artwork a : aws ) {
+
+				int thisLower = (a.getTotalWallPos()[1] - a.getTotalHeight());
+				if(  thisLower > lowest ) {
+					multipleCount++;
+				}
+			}
+			
+			// feuer!
+			
+			first = true;
+			for( SM_Artwork a : aws ) {
+				
+				int thisLower = (a.getTotalWallPos()[1] - a.getTotalHeight());
+				
+				if(  thisLower > lowest ) {
+					
+					ArtworkUpdateRequestEvent r;
+					
+					if(first) {
+						r = new ArtworkUpdateRequestEvent(this, true, multipleCount, a.getName(), a.getTotalWallPos()[0], lowest + a.getTotalHeight());
+					} else {
+						r = new ArtworkUpdateRequestEvent(this, true, 0, a.getName(), a.getTotalWallPos()[0], lowest + a.getTotalHeight());
+					}
+					first = false;
+					myWall.myRoom.fireUpdateRequest(r);
+				}
+			}
+			break;
+			
+		case LEFT:
+			
+			int leftmost = aws[0].getTotalWallPos()[0];
+			
+			for( SM_Artwork a : aws) {
+				if( a.getTotalWallPos()[0] < leftmost ) leftmost = a.getTotalWallPos()[0]; 
+			}
+			
+			first = true;
+			for( SM_Artwork a : aws ) {
+				
+					
+				ArtworkUpdateRequestEvent r;
+				if(first) {
+					r = new ArtworkUpdateRequestEvent(this, true, aws.length, a.getName(), leftmost, a.getTotalWallPos()[1] );
+				} else {
+					r = new ArtworkUpdateRequestEvent(this, true, 0, a.getName(), leftmost, a.getTotalWallPos()[1] );
+				}
+				myWall.myRoom.fireUpdateRequest(r);
+				first = false;
+			}
+			break;
+			
+		case RIGHT:
+			
+			int rightmost = aws[0].getTotalWallPos()[0] + aws[0].getTotalWidth();
+			
+			for (SM_Artwork a : aws) {
+				if( a.getTotalWallPos()[0] + a.getTotalWidth() > rightmost ) rightmost = a.getTotalWallPos()[0] + a.getTotalWidth(); 
+			}
+			
+			first = true;
+			for (SM_Artwork a : aws) {
+					
+				int count = 0;
+					if(first) count = aws.length;
+					first = false;
+					ArtworkUpdateRequestEvent r = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), rightmost - a.getTotalWidth(), a.getTotalWallPos()[1] );
+					myWall.myRoom.fireUpdateRequest(r);
+				
+			}
+			
+			break;
+			
+		default:
+			break;
+		}	
+	}
+	
+	private void distanceEqual( SM_Artwork[] aws ) {
+		if( aws.length <= 2 ) return;
+		
+		// sort artworks left to right
+		
+		boolean sorted = true;
+		while(sorted) {
+			sorted = false;
+			for (int i = 0; i < aws.length-1; i++) {
+				if( aws[i].getTotalWallPos()[0] > aws[i+1].getTotalWallPos()[0] ) {
+					SM_Artwork a = aws[i];
+					aws[i] = aws[i+1];
+					aws[i+1] = a;
+					sorted = true;
+				}
+			}
+		}
+
+		SM_Artwork leftmost = aws[0];
+		SM_Artwork rightmost = aws[aws.length-1];
+
+		
+		// calculate gap
+		
+		int totalSpace = rightmost.getTotalWallPos()[0] + rightmost.getTotalWidth() - leftmost.getTotalWallPos()[0];
+		int awSpace = 0;
+		for (SM_Artwork a : aws) {
+			awSpace += a.getTotalWidth();
+		}
+		int totalFreeSpace = totalSpace - awSpace;
+		int gap = totalFreeSpace / (aws.length - 1);
+		
+		// do the magic
+		
+		for (int i = 1; i < aws.length-1; i++) {
+			SM_Artwork a = aws[i];
+			
+			int newX = aws[i-1].getTotalWallPos()[0] + aws[i-1].getTotalWidth() + gap;
+			
+			int count = 0;
+			if(i==1) count = aws.length-2;
+			
+			ArtworkUpdateRequestEvent r = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), newX, a.getTotalWallPos()[1]);
+			myWall.myRoom.fireUpdateRequest(r);	
+		}
+		
+	}
+	
+	private void distanceValue( SM_Artwork[] aws ) {
+		
+		LinkedHashMap<String, int[]> pos = new LinkedHashMap<String, int[]>(aws.length);
+		
+		boolean sorted = true;
+		while(sorted) {
+			sorted = false;
+			for (int i = 0; i < aws.length-1; i++) {
+				if( aws[i].getTotalWallPos()[0] > aws[i+1].getTotalWallPos()[0] ) {
+					SM_Artwork a = aws[i];
+					aws[i] = aws[i+1];
+					aws[i+1] = a;
+					sorted = true;
+				}
+			}
+		}
+		
+		for (SM_Artwork a : aws) {
+			pos.put(a.getName(), a.getTotalWallPos());
+		}
+		
+		DistanceChooser d = new DistanceChooser(this, pos, aws);
+	}
+	
+	public void distanceCallback(int dist, SM_Artwork[] aws) {
+		
+		for (int i = 1; i < aws.length; i++) {
+			SM_Artwork a = aws[i];
+			
+			int newX = aws[i-1].getTotalWallPos()[0] + aws[i-1].getTotalWidth() + dist;
+			
+			int count = 0;
+			if(i==1) count = aws.length-1;
+			
+			ArtworkUpdateRequestEvent r = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), newX, a.getTotalWallPos()[1]);
+			myWall.myRoom.fireUpdateRequest(r);	
+		}
+		
+	}
+	
+	public void distanceCancelCallback(SM_Artwork[] aws, LinkedHashMap<String, int[]> oPos) {
+		
+		boolean first = true;
+		for (SM_Artwork a : aws) {
+			
+			int[] p = oPos.get(a.getName());
+			
+			int count = 0;
+			if(first) count = aws.length;
+			first = false;
+			ArtworkUpdateRequestEvent r = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), p[0], p[1]);
+			myWall.myRoom.fireUpdateRequest(r);	
+		}
+		
+	}
+	
+	private void snapToMidHeight() {
+		
+		SM_Artwork[] aws;
+		
+		if (awOver != null) {
+			aws = new SM_Artwork[1];
+			aws[0] = awOver;
+		} else {
+			aws = getSelectedArtworks();
+		}
+		
+		boolean first = true;
+		for (SM_Artwork a : aws) {
+			
+			int count = 0;
+			if(first) count = aws.length;
+			first = false;
+			ArtworkUpdateRequestEvent rq = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), a.getTotalWallPos()[0], (myMidHeight)+(a.getTotalHeight()/2)  );
+			myWall.myRoom.fireUpdateRequest(rq);
+		}
+	}
+	
 	public void artworkMeasurementCallback(LinkedHashMap<String, Object> data) {
-		ArtworkUpdateRequestEvent e = new ArtworkUpdateRequestEvent(this, data);
+		ArtworkUpdateRequestEvent e = new ArtworkUpdateRequestEvent(this, false, -1, data);
 		myWall.myRoom.fireUpdateRequest(e);
 	}
 
@@ -724,4 +1108,25 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		// TODO Auto-generated method stub
 		
 	}
+
+
+	public boolean isSleeping(){
+		if(frame.isVisible() ) return false;
+		else return true;
+	}
+	
+	public void dispose() {
+		
+		
+		vm.unregisterUpdateListener(this);
+		
+//		frame.setVisible(false);
+		super.dispose();
+//		if( frame == null ) System.out.println("frame is null, again... ");
+//		
+//		frame.dispose();
+//		frame.setVisible(false);
+		frame = null;
+	}
+
 }
