@@ -31,7 +31,7 @@ public class DistanceChooser extends JFrame implements ActionListener, ChangeLis
 	private SM_Artwork[] 					aws;
 	private SM_WallArrangementView			parent;
 	
-	public DistanceChooser( SM_WallArrangementView parent, LinkedHashMap<String, int[]> originalPos, SM_Artwork[] aws) {
+	public DistanceChooser( SM_WallArrangementView parent, LinkedHashMap<String, int[]> originalPos, SM_Artwork[] aws, int gap) {
 		
 		// Data
 		
@@ -41,7 +41,9 @@ public class DistanceChooser extends JFrame implements ActionListener, ChangeLis
 		
 		// Layout
 		
-		SpinnerModel model = new SpinnerNumberModel(200, 0, 10000, 15); 
+		System.out.println(gap);
+		
+		SpinnerModel model = new SpinnerNumberModel(gap, 0, 100000, 15); 
 		
 		
 		spinner 		= new JSpinner(model);

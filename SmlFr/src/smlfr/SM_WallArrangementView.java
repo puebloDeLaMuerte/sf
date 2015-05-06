@@ -57,9 +57,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	private SM_Artwork				awOver, menuAW;
 //	private ArrayList<SM_Artwork> 	selectedAws;
 	private boolean 				awDrag = false;
-	private boolean					horizontalLoc = false;
+	private boolean					selectionDrag = false;
+	private boolean					shiftLoc = false;
 	private PVector					awDragOfset;
-	private PVector					awDragStart;
+	private PVector					dragStart;
 	
 	private JPopupMenu				pMenu;
 	private JMenuItem				putBack, snapToMidHeight, close;
@@ -280,7 +281,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		// DRAW mouseOver
 		
-		if( awOver != null) {
+		
+		if( awOver != null && !isValidDrag() && !selectionDrag ) {
+			
 			PVector totalPos = wptos( new PVector(awOver.getTotalWallPos()[0], awOver.getTotalWallPos()[1]), scale );
 			PVector totalSize = astos( new PVector(awOver.getTotalWidth(), awOver.getTotalHeight()), scale);
 			
@@ -289,25 +292,48 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			noStroke();
 			rect( totalPos.x , totalPos.y, totalSize.x, totalSize.y );
 			popStyle();
-			
 		}
 		
-		// DRAW drag
 		
-		if( awOver != null && awDrag ) {
-			PVector wh = astos( new PVector(awOver.getTotalWidth(), awOver.getTotalHeight()), scale);
+		// DRAW Artwork drag
+		
+		if( awOver != null && isValidDrag() ) {
 			
-			float y;
-			if( horizontalLoc ) {
-				y = wptos(0,awOver.getTotalWallPos()[1], scale).y;
+			SM_Artwork[] dragAws;
+			if( !awOver.isSelected() ) {
+				dragAws = new SM_Artwork[1];
+				dragAws[0] = awOver;
 			} else {
-				y = mouseY+awDragOfset.y;
+				dragAws = getSelectedArtworks();
 			}
 			
-			pushStyle();
-			noFill();
-			rect(mouseX+awDragOfset.x, y, wh.x, wh.y);
-			popStyle();
+			PVector referencePos = wptos(awOver.getTotalWallPos()[0], awOver.getTotalWallPos()[1], scale);
+			
+			for(SM_Artwork a : dragAws) {
+				
+				PVector thisPos	= wptos(a.getTotalWallPos()[0], a.getTotalWallPos()[1], scale);
+				
+				thisPos.sub(referencePos);
+			
+				PVector wh = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), scale);
+				
+				float y;
+				if( shiftLoc ) {
+					y = wptos(0,a.getTotalWallPos()[1], scale).y - thisPos.y;
+				} else {
+					y = mouseY+awDragOfset.y;
+				}
+				
+				thisPos.x += mouseX+awDragOfset.x;
+				thisPos.y += y;
+				
+				pushStyle();
+				noFill();
+				rect(thisPos.x, thisPos.y, wh.x, wh.y);
+				popStyle();
+			}
+			
+			
 		}
 		
 		// DRAW selected
@@ -315,7 +341,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		if(myWall.getArtworksArray().length > 0 ) {
 			for( SM_Artwork a : myWall.getArtworksArray() ) {
 				
-				if(a != null && a.isSelected()) {
+				if(a != null && a.isSelected() && !isValidDrag() ) {
 				
 					PVector totalPos = wptos( new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]), scale );
 					PVector totalSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), scale);
@@ -330,13 +356,33 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				}
 			}
 		}
+		
+		// DRAW selection frame
+		
+		if( selectionDrag ) {
+			
+			drawSelectionFrame(dragStart, new PVector(mouseX, mouseY), g);
+			
+			checkSelectionFrame(dragStart, new PVector(mouseX, mouseY));
+			
+		}
+		
+		
+		
+		
 		ready = true;
 		if( firstTime ) {
 			vm.requestRendererUpdate(myWall.getWallChar());
 			firstTime = false;
 		}
 	}
-	
+
+	/**
+	 * 
+	 * @param _mode mode: 1 if it is for renderer, mode: 0 if it is for WallArrangementView 
+	 * @param shadowOfset
+	 * @return
+	 */
 	public synchronized PGraphics drawWall( int _mode, int shadowOfset) {
 		
 		float drawScale;
@@ -351,6 +397,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			drawScale = scale;
 		}
 		else{
+			
+			// TODO test if results in renderer are better if high values are chosen
+			
 			gfx = createGraphics(width, height);
 			drawScale = ((float)gfx.width ) / ((float)myWall.getWidth());
 		}
@@ -359,7 +408,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		gfx.clear();
 		gfx.beginDraw();
 		
-//		gfx.background(0,255,0);
 		
 		// DRAW Schatten
 		
@@ -386,7 +434,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			gfx.filter(BLUR, 3);
 		}
 		
-//		gfx.background(50,90,10,100);
 		if(myWall.getArtworksArray().length > 0 ) {
 			
 			if(!awDrag) awOver = null;
@@ -421,33 +468,63 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				}
 				
 				
+				// make transparent if drag
+				
 				gfx.fill(230,230,230,100);
+				
+				if( _mode == 0 && isValidDrag() ) {
+					
+					if( !awOver.isSelected() ) {
+						
+						if( a == awOver ) {
+							gfx.tint(255,75);
+						} else {
+							gfx.tint(255,255);
+						}
+						
+					} else {
+						
+						if( a.isSelected() ) {
+							gfx.tint(255,75);
+						} else {
+							gfx.tint(255,255);
+						}
+						
+					}
+				} else {
+					gfx.tint(255, 255);
+				}
+					
 				
 				int shadowFact = 5;
 				
-				// draw total (frame)
-//				gfx.rect( totalPos.x-1, totalPos.y-1, totalSize.x+1, totalSize.y+1 );
-//				gfx.image(shadowGfx, totalPos.x-(artworkSize.y/shadowFact), totalPos.y-(artworkSize.x/shadowFact), totalSize.x+(artworkSize.y/shadowFact), totalSize.y+(artworkSize.x/shadowFact));
 
+				// draw frame
+				
 				if(a.hasFrame()) {
 					gfx.image(a.getFrameGfx(), totalPos.x, totalPos.y, totalSize.x, totalSize.y);
 				}
 				
 				// draw ppt
+				
 				if(a.hasPassepartout()) {
 					gfx.noStroke();
 					gfx.pushStyle();
-					gfx.fill(200,190,170,255);
+					if( _mode == 0 &&  isValidDrag() && a.isSelected() ) {
+						gfx.fill(200,190,170,255);
+					} else {						
+						gfx.fill(200,190,170,75);
+					}
 					gfx.rect(pptPos.x, pptPos.y, pptSize.x, pptSize.y);
 					gfx.popStyle();
 				}
+				
 				// draw artwork
+				
 				gfx.image(a.getGfx(), artworkPos.x, artworkPos.y, artworkSize.x, artworkSize.y);
 				g.removeCache(gfx);
 
 				
-				
-			
 				
 			}
 		}
@@ -457,10 +534,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		return gfx;
 	}
 	
-	
 	// artwork Size to Screen
 	private PVector astos(int _inX, int _inY, float scl) {
-		return wptos(new PVector(_inX, _inY), scl );
+		return astos(new PVector(_inX, _inY), scl );
 	}
 	private PVector astos(PVector _inpos, float scl) {
 
@@ -503,6 +579,36 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		return new PVector(_inpos.x, myWall.getHeight()-_inpos.y);
 	}
 
+	private void drawSelectionFrame(PVector lo, PVector ru, PGraphics g) {
+		
+		g.pushStyle();
+		g.smooth();
+		
+//		strokeWeight(3);
+		g.fill(200, 200);
+//		noFill();
+		
+		float hor = abs(lo.x - ru.x) / 4;
+		float vrt = abs(lo.y - ru.y) / 4;
+		
+		// oben unten
+		for (float i = 1; i <= hor; i++) {
+		  float x = lerp(lo.x, ru.x, i/hor);
+		  g.point(x, lo.y);
+		  g.point(x, ru.y);
+		}
+		
+		// links rechts
+		for (float i = 1; i <= vrt; i++) {
+			float y = lerp(lo.y, ru.y, i/vrt);
+			g.point(lo.x, y);
+			g.point(ru.x, y);
+		}
+		g.noSmooth();
+		g.popStyle();
+		
+	}
+	
 	public void loadMissingAWGraphics() {
 		
 		for( String a : myWall.getArtworks().keySet() ) {
@@ -541,50 +647,133 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		return selectedList.toArray(new SM_Artwork[selectedList.size()]);
 	}
 	
+	private void checkSelectionFrame(PVector lo, PVector ru) {
+		
+//		SM_Artwork[] selects = new SM_Artwork[myWall.getArtworksArray().length];
+		
+		int maxX, maxY, minX, minY;
+		
+		if( lo.x > ru.x ) {
+			maxX = (int) lo.x;
+			minX = (int) ru.x;
+		} else {
+			maxX = (int) ru.x;
+			minX = (int) lo.x;
+		}
+		
+		if( lo.y > ru.y ) {
+			maxY = (int) lo.y;
+			minY = (int) ru.y;
+		} else {
+			maxY = (int) ru.y;
+			minY = (int) lo.y;
+		}
+		
+//		int i=0;
+		for (SM_Artwork a : myWall.getArtworksArray()) {
+			
+			if( !shiftLoc ) a.setSelected(false);
+			
+			PVector awPos  = wptos(a.getTotalWallPos()[0], a.getTotalWallPos()[1], scale);
+			PVector awSize = astos(a.getTotalWidth(), a.getTotalHeight(), scale);
+			
+			if( awPos.x > minX && awPos.x < maxX  ||  (awPos.x + awSize.x) > minX && (awPos.x + awSize.x) < maxX  ) {
+				if( awPos.y > minY &&  awPos.y < maxY || (awPos.y + awSize.y) > minY && (awPos.y + awSize.y) < maxY ) {
+//					selects[i] = a;
+					a.setSelected(true);
+				}
+			} 
+//			i++;
+		}
+		
+//		for (SM_Artwork a : selects) {
+//			if( a != null ) a.setSelected(true);
+//		}
+		
+		
+	}
+	
+	
+	
 	private void deselectAll() {
 		
 		for( SM_Artwork a : myWall.getArtworksArray() ) a.setSelected(false);
 	}
 
 	public void mousePressed() {
+
+		dragStart = new PVector(mouseX,mouseY);
+		
 		if( awOver != null ) {
 			awDrag = true;
-			awDragStart = new PVector(mouseX,mouseY);
 			awDragOfset = wptos(awOver.getTotalWallPos()[0],awOver.getTotalWallPos()[1], scale);
-			awDragOfset.sub(awDragStart);
+			awDragOfset.sub(dragStart);
 		}
 	}
 	
 	public void mouseReleased() {
+		
 		if( awDrag ) {
 
 			awDrag = false;
 
-			if (mouseX != awDragStart.x || mouseY != awDragStart.y) {
-				int nposX;
-				int nposY;
-				PVector npos;
-				ArtworkUpdateRequestEvent e;
-				if (horizontalLoc) {
-					npos = new PVector(mouseX, 0);
+			if (mouseX != dragStart.x || mouseY != dragStart.y) {
+				
+				PVector npos = new PVector(mouseX, mouseY);
+				npos.add(awDragOfset);
+				PVector nPos = ptowp(npos, scale);
+				
+				// if multiple moved
+				
+				if(awOver.isSelected() && getSelectedArtworks().length > 1) {
+					
+					PVector referencePos = new PVector(awOver.getTotalWallPos()[0], awOver.getTotalWallPos()[1]);
+					
+					boolean first = true;
+					for (SM_Artwork a : getSelectedArtworks() ) {
 
-					npos.add(awDragOfset);
-					PVector nPos = ptowp(npos, scale);
-					e = new ArtworkUpdateRequestEvent(this, false, -1, awOver.getName(), (int) nPos.x, awOver.getTotalWallPos()[1]);
-
-				} else {
-					npos = new PVector(mouseX, mouseY);
-
-					npos.add(awDragOfset);
-					PVector nPos = ptowp(npos, scale);
-					e = new ArtworkUpdateRequestEvent(this, false, -1, awOver.getName(),
-							(int) nPos.x, (int) nPos.y);
+						PVector thisPos	= new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]);
+						
+						thisPos.sub(referencePos);
+						thisPos.add(nPos);
+					
+						ArtworkUpdateRequestEvent e;
+						
+						int count = 0;
+						if(first) count = getSelectedArtworks().length;
+						first = false;
+						
+						if (shiftLoc) {
+							e = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), (int) thisPos.x, a.getTotalWallPos()[1]);
+						} else {
+							e = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), (int) thisPos.x, (int) thisPos.y);
+						}
+						myWall.myRoom.fireUpdateRequest(e);
+					}
+					
+				} else {  // fire single update
+				
+					ArtworkUpdateRequestEvent e;
+				
+					if (shiftLoc) {
+						e = new ArtworkUpdateRequestEvent(this, false, -1, awOver.getName(), (int) nPos.x, awOver.getTotalWallPos()[1]);
+					} else {
+						e = new ArtworkUpdateRequestEvent(this, false, -1, awOver.getName(), (int) nPos.x, (int) nPos.y);
+					}
+					myWall.myRoom.fireUpdateRequest(e);
 				}
-				myWall.myRoom.fireUpdateRequest(e);
 			}
+		} else if( selectionDrag ){
+			
+			selectionDrag = false;
+			
 		}
 	}
 		
+	public void mouseDragged() {
+		if( awOver == null) selectionDrag = true;
+	}
+	
 	public void mouseClicked() {
 		
 		if( awOver != null && mouseButton != RIGHT) {			
@@ -627,15 +816,21 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			key =0;
 		} else {
 			if(keyCode == SHIFT) {
-				horizontalLoc = true;
+				shiftLoc = true;
 			}
 		}
 	}
 	
 	public void keyReleased() {
 		if(keyCode == SHIFT) {
-			horizontalLoc = false;
+			shiftLoc = false;
 		}
+	}
+	
+	private boolean isValidDrag() {
+
+		if( awDrag && (dragStart.x != mouseX || dragStart.y != mouseY) ) return true;
+		else return false;
 	}
 
 	@Override
@@ -958,6 +1153,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		LinkedHashMap<String, int[]> pos = new LinkedHashMap<String, int[]>(aws.length);
 		
+		// sort left to right
+		
 		boolean sorted = true;
 		while(sorted) {
 			sorted = false;
@@ -971,11 +1168,24 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			}
 		}
 		
+		// calculate initial distance
+		
+		// calculate gap
+		
+				int totalSpace = aws[aws.length-1].getTotalWallPos()[0] + aws[aws.length-1].getTotalWidth() - aws[0].getTotalWallPos()[0] ;
+				int awSpace = 0;
+				for (SM_Artwork a : aws) {
+					awSpace += a.getTotalWidth();
+				}
+				int totalFreeSpace = totalSpace - awSpace;
+				int gap = totalFreeSpace / (aws.length - 1);
+		
+		
 		for (SM_Artwork a : aws) {
 			pos.put(a.getName(), a.getTotalWallPos());
 		}
 		
-		DistanceChooser d = new DistanceChooser(this, pos, aws);
+		DistanceChooser d = new DistanceChooser(this, pos, aws, gap);
 	}
 	
 	public void distanceCallback(int dist, SM_Artwork[] aws) {
@@ -1039,19 +1249,16 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 	@Override
 	public void dragEnter(DropTargetDragEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void dragExit(DropTargetEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void dragOver(DropTargetDragEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -1105,7 +1312,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 	@Override
 	public void dropActionChanged(DropTargetDragEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
