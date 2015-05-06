@@ -156,6 +156,18 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		shadow = _onOff;
 	}
 	
+	/// ArtworkSize
+	
+	public int[] getArtworkSize() {
+		return mySize;
+	}
+	
+	public void setArtworkSize(int[] newSize) {
+		if( newSize.length == 2) {
+			mySize = newSize;
+		}
+	}
+	
 	/// Passepartout
 	
 	public boolean hasPassepartout() {
@@ -342,8 +354,10 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 		return artworkPosInWall;
 	}
 	
-	public int[] getArtworkSize() {
-		return mySize;
+	public void setArtworkWallPos(int[] newPos) {
+		if (newPos != null & newPos.length == 2) {
+			artworkPosInWall = newPos;
+		}
 	}
 	
 	public int getTotalWidth(){

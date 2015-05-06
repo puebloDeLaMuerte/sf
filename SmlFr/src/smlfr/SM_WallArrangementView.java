@@ -511,9 +511,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 					gfx.noStroke();
 					gfx.pushStyle();
 					if( _mode == 0 &&  isValidDrag() && a.isSelected() ) {
-						gfx.fill(200,190,170,255);
-					} else {						
 						gfx.fill(200,190,170,75);
+					} else {						
+						gfx.fill(200,190,170,255);
 					}
 					gfx.rect(pptPos.x, pptPos.y, pptSize.x, pptSize.y);
 					gfx.popStyle();
@@ -649,7 +649,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	
 	private void checkSelectionFrame(PVector lo, PVector ru) {
 		
-//		SM_Artwork[] selects = new SM_Artwork[myWall.getArtworksArray().length];
 		
 		int maxX, maxY, minX, minY;
 		
@@ -669,7 +668,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			minY = (int) lo.y;
 		}
 		
-//		int i=0;
 		for (SM_Artwork a : myWall.getArtworksArray()) {
 			
 			if( !shiftLoc ) a.setSelected(false);
@@ -677,18 +675,15 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			PVector awPos  = wptos(a.getTotalWallPos()[0], a.getTotalWallPos()[1], scale);
 			PVector awSize = astos(a.getTotalWidth(), a.getTotalHeight(), scale);
 			
-			if( awPos.x > minX && awPos.x < maxX  ||  (awPos.x + awSize.x) > minX && (awPos.x + awSize.x) < maxX  ) {
-				if( awPos.y > minY &&  awPos.y < maxY || (awPos.y + awSize.y) > minY && (awPos.y + awSize.y) < maxY ) {
-//					selects[i] = a;
+			if( awPos.x > minX && awPos.x < maxX  ||  (awPos.x + awSize.x) > minX && (awPos.x + awSize.x) < maxX || awPos.x < minX && (awPos.x + awSize.x) > maxX ) {
+				if( awPos.y > minY &&  awPos.y < maxY || (awPos.y + awSize.y) > minY && (awPos.y + awSize.y) < maxY || awPos.y < minY && (awPos.y + awSize.y) > maxY ) {
+				
 					a.setSelected(true);
 				}
 			} 
-//			i++;
+			
 		}
-		
-//		for (SM_Artwork a : selects) {
-//			if( a != null ) a.setSelected(true);
-//		}
+
 		
 		
 	}

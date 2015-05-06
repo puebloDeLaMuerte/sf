@@ -820,6 +820,7 @@ public class SM_Renderer extends PApplet{
 			if( key == 'u') {
 				for( char w : wallGfxsId )
 					updateArtworksLayer(w);
+					updateRoomColorLayer(null, null, null);
 			}
 			redraw();
 		}

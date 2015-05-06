@@ -716,7 +716,6 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	
 	public synchronized void changeArtworkData(SM_Artwork aw, LinkedHashMap<String, Object> data) {
 		
-		System.out.println("the file manager will go to work and change the artwork as requested, sir.");
 		
 		String awName 		= (String)	data.get("Name");
 		int[] awSize		= (int[])	data.get("size");
@@ -737,26 +736,34 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			shadow = false;
 		}
 		
-		System.out.println("NAME:	"+awName);
-		System.out.println("SIZE:	"+awSize[0]+" , "+awSize[1]);
-		if(frameSize.length > 0) {
-		System.out.println("FRAME:	"+frameSize[0]+" , "+frameSize[1]+" , "+frameSize[2]+" , "+frameSize[3]);
-		} else {
-		System.out.println("FRAME:	 none");
-		}
-		if(pptSize.length > 0) {
-		System.out.println("PPT:	"+pptSize[0]+" , "+pptSize[1]+" , "+pptSize[2]+" , "+pptSize[3]);
-		} else {
-		System.out.println("PPT      none");
-		}
-		System.out.println("LIGHT:	"+light);
-		System.out.println("SHADOW:	"+shadow);
+		// wallPosition Offset (if awSize changes)
+		
+		int[] sizeOffset = new int[2];
+		
+		sizeOffset[0] = (aw.getArtworkSize()[0] - awSize[0]) / 2;
+		sizeOffset[1] = (aw.getArtworkSize()[1] - awSize[1]) / 2;
+		
+		int[] newPos = aw.getArtworkWallPos();
+		newPos[0] += sizeOffset[0];
+		newPos[1] -= sizeOffset[1];
 		
 		
-		// changes in AW-file (+Object)
+		
+		// changes in AW ( File + Object )
 		
 		File awPath = getJSONFilePathForArtwork(awName);
 		JSONObject awFile = loadJSONObject(awPath);
+		
+		// change awSize (+PosInWall)
+		
+		JSONArray as = new JSONArray();
+		as.append(awSize[0]);
+		as.append(awSize[1]);
+		
+		awFile.setJSONArray("size", as);
+		
+		aw.setArtworkSize(awSize);
+		aw.setArtworkWallPos(newPos);
 		
 		// change frameSize
 		
