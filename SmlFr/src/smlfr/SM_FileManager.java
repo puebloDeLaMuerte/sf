@@ -171,6 +171,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return loadImage("resources/shadow/Schatten.png");
 	}
 	
+	public PImage getLightGfx() {
+		return loadImage("resources/light/Light_Cone_White.png");
+	}
+	
 	// PREFERENCES
 
 	public synchronized void updatePrefs(String _key, String _value) {
@@ -1395,6 +1399,9 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 		System.err.println("QUIT REQUEST SHOULD BE HANDELED");
 	}
+
+
+	
 
 
 

@@ -115,7 +115,7 @@ public class SM_Artwork {
 //	}
 	}
 	
-public void initProjectData( String _isInWall, int _posX, int _posY, boolean _hasLight, boolean _drawShadow) {
+	public void initProjectData( String _isInWall, int _posX, int _posY, boolean _hasLight, boolean _drawShadow) {
 		isInWall = _isInWall;
 		artworkPosInWall = new int[2];
 		setTotalWallPos(_posX, _posY);
@@ -145,6 +145,14 @@ public void initProjectData( String _isInWall, int _posX, int _posY, boolean _ha
 	
 	public void setLight(boolean _onOff) {
 		light = _onOff;
+	}
+	
+	public int getLightsCount() {
+
+		double l = getTotalWidth() / 1200d;
+		l = Math.ceil(l);
+		
+		return (int)l;
 	}
 	
 	public boolean hasShadow() {

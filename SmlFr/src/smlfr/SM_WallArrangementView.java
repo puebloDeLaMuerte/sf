@@ -43,10 +43,14 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	 */
 	private static final long serialVersionUID = -8724642767602580803L;
 
+	private SmlFr					base;
+	
 	private SM_Wall					myWall; 
 	private SM_ViewManager  		vm;
 	private Dimension				mySize;
 	private PGraphics				wlGfx;
+
+	private PImage					lightSprite;
 	
 	private boolean					ready = false;
 
@@ -79,9 +83,13 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	int 							shadowOfsetAmount = 5;
 	
 	int count = 0;
+
 	
-	public SM_WallArrangementView(SM_Wall _myW, Dimension _size, SM_ViewManager _vm) {
+	public SM_WallArrangementView(SM_Wall _myW, Dimension _size, SM_ViewManager _vm, SmlFr base) {
 		super();
+		
+		this.base = base;
+		
 		myWall = _myW;
 		dt = new DropTarget(this,this);
 		myMidHeight = myWall.getMidHeight();
@@ -97,6 +105,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		vm = _vm;
 		vm.registerUpdateListener(this);
+		
+		lightSprite = base.fm.getLightGfx();
+		
 		
 //		border = 100f;
 		xOffsetPx = 0f;
@@ -266,6 +277,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		
 		background(230);
+
 	
 		// Mittelhšhe
 		pushStyle();
@@ -273,10 +285,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		line(0, wptos(0,myMidHeight, scale).y, wptos(myWall.getWidth(),0,scale).x, wptos(0,myMidHeight, scale).y );
 		popStyle();
 		
-
+		
 		// DRAW wall
 		
-		image(drawWall( 0, 0 ),0,0);
+		image(  getGraphics(0, 0, 0)  ,0,0);
 		
 		
 		// DRAW mouseOver
@@ -378,12 +390,26 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	}
 
 	/**
+	 *  0 for Wall
+	 *  1 for Lights
+	 */
+	public synchronized PGraphics getGraphics(int what, int mode, int shadowOfset) {
+		switch (what) {
+		
+		case 0: 	return _drawWall( mode, shadowOfset);
+		case 1: 	return _drawLights( mode );
+		default:	return null;
+
+		}
+	}
+	
+	/**
 	 * 
 	 * @param _mode mode: 1 if it is for renderer, mode: 0 if it is for WallArrangementView 
 	 * @param shadowOfset
 	 * @return
 	 */
-	public synchronized PGraphics drawWall( int _mode, int shadowOfset) {
+	public synchronized PGraphics _drawWall( int _mode, int shadowOfset) {
 		
 		float drawScale;
 		
@@ -520,8 +546,14 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				}
 				
 				// draw artwork
+				PImage aa = a.getGfx();
 				
-				gfx.image(a.getGfx(), artworkPos.x, artworkPos.y, artworkSize.x, artworkSize.y);
+				if (aa != null) {
+					gfx.image(aa, artworkPos.x, artworkPos.y, artworkSize.x,
+							artworkSize.y);
+				} else {
+					System.err.println("ES W€HRE DA GEWESEN, in WallArrangementView, nŠmlich!");
+				}
 				g.removeCache(gfx);
 
 				
@@ -533,6 +565,123 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		if(_mode == 1) artworkUpdatePending = false;
 		return gfx;
 	}
+	
+	public synchronized PGraphics _drawLights(int mode) {
+		
+		
+		// prepare Draw...
+		
+		PGraphics lGfx; 
+
+		float drawScale;
+
+		if( mode == 0 ) {
+			lGfx = createGraphics(width, height);
+			drawScale = ((float)lGfx.width ) / ((float)myWall.getWidth());
+		}
+		else{
+
+			// TODO test if results in renderer are better if high values are chosen
+
+			lGfx = createGraphics(width, height);
+			drawScale = ((float)lGfx.width ) / ((float)myWall.getWidth());
+		}	
+		
+		// prepare Light Sprite ( size to wall-drawing Size )
+		
+		PImage wallLightSprite;
+		
+		try {
+			
+			wallLightSprite = (PImage) lightSprite.clone();
+			PVector thisSize = astos( 2500, 4142, drawScale );
+			wallLightSprite.resize((int)thisSize.x, (int)thisSize.y);
+
+			
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			wallLightSprite = null;
+		}
+		
+		// draw Lights...
+		
+		lGfx.beginDraw();
+		
+		if(myWall.getArtworksArray().length > 0 ) {
+
+			for( SM_Artwork a : myWall.getArtworksArray() ) {
+
+				if( a.hasLight() ) {
+					
+					
+					int lightsCount = a.getLightsCount();
+					int thisLightOffsetX, thisLightOffsetY;
+
+					PVector awSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), drawScale);
+					
+					// resize LightSprite According to awSize
+					
+					PImage thisLightSprite = null;
+					float awSizeFact =1;
+					
+					try {
+						thisLightSprite = (PImage) wallLightSprite.clone();
+						
+						awSizeFact = (float)(a.getTotalWidth() + a.getTotalHeight()) / 4000f;
+						
+						if( awSizeFact < 1) {
+							awSizeFact += (1 - awSizeFact) * 0.6f;
+						}
+						thisLightSprite.resize((int)(thisLightSprite.width * awSizeFact), (int)(thisLightSprite.height * awSizeFact));
+						
+						thisLightOffsetX = thisLightSprite.width / 2;
+						thisLightOffsetY = (int)(thisLightSprite.height * 0.6f);
+						
+					} catch(Exception e) {
+						thisLightOffsetX = 0;
+						thisLightOffsetY = 0;
+					}
+					
+					// calculate Position
+					
+					float thisLightOfset = awSize.x / ( lightsCount +1 );
+					float thisInitialOfset;
+					if( lightsCount >1) {
+						thisInitialOfset = thisLightOfset / 2;
+						thisLightOfset = thisLightOfset * lightsCount;
+						thisLightOfset /= (lightsCount -1);
+					} else {
+						thisInitialOfset = thisLightOfset;
+					}
+					
+					for (int i = 0; i < lightsCount; i++) {
+						
+						PVector lightPos = wptos( new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]), drawScale );
+						
+						lightPos.x -= thisLightOffsetX;
+//						lightPos.x += thisLightOfset * i;
+						lightPos.x += thisInitialOfset + ((thisLightOfset) * i);
+						
+						lightPos.y -= thisLightOffsetY;
+						lightPos.y += (awSize.y / 2) * awSizeFact;
+
+						lGfx.image(thisLightSprite, lightPos.x , lightPos.y , thisLightSprite.width, thisLightSprite.height );
+						
+//						lGfx.pushStyle();
+//						lGfx.noFill();
+//						lGfx.stroke(255);
+//						lGfx.rect(lightPos.x , lightPos.y , thisLightSprite.width, thisLightSprite.height);
+//						lGfx.line(lightPos.x, lightPos.y, lightPos.x + thisLightSprite.width, lightPos.y + thisLightSprite.height);
+//						lGfx.line(lightPos.x, lightPos.y + thisLightSprite.height, lightPos.x + thisLightSprite.width, lightPos.y);
+//						lGfx.popStyle();
+					}
+				}
+			}
+		}
+		lGfx.endDraw();
+		return lGfx;
+	}
+	
 	
 	// artwork Size to Screen
 	private PVector astos(int _inX, int _inY, float scl) {
@@ -1331,3 +1480,4 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	}
 
 }
+

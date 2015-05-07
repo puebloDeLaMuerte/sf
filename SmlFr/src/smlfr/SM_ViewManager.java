@@ -29,7 +29,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	
 	private SM_RoomArrangementView								myRoomArrView;
 	private SM_WindowManager									wm;
-
+	private SmlFr												base;
 	
 	private SM_ViewAngle[]										viewAngles;
 	private String 												currentAngle;
@@ -41,9 +41,10 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	private LinkedHashMap<String, SM_WallArrangementView>		wallArrangementViews;
 
 	
-	public SM_ViewManager(SM_RoomArrangementView _view, SM_WindowManager _wm, SM_ViewAngle[] _vas) {
+	public SM_ViewManager(SM_RoomArrangementView _view, SM_WindowManager _wm, SM_ViewAngle[] _vas, SmlFr base) {
 		
 		myRoomArrView = _view;
+		this.base = base;
 		
 //		view.registerMethod("post", this);
 		
@@ -165,7 +166,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		} else {
 			maxAvailableSpace = wm.getRaster();
 		}
-		SM_WallArrangementView wallArr = new SM_WallArrangementView((SM_Wall)myRoomArrView.myWalls.get(_wall), maxAvailableSpace, this );
+		SM_WallArrangementView wallArr = new SM_WallArrangementView((SM_Wall)myRoomArrView.myWalls.get(_wall), maxAvailableSpace, this, base );
 		
 		
 		wallArr.frame = f;
@@ -184,6 +185,10 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		return wallArr;
 		
 	}
+//	
+//	public String getLightGfxPath() {
+//		return wm.getLightGfxPath();
+//	}
 	
 	private void doActiveViews() {
 		String retStrg = "";
@@ -233,10 +238,18 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		System.out.println("VM: getWallGfx:"+_wc);
 
 		if( wallArrangementViews.get(""+_wc) != null ) {
-			return wallArrangementViews.get(""+_wc).drawWall( 1 , _shdwOfset );
+			return wallArrangementViews.get(""+_wc).getGraphics(0, 1, _shdwOfset);  //       drawWall( 1 , _shdwOfset );
 		}
 		else return null;
+	}
+	
+	public synchronized PImage getLightsGfx( Character _wc) {
+		System.out.println("VM: getLightsGfx:"+_wc);
 
+		if( wallArrangementViews.get(""+_wc) != null ) {
+			return wallArrangementViews.get(""+_wc).getGraphics(1, 1, -1);//          drawLights( 1 );
+		}
+		else return null;
 	}
 	
 	@Override
@@ -471,6 +484,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 						if (renderer != null) {
 
 							renderer.updateArtworksLayer(ww);
+							renderer.updateLightsLayer(ww);
 						}
 
 					}
@@ -557,6 +571,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 					if (renderer != null) {
 
 					renderer.updateArtworksLayer(ww);
+					renderer.updateLightsLayer(ww);
 					}
 				}
 			}
@@ -577,6 +592,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 					if (renderer != null) {
 
 					renderer.updateArtworksLayer(ww);
+					renderer.updateLightsLayer(ww);
 					}
 				}
 			}
@@ -595,6 +611,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		if( renderer != null ) {
 			System.out.println("requesting Update");
 			renderer.updateArtworksLayer(_wc);
+			renderer.updateLightsLayer(_wc);
 		}
 	}
 

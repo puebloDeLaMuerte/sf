@@ -145,7 +145,7 @@ public class SM_Room {
 	}
 	
 
-	public void initProjectView(Dimension _size, Dimension _loc, SM_FileManager _fm) {
+	public void initProjectView(Dimension _size, Dimension _loc, SmlFr base) {
 		
 		
 		
@@ -165,10 +165,10 @@ public class SM_Room {
 		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
-		myProjectView = new SM_RoomProjectView(_size.width, _size.height);
+		myProjectView = new SM_RoomProjectView(_size.width, _size.height, base);
 //		f.setAlwaysOnTop(true);
 		f.add(myProjectView);
-		File fl = _fm.getFilePathForRoom(myRoomName);
+		File fl = base.fm.getFilePathForRoom(myRoomName);
 
 		myProjectView.frame = f;
 		myProjectView.resize(_size.width, _size.height);
@@ -222,7 +222,7 @@ public class SM_Room {
 		
 	}
 	
-	public void initArrangementView(Dimension _size, Dimension _loc, SM_FileManager _fm) {
+	public void initArrangementView(Dimension _size, Dimension _loc, SmlFr basw) {
 		
 //		JFrame f = new JFrame();
 //		f.setLayout(new BorderLayout());
@@ -243,9 +243,9 @@ public class SM_Room {
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
 //		f.setAlwaysOnTop(true);
-		myArrangementView = new SM_RoomArrangementView(_size.width, _size.height);
+		myArrangementView = new SM_RoomArrangementView(_size.width, _size.height, base);
 		f.add(myArrangementView);
-		File fl = _fm.getFilePathForRoom(myRoomName);
+		File fl = basw.fm.getFilePathForRoom(myRoomName);
 
 		myArrangementView.frame = f;
 		myArrangementView.resize(_size.width, _size.height);

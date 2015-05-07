@@ -24,8 +24,8 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	private char[]							visibleViews;
 	
 
-	public SM_RoomArrangementView(int w, int h) {
-		super(w,h);
+	public SM_RoomArrangementView(int w, int h, SmlFr base) {
+		super(w,h, base);
 	}
 
 	
@@ -33,7 +33,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		
 		super.init(_filePath, _room);
 		
-		vm = new SM_ViewManager(this, myRoom.getWindowManager(), _vas);
+		vm = new SM_ViewManager(this, myRoom.getWindowManager(), _vas, base);
 		
 		wallsOverGfx = super.getWallsOverGfx();
 		wallsActiveGfx = super.getWallsActiveGfx();

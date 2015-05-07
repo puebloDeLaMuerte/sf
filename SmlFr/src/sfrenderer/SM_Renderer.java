@@ -51,13 +51,14 @@ public class SM_Renderer extends PApplet{
 	
 	private boolean b1 = true;
 	private boolean b2 = true;
-	private boolean b3 = false;
+	private boolean b3 = true;
 	private boolean b4 = true;
 	private boolean b5 = true;
 	
 	
 	private PGraphics				cropMask;
-	private PGraphics[]				wallGfxs;
+	private PGraphics[]				wallGfxsAW;
+	private	PGraphics[]				wallGfxsLG;
 	private char[]					wallGfxsId;
 
 	private Skewmator				skewmator;
@@ -72,7 +73,7 @@ public class SM_Renderer extends PApplet{
 	
 	public boolean 					setupRun = false;
 	
-	private boolean 				devGUI = true;
+	private boolean 				devGUI = false;
 	
 
 
@@ -181,14 +182,22 @@ public class SM_Renderer extends PApplet{
 		yOffset = 0;
 		
 		String w = currentView.getWallCharsAsString();
-		wallGfxs = new PGraphics[w.length()];
+		wallGfxsAW = new PGraphics[w.length()];
+		wallGfxsLG = new PGraphics[w.length()];
 		wallGfxsId = new char[w.length()];
 		
 		for( int i=0; i< w.length(); i++ ) {
-			wallGfxs[i]   = createGraphics(layers[0].width, layers[0].height);
-			wallGfxs[i].beginDraw();
-			wallGfxs[i].background(0,0);
-			wallGfxs[i].endDraw();
+			
+			wallGfxsAW[i]   = createGraphics(layers[0].width, layers[0].height);
+			wallGfxsAW[i].beginDraw();
+			wallGfxsAW[i].background(0,0);
+			wallGfxsAW[i].endDraw();
+			
+			wallGfxsLG[i]   = createGraphics(layers[0].width, layers[0].height);
+			wallGfxsLG[i].beginDraw();
+			wallGfxsLG[i].background(0,0);
+			wallGfxsLG[i].endDraw();
+			
 			wallGfxsId[i] =  w.charAt(i);
 		}
 		
@@ -205,8 +214,8 @@ public class SM_Renderer extends PApplet{
 		 * [6] #shadowMask	FILE
 		 */
 		layers[1] = new PImage(layers[0].width,layers[0].height);
-		layers[2] = new PImage(layers[0].width,layers[0].height); // VIEWMANAGER
-		layers[3] = new PImage(layers[0].width,layers[0].height); // VIEWMANAGER
+//		layers[2] = new PImage(layers[0].width,layers[0].height); // VIEWMANAGER
+//		layers[3] = new PImage(layers[0].width,layers[0].height); // VIEWMANAGER
 		layers[4] = new PImage(layers[0].width,layers[0].height);
 		layers[5] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Farbe.png");
 		layers[6] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Schatten.png");
@@ -220,7 +229,7 @@ public class SM_Renderer extends PApplet{
 //		for( PImage l : layers) {
 //			l.resize( (int)(ySize * aspect), ySize);
 //		}
-//		for( PGraphics wg : wallGfxs ) {
+//		for( PGraphics wg : wallGfxsAW ) {
 //			wg.resize( (int)(ySize * aspect), ySize);
 //		}
 	
@@ -389,9 +398,70 @@ public class SM_Renderer extends PApplet{
 		
 	}
 	
-	public void updateArtworksLayer( char _wallChar) {
+	public synchronized void updateLightsLayer( char _wallChar) {
 		
-		System.out.println("RENDERER: updating... "+_wallChar);
+		System.out.println("RENDERER: updating lights");
+		
+		if( currentView.getWallCharsAsString().contains(""+_wallChar) ) {
+			
+			
+			Float[] skewValues = currentView.getWallSkew(_wallChar);
+			
+			PImage wallGfx = null;
+
+			
+			wallGfx = vm.getLightsGfx(_wallChar);
+			
+			if( wallGfx != null) {
+				
+				
+				for(int i=0; i<wallGfxsLG.length; i++) {
+					if( wallGfxsId[i] == _wallChar ) {
+						
+						
+						System.out.println("RENDERER: painting on wall ["+i+"] : "+_wallChar);
+						
+						int wgWidth = wallGfxsLG[i].height;
+						
+						wallGfxsLG[i].beginDraw();
+						wallGfxsLG[i].clear();
+						wallGfxsLG[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, wgWidth), 0,0);
+						g.removeCache(wallGfxsLG[i]);
+						wallGfxsLG[i].endDraw();
+
+						if( currentView.isWallCrop(_wallChar) ) {
+							
+							Float[] cropValues = currentView.getWallCrop(_wallChar);
+							
+							cropMask = skewmator.drawCropImage(cropValues);
+							cropMask.resize(wallGfxsLG[i].width, wallGfxsLG[i].height);
+							g.removeCache(cropMask);
+							manualMask(wallGfxsLG[i], cropMask);
+							
+
+
+						}
+					}
+				}
+				
+				System.out.println("...painted.");
+			}
+			
+			
+		}
+
+	System.out.println("end lights update.\n");
+	
+	
+	
+	
+	redraw();
+	
+	}
+	
+	public synchronized void updateArtworksLayer( char _wallChar) {
+		
+		System.out.println("RENDERER: updating aws... "+_wallChar);
 		
 //		artworksLayer.clear();
 		
@@ -423,20 +493,20 @@ public class SM_Renderer extends PApplet{
 				if( /*artworksLayer != null && */ wallGfx != null) {
 					
 					
-					for(int i=0; i<wallGfxs.length; i++) {
+					for(int i=0; i<wallGfxsAW.length; i++) {
 						if( wallGfxsId[i] == _wallChar ) {
 							
 							
 							System.out.println("RENDERER: painting on wall ["+i+"] : "+_wallChar);
 							
-							int wgWidth = wallGfxs[i].height;
+							int wgWidth = wallGfxsAW[i].height;
 							
-							wallGfxs[i].beginDraw();
-							wallGfxs[i].clear();
-//							wallGfxs[i].image(wallGfx,0,0);
-							wallGfxs[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, wgWidth), 0,0);
-							g.removeCache(wallGfxs[i]);
-							wallGfxs[i].endDraw();
+							wallGfxsAW[i].beginDraw();
+							wallGfxsAW[i].clear();
+//							wallGfxsAW[i].image(wallGfx,0,0);
+							wallGfxsAW[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, wgWidth), 0,0);
+							g.removeCache(wallGfxsAW[i]);
+							wallGfxsAW[i].endDraw();
 
 							if( currentView.isWallCrop(_wallChar) ) {
 								
@@ -444,18 +514,18 @@ public class SM_Renderer extends PApplet{
 //								float f = cropValues[0] / photoX;
 								
 								cropMask = skewmator.drawCropImage(cropValues);
-								cropMask.resize(wallGfxs[i].width, wallGfxs[i].height);
+								cropMask.resize(wallGfxsAW[i].width, wallGfxsAW[i].height);
 								g.removeCache(cropMask);
-								manualMask(wallGfxs[i], cropMask);
+								manualMask(wallGfxsAW[i], cropMask);
 								
-//								PImage maskedImg = wallGfxs[i].get();
+//								PImage maskedImg = wallGfxsAW[i].get();
 //								maskedImg.mask(cropMask);
 								
 								
-//								wallGfxs[i].beginDraw();
-//								wallGfxs[i].clear();
-//								wallGfxs[i].image(maskedImg,0,0);
-//								wallGfxs[i].endDraw();
+//								wallGfxsAW[i].beginDraw();
+//								wallGfxsAW[i].clear();
+//								wallGfxsAW[i].image(maskedImg,0,0);
+//								wallGfxsAW[i].endDraw();
 
 							}
 						}
@@ -465,11 +535,11 @@ public class SM_Renderer extends PApplet{
 //					artworksLayer.image(skewmator.skewToWall(wallGfx, values, 0, ySize), 0,0);
 
 					
-					System.out.println("  painted.");
+					System.out.println("...painted.");
 				}
 //				artworksLayer.beginDraw();
 //				artworksLayer.clear();
-//				for( PGraphics wg : wallGfxs ) {
+//				for( PGraphics wg : wallGfxsAW ) {
 //					artworksLayer.image(wg,0,0);
 //				}
 //				artworksLayer.endDraw();
@@ -479,7 +549,7 @@ public class SM_Renderer extends PApplet{
 				
 			}
 //		}
-		System.out.println("end update.\n");
+		System.out.println("end aw update.\n");
 		redraw();
 		
 	}
@@ -544,7 +614,7 @@ public class SM_Renderer extends PApplet{
 		  display.endDraw();
 		}
 	
-	public void draw(){
+	public synchronized void draw(){
 
 		
 		
@@ -583,9 +653,14 @@ public class SM_Renderer extends PApplet{
 
 		if(b3) {
 			pushStyle();
-			//blendMode(ADD);
+//			blendMode(ADD);
 			tint(255, 70);
-			image(layers[2], xOff, yOff,displW,displH);
+			
+			for( PGraphics lg : wallGfxsLG) {
+				image(lg, xOff, yOff,displW,displH);
+				g.removeCache(g);
+			}
+			
 			g.removeCache(g);
 			popStyle();
 		}  
@@ -596,7 +671,7 @@ public class SM_Renderer extends PApplet{
 		if(b4) {
 			pushStyle();
 			blendMode(BLEND);
-			for( PGraphics wg : wallGfxs) {
+			for( PGraphics wg : wallGfxsAW) {
 				image(wg, xOff, yOff,displW,displH);
 				g.removeCache(g);
 			}
@@ -610,7 +685,15 @@ public class SM_Renderer extends PApplet{
 			pushStyle();
 			blendMode(BLEND);
 			tint(255, 65);
-			image(layers[4], xOff, yOff,displW,displH);
+			while( layers[4] == null ) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				System.out.println("Waiting for layers [4]...");
+			}
+			image(layers[4], xOff, yOff, displW, displH);
 			g.removeCache(g);
 			popStyle();
 		}
@@ -694,7 +777,9 @@ public class SM_Renderer extends PApplet{
 			img.pushStyle();
 			//blendMode(ADD);
 			img.tint(255, 70);
-			img.image(layers[2], 0, 0, w, h);
+			for( PGraphics lg : wallGfxsLG) {
+				img.image(lg, 0, 0,w,h);
+			}
 //			img.removeCache(img);
 			img.popStyle();
 		}  
@@ -705,7 +790,7 @@ public class SM_Renderer extends PApplet{
 		if(b4) {
 			img.pushStyle();
 			img.blendMode(BLEND);
-			for( PGraphics wg : wallGfxs) {
+			for( PGraphics wg : wallGfxsAW) {
 				img.image(wg, 0, 0, w, h);
 //				img.removeCache(img);
 			}
@@ -732,7 +817,7 @@ public class SM_Renderer extends PApplet{
 	}
 	
 	public void mousePressed() {
-		if( mouseButton == RIGHT ) {
+		if( mouseButton == RIGHT && setupRun) {
 			for( JMenuItem m : pMenuViews) {
 				if( m.getActionCommand().equalsIgnoreCase(currentViewString.substring(currentViewString.lastIndexOf('_')+1))) {
 					m.setFont(m.getFont().deriveFont(Font.ITALIC));
@@ -818,9 +903,11 @@ public class SM_Renderer extends PApplet{
 					b5 = !b5;
 			}
 			if( key == 'u') {
-				for( char w : wallGfxsId )
+				for( char w : wallGfxsId ) {
 					updateArtworksLayer(w);
-					updateRoomColorLayer(null, null, null);
+					updateLightsLayer(w);
+				}
+				updateRoomColorLayer(null, null, null);
 			}
 			redraw();
 		}

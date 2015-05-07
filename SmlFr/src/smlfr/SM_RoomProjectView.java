@@ -70,6 +70,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	 */
 	private static final long serialVersionUID = -797918064517774209L;
 	
+	SmlFr										base;
 	
 	SM_Room 									myRoom;
 	LinkedHashMap<Character, SM_Wall>			myWalls;
@@ -104,12 +105,13 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	private boolean moveWindow = false;
 //	int count =0;
 	
-	public SM_RoomProjectView(int w, int h) {
+	public SM_RoomProjectView(int w, int h, SmlFr base) {
 		super();
 		mySize = new int[2];
 		mySize[0] = w;
 		mySize[1] = h;
-
+		
+		this.base = base;
 	}
 	
 	public void setup() {

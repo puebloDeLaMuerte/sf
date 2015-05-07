@@ -52,7 +52,7 @@ public class SM_WindowManager{
 				int x = 0; int y = 0;
 				for(String r : rooms) {
 					Dimension loc = new Dimension(raster.width+raster.width*(x%2), raster.height*(y));
-					base.rooms.get(r).initProjectView(raster, loc, fm);
+					base.rooms.get(r).initProjectView(raster, loc, base);
 					x++;
 					if(x%2==0)y++;
 				}
@@ -92,7 +92,7 @@ public class SM_WindowManager{
 				if( r.equalsIgnoreCase(_requestedRoom) ) {
 					base.lib.setSize(raster.width*2, screen.height-(raster.height*2 ));
 					base.lib.setLocation(0, raster.height*2);
-					base.rooms.get(r).initArrangementView(raster, new Dimension(raster.width*2,raster.height*2), fm);
+					base.rooms.get(r).initArrangementView(raster, new Dimension(raster.width*2,raster.height*2), base);
 				}
 			}
 			System.gc();
@@ -137,7 +137,7 @@ public class SM_WindowManager{
 			int x = 0; int y = 0;
 			for(String r : rooms) {
 				Dimension loc = new Dimension(raster.width+raster.width*(x%2), raster.height*(y));
-				base.rooms.get(r).initProjectView(raster, loc, fm);
+				base.rooms.get(r).initProjectView(raster, loc, base);
 				x++;
 				if(x%2==0)y++;
 			}
