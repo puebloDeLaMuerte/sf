@@ -1,6 +1,11 @@
 {
   "museumName": "Museum Kunst Der Westküste",
   "architecture": {
+    "rooms": [
+      "S1",
+      "S2",
+      "S3"
+    ],
     "S1": {
       "defaultViewAngle": "v_S1_DEFHIJK",
       "viewAngles": [

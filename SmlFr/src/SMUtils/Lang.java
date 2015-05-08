@@ -111,7 +111,7 @@ public class Lang {
 	// EditArtwork
 	
 	public static String	editArtwork 						= "Kunstwerk editieren: ";
-	public static String	editMeasurements 					= "Maße ändern...";
+	public static String	editMeasurements 					= "Werte ändern...";
 	public static String	changeFrameStyle					= "Rahmen wählen:";
 	public static String	frame 								= "Rahmen";
 	public static String	passepartout 						= "Passepartout";

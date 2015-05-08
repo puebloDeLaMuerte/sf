@@ -224,15 +224,18 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		}
 		
 		if(artOver != null) {
-			pushStyle();
-			fill(160);
-			text(artOver.getTitle(), mouseX, mouseY-50);
 			
 			if( ! artOver.hasThumb() ) {
 				artOver.setThumb( loadImage(myRoom.getThumbPath(artOver.getName()).getAbsolutePath() ));
 			}
 			
-			image(artOver.getThumb(), mouseX, mouseY-45);
+			int thumbwidth = artOver.getThumb().width;
+
+			pushStyle();
+			fill(100);
+			text( artOver.getName(), 5 + (( width + thumbwidth)/2) - 50, 18);
+			text(artOver.getTitle(), 5 + (( width + thumbwidth)/2) - 50, 34);
+			image(artOver.getThumb(), ((width-thumbwidth)/2) - 50 , 5);
 			popStyle();
 		}
 		

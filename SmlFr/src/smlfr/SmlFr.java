@@ -31,7 +31,7 @@ public class SmlFr extends JFrame  {
 	 * 
 	 */
 	private static final long serialVersionUID = -4943542664716794448L;
-	public static final String versionString = "0.2.1";
+	public static final String versionString = "0.3.0";
 	
 	
 	// Modules

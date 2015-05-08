@@ -1,8 +1,8 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/Desktop/ffff/Kräftemessen Kopie/Kräftemessen.sfp",
-    "projectName": "Kräftemessen"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/KotzgerDJ/KotzgerDJ.sfp",
+    "projectName": "KotzgerDJ"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/Milliardenfurzler",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/KotzgerDJ",
   "museumData": "MuKuDeWe.sfm"
 }
