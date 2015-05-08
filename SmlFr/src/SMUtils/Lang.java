@@ -51,6 +51,7 @@ public class Lang {
 	public static String 	initializeFromWhere_1 			= "Zuletzt geöffnetes Projekt:\n\"";
 	public static String 	initializeFromWhere_2 			= "\"\n\nMöchten Sie dieses Projekt öffnen, ein neues erstellen,\noder ein anderes Projekt laden?";
 	public static String	loadProjectTitle 				= "Projekt laden...";
+	public static String 	selectRooms						= "Wählen Sie die Räume für dieses Projekt";
 	public static String 	unsavedChangesTitle 			= "Änderungen speichern?";
 	public static Object 	unsavedChanges 					= "Es wurden ungesicherte Änderungen vorgenommen,\nwollen Sie das Projekt jetzt speichern?";
 	public static String[]	yesNoCancelOptions 				= new String[] { "Abbrechen", "Nein", "Ja" };

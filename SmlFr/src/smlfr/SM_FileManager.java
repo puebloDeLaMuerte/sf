@@ -28,6 +28,7 @@ import updateModel.WallUpdateRequestEvent;
 
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
+import SMUtils.NewProjectDialog;
 import SMUtils.SM_Frames;
 import SMUtils.awFileSize;
 
@@ -259,6 +260,23 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	public synchronized JSONObject getArchitecture() {
 		return museum.getJSONObject("architecture");
 	}
+	
+	public synchronized String[] getRoomsInArchitecture() {
+		
+		String[] rooms;
+		JSONObject arch = getArchitecture();
+		
+		JSONArray r = arch.getJSONArray("rooms");
+		rooms = new String[r.size()];
+		
+		int i = 0;
+		for (String rr : r.getStringArray()) {
+			rooms[i] = rr;
+			i++;
+		}
+
+		return rooms;
+	}
 
 	public synchronized JSONObject getRoomFromArchitecture( String _room) {
 
@@ -268,7 +286,22 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		} else {
 			return null;
 		}
-
+	}
+	
+	public synchronized String[] getRoomRealNamesInArchitecture() {
+		
+		String[] realNames;
+		String[] rooms = getRoomsInArchitecture();
+		realNames = new String[rooms.length];
+		
+		int i = 0;
+		for (String r : rooms) {
+			JSONObject jr = getRoomFromArchitecture(r);
+			realNames[i] = jr.getString("roomRealName");
+			i++;
+		}
+		
+		return realNames;
 	}
 
 	public synchronized File getFilePathForRoom(String _room) {
@@ -380,15 +413,17 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	}
 
 	public File newProject() {
+		
+				
+		NewProjectDialog d = new NewProjectDialog( getRoomsInArchitecture(), getRoomRealNamesInArchitecture() );
+		d.showDialog();
+		
+		String projectName = d.getProjectName();
+		String[] _selectedRooms = d.getSelectedRooms();
+		
+		
 
-		String[] _selectedRooms = new String[] { "S1", "S2", "S3"};
-		
-		String projectName = JOptionPane.showInputDialog(null,
-				  Lang.newProjectName,
-				  Lang.newProjectNameTitle,
-				  JOptionPane.QUESTION_MESSAGE);
-		
-		if(projectName == null ) return null;
+		if( projectName == null || _selectedRooms.length == 0) return null;
 		
 		System.out.println("the NAME NEAM NESM NESAM  ----->> "+projectName);
 		
@@ -497,6 +532,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		loadRegular(_f);
 	}
 	
+	
 	private synchronized void loadRegular(File _f) {
 		
 		if( _f.exists() ) {
@@ -522,6 +558,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			currentProjectName = p.getString("projectName");
 		}
 	}
+	
 
 	private synchronized void loadFromTmp(File _f) {
 		
@@ -541,6 +578,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		loaded = true;
 	}
 	
+	
 	public synchronized String[] getRoomNamesInProject() {
 
 		String[] rms;
@@ -554,6 +592,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 		return rms;
 	}
+	
 	
 	public synchronized JSONArray getRoomsInProject() {
 		
@@ -575,20 +614,24 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 	}
 	
+	
 	public synchronized File getArtLibraryPath() {
 		String tmp = projectPath.getAbsolutePath();
 		return new File(tmp.substring(0, tmp.lastIndexOf('.'))+"_lib");
 	}
+	
 	
 	// TODO synchronize??
 	public String getProjectName() {
 		return currentProjectName;
 	}
 	
+	
 	// TODO synchronize??
 	public String getProjectFolderPath() {
 		return projectPath.getParent();
 	}
+	
 	
 	// ARTWORK
 	
@@ -607,6 +650,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return aw;
 	}
 	
+	
 	public synchronized File getJSONFilePathForArtwork(String _name) {
 		
 		String filePath = projectPath.getAbsolutePath().substring(0, projectPath.getAbsolutePath().length()-4)+"_lib/"+_name+".sfa";
@@ -614,6 +658,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		if( file.exists() ) return file;
 		else return null;
 	}
+	
 	
 	public synchronized File getImageFilePathForArtwork(String _artwork, SMUtils.awFileSize _size) {
 		
@@ -640,12 +685,14 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		return new File(filePath);
 	}
+	
 
 	public synchronized void requestImport() {
 		
 		File artLibraryPath = new File(getProjectFolderPath() + "/" +getProjectName()+"_lib");
 		base.in.startImport(artLibraryPath);
 	}
+	
 	
 	public synchronized void deleteArtwork (SM_Artwork _aw) {
 		
@@ -685,6 +732,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		saveProject();
 	}
 	
+	
  	public synchronized void importedArtworksIntoProject(String[] importedAws) {
 		
 		
@@ -717,6 +765,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		registerUpdateListener(base.lib);
 		
 	}
+ 	
 	
 	public synchronized void changeArtworkData(SM_Artwork aw, LinkedHashMap<String, Object> data) {
 		
@@ -840,6 +889,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		aw.setShadow(shadow);
 		
 	}
+	
 
 	// UPDATE Event handling
 
@@ -854,6 +904,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 	}
 	
+	
 	public synchronized void unregisterUpdateListener(UpdateListener _listener) {
 		if(_listener.getClass() == (SM_WallArrangementView.class)) {
 
@@ -863,6 +914,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 		//		updateListeners.remove(UpdateListener.class, _listener);
 	}
+	
 	
 	public synchronized void unregisterArrViewAWUpdateListeners() {
 		
@@ -883,6 +935,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 	}
 	
+	
 	public synchronized void unregisterViewManagerUpdateListeners() {
 
 		System.out.println("Trying to remove "+updateListeners_ArrViews.getListenerCount()+" Listeners");
@@ -902,6 +955,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		System.out.println("removed some, now its "+updateListeners.getListenerCount()+" Listeners");
 	}
+	
 	
 	public synchronized boolean updateRequested(ArtworkUpdateRequestEvent e) {
 		
@@ -1045,6 +1099,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		return true;
 	}
+	
 	
 	@Override
 	public synchronized void updateRequested(WallUpdateRequestEvent e) {
@@ -1365,6 +1420,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			}
 		}
 	}
+	
 	
 	public void requestQuit() {
 		

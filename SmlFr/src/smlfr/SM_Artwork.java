@@ -58,7 +58,7 @@ public class SM_Artwork {
 		
 		isInWall = null;
 		artworkPosInWall = new int[2];
-		light = false;
+		light = true;
 		shadow = true;
 		
 	}
