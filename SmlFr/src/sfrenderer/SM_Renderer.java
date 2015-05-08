@@ -112,6 +112,8 @@ public class SM_Renderer extends PApplet{
 //		System.gc();
 		
 		currentView = _view;
+		vm.setCurrentViewAngle( currentView.getName() );
+		
 		currentViewString = currentView.getName();
 		setCurrentPath(currentViewString);
 		setup();
@@ -156,7 +158,7 @@ public class SM_Renderer extends PApplet{
 		for( String n : vm.getViewAngleRealNames()) {
 			pMenuViews[i] = new ViewMenuItem(n, vm.getViewAngle(i).getName());
 			pMenuViews[i].addActionListener(vm);
-			pMenuViews[i].addMouseListener(vm.getView());
+			pMenuViews[i].addMouseListener(vm.getRoomArrView());
 			pMenu.add(pMenuViews[i]);
 			i++;
 		}

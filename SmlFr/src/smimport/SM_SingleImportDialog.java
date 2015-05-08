@@ -1,6 +1,7 @@
 package smimport;
 
 import java.awt.BorderLayout;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -271,9 +272,13 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		
 		this.add(btnPanel, BorderLayout.PAGE_END);
 		
-		this.setTitle(Lang.importTitle);
+		
+		java.awt.Rectangle window = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+		this.setLocation((int)(window.width/2 - this.getSize().getWidth()/2), (int)(window.height/2 - this.getSize().getHeight()/2));		
+		
 		this.setVisible(true);
 		
+		this.setTitle(Lang.importTitle);
 		
 		
 		

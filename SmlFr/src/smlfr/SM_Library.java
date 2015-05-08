@@ -98,7 +98,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
         JLabel sortTxt = new JLabel(Lang.sortLibBy);
         
         importBtn = new JButton(Lang.importBtn);
-        importBtn.setFocusable(true);
+        importBtn.setFocusable(false);
         importBtn.addActionListener(this);
         
         deleteBtn = new JButton(Lang.deleteBtn);
@@ -317,7 +317,9 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 			sortAWPanels();
 		}
 		if( e.getSource() == deleteBtn) {
-			deleteArtworks();
+			if( getSelectedArtworks().length >0) {
+				deleteArtworks();
+			}
 		}
 	}
 

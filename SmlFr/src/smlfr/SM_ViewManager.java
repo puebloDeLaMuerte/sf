@@ -198,6 +198,9 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		myRoomArrView.setActiveViews(retStrg);
 	}
 	
+	public void setCurrentViewAngle(String _va) {
+		currentAngle = _va;
+	}
 	
 	public synchronized int getNumberOfViewAngles() {
 		return viewAngles.length;
@@ -221,7 +224,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		return names;
 	}
 	
-	public synchronized SM_RoomArrangementView getView() {
+	public synchronized SM_RoomArrangementView getRoomArrView() {
 		return myRoomArrView;
 	}
 	
@@ -320,13 +323,15 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 
 			JFileChooser ch = new JFileChooser(exportLoc);
 			ch.setSelectedFile(exportLoc);
-			ch.showSaveDialog(null);
+			int fcVal = ch.showSaveDialog(null);
+			
+			System.err.println(fcVal);
 			
 			exportLoc = ch.getSelectedFile();
 			
 			int overwrite = 99;
 			String message = Lang.overwrite_1 + exportLoc.getName() + Lang.overwrite_2;
-			if( exportLoc.exists() ) overwrite = JOptionPane.showConfirmDialog(null, message , Lang.overwriteTitle, JOptionPane.YES_NO_OPTION);
+			if( fcVal == 0 && exportLoc.exists() ) overwrite = JOptionPane.showConfirmDialog(null, message , Lang.overwriteTitle, JOptionPane.YES_NO_OPTION);
 			
 			
 			boolean success = false;
