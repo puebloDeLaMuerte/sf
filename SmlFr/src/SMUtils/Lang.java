@@ -172,6 +172,12 @@ public class Lang {
 	public static String	err_loadImageFile 			= "Bilddatei konnte nicht geladen werden";
 	public static String	err_InvNrAlreadyExists 		= "Es existiert bereits ein Kunstwerk mit dieser Inventarnummer";
 	public static String	err_noImageSize 			= "Es wurden keine Ma§e in der Tabelle gefunden";
+	public static String	err_onImageResize			= "Die Bilddatei konnte nicht verarbeitet werden.";
+	public static String	err_noImageFile				= "Es existiert keine Bilddatei mit diesem Namen ";
+	public static String	err_noImageFile_2			= " und der Endung auf .jpg, .JPG, oder .png.";
+	public static String	err_loadingJpg				= "Beim laden des Bildes ist ein Fehler aufgetreten.";
+	
+	
 	public static String 	deleteMessage_1 			= "Wollen Sie folgende Kunstwerke wirklich lšschen?\n" +
 															"Beachten Sie dass das Projekt dabei gesichert werden muss.\n";
 	public static String 	deleteMessage_2				= "\n\nProjekt jetzt sichern und Kunstwerke lšschen?";

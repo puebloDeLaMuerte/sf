@@ -478,7 +478,7 @@ public class SM_Import extends PApplet  {
 			return results;
 		}
 		catch(Exception e) {
-			throw new Exception("something went wrong while resizing the image");
+			throw new Exception(Lang.err_onImageResize);
 		}
 	}
 
@@ -497,7 +497,7 @@ public class SM_Import extends PApplet  {
 		return exists;
 	}
 
-	private PImage loadArtworkImage(File imageFolder, String imageName) {
+	private PImage loadArtworkImage(File imageFolder, String imageName) throws Exception{
 		
 		PImage img = null;
 		
@@ -506,6 +506,7 @@ public class SM_Import extends PApplet  {
 				
 		File test1 = new File(imageFolder.getAbsolutePath()+"/"+imageName+".png");
 		File test2 = new File(imageFolder.getAbsolutePath()+"/"+imageName+".jpg");
+		
 		if( test1.exists()) testPNG = true;
 		if( test2.exists()) testJPG = true;
 			
@@ -513,8 +514,25 @@ public class SM_Import extends PApplet  {
 			img = loadImage(imageFolder.getAbsolutePath()+"/"+imageName+".png");
 		}
 		else if( testJPG ) {
-			img = loadImage(imageFolder.getAbsolutePath()+"/"+imageName+".jpg");
+			
+			try {
+				img = loadImage(imageFolder.getAbsolutePath()+"/"+imageName+".jpg");
+			} catch (Exception e) {
+				
+				try {
+					img = loadImage(imageFolder.getAbsolutePath()+"/"+imageName+".JPG");
+				}
+				catch (Exception e2) {
+					throw new Exception(Lang.err_loadingJpg);
+				}
+
+			}
 		}
+		else {
+			throw new Exception(Lang.err_noImageFile + imageName + Lang.err_noImageFile_2);
+		}
+		
+		
 		
 		return img;
 	}

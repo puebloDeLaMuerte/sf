@@ -26,6 +26,7 @@ import updateModel.UpdateType;
 import updateModel.WallColorUpdateRequestEvent;
 import updateModel.WallUpdateRequestEvent;
 
+import SMUtils.FileManagerSheduledUpdateThread;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.NewProjectDialog;
@@ -1074,26 +1075,31 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		if( updatesQueued == 0 ){
 			
-			UpdateEvent e2;
+			FileManagerSheduledUpdateThread s = new FileManagerSheduledUpdateThread(queueType, dataQueue, updateListeners, updateListeners_ArrViews);
+			s.start();
+			System.out.println("FILE MANAGER: update sheduled");
 			
-			if( dataQueue.size() == 0 ) {  // fire blank
-				e2 = new UpdateEvent(this, UpdateType.BLANK, null);
-			}
 			
-			e2 = new UpdateEvent(this, queueType, dataQueue);
-	
-					
-			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
-				lsnr.doUpdate(e2);
-	
-			}
-			for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
-				lsnr.doUpdate(e2);
-	
-			}
-			
-			queueType = null;
-			dataQueue = new ArrayList<LinkedHashMap<String, Object>>();
+//			UpdateEvent e2;
+//			
+//			if( dataQueue.size() == 0 ) {  // fire blank
+//				e2 = new UpdateEvent(this, UpdateType.BLANK, null);
+//			}
+//			
+//			e2 = new UpdateEvent(this, queueType, dataQueue);
+//	
+//					
+//			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+//				lsnr.doUpdate(e2);
+//	
+//			}
+//			for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+//				lsnr.doUpdate(e2);
+//	
+//			}
+//			
+//			queueType = null;
+//			dataQueue = new ArrayList<LinkedHashMap<String, Object>>();
 		}
 		
 		

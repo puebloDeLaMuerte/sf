@@ -58,7 +58,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	private float 					xOffsetPx, yOffsetPx;
 	private int						myMidHeight;
 	
-	private SM_Artwork				awOver, menuAW;
+	private volatile SM_Artwork		awOver, menuAW;
 //	private ArrayList<SM_Artwork> 	selectedAws;
 	private boolean 				awDrag = false;
 	private boolean					selectionDrag = false;
@@ -440,7 +440,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		if( _mode == 1 ) {
 			if(myWall.getArtworksArray().length > 0 ) {
 
-				if(!awDrag) awOver = null;
+				if(!awDrag && _mode == 0) awOver = null;
 
 				for( SM_Artwork a : myWall.getArtworksArray() ) {
 
@@ -462,7 +462,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		if(myWall.getArtworksArray().length > 0 ) {
 			
-			if(!awDrag) awOver = null;
+			if(!awDrag && _mode == 0) awOver = null;
 			
 			for( SM_Artwork a : myWall.getArtworksArray() ) {
 
@@ -485,7 +485,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				int[] tmpPos5 = a.getArtworkSize();
 				PVector artworkSize = astos(new PVector(tmpPos5[0], tmpPos5[1]), drawScale);
 				
-				if( !awDrag ) {
+// 	----->   	// check and assign awOver
+				
+				if( !awDrag && _mode == 0) {
 					if( mouseX > totalPos.x && mouseX < (totalPos.x + totalSize.x) ) {
 						if( mouseY > totalPos.y && mouseY < (totalPos.y + totalSize.y) ) {
 							awOver = a;
@@ -500,7 +502,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				
 				if( _mode == 0 && isValidDrag() ) {
 					
-					if( !awOver.isSelected() ) {
+					if( awOver != null && !awOver.isSelected() ) {
 						
 						if( a == awOver ) {
 							gfx.tint(255,75);
@@ -869,7 +871,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				
 				// if multiple moved
 				
-				if(awOver.isSelected() && getSelectedArtworks().length > 1) {
+				if(awOver != null && awOver.isSelected() && getSelectedArtworks().length > 1) {
 					
 					PVector referencePos = new PVector(awOver.getTotalWallPos()[0], awOver.getTotalWallPos()[1]);
 					
@@ -895,7 +897,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 						myWall.myRoom.fireUpdateRequest(e);
 					}
 					
-				} else {  // fire single update
+				} else if( awOver != null ) {  
+					
+					// fire single update
 				
 					ArtworkUpdateRequestEvent e;
 				
@@ -980,7 +984,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	@Override
  	public void doUpdate(UpdateEvent e) {
 		artworkUpdatePending = true;
-		awOver = null;
+//		awOver = null;
 	}
 	
 	@Override

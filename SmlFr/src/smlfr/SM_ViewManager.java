@@ -237,7 +237,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		else return false;
 	}
 
-	public synchronized PImage getWallGfx(Character _wc, int _shdwOfset) {
+	public /*synchronized  manual*/ PImage getWallGfx(Character _wc, int _shdwOfset) {
 		System.out.println("VM: getWallGfx:"+_wc);
 
 		if( wallArrangementViews.get(""+_wc) != null ) {
@@ -246,7 +246,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		else return null;
 	}
 	
-	public synchronized PImage getLightsGfx( Character _wc) {
+	public /*synchronized  manual*/ PImage getLightsGfx( Character _wc) {
 		System.out.println("VM: getLightsGfx:"+_wc);
 
 		if( wallArrangementViews.get(""+_wc) != null ) {
@@ -488,8 +488,8 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 
 						if (renderer != null) {
 
-							renderer.updateArtworksLayer(ww);
-							renderer.updateLightsLayer(ww);
+							renderer.update.lights(ww);
+							renderer.update.artworks(ww);
 						}
 
 					}
@@ -512,7 +512,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 
 					if (renderer != null) {
 
-					renderer.updateArtworksLayer(ww);
+					renderer.update.artworks(ww);
 					}
 				}
 			}
@@ -520,14 +520,14 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			
 		case ORIGINAL_COLOR:
 			if (renderer != null) {
-				renderer.updateRoomColorLayer(null, null, null);
+				renderer.update.color(null, null, null);
 			}
 			break;
 			
 		case ROOM_COLOR:
 			
 			if (renderer != null) {
-				renderer.updateRoomColorLayer(null, null, null);
+				renderer.update.color(null, null, null);
 			}
 			break;
 			
@@ -537,7 +537,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 								
 				Integer c = (Integer)e.getData().get("color");
 				
-				renderer.updateRoomColorLayer( c, null, null );
+				renderer.update.color( c, null, null );
 			}
 			
 			break;
@@ -549,14 +549,14 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 				Character w = (Character)e.getData().get("wallChar");
 				Integer c = (Integer)e.getData().get("color");
 				
-				renderer.updateRoomColorLayer( null, w, c );
+				renderer.update.color( null, w, c );
 			}
 			break;
 			
 		case WALL_COLOR:
 			
 			if (renderer != null) {
-				renderer.updateRoomColorLayer(null, null, null);
+				renderer.update.color(null, null, null);
 			}
 			break;
 						
@@ -575,8 +575,8 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 
 					if (renderer != null) {
 
-					renderer.updateArtworksLayer(ww);
-					renderer.updateLightsLayer(ww);
+						renderer.update.lights(ww);
+						renderer.update.artworks(ww);
 					}
 				}
 			}
@@ -596,8 +596,8 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 
 					if (renderer != null) {
 
-					renderer.updateArtworksLayer(ww);
-					renderer.updateLightsLayer(ww);
+						renderer.update.lights(ww);
+						renderer.update.artworks(ww);
 					}
 				}
 			}
@@ -615,8 +615,8 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	public synchronized void requestRendererUpdate( char _wc) {
 		if( renderer != null ) {
 			System.out.println("requesting Update");
-			renderer.updateArtworksLayer(_wc);
-			renderer.updateLightsLayer(_wc);
+			renderer.update.lights(_wc);
+			renderer.update.artworks(_wc);
 		}
 	}
 
