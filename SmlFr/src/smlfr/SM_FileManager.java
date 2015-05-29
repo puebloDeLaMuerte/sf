@@ -1076,6 +1076,12 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		if( updatesQueued == 0 ){
 			
 			FileManagerSheduledUpdateThread s = new FileManagerSheduledUpdateThread(queueType, dataQueue, updateListeners, updateListeners_ArrViews);
+			
+			// reset queue
+			queueType = null;
+			dataQueue = new ArrayList<LinkedHashMap<String, Object>>();
+
+			// start the thread
 			s.start();
 			System.out.println("FILE MANAGER: update sheduled");
 			
@@ -1098,8 +1104,6 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 //	
 //			}
 //			
-//			queueType = null;
-//			dataQueue = new ArrayList<LinkedHashMap<String, Object>>();
 		}
 		
 		

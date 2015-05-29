@@ -57,8 +57,5 @@ public class FileManagerSheduledUpdateThread extends Thread {
 			lsnr.doUpdate(e2);
 
 		}
-		
-		queueType = null;
-		dataQueue = new ArrayList<LinkedHashMap<String, Object>>();
 	}
 }
