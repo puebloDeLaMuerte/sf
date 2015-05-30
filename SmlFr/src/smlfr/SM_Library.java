@@ -23,15 +23,11 @@ import java.awt.event.ActionListener;
 //import java.io.IOException;
 //import java.util.ArrayList;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.LinkedHashMap;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
-import com.sun.xml.internal.bind.v2.TODO;
 
 import updateModel.ArtworkUpdateRequestEvent;
 import updateModel.UpdateEvent;
@@ -40,11 +36,13 @@ import updateModel.WallUpdateRequestEvent;
 
 
 import SMUtils.AWPanel;
+import SMUtils.ArtworkMeasurementParent;
 import SMUtils.Lang;
+import SMUtils.MeasureMenuItem;
 import SMUtils.awFileSize;
+import SMUtils.ArtworkMeasurementChooser;
 
-
-public class SM_Library extends JFrame implements UpdateListener, ActionListener {
+public class SM_Library extends JFrame implements UpdateListener, ActionListener, ArtworkMeasurementParent {
 	
 	/**
 	 * 
@@ -187,7 +185,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		JLabel stxt = new JLabel(size);
 		stxt.setFont(font);
 		
-		AWPanel panel = new AWPanel(artworks.get(awName));
+		AWPanel panel = new AWPanel(this, artworks.get(awName));
 		panel.setLayout(new FlowLayout( FlowLayout.LEFT, 2,2 ));
 		if(artworks.get(awName).getWall() != null ) {
 			panel.setBackground(Color.LIGHT_GRAY);
@@ -307,7 +305,6 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
 		
 		if(e.getActionCommand().equalsIgnoreCase(Lang.importBtn)) {
 				
@@ -320,6 +317,11 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 			if( getSelectedArtworks().length >0) {
 				deleteArtworks();
 			}
+		}
+		if( e.getSource().getClass() == SMUtils.MeasureMenuItem.class) {
+									
+			MeasureMenuItem i = (MeasureMenuItem)e.getSource();			
+			SMUtils.ArtworkMeasurementChooser awc = new SMUtils.ArtworkMeasurementChooser(this, i.getArtwork());
 		}
 	}
 
@@ -382,6 +384,15 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 
 	public void updateArtworksMap(HashMap<String, SM_Artwork> _artworks) {
 		artworks = _artworks;
+	}
+
+
+	
+	@Override
+	public void artworkMeasurementCallback(LinkedHashMap<String, Object> data) {
+
+		ArtworkUpdateRequestEvent e = new ArtworkUpdateRequestEvent(this, false, -1, data);
+		fm.updateRequested(e);
 	}
 	
 }

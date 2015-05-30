@@ -10,6 +10,7 @@ public class Lang {
 	
 	public static String	wall = "Wand";
 	public static String	room = "Saal";
+	public static String 	rendererBusy = "Vorschau berechnen";
 	
 	// errors: File Loading
 	public static String	warning = 					"Warnung!";
@@ -182,6 +183,7 @@ public class Lang {
 															"Beachten Sie dass das Projekt dabei gesichert werden muss.\n";
 	public static String 	deleteMessage_2				= "\n\nProjekt jetzt sichern und Kunstwerke lšschen?";
 	public static String 	deleteTitle 				= "Kunstwerke lšschen...";
+	
 	
 	
 	}

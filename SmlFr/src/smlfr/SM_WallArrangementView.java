@@ -21,6 +21,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
 import SMUtils.AllignmentTypes;
+import SMUtils.ArtworkMeasurementParent;
 import SMUtils.DistanceChooser;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
@@ -36,7 +37,7 @@ import updateModel.UpdateListener;
 import updateModel.ArtworkUpdateRequestEvent;
 import updateModel.WallUpdateRequestEvent;
 
-public class SM_WallArrangementView extends PApplet implements DropTargetListener, UpdateListener, ActionListener {
+public class SM_WallArrangementView extends PApplet implements DropTargetListener, UpdateListener, ActionListener, ArtworkMeasurementParent {
 
 /**
 	 * 

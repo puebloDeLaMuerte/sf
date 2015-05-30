@@ -87,11 +87,11 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			System.exit(1);
 		}
 
-
 		// init file paths and load files:
+		
 		resourcesPath   = new File("resources");
 		preferencesPath = new File("resources/prefs.txt");
-		tempProjectPath = new File(resourcesPath.getAbsolutePath());
+		tempProjectPath = new File(resourcesPath.getAbsolutePath()+"/tmp");
 		preferences = loadPrefs();
 		museumPath = new File("resources/"+preferences.getString("museumData"));
 		museum = loadMuseumData();
@@ -360,7 +360,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		String tempProjFileName = projectPath.getAbsoluteFile().getName()+".tmp";
 		
-		tempProjectPath = new File(resourcesPath+"/"+tempProjFileName);
+		tempProjectPath = new File(resourcesPath+"/tmp/"+tempProjFileName);
 
 		JSONObject tmpJ = new JSONObject();
 		tmpJ.setJSONObject("projectFile", project);

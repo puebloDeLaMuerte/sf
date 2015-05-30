@@ -53,10 +53,10 @@ public class ArtworkMeasurementChooser extends JFrame implements ActionListener 
 	
 	private LinkedHashMap<String, Object> packedData;
 	
-	private SM_WallArrangementView			parent;
+	private ArtworkMeasurementParent		parent;
 	private SM_Artwork						artwork;
 	
-	public ArtworkMeasurementChooser(SM_WallArrangementView parent, SM_Artwork artwork) {
+	public ArtworkMeasurementChooser(ArtworkMeasurementParent parent, SM_Artwork artwork) {
 		
 		this.parent = parent;
 		this.artwork = artwork;
@@ -334,10 +334,7 @@ public class ArtworkMeasurementChooser extends JFrame implements ActionListener 
 		
 		if( !valid ) JOptionPane.showMessageDialog(this,  errors, Lang.editAwErrorTitle, JOptionPane.WARNING_MESSAGE);
 		
-		
-		// TODO see HERE if anything has changed at all, if not -> valid = false
-		// TODO alse see HERE if you want to ask the user if he really wants to have frames only on one side (TOP/BOTTOM only etc)
-		
+				
 		return valid;
 	}
 	

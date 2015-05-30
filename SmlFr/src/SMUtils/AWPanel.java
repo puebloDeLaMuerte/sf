@@ -9,12 +9,17 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
+import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.border.Border;
 
 import smlfr.SM_Artwork;
@@ -29,7 +34,10 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
     private String myArtworkName;
     private SM_Artwork myArtwork;
     
-    public AWPanel(SM_Artwork _s) {
+    private JPopupMenu menu;
+    private MeasureMenuItem measurements;
+    
+    public AWPanel(ActionListener ls, SM_Artwork _s) {
         addMouseListener(this);
         setBorder(blackBorder);
         setFocusable(true);
@@ -38,6 +46,14 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 		ds.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, this);
 		myArtworkName = _s.getName();
 		myArtwork = _s;
+		
+		menu = new JPopupMenu();
+		measurements = new MeasureMenuItem(Lang.editMeasurements, _s);
+				
+
+		measurements.addActionListener(ls);
+		menu.add(measurements);
+		this.add(menu);
     }
     
     public String getArtist() {
@@ -95,9 +111,18 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		isHighlighted=!isHighlighted;		
-		if(isHighlighted) setBorder(redBorder);
-        else setBorder(blackBorder);		
+		
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			
+			isHighlighted = !isHighlighted;
+			if (isHighlighted)
+				setBorder(redBorder);
+			else
+				setBorder(blackBorder);
+		} else if (e.getButton() == MouseEvent.BUTTON3) {
+			
+			menu.show(this, 30, 30);
+		}
 	}
 	
 
@@ -134,5 +159,7 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 		return false;
 	}
 	
+	
+
 }
 

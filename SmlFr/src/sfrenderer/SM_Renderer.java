@@ -18,6 +18,7 @@ import javax.swing.JSeparator;
 import SMUtils.Lang;
 import SMUtils.Skewmator;
 import SMUtils.ViewMenuItem;
+import SMUtils.pTimedEventGenerator;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -47,6 +48,7 @@ public class SM_Renderer extends PApplet{
 	private ViewMenuItem[]			pMenuViews;	
 	
 	public RendererUpdateThreadManager		update;
+	private pTimedEventGenerator			tGen;
 	
 	private PImage[] layers;
 	private float cr, cg, cb;
@@ -59,9 +61,9 @@ public class SM_Renderer extends PApplet{
 	
 	
 	private PGraphics				cropMask;
-	private volatile PGraphics[]				wallGfxsAW;
-	private	volatile PGraphics[]				wallGfxsLG;
-	private volatile char[]					wallGfxsId;
+	private volatile PGraphics[]	wallGfxsAW;
+	private	volatile PGraphics[]	wallGfxsLG;
+	private volatile char[]			wallGfxsId;
 
 	private Skewmator				skewmator;
 
@@ -78,6 +80,9 @@ public class SM_Renderer extends PApplet{
 	private boolean 				devGUI = false;
 	
 	private boolean					isBusy = false;
+	private int						busyQueueMax = 0;
+	private int						busyQueueProgress = 0;
+	private int						busyclock = 0;
 	
 	private boolean					savetyDraw = false;
 
@@ -86,8 +91,6 @@ public class SM_Renderer extends PApplet{
 //		super();
 		vm = _vm;
 		skewmator = new Skewmator(photoX, photoY);
-		skewmator.init();
-//		tGen = new pTimedEventGenerator(this);
 		
 		update = new RendererUpdateThreadManager(this);
 		
@@ -108,8 +111,11 @@ public class SM_Renderer extends PApplet{
 
 		this.registerMethod("post", this);
 		
-//		this.frame = _frame;
-//		myFrame = _frame;
+		skewmator.init();
+		tGen = new pTimedEventGenerator(this, "onTimerEvent", false);
+		tGen.setIntervalMs(1500);
+		tGen.setEnabled(true);
+
 	}
 	
 	public void changeView( SM_ViewAngle _view ) {
@@ -138,7 +144,9 @@ public class SM_Renderer extends PApplet{
 			
 		}
 		System.gc();
-		redraw();
+		
+
+//		redraw();
 	}
 	
 	
@@ -644,20 +652,43 @@ public class SM_Renderer extends PApplet{
 	 * set boolean: savetyDraw: true
 	 */
 	public void threadManagerRecall() {
+		
 		savetyDraw = true;
+		isBusy = false;
+		busyQueueMax = 0;
+		busyQueueProgress = 0;
+	}
+	
+	public void increaseBusyQueueMax() {
+		busyQueueMax++;
+	}
+	
+	public void setBusyQueueCurrent(int currentQueueLength) {
+		busyQueueProgress = busyQueueMax - currentQueueLength;
 	}
 	
 	public void post() {
 		System.out.println("RENDERER: POST: start");
 		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
 		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
-		if(savetyDraw) {
+		if(savetyDraw && update.getQueueLength() <= 0 ) {
 			super.redraw();
 			savetyDraw = false;
+			isBusy = false;
+			busyQueueMax = 0;
+			busyQueueProgress = 0;
 		}
 		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
 		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
 		System.out.println("RENDERER: POST: end");
+	}
+	
+	public void onTimerEvent() {
+
+		if( update.getQueueLength() <= 0 && savetyDraw ) {
+			this.redraw();
+			savetyDraw = false;
+		}
 	}
 	
 	public void draw(){
@@ -677,6 +708,16 @@ public class SM_Renderer extends PApplet{
 		// draw Base
 
 		if(b1) {
+			
+			while( layers[0] == null ) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				System.out.println("Waiting for layers [9]...");
+			}
+			
 			blendMode(BLEND);
 			image(layers[0], xOff, yOff,displW,displH);
 			g.removeCache(g);
@@ -687,7 +728,18 @@ public class SM_Renderer extends PApplet{
 		
 		// draw Farbe
 
-		if(b2){
+		if(b2) {
+			
+			while( layers[1] == null ) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				System.out.println("Waiting for layers [1]...");
+			}
+			
+			
 			pushStyle();
 			blendMode(BLEND);
 //			tint(vm.getRoomColor());
@@ -755,25 +807,57 @@ public class SM_Renderer extends PApplet{
 
 		System.out.println("RENDERER: DRAW: anim+gui");
 		
-		// draw busy anim
-		
-		if( isBusy ) {
-			pushStyle();
-			stroke(255);
-			line(random(0,width), random(0,height),random(0,width), random(0,height));
-			fill(255,50);
-			noStroke();
-			rect(0,0,width,height);
-			popStyle();
-		}
-		
 		drawGUI();
-		
+
 		System.out.println("RENDERER: DRAW: end");
 	}
 	
 	
 	void drawGUI() {
+		
+		
+		// draw busy anim
+
+		if( isBusy || savetyDraw ) {
+			
+			
+			pushStyle();
+			
+			smooth();
+			
+			noStroke();
+			if( !savetyDraw ) {
+				fill(150);
+			} else {
+				fill(20,20,200);
+			}
+			rect(0, height -16, width, height);
+			
+			fill(20,20,200);
+			float fake = map( busyclock, 0, 2, 0, ((busyQueueMax - busyQueueProgress)/2)); 
+			rect(0, height-16, map(busyQueueProgress, 0, busyQueueMax, 0, width) + fake, height);
+			
+			fill(255);
+			
+			String s = Lang.rendererBusy;
+			busyclock++;
+			int mod = busyclock % 5;
+
+			for(int i = 0; i<mod; i++) {
+				s += " .";
+			}
+			text(s, 10, height - 4);
+			
+			fill(255,5);
+			
+			rect(0,0,width,height);
+			
+			popStyle();
+		}
+		
+		
+		// draw developer GUI
+		
 		if (devGUI) {
 			pushStyle();
 			stroke(0);
@@ -1020,6 +1104,8 @@ public class SM_Renderer extends PApplet{
 		System.err.println("Renderer goodbye...1");
 		
 //		tGen.dispose();
+//		tGen.setEnabled(false);
+		tGen.dispose();
 		
 		frame.dispose();
 

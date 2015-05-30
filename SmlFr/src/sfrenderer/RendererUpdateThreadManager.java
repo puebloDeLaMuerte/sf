@@ -19,6 +19,7 @@ public class RendererUpdateThreadManager {
 	
 	public void color( Integer _previewColor, Character _previewWall, Integer _previewWallColor ) {
 		
+		renderer.increaseBusyQueueMax();
 		renderer.setBusy(true);
 //		renderer.redraw();
 		renderer.loop();
@@ -27,7 +28,6 @@ public class RendererUpdateThreadManager {
 		ColorUpdateThread t = new ColorUpdateThread( _previewColor, _previewWall, _previewWallColor);
 		threads.add(t);
 		
-		
 		t.start();
 		System.out.println("threads.size: " + threads.size());		
 		System.out.println("alive: "+t.isAlive());
@@ -35,7 +35,8 @@ public class RendererUpdateThreadManager {
 	}
 	
 	public void artworks(char _wallChar) {
-		
+
+		renderer.increaseBusyQueueMax();
 		renderer.setBusy(true);
 //		renderer.redraw();
 		renderer.loop();
@@ -51,6 +52,7 @@ public class RendererUpdateThreadManager {
 	
 	public void lights(char _wallChar) {
 		
+		renderer.increaseBusyQueueMax();
 		renderer.setBusy(true);
 //		renderer.redraw();
 		renderer.loop();
@@ -69,6 +71,7 @@ public class RendererUpdateThreadManager {
 		System.out.println("THREAD MANAGER: threads.size: " + threads.size());
 		System.out.println("THREAD MANAGER: unregistering thread: " + me.toString());
 		threads.remove(me);
+		renderer.setBusyQueueCurrent(threads.size());
 		System.out.println("THREAD MANAGER: threads.size: " + threads.size());
 		
 		if( threads.size() == 0) {
@@ -79,6 +82,10 @@ public class RendererUpdateThreadManager {
 			renderer.threadManagerRecall();
 			System.out.println("THREAD MANAGER: recall called");
 		}
+	}
+
+	public int getQueueLength() {
+		return threads.size();
 	}
 	
 	private class ColorUpdateThread extends Thread  {
@@ -161,4 +168,6 @@ public class RendererUpdateThreadManager {
 			unregisterThread(this);
 		}
 	}
+
+	
 }
