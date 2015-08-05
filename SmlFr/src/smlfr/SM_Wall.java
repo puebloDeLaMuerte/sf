@@ -18,7 +18,7 @@ public class SM_Wall implements UpdateListener {
 	private float[]							myNavigatorPos;
 	private int								myNavigatorOrientation;
 	private int[]							mySize;
-	private int								myMidHeight = 1500;
+	private int								myMidHeight;
 	
 	
 	// from Project:
@@ -40,6 +40,10 @@ public class SM_Wall implements UpdateListener {
 		myNavigatorPos = _w.getJSONArray("navigatorPos").getFloatArray();
 		myNavigatorOrientation = _w.getInt("navigatorOrientation");
 		mySize = _w.getJSONArray("wallSize").getIntArray();
+		
+		myMidHeight = _fm.getMidHeight();
+		myMidHeight -= _w.getInt("bottomOffset", 0);
+		
 		_fm.registerUpdateListener(this);
 		
 		

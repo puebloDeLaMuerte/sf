@@ -195,19 +195,14 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		saveJSONObject(preferences, preferencesPath.getAbsolutePath());
 	}
 
-	public synchronized String getCurrentProjectName() {
-		if( project != null) return project.getString("projectName");
-		else return "no project loaded";
-	}
-
 	private synchronized JSONObject loadPrefs() {
-
+		
 		JSONObject j;
 		if ( preferencesPath.exists() ) {
 			try {
 				j = loadJSONObject(preferencesPath);
 			} catch (Exception e) {
-
+				
 				javax.swing.JOptionPane.showMessageDialog(this,
 						Lang.couldntLoadPrefs, "couldn't load",
 						javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -221,6 +216,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			j = null;
 		}
 		return j;
+	}
+	
+	public synchronized int getMidHeight() {
+		return preferences.getInt("midHeight");
 	}
 
 	// MUSEUM:
@@ -533,6 +532,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		loadRegular(_f);
 	}
 	
+	public synchronized String getCurrentProjectName() {
+		if( project != null) return project.getString("projectName");
+		else return "no project loaded";
+	}
 	
 	private synchronized void loadRegular(File _f) {
 		
