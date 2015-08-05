@@ -26,7 +26,6 @@ import updateModel.UpdateType;
 import updateModel.WallColorUpdateRequestEvent;
 import updateModel.WallUpdateRequestEvent;
 
-import SMUtils.FileManagerSheduledUpdateThread;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.NewProjectDialog;
@@ -87,11 +86,11 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			System.exit(1);
 		}
 
+
 		// init file paths and load files:
-		
 		resourcesPath   = new File("resources");
 		preferencesPath = new File("resources/prefs.txt");
-		tempProjectPath = new File(resourcesPath.getAbsolutePath()+"/tmp");
+		tempProjectPath = new File(resourcesPath.getAbsolutePath());
 		preferences = loadPrefs();
 		museumPath = new File("resources/"+preferences.getString("museumData"));
 		museum = loadMuseumData();
@@ -360,7 +359,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		String tempProjFileName = projectPath.getAbsoluteFile().getName()+".tmp";
 		
-		tempProjectPath = new File(resourcesPath+"/tmp/"+tempProjFileName);
+		tempProjectPath = new File(resourcesPath+"/"+tempProjFileName);
 
 		JSONObject tmpJ = new JSONObject();
 		tmpJ.setJSONObject("projectFile", project);
@@ -762,7 +761,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		unregisterUpdateListener(base.lib);
 		base.lib.setVisible(false);
 		base.lib.dispose();
-		base.lib = base.wm.createLibrary(base.artworks, base.wm.getState());
+		base.lib = base.wm.createLibrary(base.artworks);
 		registerUpdateListener(base.lib);
 		
 	}
@@ -1075,35 +1074,26 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		if( updatesQueued == 0 ){
 			
-			FileManagerSheduledUpdateThread s = new FileManagerSheduledUpdateThread(queueType, dataQueue, updateListeners, updateListeners_ArrViews);
+			UpdateEvent e2;
 			
-			// reset queue
+			if( dataQueue.size() == 0 ) {  // fire blank
+				e2 = new UpdateEvent(this, UpdateType.BLANK, null);
+			}
+			
+			e2 = new UpdateEvent(this, queueType, dataQueue);
+	
+					
+			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+				lsnr.doUpdate(e2);
+	
+			}
+			for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
+				lsnr.doUpdate(e2);
+	
+			}
+			
 			queueType = null;
 			dataQueue = new ArrayList<LinkedHashMap<String, Object>>();
-
-			// start the thread
-			s.start();
-			System.out.println("FILE MANAGER: update sheduled");
-			
-			
-//			UpdateEvent e2;
-//			
-//			if( dataQueue.size() == 0 ) {  // fire blank
-//				e2 = new UpdateEvent(this, UpdateType.BLANK, null);
-//			}
-//			
-//			e2 = new UpdateEvent(this, queueType, dataQueue);
-//	
-//					
-//			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
-//				lsnr.doUpdate(e2);
-//	
-//			}
-//			for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
-//				lsnr.doUpdate(e2);
-//	
-//			}
-//			
 		}
 		
 		

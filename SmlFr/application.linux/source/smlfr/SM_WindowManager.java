@@ -51,22 +51,14 @@ public class SM_WindowManager{
 				String[] rooms = fm.getRoomNamesInProject();
 				int x = 0; int y = 0;
 				for(String r : rooms) {
-					if( x <= 5) {
-						Dimension loc = new Dimension(raster.width+raster.width*(x%2), raster.height*(y));
-						base.rooms.get(r).initProjectView(raster, loc, base);
-						x++;
-						if(x%2==0)y++;
-					} else {
-						if( x == 6 ) y = 2;
-						Dimension loc = new Dimension(0, raster.height*(y));
-						base.rooms.get(r).initProjectView(raster, loc, base);
-						x++;
-						y--;
-					}
+					Dimension loc = new Dimension(raster.width+raster.width*(x%2), raster.height*(y));
+					base.rooms.get(r).initProjectView(raster, loc, base);
+					x++;
+					if(x%2==0)y++;
 				}
 				
 				
-				base.lib = createLibrary(base.artworks, _requestedState);
+				base.lib = createLibrary(base.artworks);
 				fm.registerUpdateListener(base.lib);
 				
 				
@@ -158,19 +150,14 @@ public class SM_WindowManager{
 		}
 	}
 	
-	public SM_Library createLibrary( HashMap<String, SM_Artwork> _artworks, progState state) {
+	public SM_Library createLibrary( HashMap<String, SM_Artwork> _artworks) {
 		
 		SM_Library tLib = new SM_Library(fm, _artworks);
 		
 		switch (state) {
 		
 		case PROJECT:
-			
-			int roomCount = fm.getRoomNamesInProject().length;
-			
-			if( roomCount <= 6) tLib.setSize(raster.width, (raster.height*3 -50));
-			else if( roomCount <= 8) tLib.setSize(raster.width, (raster.height*(3-(roomCount-6)) -50));
-			else tLib.setSize(raster.width, (raster.height*3 -50));		
+			tLib.setSize(raster.width, (raster.height*3 -50));		
 			tLib.setLocation(0, 0);
 			break;
 			
@@ -225,10 +212,6 @@ public class SM_WindowManager{
 	public boolean isProject() {
 		if( state == progState.PROJECT ) return true;
 		else return false;
-	}
-	
-	public progState getState() {
-		return state;
 	}
 	
 	public boolean isRoom() {

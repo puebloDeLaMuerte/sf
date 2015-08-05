@@ -1,8 +1,8 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/Desktop/ffff/t6/t6.sfp",
-    "projectName": "t6"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/fitzgerald/fitzgerald.sfp",
+    "projectName": "fitzgerald"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/t6",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/fitzgerald",
   "museumData": "MuKuDeWe.sfm"
 }

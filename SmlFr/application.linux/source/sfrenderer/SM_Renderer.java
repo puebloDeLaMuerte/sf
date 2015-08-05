@@ -18,7 +18,6 @@ import javax.swing.JSeparator;
 import SMUtils.Lang;
 import SMUtils.Skewmator;
 import SMUtils.ViewMenuItem;
-import SMUtils.pTimedEventGenerator;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -45,10 +44,7 @@ public class SM_Renderer extends PApplet{
 	
 	private JPopupMenu				pMenu;
 	private JMenuItem				savePreview;
-	private ViewMenuItem[]			pMenuViews;	
-	
-	public RendererUpdateThreadManager		update;
-	private pTimedEventGenerator			tGen;
+	private ViewMenuItem[]			pMenuViews;				
 	
 	private PImage[] layers;
 	private float cr, cg, cb;
@@ -61,9 +57,9 @@ public class SM_Renderer extends PApplet{
 	
 	
 	private PGraphics				cropMask;
-	private volatile PGraphics[]	wallGfxsAW;
-	private	volatile PGraphics[]	wallGfxsLG;
-	private volatile char[]			wallGfxsId;
+	private PGraphics[]				wallGfxsAW;
+	private	PGraphics[]				wallGfxsLG;
+	private char[]					wallGfxsId;
 
 	private Skewmator				skewmator;
 
@@ -79,20 +75,15 @@ public class SM_Renderer extends PApplet{
 	
 	private boolean 				devGUI = false;
 	
-	private boolean					isBusy = false;
-	private int						busyQueueMax = 0;
-	private int						busyQueueProgress = 0;
-	private int						busyclock = 0;
-	
-	private boolean					savetyDraw = false;
+
 
 	
 	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath, int _YSize) {
 //		super();
 		vm = _vm;
 		skewmator = new Skewmator(photoX, photoY);
-		
-		update = new RendererUpdateThreadManager(this);
+		skewmator.init();
+//		tGen = new pTimedEventGenerator(this);
 		
 		initMenu();
 
@@ -109,13 +100,8 @@ public class SM_Renderer extends PApplet{
 		if( ySize > 600 ) ySize = 600;
 		aspect = (double)((double)photoX / (double)photoY);
 
-		this.registerMethod("post", this);
-		
-		skewmator.init();
-		tGen = new pTimedEventGenerator(this, "onTimerEvent", false);
-		tGen.setIntervalMs(1500);
-		tGen.setEnabled(true);
-
+//		this.frame = _frame;
+//		myFrame = _frame;
 	}
 	
 	public void changeView( SM_ViewAngle _view ) {
@@ -144,9 +130,7 @@ public class SM_Renderer extends PApplet{
 			
 		}
 		System.gc();
-		
-
-//		redraw();
+		redraw();
 	}
 	
 	
@@ -200,7 +184,6 @@ public class SM_Renderer extends PApplet{
 		yOffset = 0;
 		
 		String w = currentView.getWallCharsAsString();
-		
 		wallGfxsAW = new PGraphics[w.length()];
 		wallGfxsLG = new PGraphics[w.length()];
 		wallGfxsId = new char[w.length()];
@@ -283,10 +266,7 @@ public class SM_Renderer extends PApplet{
 		
 		
 	}
-	
-	public void setBusy( boolean b) {
-		isBusy = b;
-	}
+
 	
 	/**
 	 * 
@@ -295,7 +275,7 @@ public class SM_Renderer extends PApplet{
 	 * @param _previewWall if null no WallColor<b>Preview</b> will be drawn
 	 * @param _previewWallColor
 	 */
-	protected synchronized void updateRoomColorLayer( Integer _previewColor, Character _previewWall, Integer _previewWallColor ) {
+	public void updateRoomColorLayer( Integer _previewColor, Character _previewWall, Integer _previewWallColor ) {
 		
 		int w = layers[5].width;
 		int h = layers[5].height;
@@ -414,15 +394,15 @@ public class SM_Renderer extends PApplet{
 		
 		layers[1].mask(layers[5]);
 		
-		if(setupRun) ;//redraw();
+		if(setupRun) redraw();
 		
 		
 		
 	}
 	
-	protected synchronized void updateLightsLayer( char _wallChar) {
+	public synchronized void updateLightsLayer( char _wallChar) {
 		
-		System.out.println("RENDERER: LIGHTS UPDATE: start");
+		System.out.println("RENDERER: updating lights");
 		
 		if( currentView.getWallCharsAsString().contains(""+_wallChar) ) {
 			
@@ -441,7 +421,7 @@ public class SM_Renderer extends PApplet{
 					if( wallGfxsId[i] == _wallChar ) {
 						
 						
-						System.out.println("RENDERER: LIGHTS UPDATE: painting on wall ["+i+"] : "+_wallChar);
+						System.out.println("RENDERER: painting on wall ["+i+"] : "+_wallChar);
 						
 						int wgWidth = wallGfxsLG[i].height;
 						
@@ -466,24 +446,24 @@ public class SM_Renderer extends PApplet{
 					}
 				}
 				
-				System.out.println("RENDERER: LIGHTS UPDATE: painted.");
+				System.out.println("...painted.");
 			}
 			
 			
 		}
 
-	System.out.println("RENDERER: LIGHTS UPDATE: end.\n");
+	System.out.println("end lights update.\n");
 	
 	
 	
 	
-//	redraw();
+	redraw();
 	
 	}
 	
-	protected synchronized void updateArtworksLayer( char _wallChar) {
+	public synchronized void updateArtworksLayer( char _wallChar) {
 		
-		System.out.println("RENDERER: ARTWORK UPDATE: start "+_wallChar);
+		System.out.println("RENDERER: updating aws... "+_wallChar);
 		
 //		artworksLayer.clear();
 		
@@ -512,8 +492,6 @@ public class SM_Renderer extends PApplet{
 				
 				wallGfx = vm.getWallGfx(_wallChar, shadowOfset);
 				
-
-				
 				if( /*artworksLayer != null && */ wallGfx != null) {
 					
 					
@@ -521,7 +499,7 @@ public class SM_Renderer extends PApplet{
 						if( wallGfxsId[i] == _wallChar ) {
 							
 							
-							System.out.println("RENDERER: ARTWORK UPDATE: painting on wall ["+i+"] : "+_wallChar);
+							System.out.println("RENDERER: painting on wall ["+i+"] : "+_wallChar);
 							
 							int wgWidth = wallGfxsAW[i].height;
 							
@@ -533,8 +511,6 @@ public class SM_Renderer extends PApplet{
 							wallGfxsAW[i].endDraw();
 
 							if( currentView.isWallCrop(_wallChar) ) {
-
-								System.out.println("RENDERER: ARTWORK UPDATE: doing crop");
 								
 								Float[] cropValues = currentView.getWallCrop(_wallChar);
 //								float f = cropValues[0] / photoX;
@@ -561,7 +537,7 @@ public class SM_Renderer extends PApplet{
 //					artworksLayer.image(skewmator.skewToWall(wallGfx, values, 0, ySize), 0,0);
 
 					
-					System.out.println("RENDERER: ARTWORK UPDATE: painted.");
+					System.out.println("...painted.");
 				}
 //				artworksLayer.beginDraw();
 //				artworksLayer.clear();
@@ -575,11 +551,10 @@ public class SM_Renderer extends PApplet{
 				
 			}
 //		}
-		System.out.println("RENDERER : ARTWORK UPDATE: end.\n");
-//		redraw();
+		System.out.println("end aw update.\n");
+		redraw();
 		
 	}
-	
 	
 	private void manualMask(PGraphics display, PImage mask) {
 		
@@ -607,7 +582,6 @@ public class SM_Renderer extends PApplet{
 		  display.updatePixels();
 		  display.endDraw();
 		}
-	
 	
 	private void manualWallColorMask(PGraphics display, PImage mask) {
 		
@@ -642,61 +616,9 @@ public class SM_Renderer extends PApplet{
 		  display.endDraw();
 		}
 	
-	
-	
-	public void redraw() {
-		System.out.println("RENDERER: DRAW FLAG: "+this.redraw);
-		System.out.println("RENDERER: REDRAW CALLED");
-		super.redraw();
-		System.out.println("RENDERER: DRAW FLAG: "+this.redraw);
-	}
-	
-	/**
-	 * set boolean: savetyDraw: true
-	 */
-	public void threadManagerRecall() {
+	public synchronized void draw(){
+
 		
-		savetyDraw = true;
-		isBusy = false;
-		busyQueueMax = 0;
-		busyQueueProgress = 0;
-	}
-	
-	public void increaseBusyQueueMax() {
-		busyQueueMax++;
-	}
-	
-	public void setBusyQueueCurrent(int currentQueueLength) {
-		busyQueueProgress = busyQueueMax - currentQueueLength;
-	}
-	
-	public void post() {
-		System.out.println("RENDERER: POST: start");
-		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
-		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
-		if(savetyDraw && update.getQueueLength() <= 0 ) {
-			super.redraw();
-			savetyDraw = false;
-			isBusy = false;
-			busyQueueMax = 0;
-			busyQueueProgress = 0;
-		}
-		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
-		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
-		System.out.println("RENDERER: POST: end");
-	}
-	
-	public void onTimerEvent() {
-
-		if( update.getQueueLength() <= 0 && savetyDraw ) {
-			this.redraw();
-			savetyDraw = false;
-		}
-	}
-	
-	public void draw(){
-
-		System.out.println("RENDERER: DRAW: start");
 		
 		background(255);
 
@@ -706,43 +628,19 @@ public class SM_Renderer extends PApplet{
 		int xOff = xOffset;
 		int yOff = yOffset;
 		
-		System.out.println("RENDERER: DRAW: base");
-		
 		// draw Base
 
 		if(b1) {
-			
-			while( layers[0] == null ) {
-				try {
-					Thread.sleep(100);
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-				System.out.println("Waiting for layers [9]...");
-			}
-			
 			blendMode(BLEND);
 			image(layers[0], xOff, yOff,displW,displH);
 			g.removeCache(g);
 			
 		}
 
-		System.out.println("RENDERER: DRAW: color");
-		
+
 		// draw Farbe
 
-		if(b2) {
-			
-			while( layers[1] == null ) {
-				try {
-					Thread.sleep(100);
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-				System.out.println("Waiting for layers [1]...");
-			}
-			
-			
+		if(b2){
 			pushStyle();
 			blendMode(BLEND);
 //			tint(vm.getRoomColor());
@@ -752,8 +650,7 @@ public class SM_Renderer extends PApplet{
 			popStyle();
 		}
 
-		System.out.println("RENDERER: DRAW: lights");
-		
+
 		// draw Licht
 
 		if(b3) {
@@ -762,25 +659,7 @@ public class SM_Renderer extends PApplet{
 			tint(255, 70);
 			
 			for( PGraphics lg : wallGfxsLG) {
-				while(lg == null) { try { System.out.println("waiting on lights");Thread.sleep(100); } catch(Exception e){
-					System.err.println("Thread.sleep(): waiting for lights FAILED");
-					e.printStackTrace();}
-				}
-				
-				if( lg != null ) {
-					try {
-						image(lg, xOff, yOff,displW,displH);
-					} catch( Exception e ) {
-						if( e.getClass() == java.lang.NullPointerException.class ) {
-							System.err.println("RENDERER: DRAW: lights image is null - NullPointer");
-						}
-					}
-					
-				} else {
-					System.err.println("RENDERER: DRAW: lights image is null");
-				}
-				
-				
+				image(lg, xOff, yOff,displW,displH);
 				g.removeCache(g);
 			}
 			
@@ -788,8 +667,7 @@ public class SM_Renderer extends PApplet{
 			popStyle();
 		}  
 
-		System.out.println("RENDERER: DRAW: artworks");
-		
+
 		// draw Bild
 
 		if(b4) {
@@ -803,9 +681,6 @@ public class SM_Renderer extends PApplet{
 			popStyle();
 		}
 
-		
-		System.out.println("RENDERER: DRAW: shadow");
-		
 		// draw Schatten
 
 		if(b5) {
@@ -825,59 +700,11 @@ public class SM_Renderer extends PApplet{
 			popStyle();
 		}
 
-		System.out.println("RENDERER: DRAW: anim+gui");
-		
 		drawGUI();
-
-		System.out.println("RENDERER: DRAW: end");
+		
 	}
-	
-	
+
 	void drawGUI() {
-		
-		
-		// draw busy anim
-
-		if( isBusy || savetyDraw ) {
-			
-			
-			pushStyle();
-			
-			smooth();
-			
-			noStroke();
-			if( !savetyDraw ) {
-				fill(150);
-			} else {
-				fill(20,20,200);
-			}
-			rect(0, height -16, width, height);
-			
-			fill(20,20,200);
-			float fake = map( busyclock, 0, 2, 0, ((busyQueueMax - busyQueueProgress)/2)); 
-			rect(0, height-16, map(busyQueueProgress, 0, busyQueueMax, 0, width) + fake, height);
-			
-			fill(255);
-			
-			String s = Lang.rendererBusy;
-			busyclock++;
-			int mod = busyclock % 5;
-
-			for(int i = 0; i<mod; i++) {
-				s += " .";
-			}
-			text(s, 10, height - 4);
-			
-			fill(255,5);
-			
-			rect(0,0,width,height);
-			
-			popStyle();
-		}
-		
-		
-		// draw developer GUI
-		
 		if (devGUI) {
 			pushStyle();
 			stroke(0);
@@ -916,7 +743,6 @@ public class SM_Renderer extends PApplet{
 		}
 	}
 
-	
 	public boolean renderPreviewImage( String filename) {
 		
 		int w = layers[0].width;
@@ -992,7 +818,6 @@ public class SM_Renderer extends PApplet{
 		return true;
 	}
 	
-	
 	public void mousePressed() {
 		if( mouseButton == RIGHT && setupRun) {
 			for( JMenuItem m : pMenuViews) {
@@ -1008,7 +833,6 @@ public class SM_Renderer extends PApplet{
 		}
 	}
 
-	
 	public void mouseDragged() {
 		xOffset += mouseX-pmouseX;
 		yOffset += mouseY-pmouseY;
@@ -1016,7 +840,6 @@ public class SM_Renderer extends PApplet{
 		offsetBounds();
 		redraw();
 	}
-	
 	
 	public void mouseWheel(MouseEvent event) {
 		
@@ -1052,7 +875,6 @@ public class SM_Renderer extends PApplet{
 
 		redraw();
 	}
-	
 	
 	private void offsetBounds() {
 		if((xOffset+(width*zoomFact)) < width ) xOffset += width - (xOffset+(width*zoomFact));
@@ -1093,19 +915,14 @@ public class SM_Renderer extends PApplet{
 		}
 	}
 
-	
 	public Dimension getSize() {
 		return new Dimension((int)(ySize * aspect), ySize);
 	}
 
-	
-	
-	
 	public char[] getCurrentWallChars() {
 		System.out.println(currentFileStub);
 		return currentFileStub.substring(currentFileStub.lastIndexOf('_')+1).toCharArray();
 	}
-	
 	
 	public void prepareFrameForClosing() {
 		
@@ -1118,14 +935,10 @@ public class SM_Renderer extends PApplet{
 		
 	}
 	
-	
-	
 	public void dispose() {
 		System.err.println("Renderer goodbye...1");
 		
 //		tGen.dispose();
-//		tGen.setEnabled(false);
-		tGen.dispose();
 		
 		frame.dispose();
 
