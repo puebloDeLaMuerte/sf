@@ -102,11 +102,10 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	private synchronized void initRenderer(SM_ViewAngle _va) {
 		
 
-		
-		System.out.println("RENDERER...?");
-		
+				
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
+		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		renderer = new SM_Renderer(this,  _va, myRoomArrView.myRoom.getFilePath(), wm.getRaster().height*2);
 		System.out.println("renderer given this height: "+wm.getRaster().height*2);
 		
@@ -123,7 +122,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		System.out.println("vm: the renderer-frame seems to be: "+renderer.frame.getWidth()+" x "+renderer.frame.getHeight());
 		int wait = 0;
 		while( !renderer.setupRun) {
-			System.out.println("waiting...  "+wait++);
+			System.out.println("waiting on Renderer setup() ...  "+wait++);
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -136,17 +135,8 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		renderer.frame.setLocation(wm.getScreen().width-renderer.getSize().width,0);
 		renderer.frame.setResizable(false);
 		
-//		f.setSize(renderer.getSize());
-		
-		
 
-//		renderer.frame.setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
-
-//		f.setUndecorated(true);
-
-		
 		renderer.redraw();
-//		f.setResizable(true);
 	}
 	
 	private synchronized SM_WallArrangementView initWallArrangementView(char _wall, int _windowOfset) {

@@ -412,7 +412,7 @@ public class SM_Import extends PApplet  {
 				if( fullGfx.width > fullGfx.height ) {
 					fact = (float)fullSize / (float)fullGfx.width;
 				} else
-				if( fullGfx.height > fullGfx.width ) {
+				if( fullGfx.height >= fullGfx.width ) {
 					fact = (float)fullSize / (float)fullGfx.height;
 				}
 				
@@ -436,7 +436,7 @@ public class SM_Import extends PApplet  {
 			if( fullGfx.width > fullGfx.height ) {
 				fact = (float)mediumSize / (float)fullGfx.width;
 			} else
-			if( fullGfx.height > fullGfx.width ) {
+			if( fullGfx.height >= fullGfx.width ) {
 				fact = (float)mediumSize / (float)fullGfx.height;
 			}
 			medGfx.resize( (int)(fullGfx.width * fact), (int)(fullGfx.height * fact));
@@ -456,7 +456,7 @@ public class SM_Import extends PApplet  {
 			if( medGfx.width > medGfx.height ) {
 				fact = (float)thumbSize / (float)medGfx.width;
 			} else
-			if( medGfx.height > medGfx.width ) {
+			if( medGfx.height >= medGfx.width ) {
 				fact = (float)thumbSize / (float)medGfx.height;
 			}
 			System.out.println("\n\n\n\nthe fact is: "+fact);

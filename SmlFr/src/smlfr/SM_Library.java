@@ -372,6 +372,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		}
 		
         this.validate();
+        this.repaint();
 
 		
 	}

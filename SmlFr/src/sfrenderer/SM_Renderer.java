@@ -190,6 +190,8 @@ public class SM_Renderer extends PApplet{
 		setupRun = false;
 		
 		frame.setTitle(currentViewString.substring(2));
+		
+		
 		layers = new PImage[7];
 		layers[0] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Hintergrund.png");
 		
