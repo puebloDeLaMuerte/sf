@@ -54,6 +54,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 	private SM_FileManager 					fm;
 	
 	private HashMap<String, AWPanel>		panels;
+	private int								ctrlHeight = 32;
 	
 	private Color							standartColor;
 	
@@ -78,13 +79,19 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 	}
 	
 	
+	public void setSize(Dimension d) {
+		if( panels == null ) super.setSize(d.width, d.height - ctrlHeight);
+		else super.setSize(d.width, d.height);
+		
+	}
+	
 	public final void initUI() {
 
         JPanel panel = new JPanel(new BorderLayout());
         JPanel controlPanel = new JPanel();
 
         controlPanel.setBackground(new Color(0.96f,0.96f,0.96f));
-        controlPanel.setPreferredSize(new Dimension(250, 35));
+        controlPanel.setPreferredSize(new Dimension(250, ctrlHeight));
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
         
         sort = new JComboBox( Lang.sortOptions.values() );
@@ -143,7 +150,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
         boolean sd = fm.isSaveDirty();
         setSaveDirtyMark(sd);
         
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
 	private JPanel createArtworksPanel(HashMap<String, SM_Artwork> _awks) {

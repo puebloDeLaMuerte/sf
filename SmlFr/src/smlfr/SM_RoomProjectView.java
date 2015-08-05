@@ -94,6 +94,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	private boolean								drag;
 	private float 								mx;
 	private float 								my;
+//	private boolean								drawName;
 	
 	private float xFact, yFact;
 	
@@ -180,6 +181,9 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		
 		fill(0);
 
+//		if( this.getClass().getName() == smlfr.SM_RoomProjectView.class.getName() ) {
+//			drawName = true;
+//		} else drawName = false;
 
 	}
 	
@@ -223,7 +227,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			shape(wallsOverGfx.get(wallOver), 0, 0);
 		}
 		
-		if(artOver != null) {
+		if(artOver != null ) {
 			
 			if( ! artOver.hasThumb() ) {
 				artOver.setThumb( loadImage(myRoom.getThumbPath(artOver.getName()).getAbsolutePath() ));
@@ -238,6 +242,20 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			image(artOver.getThumb(), ((width-thumbwidth)/2) - 50 , 5);
 			popStyle();
 		}
+		
+
+		
+		pushStyle();
+//		if(drawName) {
+			fill(180);
+			textSize(15);
+			text(myRoom.getRealName(), 10, 20);
+			textSize(12);
+			noFill();
+			stroke(210);
+			rect(0,0,width, height);
+//		}
+		popStyle();
 		
 //		text( "wallOver: "+wallOver, 20,20  );
 //		text( mx+" x "+my, 20,40);
@@ -678,7 +696,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	}
 	
 	public void mouseExited() {
-		wallOver = ' ';
+		mouseX = 0;
+		mouseY = 0;	
 	}
 	
 	@Override

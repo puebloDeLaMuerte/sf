@@ -69,7 +69,9 @@ public class SmlFr extends JFrame  {
 
 	
 	private void initialize() {
-		
+
+//		this.setFocusable(false);
+//		this.setFocusableWindowState(false);
 		
 		if( firstStart ) {
 

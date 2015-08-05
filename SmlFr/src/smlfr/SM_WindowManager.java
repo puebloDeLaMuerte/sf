@@ -2,7 +2,10 @@ package smlfr;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -11,6 +14,7 @@ import java.util.HashMap;
 import javax.swing.JFrame;
 
 import SMUtils.Lang;
+import SMUtils.Raster;
 import SMUtils.progState;
 
 public class SM_WindowManager{
@@ -19,9 +23,7 @@ public class SM_WindowManager{
 	private SM_FileManager  		fm;
 	private SmlFr					base;
 	
-	private java.awt.Dimension 		screen;
-	private Rectangle				realscreen;
-	private java.awt.Dimension 		raster;
+	private Raster					rst;
 	
 	public SM_WindowManager(SM_FileManager _fm, SmlFr _base) {
 		
@@ -29,16 +31,9 @@ public class SM_WindowManager{
 		fm = _fm;
 		base = _base;
 		
-		realscreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-//		System.out.println(realscreen.width+" x "+realscreen.height);
-//		
-		screen = Toolkit.getDefaultToolkit().getScreenSize();
-		System.out.println(screen.width+" x "+screen.height);
+		rst = new Raster(_base);
 		
-		
-		
-		screen = new Dimension(realscreen.width, realscreen.height);
-		raster = new Dimension(screen.width / 3, screen.height / 3);
+        
 	}
 	
 	public synchronized void requestStateChange( progState _requestedState, String _requestedRoom) {
@@ -52,14 +47,14 @@ public class SM_WindowManager{
 				int x = 0; int y = 0;
 				for(String r : rooms) {
 					if( x <= 5) {
-						Dimension loc = new Dimension(raster.width+raster.width*(x%2), raster.height*(y));
-						base.rooms.get(r).initProjectView(raster, loc, base);
+						Point loc = rst.getPos(1+(x%2), y);
+						base.rooms.get(r).initProjectView(rst.getSize(1, 1), loc, base);
 						x++;
 						if(x%2==0)y++;
 					} else {
 						if( x == 6 ) y = 2;
-						Dimension loc = new Dimension(0, raster.height*(y));
-						base.rooms.get(r).initProjectView(raster, loc, base);
+						Point loc = rst.getPos(0, y);
+						base.rooms.get(r).initProjectView(rst.getSize(1, 1), loc, base);
 						x++;
 						y--;
 					}
@@ -94,13 +89,14 @@ public class SM_WindowManager{
 			String[] rooms = fm.getRoomNamesInProject();
 			for(String r : rooms) {
 				
-//				base.rooms.get(r).unregisterArtworkUpdateListeners();
+//				base.rooms.get(rst).unregisterArtworkUpdateListeners();
 				base.rooms.get(r).endView();
 					
 				if( r.equalsIgnoreCase(_requestedRoom) ) {
-					base.lib.setSize(raster.width*2, screen.height-(raster.height*2 ));
-					base.lib.setLocation(0, raster.height*2);
-					base.rooms.get(r).initArrangementView(raster, new Dimension(raster.width*2,raster.height*2), base);
+					
+					base.lib.setSize(rst.getSize(2, 1));
+					base.lib.setLocation(rst.getPos(0, 2));
+					base.rooms.get(r).initArrangementView(rst.getSize(1, 1), rst.getPos(2, 2), base);
 				}
 			}
 			System.gc();
@@ -144,14 +140,30 @@ public class SM_WindowManager{
 			System.gc();
 			int x = 0; int y = 0;
 			for(String r : rooms) {
-				Dimension loc = new Dimension(raster.width+raster.width*(x%2), raster.height*(y));
-				base.rooms.get(r).initProjectView(raster, loc, base);
-				x++;
-				if(x%2==0)y++;
+//				Dimension loc = new Dimension(raster.width+raster.width*(x%2), raster.height*(y));
+//				base.rooms.get(rst).initProjectView(raster, loc, base);
+//				x++;
+//				if(x%2==0)y++;
+				if( x <= 5) {
+					Point loc = rst.getPos(1+(x%2), y);
+					base.rooms.get(r).initProjectView(rst.getSize(1, 1), loc, base);
+					x++;
+					if(x%2==0)y++;
+				} else {
+					if( x == 6 ) y = 2;
+					Point loc = rst.getPos(0, y);
+					base.rooms.get(r).initProjectView(rst.getSize(1, 1), loc, base);
+					x++;
+					y--;
+				}
 			}
 			
-			base.lib.setSize(raster.width, (raster.height*3));
-			base.lib.setLocation(0, 0);
+			if( rooms.length >6) {
+				base.lib.setSize(rst.getSize(1, 2));
+			} else {
+				base.lib.setSize(rst.getSize(1, 3));
+			}
+			base.lib.setLocation(rst.getPos(0, 0));
 			
 			state = progState.PROJECT;
 			System.gc();
@@ -168,53 +180,35 @@ public class SM_WindowManager{
 			
 			int roomCount = fm.getRoomNamesInProject().length;
 			
-			if( roomCount <= 6) tLib.setSize(raster.width, (raster.height*3 -50));
-			else if( roomCount <= 8) tLib.setSize(raster.width, (raster.height*(3-(roomCount-6)) -50));
-			else tLib.setSize(raster.width, (raster.height*3 -50));		
-			tLib.setLocation(0, 0);
+			if( roomCount <= 6) tLib.setSize(rst.getWidthNoDecorations(1), rst.getHeightNoDecorations(3));
+			else if( roomCount <= 8) tLib.setSize(rst.getSizeNoDecorations(1, 3-(roomCount-6)));
+			else tLib.setSize(rst.getSizeNoDecorations(1, 3));
+
+			
+			tLib.setLocation(rst.getPos(0, 0));
 			break;
 			
 		case ROOM:
-			tLib.setSize(raster.width*2, raster.height);
-			tLib.setLocation(0, raster.height*2);
+
+			tLib.setSize(rst.getSize(2, 1));
+			tLib.setLocation(rst.getPos(0, 3));
 			break;
 
 		default:
-			tLib.setSize(raster.width, (raster.height*3 -50));
+			tLib.setSize(rst.getSize(1, 3));
 			tLib.setLocation(0, 0);
 			break;
 		}
 		
 		
-//		tLib.setSize(raster.width, (raster.height*3 -50));
 		tLib.setResizable(true);
 		tLib.setBackground(Color.LIGHT_GRAY);
 		tLib.setVisible(true);
-//		tLib.setLocation(0, 0);
 		tLib.setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 
 		tLib.initUI();
 		
 		return tLib;
-	}
-	
-	
-	
-	public void testFrames() {
-		JFrame[] tst = new JFrame[6];
-		
-		int x = 0; int y = 0;
-		for( JFrame f : tst ) {
-			f = new JFrame();
-			f.setSize(raster);
-			f.setBackground(Color.LIGHT_GRAY);
-			f.setResizable(false);
-			f.setUndecorated(true);
-			f.setLocation(raster.width+raster.width*(x%2), raster.height*(y));
-			f.setVisible(true);
-			x++;
-			if (x%2 == 0 ) y++;
-		}
 	}
 	
 	public boolean isLoading() {
@@ -237,11 +231,11 @@ public class SM_WindowManager{
 	}
 
 	public Dimension getRaster() {
-		return raster;
+		return rst.getSize(1, 1);
 	}
 
 	public Dimension getScreen() {
-		return screen;
+		return rst.getScreen();
 	}
 
 	public Point getLibraryPosition() {

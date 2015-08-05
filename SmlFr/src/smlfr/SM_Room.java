@@ -2,6 +2,7 @@ package smlfr;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 //import java.awt.dnd.DropTargetDragEvent;
 //import java.awt.dnd.DropTargetDropEvent;
 //import java.awt.dnd.DropTargetEvent;
@@ -145,7 +146,7 @@ public class SM_Room {
 	}
 	
 
-	public void initProjectView(Dimension _size, Dimension _loc, SmlFr base) {
+	public void initProjectView(Dimension _size, Point _loc, SmlFr base) {
 		
 		
 		
@@ -164,7 +165,9 @@ public class SM_Room {
 //		f.setResizable(true);
 		
 		JFrame f = new JFrame();
+		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		f.setLayout(new BorderLayout());
+		f.setUndecorated(true);
 		myProjectView = new SM_RoomProjectView(_size.width, _size.height, base);
 //		f.setAlwaysOnTop(true);
 		f.add(myProjectView);
@@ -179,7 +182,7 @@ public class SM_Room {
 		myProjectView.frame.pack();
 		myProjectView.frame.setVisible(true);
 		myProjectView.frame.setResizable(false);
-		myProjectView.frame.setLocation(_loc.width, _loc.height);
+		myProjectView.frame.setLocation(_loc.x, _loc.y);
 		myProjectView.frame.setTitle(myRealName);
 		
 ////		f.setTitle(myRealName);
@@ -222,7 +225,7 @@ public class SM_Room {
 		
 	}
 	
-	public void initArrangementView(Dimension _size, Dimension _loc, SmlFr basw) {
+	public void initArrangementView(Dimension _size, Point _loc, SmlFr basw) {
 		
 //		JFrame f = new JFrame();
 //		f.setLayout(new BorderLayout());
@@ -242,6 +245,8 @@ public class SM_Room {
 		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
+		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		f.setUndecorated(true);
 //		f.setAlwaysOnTop(true);
 		myArrangementView = new SM_RoomArrangementView(_size.width, _size.height, base);
 		f.add(myArrangementView);
@@ -257,7 +262,7 @@ public class SM_Room {
 		myArrangementView.frame.pack();
 		myArrangementView.frame.setVisible(true);
 		myArrangementView.frame.setResizable(false);
-		myArrangementView.frame.setLocation(_loc.width, _loc.height);
+		myArrangementView.frame.setLocation(_loc.x, _loc.y);
 		myArrangementView.frame.setTitle(myRealName);
 		entered = true;
 	}
