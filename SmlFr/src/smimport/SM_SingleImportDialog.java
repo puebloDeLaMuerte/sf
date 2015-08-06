@@ -206,27 +206,27 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		c.gridy = 5;
 		inputPanel.add(L_artworkMeasure, c);
 		c.gridy = 6;
-		inputPanel.add(L_frameMeasure, c);
-		c.gridy = 7;
 		inputPanel.add(L_pptMeasure, c);
+		c.gridy = 7;
+		inputPanel.add(L_frameMeasure, c);
 		
 		c.gridx = 1;
 		
 		c.gridy = 5;
 		inputPanel.add(NF_artworkHeight, c);
 		c.gridy = 6;
-		inputPanel.add(NF_frameHeight, c);
-		c.gridy = 7;
 		inputPanel.add(NF_pptHeight, c);
+		c.gridy = 7;
+		inputPanel.add(NF_frameHeight, c);
 		
 		c.gridx = 3;
 		
 		c.gridy = 5;
 		inputPanel.add(NF_artworkWidth, c);
 		c.gridy = 6;
-		inputPanel.add(NF_frameWidth, c);
-		c.gridy = 7;
 		inputPanel.add(NF_pptWidth, c);
+		c.gridy = 7;
+		inputPanel.add(NF_frameWidth, c);
 		
 		// separator
 		

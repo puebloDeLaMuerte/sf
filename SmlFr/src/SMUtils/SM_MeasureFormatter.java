@@ -21,17 +21,18 @@ public class SM_MeasureFormatter {
 	public static LinkedHashMap<String, int[]> measurementInputFormatToInternalFormat( int[] _tmpSize, int[] _tmpFrameSize, int[] _tmpPptSize  ) {
 		 
 
+		// scale up numbers by 10 to get rid of rounding errors
 		
 		int[] size			= new int[2];
-		size[0] 		= _tmpSize[1];
-		size[1] 		= _tmpSize[0];
+		size[0] 		= _tmpSize[1] *10;
+		size[1] 		= _tmpSize[0] *10;
 		
 				
 		int[] frameSize;
 		if( _tmpFrameSize != null) {
 			frameSize = new int[2];
-			frameSize[0]		= _tmpFrameSize[1];
-			frameSize[1]		= _tmpFrameSize[0];
+			frameSize[0]		= _tmpFrameSize[1] *10;
+			frameSize[1]		= _tmpFrameSize[0] *10;
 		} else {
 			frameSize = new int[0];
 		}
@@ -39,8 +40,8 @@ public class SM_MeasureFormatter {
 		int[] pptSize;
 		if( _tmpPptSize != null ) {
 			pptSize	= new int[2];
-			pptSize[0]	= _tmpPptSize[1];
-			pptSize[1] = _tmpPptSize[0];
+			pptSize[0] = _tmpPptSize[1] *10;
+			pptSize[1] = _tmpPptSize[0] *10;
 		} else {
 			pptSize	= new int[0];
 		}
@@ -53,7 +54,7 @@ public class SM_MeasureFormatter {
 		if( _tmpPptSize != null ) {
 			
 			pptFormat = new int[4];
-			
+						
 			int ysize = (pptSize[1] - size[1]) / 2;
 			int xsize = (pptSize[0] - size[0]) / 2;
 			
@@ -69,7 +70,7 @@ public class SM_MeasureFormatter {
 		if( _tmpFrameSize != null ) {
 			
 			frameFormat = new int[4];
-			
+						
 			int xsize = (frameSize[1] - size[1]) / 2;
 			int ysize = (frameSize[0] - size[0]) / 2;
 								
@@ -90,6 +91,7 @@ public class SM_MeasureFormatter {
 				
 				// Alternativ: ( pptSize sind die Au§enma§e des Ppt. )
 
+				
 				frameFormat[0] -= (pptSize[1] - size[1]) / 2;
 				frameFormat[1] -= (pptSize[1] - size[1]) / 2;
 				frameFormat[3] -= (pptSize[0] - size[0]) / 2;
@@ -97,6 +99,38 @@ public class SM_MeasureFormatter {
 				
 			}
 		}
+		
+		
+		// divide by ten and round/ceil alternating to keep the sum as the user has input it
+		
+		for (int i = 0; i < size.length; i++) {
+			int j = size[i];
+			size[i] = j/10;
+		}
+		
+		for (int i = 0; i < frameFormat.length; i++) {
+			int j = frameFormat[i];
+			
+			double jd;
+			
+			if(i%2==0)	jd = Math.floor( (float)j / 10f );
+			else		jd = Math.ceil( (float)j / 10f );
+						
+			frameFormat[i] = (int)jd;
+		}
+		
+		
+		for (int i = 0; i < pptFormat.length; i++) {
+			int j = pptFormat[i];
+			
+			double jd;
+			
+			if(i%2==0)	jd = Math.floor( (float)j / 10f );
+			else		jd = Math.ceil( (float)j / 10f );
+			
+			pptFormat[i] = (int)jd;
+		}
+		
 		
 		LinkedHashMap<String, int[]> results = new LinkedHashMap<String, int[]>(3);
 		
