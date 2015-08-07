@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ import smimport.SM_Import;
 
 
 
-public class SmlFr extends JFrame  {
+public class SmlFr extends JFrame implements WindowFocusListener {
 
 
 	
@@ -70,8 +71,7 @@ public class SmlFr extends JFrame  {
 	
 	private void initialize() {
 
-//		this.setFocusable(false);
-//		this.setFocusableWindowState(false);
+		this.addWindowFocusListener(this);
 		
 		if( firstStart ) {
 
@@ -323,6 +323,20 @@ public class SmlFr extends JFrame  {
 	}
 
 
+	@Override
+	public void windowGainedFocus(WindowEvent e) {
+//		System.out.println("happy Focus");
+//		this.toBack();
+	}
+
+
+	@Override
+	public void windowLostFocus(WindowEvent e) {
+
+	}
+
+
+	
 	
 
 

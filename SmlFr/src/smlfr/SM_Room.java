@@ -179,11 +179,20 @@ public class SM_Room {
 		myProjectView.setMinimumSize(_size);
 		myProjectView.frame.add(myProjectView);
 		myProjectView.init(fl, this);
+		
+		while( !myProjectView.isSetupRun() ) {
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				System.err.println("wait on RoomProjectView: setup was interrupted " + e.getMessage());
+			}
+		}
+		
 		myProjectView.frame.pack();
-		myProjectView.frame.setVisible(true);
 		myProjectView.frame.setResizable(false);
 		myProjectView.frame.setLocation(_loc.x, _loc.y);
 		myProjectView.frame.setTitle(myRealName);
+		myProjectView.frame.setVisible(true);
 		
 ////		f.setTitle(myRealName);
 //		f.setUndecorated(true);

@@ -406,11 +406,11 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	
 	/**
 	 * 
-	 * @param _mode mode: 1 if it is for renderer, mode: 0 if it is for WallArrangementView 
+	 * @param _mode <b>mode: 1</b> if it is for renderer, <b>mode: 0</b> if it is for WallArrangementView, <b>mode: 2</b> if it is for HighResImage
 	 * @param shadowOfset
-	 * @return
+	 * @return null if mode is not 0, 1, or 2
 	 */
-	public synchronized PGraphics _drawWall( int _mode, int shadowOfset) {
+	public /*synchronized*/ PGraphics _drawWall( int _mode, int shadowOfset) {
 		
 		float drawScale;
 		
@@ -420,15 +420,46 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		PGraphics gfx;
 		
 		if( _mode == 0 ) {
+			
+// for WallArrangementView
+			
 			gfx = wlGfx;
 			drawScale = scale;
 		}
-		else{
+		else if( _mode == 1 ) {
 			
-			// TODO test if results in renderer are better if high values are chosen
+// for Renderer
 			
-			gfx = createGraphics(width, height);
+			float fact = 1;
+			
+			if( height < 600 ) {
+				
+				fact = 600f / (float)height;
+			}
+			if( width < 600f  && width < height) {
+				
+				fact = 600f / (float)width;
+			}
+			if( fact > 3f) fact = 3f;
+			System.err.println("fact: " + fact);
+			
+			gfx = createGraphics( (int)(width*fact), (int)(height*fact));
+			
+//			System.err.println("wall    size: " + myWall.getWidth() +" x " + myWall.getHeight());
+//			System.err.println("norm    size: " + width +" x "+ height);
+//			System.err.println("wallGfx size: " + gfx.width +" x " + gfx.height);
+			
 			drawScale = ((float)gfx.width ) / ((float)myWall.getWidth());
+			
+		} else if( _mode == 2 ) {
+			
+// for SaveImage (hi res)
+			
+			gfx = createGraphics(width*3, height*3);
+			drawScale = ((float)gfx.width ) / ((float)myWall.getWidth());
+			
+		} else {
+			return null;
 		}
 		
 		
@@ -438,7 +469,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		// DRAW Schatten
 		
-		if( _mode == 1 ) {
+		if( _mode == 1 || _mode == 2 ) {
 			if(myWall.getArtworksArray().length > 0 ) {
 
 				if(!awDrag && _mode == 0) awOver = null;
@@ -458,7 +489,13 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				}
 			}
 
-			gfx.filter(BLUR, 3);
+			int i = gfx.width / 350;
+			if( i > 6) i = 6;
+			if( i < 3) i = 3;
+			
+			System.err.println("BLUR VALUE: "+ i);
+			
+			gfx.filter(BLUR, /*3*/ i);
 		}
 		
 		if(myWall.getArtworksArray().length > 0 ) {
@@ -586,7 +623,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 			// TODO test if results in renderer are better if high values are chosen
 
-			lGfx = createGraphics(width, height);
+//			lGfx = createGraphics(width, height);
+			lGfx = createGraphics(width/2, height/2);
+//			lGfx = createGraphics((int)(width*0.8f), (int)(height*0.8f));
+			
 			drawScale = ((float)lGfx.width ) / ((float)myWall.getWidth());
 		}	
 		

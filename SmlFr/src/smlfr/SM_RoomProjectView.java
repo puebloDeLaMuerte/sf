@@ -80,7 +80,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 
 	
 	// utils
-	private JFrame								myFrame;
+//	private JFrame								myFrame;
 	private int[]								mySize;
 	private File								myFilePath;
 	private HashMap<Character, PShape>			wallsActiveGfx;
@@ -94,9 +94,10 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	private boolean								drag;
 	private float 								mx;
 	private float 								my;
-//	private boolean								drawName;
 	
 	private float xFact, yFact;
+	
+	private boolean setupRun = false;
 	
 	// drop feedback:
 	private boolean dropAnim = false;
@@ -116,6 +117,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	}
 	
 	public void setup() {
+				
+
 		
 		ds = new DragSource();
 		ds.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, this);
@@ -185,6 +188,12 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //			drawName = true;
 //		} else drawName = false;
 
+//		redraw();
+		setupRun = true;
+	}
+	
+	public boolean isSetupRun() {
+		return setupRun;
 	}
 	
 	public void draw() {
@@ -246,19 +255,15 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 
 		
 		pushStyle();
-//		if(drawName) {
-			fill(180);
-			textSize(15);
-			text(myRoom.getRealName(), 10, 20);
-			textSize(12);
-			noFill();
-			stroke(210);
-			rect(0,0,width, height);
-//		}
+		fill(180);
+		textSize(15);
+		text(myRoom.getRealName(), 10, 20);
+		textSize(12);
+		noFill();
+		stroke(210);
+		rect(0,0,width, height);
 		popStyle();
 		
-//		text( "wallOver: "+wallOver, 20,20  );
-//		text( mx+" x "+my, 20,40);
 
 	}
 	
@@ -670,35 +675,37 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 
 	public void mouseDragged() {
 		
-		if(moveWindow) {
-			int deltaX = myFrame.getLocation().x+MouseInfo.getPointerInfo().getLocation().x-mX;
-			int deltaY = myFrame.getLocation().y+MouseInfo.getPointerInfo().getLocation().y-mY;
-			
-			myFrame.setLocation(deltaX, deltaY);
-			mX = MouseInfo.getPointerInfo().getLocation().x;
-			mY = MouseInfo.getPointerInfo().getLocation().y;
-		}
+//		if(moveWindow) {
+//			int deltaX = myFrame.getLocation().x+MouseInfo.getPointerInfo().getLocation().x-mX;
+//			int deltaY = myFrame.getLocation().y+MouseInfo.getPointerInfo().getLocation().y-mY;
+//			
+//			myFrame.setLocation(deltaX, deltaY);
+//			mX = MouseInfo.getPointerInfo().getLocation().x;
+//			mY = MouseInfo.getPointerInfo().getLocation().y;
+//		}
 	}
 	
 	public void keyPressed() {
-		if( keyCode == SHIFT) {
-			moveWindow = true;
-		}
+//		if( keyCode == SHIFT) {
+//			moveWindow = true;
+//		}
 		if( keyCode == ESC ) {
 			key = 0;
 		}
 	}
 	
 	public void keyReleased() {
-		if( keyCode == SHIFT ) {
-			moveWindow = false;
-		}
+//		if( keyCode == SHIFT ) {
+//			moveWindow = false;
+//		}
 	}
 	
 	public void mouseExited() {
 		mouseX = 0;
 		mouseY = 0;	
 	}
+	
+
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {

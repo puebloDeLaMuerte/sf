@@ -2,13 +2,19 @@ package sfrenderer;
 
 import java.util.ArrayList;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import SMUtils.UpdateThread;
 
 public class RendererUpdateThreadManager {
 
 	private SM_Renderer renderer;
 	
 	private ArrayList<Thread> threads;
+	
+//	double delta;
 	
 	public RendererUpdateThreadManager(SM_Renderer r) {
 		
@@ -24,13 +30,13 @@ public class RendererUpdateThreadManager {
 //		renderer.redraw();
 		renderer.loop();
 
-		System.out.println("threads.size: " + threads.size());
+//		System.out.println("threads.size: " + threads.size());
 		ColorUpdateThread t = new ColorUpdateThread( _previewColor, _previewWall, _previewWallColor);
 		threads.add(t);
 		
 		t.start();
 		System.out.println("threads.size: " + threads.size());		
-		System.out.println("alive: "+t.isAlive());
+//		System.out.println("alive: "+t.isAlive());
 
 	}
 	
@@ -40,13 +46,18 @@ public class RendererUpdateThreadManager {
 		renderer.setBusy(true);
 //		renderer.redraw();
 		renderer.loop();
+		
 
-		System.out.println("threads.size: " + threads.size());
+
+//		System.out.println("threads.size: " + threads.size());
 		ArtworksUpdateThread t = new ArtworksUpdateThread(_wallChar);
-		threads.add( t );
+		registerThread( t );
 		t.start();		
-		System.out.println("alive: "+t.isAlive());
+//		System.out.println("alive: "+t.isAlive());
 		System.out.println("threads.size: " + threads.size());
+		for( int i = 0; i<threads.size(); i++ ) {
+			System.out.println(i +": "+threads.get(i).getName()+ " : "+ ((UpdateThread)threads.get(i)).getWallChar()+": "+threads.get(i).getState());
+		}
 
 	}
 	
@@ -57,30 +68,37 @@ public class RendererUpdateThreadManager {
 //		renderer.redraw();
 		renderer.loop();
 
-		System.out.println("threads.size: " + threads.size());
+//		System.out.println("threads.size: " + threads.size());
 		LightsUpdateThread t = new LightsUpdateThread(_wallChar);
-		threads.add( t);
+		registerThread( t);
 		t.start();
 		System.out.println("threads.size: " + threads.size());		
-		System.out.println("alive: "+t.isAlive());
+//		System.out.println("alive: "+t.isAlive());
 		
+	}
+	
+	private void registerThread(Thread t) {
+//		if( getQueueLength() == 0 ) delta = System.currentTimeMillis();
+		threads.add(t);
 	}
 	
 	private void unregisterThread(Thread me) {
 		
-		System.out.println("THREAD MANAGER: threads.size: " + threads.size());
-		System.out.println("THREAD MANAGER: unregistering thread: " + me.toString());
+//		System.out.println("THREAD MANAGER: threads.size: " + threads.size());
+//		System.out.println("THREAD MANAGER: unregistering thread: " + me.toString());
 		threads.remove(me);
 		renderer.setBusyQueueCurrent(threads.size());
-		System.out.println("THREAD MANAGER: threads.size: " + threads.size());
+//		System.out.println("THREAD MANAGER: threads.size: " + threads.size());
 		
 		if( threads.size() == 0) {
-			System.out.println("THREAD MANAGER: calling recall");
+			
+//			JOptionPane.showConfirmDialog(null, "AW update time:\n" + (System.currentTimeMillis() - delta ));
+
+			
 			renderer.setBusy(false);
 			renderer.noLoop();
 //			renderer.redraw();
 			renderer.threadManagerRecall();
-			System.out.println("THREAD MANAGER: recall called");
 		}
 	}
 
@@ -88,7 +106,7 @@ public class RendererUpdateThreadManager {
 		return threads.size();
 	}
 	
-	private class ColorUpdateThread extends Thread  {
+	private class ColorUpdateThread extends Thread implements UpdateThread {
 		
 		private Integer previewColor, previewWallColor;
 		private Character previewWall;
@@ -101,22 +119,21 @@ public class RendererUpdateThreadManager {
 			this.setName("RendererColorUpdateThread");
 		}
 		
+		public char getWallChar() {
+			return ' ';
+		}
+		
 		public void run() {
 			
-//			try {
-//				this.sleep(2000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 						
 			renderer.updateRoomColorLayer(previewColor, previewWall, previewWallColor);
+			
 			
 			unregisterThread(this);
 		}
 	}
 
-	private class ArtworksUpdateThread extends Thread {
+	private class ArtworksUpdateThread extends Thread implements UpdateThread {
 		
 		private char wallChar;
 		
@@ -126,24 +143,59 @@ public class RendererUpdateThreadManager {
 			this.setName("RendererArtworksUpdateThread");
 		}
 		
+		public char getWallChar() {
+			return wallChar;
+		}
 		
 		public void run() {
 			
-//			try {
-//				this.sleep(2000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			boolean go;
+			boolean abort = false;
+			char c;
+			while( true ) {
+				
+				go = true;
+				
+				for( int i = 0; i< threads.size(); i++ ) {
+					
+					Thread t = threads.get(i);
+					try {
+						c = ((UpdateThread)t).getWallChar();
+					} catch (Exception e) {
+						c = ' ';
+					}
+					
+					if( c == wallChar && t != this ) {
+						
+						go = false;
+						
+						if ( t.getClass() == this.getClass() ) {
+							abort = true;
+							go = false;
+						}
+					}
+				}
+				
+				if(go) break;
+				if(abort) {
+					System.err.println("thread aborted");
+					unregisterThread(this);
+					return;
+				}
+//				System.err.println("update thread waiting... "+this.getName());
+			}
+			
 			
 			renderer.updateArtworksLayer(wallChar);
+			
+
 			
 			unregisterThread(this);
 			
 		}
 	}
 
-	private class LightsUpdateThread extends Thread {
+	private class LightsUpdateThread extends Thread implements UpdateThread {
 		
 		private char wallChar;
 		
@@ -153,17 +205,50 @@ public class RendererUpdateThreadManager {
 			this.setName("RendererLightsUpdateThread");
 		}
 		
+		public char getWallChar() {
+			return wallChar;
+		}
 		
 		public void run() {
 			
-//			try {
-//				this.sleep(2000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			boolean go;
+			boolean abort = false;
+			char c;
+			while( true ) {
+				
+				go = true;
+				
+				for( int i = 0; i< threads.size(); i++ ) {
+					
+					Thread t = threads.get(i);
+					try {
+						c = ((UpdateThread)t).getWallChar();
+					} catch (Exception e) {
+						c = ' ';
+					}
+					
+					if( c == wallChar && t != this ) {
+						
+//						go = false;
+						
+						if ( t.getClass() == this.getClass() ) {
+							abort = true;
+							go = false;
+						}
+					}
+				}
+				
+				if(go) break;
+				if(abort) {
+					System.err.println("thread aborted");
+					unregisterThread(this);
+					return;
+				}
+//				System.err.println("update thread waiting... "+this.getName());
+			}
 			
 			renderer.updateLightsLayer(wallChar);
+			
 			
 			unregisterThread(this);
 		}

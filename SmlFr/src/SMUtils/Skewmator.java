@@ -53,11 +53,11 @@ public class Skewmator extends PApplet {
 		return cropImage;
 	}
 	
-	public PImage skewToWall(PImage inImage, Float[] _vls, int canvasWidth, int canvasHeight) {
-		return skewToWall( inImage, new PVector(_vls[2],_vls[3]), new PVector(_vls[4],_vls[5]), new PVector(_vls[6],_vls[7]), new PVector(_vls[8], _vls[9]), _vls[0].intValue(), _vls[1].intValue(), canvasWidth, canvasHeight );
+	public PImage skewToWall(PImage inImage, Float[] _vls, int canvasWidth, int canvasHeight, SkewMode mode) {
+		return skewToWall( inImage, new PVector(_vls[2],_vls[3]), new PVector(_vls[4],_vls[5]), new PVector(_vls[6],_vls[7]), new PVector(_vls[8], _vls[9]), _vls[0].intValue(), _vls[1].intValue(), canvasWidth, canvasHeight, mode );
 	}
 	
-	public PImage skewToWall(PImage inImage, PVector lo, PVector ro, PVector ru, PVector lu, int bezugX, int bezugY, int canvasWidth, int canvasHeight) {
+	public PImage skewToWall(PImage inImage, PVector lo, PVector ro, PVector ru, PVector lu, int bezugX, int bezugY, int canvasWidth, int canvasHeight, SkewMode mode) {
 		
 		float scale; 
 		if( canvasWidth >0 ) {
@@ -70,17 +70,16 @@ public class Skewmator extends PApplet {
 		}
 		else return null;
 		
-		return skewToWall(inImage, lo, ro, ru, lu, bezugX, bezugY, scale);
+		return skewToWall(inImage, lo, ro, ru, lu, bezugX, bezugY, scale, mode);
 	}
 	
-	public PImage skewToWall(PImage inImage, PVector lo, PVector ro, PVector ru, PVector lu, int bezugX, int bezugY, float scale) {
+	public PImage skewToWall(PImage inImage, PVector lo, PVector ro, PVector ru, PVector lu, int bezugX, int bezugY, float scale, SkewMode mode) {
 
-		
+		String debugF = "bezug is " + bezugX/baseX + " times the base";
 
 		float fact = bezugX / baseX;
 		PVector smallPicAnchor = new PVector(baseX * ((fact-1)/2) , baseY * ((fact-1)/2));
 
-		
 		// calculate the skew-box (max/min x and y values from corners)
 		
 		PVector[] box = bigBox(lo, ro, ru, lu);
@@ -89,6 +88,54 @@ public class Skewmator extends PApplet {
 		float boxXsize =  box[1].x - box[0].x;
 		float boxYsize =  box[3].y - box[2].y;
 		
+		float f = 1f;
+		boolean downscale = false;
+		
+		String debugO ="";
+		String debugR ="";
+		
+		if(boxXsize > 3000 || boxYsize > 3000) {
+
+			downscale = true;
+//			f = 0.5f;
+			
+			if( boxXsize > boxYsize) {
+				f = (float)3000 / (float)boxXsize;
+			} else {
+				f = (float)3000 / (float)boxYsize;
+			}
+			
+			if(f < 0.6f) f *= 1.1f;
+			if(f < 0.5f) f = 0.5f;
+			
+//			f = fact / 40;
+			
+			debugF += " factor: " + f;
+			
+			debugO = "box size original: " + boxXsize +" x " + boxYsize;
+		}
+		
+		switch (mode) {
+		case STANDART:
+			
+			
+			break;
+		case FORCE_LOW:
+			downscale = true;
+			f *= 0.4f;
+			break;
+		case FORCE_HIGH:
+			downscale = true;
+			f *= 1.5f;
+			break;
+		case LIGHTS:
+			downscale = true;
+			f *= 0.5f;
+		default:
+			break;
+		}
+		
+		
 		// calculate the top-left anchor point of the skew-box
 		// 1) relative to the big box specified by bezugX/Y
 		// 2) relative to the zero-point (top left anchor) of the background image
@@ -96,6 +143,22 @@ public class Skewmator extends PApplet {
 		PVector boxAnchorBigPicture = new PVector( box[0].x, box[2].y );
 		PVector boxAnchorSmallPicRelative = new PVector( boxAnchorBigPicture.x - smallPicAnchor.x,
 														 boxAnchorBigPicture.y - smallPicAnchor.y  );
+		PVector boxSizeSmallPicRelative = new PVector(boxXsize, boxYsize);
+		
+		if(downscale) {
+			
+			lo.mult(f);
+			ro.mult(f);
+			ru.mult(f);
+			lu.mult(f);
+			boxXsize *= f;
+			boxYsize *= f;
+			
+			boxAnchorBigPicture.mult(f);
+			
+			debugR = "box size resized:  " + boxXsize +" x " + boxYsize;
+		}
+		
 		
 		// boxRelativeCoordinates
 		// skew-coordinates from skew-box anchor to the skewImage-desired corners
@@ -111,12 +174,16 @@ public class Skewmator extends PApplet {
 		
 		skewGraphics = createGraphics((int)boxXsize, (int)boxYsize);
 		skewGraphics.beginDraw();
+		
 		skewGraphics.image(inImage,0,0,skewGraphics.width, skewGraphics.height);
+		
 		g.removeCache(skewGraphics);
 		skewGraphics.endDraw();
 		
 		PImage skewedImage = skewImage(skewGraphics, boxRelativeLO, boxRelativeRO, boxRelativeRU, boxRelativeLU);
-
+		
+//		if( mode == SkewMode.LIGHTS) skewedImage.filter(BLUR, 2);
+		
 		//   now, scale the returnImage if you need to 
 		/** (remember, it's all set to be 1200x800 fixed size till now!!) */
 		//   draw the skewed image onto a returnimage of desired scale
@@ -132,7 +199,15 @@ public class Skewmator extends PApplet {
 		
 		sizedReturnImage.beginDraw();
 
-		sizedReturnImage.image(skewedImage, boxAnchorSmallPicRelative.x*scale, boxAnchorSmallPicRelative.y*scale, skewedImage.width*scale, skewedImage.height*scale );
+		sizedReturnImage.image(skewedImage, boxAnchorSmallPicRelative.x*scale, boxAnchorSmallPicRelative.y*scale, boxSizeSmallPicRelative.x*scale, boxSizeSmallPicRelative.y*scale );
+
+		System.err.println(debugF);
+		System.err.println(debugO);
+		System.err.println(debugR);
+
+		
+		sizedReturnImage.pushStyle();
+		
 		g.removeCache(sizedReturnImage);
 		sizedReturnImage.endDraw();
 		

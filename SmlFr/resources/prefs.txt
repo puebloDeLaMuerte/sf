@@ -1,9 +1,9 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/Desktop/ffff/bertram/bertram.sfp",
-    "projectName": "bertram"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/fitzgerald/fitzgerald.sfp",
+    "projectName": "fitzgerald"
   },
   "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/furzi",
-  "midHeight": 1500,
-  "museumData": "MuKuDeWe.sfm"
+  "museumData": "MuKuDeWe.sfm",
+  "midHeight": 1500
 }

@@ -16,6 +16,7 @@ import javax.swing.JSeparator;
 
 
 import SMUtils.Lang;
+import SMUtils.SkewMode;
 import SMUtils.Skewmator;
 import SMUtils.ViewMenuItem;
 import SMUtils.pTimedEventGenerator;
@@ -86,6 +87,8 @@ public class SM_Renderer extends PApplet{
 	
 	private boolean					savetyDraw = false;
 
+	double			Ac = 0, Lc =0;
+	double		dA, dL;
 	
 	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath, int _YSize) {
 //		super();
@@ -120,7 +123,6 @@ public class SM_Renderer extends PApplet{
 	
 	public void changeView( SM_ViewAngle _view ) {
 		
-		System.out.println("\n\n\nVIEW CHANGED in rendddd   "+_view.getName());
 		
 //		layers = null;
 //		System.gc();
@@ -424,7 +426,9 @@ public class SM_Renderer extends PApplet{
 	
 	protected synchronized void updateLightsLayer( char _wallChar) {
 		
-		System.out.println("RENDERER: LIGHTS UPDATE: start");
+		double lmili = millis();
+		
+		System.out.println("RENDERER: LIGHTS UPDATE: "+ _wallChar +" start");
 		
 		if( currentView.getWallCharsAsString().contains(""+_wallChar) ) {
 			
@@ -442,14 +446,12 @@ public class SM_Renderer extends PApplet{
 				for(int i=0; i<wallGfxsLG.length; i++) {
 					if( wallGfxsId[i] == _wallChar ) {
 						
-						
-						System.out.println("RENDERER: LIGHTS UPDATE: painting on wall ["+i+"] : "+_wallChar);
-						
+												
 						int wgWidth = wallGfxsLG[i].height;
 						
 						wallGfxsLG[i].beginDraw();
 						wallGfxsLG[i].clear();
-						wallGfxsLG[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, wgWidth), 0,0);
+						wallGfxsLG[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, wgWidth, SkewMode.LIGHTS), 0,0);
 						g.removeCache(wallGfxsLG[i]);
 						wallGfxsLG[i].endDraw();
 
@@ -461,21 +463,24 @@ public class SM_Renderer extends PApplet{
 							cropMask.resize(wallGfxsLG[i].width, wallGfxsLG[i].height);
 							g.removeCache(cropMask);
 							manualMask(wallGfxsLG[i], cropMask);
-							
-
 
 						}
 					}
 				}
-				
-				System.out.println("RENDERER: LIGHTS UPDATE: painted.");
 			}
 			
 			
 		}
 
-	System.out.println("RENDERER: LIGHTS UPDATE: end.\n");
+		double endmili =  (millis() - lmili);
+		
+	System.out.println("RENDERER: LIGHTS UPDATE: "+ _wallChar +" end. time:" + endmili);
 	
+	Lc++;
+	
+	dL = dL * ( (Lc-1) / Lc );
+	
+	dL += endmili * ( 1 / Lc );
 	
 	
 	
@@ -483,7 +488,13 @@ public class SM_Renderer extends PApplet{
 	
 	}
 	
-	protected synchronized void updateArtworksLayer( char _wallChar) {
+	protected synchronized void updateArtworksLayer( char _wallChar ) {
+		updateArtworksLayer(_wallChar, SkewMode.STANDART);
+	}
+	
+	protected synchronized void updateArtworksLayer( char _wallChar, SkewMode skewMode) {
+		
+		double amili = millis();
 		
 		System.out.println("RENDERER: ARTWORK UPDATE: start "+_wallChar);
 		
@@ -511,8 +522,12 @@ public class SM_Renderer extends PApplet{
 				
 				PImage wallGfx = null;
 
-				
-				wallGfx = vm.getWallGfx(_wallChar, shadowOfset);
+				if( skewMode == SkewMode.FORCE_HIGH ) {
+					wallGfx = vm.getWallGfxHiRes(_wallChar, shadowOfset);
+				} else {
+					
+					wallGfx = vm.getWallGfx(_wallChar, shadowOfset);
+				}
 				
 
 				
@@ -522,20 +537,20 @@ public class SM_Renderer extends PApplet{
 					for(int i=0; i<wallGfxsAW.length; i++) {
 						if( wallGfxsId[i] == _wallChar ) {
 							
-							
-							System.out.println("RENDERER: ARTWORK UPDATE: painting on wall ["+i+"] : "+_wallChar);
-							
+														
 							int wgWidth = wallGfxsAW[i].height;
 							
 							wallGfxsAW[i].beginDraw();
 							wallGfxsAW[i].clear();
 //							wallGfxsAW[i].image(wallGfx,0,0);
-							wallGfxsAW[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, wgWidth), 0,0);
+							wallGfxsAW[i].image(skewmator.skewToWall(wallGfx, skewValues, 0, wgWidth, skewMode), 0,0);
 							g.removeCache(wallGfxsAW[i]);
 							wallGfxsAW[i].endDraw();
 
 							if( currentView.isWallCrop(_wallChar) ) {
 
+								double cmili = millis();
+								
 								System.out.println("RENDERER: ARTWORK UPDATE: doing crop");
 								
 								Float[] cropValues = currentView.getWallCrop(_wallChar);
@@ -555,6 +570,7 @@ public class SM_Renderer extends PApplet{
 //								wallGfxsAW[i].image(maskedImg,0,0);
 //								wallGfxsAW[i].endDraw();
 
+								System.out.println("RENDERER: ARTWORK UPDATE: end crop. time: " +( millis() - cmili));
 							}
 						}
 					}
@@ -563,7 +579,6 @@ public class SM_Renderer extends PApplet{
 //					artworksLayer.image(skewmator.skewToWall(wallGfx, values, 0, ySize), 0,0);
 
 					
-					System.out.println("RENDERER: ARTWORK UPDATE: painted.");
 				}
 //				artworksLayer.beginDraw();
 //				artworksLayer.clear();
@@ -577,8 +592,18 @@ public class SM_Renderer extends PApplet{
 				
 			}
 //		}
-		System.out.println("RENDERER : ARTWORK UPDATE: end.\n");
+			
+			double endmili = ( millis() - amili);
+			
+		System.out.println("RENDERER : ARTWORK UPDATE: "+ _wallChar + " end. time: " + endmili);
 //		redraw();
+		
+		Ac++;
+		
+		dA = dA * ( (Ac-1) / Ac );
+		
+		dA += endmili * ( 1 / Ac );
+		
 		
 	}
 	
@@ -647,10 +672,10 @@ public class SM_Renderer extends PApplet{
 	
 	
 	public void redraw() {
-		System.out.println("RENDERER: DRAW FLAG: "+this.redraw);
-		System.out.println("RENDERER: REDRAW CALLED");
+//		System.out.println("RENDERER: DRAW FLAG: "+this.redraw);
+//		System.out.println("RENDERER: REDRAW CALLED");
 		super.redraw();
-		System.out.println("RENDERER: DRAW FLAG: "+this.redraw);
+//		System.out.println("RENDERER: DRAW FLAG: "+this.redraw);
 	}
 	
 	/**
@@ -670,12 +695,12 @@ public class SM_Renderer extends PApplet{
 	
 	public void setBusyQueueCurrent(int currentQueueLength) {
 		busyQueueProgress = busyQueueMax - currentQueueLength;
+		busyclock = 0;
 	}
 	
 	public void post() {
-		System.out.println("RENDERER: POST: start");
-		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
-		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
+//		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
+//		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
 		if(savetyDraw && update.getQueueLength() <= 0 ) {
 			super.redraw();
 			savetyDraw = false;
@@ -683,9 +708,8 @@ public class SM_Renderer extends PApplet{
 			busyQueueMax = 0;
 			busyQueueProgress = 0;
 		}
-		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
-		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
-		System.out.println("RENDERER: POST: end");
+//		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
+//		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
 	}
 	
 	public void onTimerEvent() {
@@ -694,11 +718,14 @@ public class SM_Renderer extends PApplet{
 			this.redraw();
 			savetyDraw = false;
 		}
+		if( update.getQueueLength() <= 0) {
+			this.setBusy(false);
+			this.redraw();
+		}
 	}
 	
 	public void draw(){
 
-		System.out.println("RENDERER: DRAW: start");
 		
 		background(255);
 
@@ -708,7 +735,7 @@ public class SM_Renderer extends PApplet{
 		int xOff = xOffset;
 		int yOff = yOffset;
 		
-		System.out.println("RENDERER: DRAW: base");
+//		System.out.println("RENDERER: DRAW: base");
 		
 		// draw Base
 
@@ -729,7 +756,7 @@ public class SM_Renderer extends PApplet{
 			
 		}
 
-		System.out.println("RENDERER: DRAW: color");
+//		System.out.println("RENDERER: DRAW: color");
 		
 		// draw Farbe
 
@@ -754,7 +781,7 @@ public class SM_Renderer extends PApplet{
 			popStyle();
 		}
 
-		System.out.println("RENDERER: DRAW: lights");
+//		System.out.println("RENDERER: DRAW: lights");
 		
 		// draw Licht
 
@@ -790,7 +817,7 @@ public class SM_Renderer extends PApplet{
 			popStyle();
 		}  
 
-		System.out.println("RENDERER: DRAW: artworks");
+//		System.out.println("RENDERER: DRAW: artworks");
 		
 		// draw Bild
 
@@ -806,7 +833,7 @@ public class SM_Renderer extends PApplet{
 		}
 
 		
-		System.out.println("RENDERER: DRAW: shadow");
+//		System.out.println("RENDERER: DRAW: shadow");
 		
 		// draw Schatten
 
@@ -827,11 +854,14 @@ public class SM_Renderer extends PApplet{
 			popStyle();
 		}
 
-		System.out.println("RENDERER: DRAW: anim+gui");
+//		System.out.println("RENDERER: DRAW: anim+gui");
 		
 		drawGUI();
 
-		System.out.println("RENDERER: DRAW: end");
+		pushStyle();
+		fill(255,0,0);
+		text("Lights time: " + dL, 20,20);
+		text("Artwks time: " + dA, 20,40);
 	}
 	
 	
@@ -846,8 +876,8 @@ public class SM_Renderer extends PApplet{
 			pushStyle();
 			
 			smooth();
-			
 			noStroke();
+			
 			if( !savetyDraw ) {
 				fill(150);
 			} else {
@@ -856,7 +886,7 @@ public class SM_Renderer extends PApplet{
 			rect(0, height -16, width, height);
 			
 			fill(20,20,200);
-			float fake = map( busyclock, 0, 2, 0, ((busyQueueMax - busyQueueProgress)/2)); 
+			float fake = map( busyclock, 0, 1, 0, ((busyQueueMax - busyQueueProgress)/2)); 
 			rect(0, height-16, map(busyQueueProgress, 0, busyQueueMax, 0, width) + fake, height);
 			
 			fill(255);
@@ -962,6 +992,12 @@ public class SM_Renderer extends PApplet{
 			img.popStyle();
 		}  
 
+		// prepare high res artworks-layer:
+		
+		for( char c : currentView.getWallChars()) {
+			updateArtworksLayer( c, SkewMode.FORCE_HIGH);
+		}
+		
 
 		// draw Bild
 
@@ -1104,7 +1140,7 @@ public class SM_Renderer extends PApplet{
 	
 	
 	public char[] getCurrentWallChars() {
-		System.out.println(currentFileStub);
+
 		return currentFileStub.substring(currentFileStub.lastIndexOf('_')+1).toCharArray();
 	}
 	
