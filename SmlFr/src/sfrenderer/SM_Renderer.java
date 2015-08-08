@@ -78,12 +78,17 @@ public class SM_Renderer extends PApplet{
 	
 	public boolean 					setupRun = false;
 	
-	private boolean 				devGUI = false;
+	private boolean 				devGUI = true;
 	
 	private boolean					isBusy = false;
+	private String					busyMessage = "";
 	private int						busyQueueMax = 0;
 	private int						busyQueueProgress = 0;
 	private int						busyclock = 0;
+
+	private boolean					isDrawingPreview = false;
+	private String					previewStatus;
+	private int[]					previewAdvance;						
 	
 	private boolean					savetyDraw = false;
 
@@ -288,8 +293,9 @@ public class SM_Renderer extends PApplet{
 		
 	}
 	
-	public void setBusy( boolean b) {
+	public void setBusy( boolean b, String msg) {
 		isBusy = b;
+		busyMessage = msg;
 	}
 	
 	/**
@@ -572,6 +578,12 @@ public class SM_Renderer extends PApplet{
 
 								System.out.println("RENDERER: ARTWORK UPDATE: end crop. time: " +( millis() - cmili));
 							}
+							
+							// mask the wallGfx with shadowmask to make it hide behind obstacles
+
+							manualWallColorMask(wallGfxsAW[i], layers[4]);
+							
+							
 						}
 					}
 					
@@ -701,6 +713,7 @@ public class SM_Renderer extends PApplet{
 	public void post() {
 //		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
 //		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
+		
 		if(savetyDraw && update.getQueueLength() <= 0 ) {
 			super.redraw();
 			savetyDraw = false;
@@ -708,6 +721,7 @@ public class SM_Renderer extends PApplet{
 			busyQueueMax = 0;
 			busyQueueProgress = 0;
 		}
+		
 //		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
 //		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
 	}
@@ -719,7 +733,7 @@ public class SM_Renderer extends PApplet{
 			savetyDraw = false;
 		}
 		if( update.getQueueLength() <= 0) {
-			this.setBusy(false);
+			this.setBusy(false, Lang.rendererBusy);
 			this.redraw();
 		}
 	}
@@ -857,11 +871,6 @@ public class SM_Renderer extends PApplet{
 //		System.out.println("RENDERER: DRAW: anim+gui");
 		
 		drawGUI();
-
-		pushStyle();
-		fill(255,0,0);
-		text("Lights time: " + dL, 20,20);
-		text("Artwks time: " + dA, 20,40);
 	}
 	
 	
@@ -891,7 +900,7 @@ public class SM_Renderer extends PApplet{
 			
 			fill(255);
 			
-			String s = Lang.rendererBusy;
+			String s = busyMessage;
 			busyclock++;
 			int mod = busyclock % 5;
 
@@ -904,6 +913,30 @@ public class SM_Renderer extends PApplet{
 			
 			rect(0,0,width,height);
 			
+			popStyle();
+		}
+		
+		
+		if( isDrawingPreview) {
+			
+			pushStyle();
+			noStroke();
+			fill(150);
+			rect(0, height -16, width, height);
+			
+			fill(20,20,200);
+			rect(0, height-16, map(previewAdvance[0], 0, previewAdvance[1], 0, width), height);
+			
+			String s = previewStatus;
+			int mod = frameCount % 5;
+
+			for(int i = 0; i<mod; i++) {
+				s += " .";
+			}
+			
+			fill(255);
+			text(s, 10, height - 4);
+
 			popStyle();
 		}
 		
@@ -944,12 +977,31 @@ public class SM_Renderer extends PApplet{
 				fill(180, 20, 20);
 			//rect(90, 10, 15,15);
 			text("5: schatten", 10, 100);
+			
+			fill( frameCount%2 * 255);
+			rect( 80, 10, 20, 20 );
+			
+			fill(255,0,0);
+			text("Lights time: " + dL, 120,20);
+			text("Artwks time: " + dA, 120,40);
+			
+			
 			popStyle();
 		}
 	}
 
 	
 	public boolean renderPreviewImage( String filename) {
+		
+		isDrawingPreview = true;
+		previewAdvance = new int[2];
+		previewStatus = Lang.busyRenderingPreviewToFile;
+		
+		for( int i=0; i< currentView.getWallChars().length + wallGfxsLG.length + 6; i++ ) {
+			previewAdvance[1] = i;
+		}
+		int pa = 0;
+		previewAdvance[0] = pa++;
 		
 		int w = layers[0].width;
 		int h = layers[1].height;
@@ -964,6 +1016,8 @@ public class SM_Renderer extends PApplet{
 //			img.removeCache(img);
 			
 		}
+		
+		previewAdvance[0] = pa++;
 
 
 		// draw Farbe
@@ -978,6 +1032,7 @@ public class SM_Renderer extends PApplet{
 			img.popStyle();
 		}
 
+		previewAdvance[0] = pa++;
 
 		// draw Licht
 
@@ -987,15 +1042,19 @@ public class SM_Renderer extends PApplet{
 			img.tint(255, 70);
 			for( PGraphics lg : wallGfxsLG) {
 				img.image(lg, 0, 0,w,h);
+				previewAdvance[0] = pa++;
 			}
 //			img.removeCache(img);
 			img.popStyle();
 		}  
 
+		previewAdvance[0] = pa++;
+		
 		// prepare high res artworks-layer:
 		
 		for( char c : currentView.getWallChars()) {
 			updateArtworksLayer( c, SkewMode.FORCE_HIGH);
+			previewAdvance[0] = pa++;
 		}
 		
 
@@ -1011,6 +1070,8 @@ public class SM_Renderer extends PApplet{
 
 			img.popStyle();
 		}
+		
+		previewAdvance[0] = pa++;
 
 		// draw Schatten
 
@@ -1023,10 +1084,15 @@ public class SM_Renderer extends PApplet{
 			img.popStyle();
 		}
 		
+		previewAdvance[0] = pa++;
+		
 		img.endDraw();
 		
 		img.save(filename);
 		
+		previewAdvance[0] = pa++;
+
+		isDrawingPreview = false;
 		return true;
 	}
 	

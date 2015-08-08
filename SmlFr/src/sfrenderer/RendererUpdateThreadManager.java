@@ -6,6 +6,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import SMUtils.Lang;
 import SMUtils.UpdateThread;
 
 public class RendererUpdateThreadManager {
@@ -26,7 +27,7 @@ public class RendererUpdateThreadManager {
 	public void color( Integer _previewColor, Character _previewWall, Integer _previewWallColor ) {
 		
 		renderer.increaseBusyQueueMax();
-		renderer.setBusy(true);
+		renderer.setBusy(true, Lang.rendererBusy);
 //		renderer.redraw();
 		renderer.loop();
 
@@ -43,7 +44,7 @@ public class RendererUpdateThreadManager {
 	public void artworks(char _wallChar) {
 
 		renderer.increaseBusyQueueMax();
-		renderer.setBusy(true);
+		renderer.setBusy(true, Lang.rendererBusy);
 //		renderer.redraw();
 		renderer.loop();
 		
@@ -64,7 +65,7 @@ public class RendererUpdateThreadManager {
 	public void lights(char _wallChar) {
 		
 		renderer.increaseBusyQueueMax();
-		renderer.setBusy(true);
+		renderer.setBusy(true, Lang.rendererBusy);
 //		renderer.redraw();
 		renderer.loop();
 
@@ -95,7 +96,7 @@ public class RendererUpdateThreadManager {
 //			JOptionPane.showConfirmDialog(null, "AW update time:\n" + (System.currentTimeMillis() - delta ));
 
 			
-			renderer.setBusy(false);
+			renderer.setBusy(false, Lang.rendererBusy);
 			renderer.noLoop();
 //			renderer.redraw();
 			renderer.threadManagerRecall();

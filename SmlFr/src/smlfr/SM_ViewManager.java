@@ -20,6 +20,7 @@ import processing.core.PImage;
 import SMUtils.Lang;
 import SMUtils.ViewMenuItem;
 
+import sfrenderer.ImageExporter;
 import sfrenderer.SM_Renderer;
 import updateModel.UpdateEvent;
 import updateModel.UpdateListener;
@@ -333,10 +334,14 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			boolean success = false;
 			if (overwrite == 0 || overwrite == 99) {
 				String filename = exportLoc.getAbsolutePath();
-				success = renderer.renderPreviewImage(filename);
+				
+				ImageExporter ex = new ImageExporter(renderer, filename);
+				
+				ex.start();
+//				success = renderer.renderPreviewImage(filename);
 			}
 			
-			System.out.println("success: "+success);
+//			System.out.println("success: "+success);
 		}
 		
 		System.gc();

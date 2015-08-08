@@ -167,6 +167,8 @@ public class Lang {
 	public static String	exportListTitle	    = "HŠngung-Listenansicht: (horizontal x vertikal in mm)";
 	public static String	exportSuccess_1		= "Die Verma§ungsdatei wurde erfolgreich exportiert.\n\nSie befindet sich in Projektordner unter\n";
 	public static String	exportSuccess_2		= "";
+	public static String 	busyRenderingPreviewToFile = "Speichere Vorschau";
+
 	
 	// Errors
 	
