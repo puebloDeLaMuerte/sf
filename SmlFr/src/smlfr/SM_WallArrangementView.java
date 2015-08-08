@@ -410,7 +410,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	 * @param shadowOfset
 	 * @return null if mode is not 0, 1, or 2
 	 */
-	public /*synchronized*/ PGraphics _drawWall( int _mode, int shadowOfset) {
+	public synchronized PGraphics _drawWall( int _mode, int shadowOfset) {
 		
 		float drawScale;
 		
@@ -441,7 +441,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				fact = 600f / (float)width;
 			}
 			if( fact > 3f) fact = 3f;
-			System.err.println("fact: " + fact);
+//			System.err.println("fact: " + fact);
 			
 			gfx = createGraphics( (int)(width*fact), (int)(height*fact));
 			
@@ -493,7 +493,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			if( i > 6) i = 6;
 			if( i < 3) i = 3;
 			
-			System.err.println("BLUR VALUE: "+ i);
+//			System.err.println("BLUR VALUE: "+ i);
 			
 			gfx.filter(BLUR, /*3*/ i);
 		}
@@ -1444,12 +1444,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		SM_Artwork[] aws = getSelectedArtworks();
 		
-//		if (awOver != null) {
-//			aws = new SM_Artwork[1];
-//			aws[0] = awOver;
-//		} else {
-//			aws = getSelectedArtworks();
-//		}
+		if ((aws == null || aws.length == 0) && awOver != null) {
+			aws = new SM_Artwork[1];
+			aws[0] = awOver;
+		}
 		
 		boolean first = true;
 		for (SM_Artwork a : aws) {

@@ -75,7 +75,7 @@ public class Skewmator extends PApplet {
 	
 	public PImage skewToWall(PImage inImage, PVector lo, PVector ro, PVector ru, PVector lu, int bezugX, int bezugY, float scale, SkewMode mode) {
 
-		String debugF = "bezug is " + bezugX/baseX + " times the base";
+//		String debugF = "bezug is " + bezugX/baseX + " times the base";
 
 		float fact = bezugX / baseX;
 		PVector smallPicAnchor = new PVector(baseX * ((fact-1)/2) , baseY * ((fact-1)/2));
@@ -91,8 +91,8 @@ public class Skewmator extends PApplet {
 		float f = 1f;
 		boolean downscale = false;
 		
-		String debugO ="";
-		String debugR ="";
+//		String debugO ="";
+//		String debugR ="";
 		
 		if(boxXsize > 3000 || boxYsize > 3000) {
 
@@ -110,9 +110,9 @@ public class Skewmator extends PApplet {
 			
 //			f = fact / 40;
 			
-			debugF += " factor: " + f;
+//			debugF += " factor: " + f;
 			
-			debugO = "box size original: " + boxXsize +" x " + boxYsize;
+//			debugO = "box size original: " + boxXsize +" x " + boxYsize;
 		}
 		
 		switch (mode) {
@@ -156,7 +156,7 @@ public class Skewmator extends PApplet {
 			
 			boxAnchorBigPicture.mult(f);
 			
-			debugR = "box size resized:  " + boxXsize +" x " + boxYsize;
+//			debugR = "box size resized:  " + boxXsize +" x " + boxYsize;
 		}
 		
 		
@@ -201,9 +201,9 @@ public class Skewmator extends PApplet {
 
 		sizedReturnImage.image(skewedImage, boxAnchorSmallPicRelative.x*scale, boxAnchorSmallPicRelative.y*scale, boxSizeSmallPicRelative.x*scale, boxSizeSmallPicRelative.y*scale );
 
-		System.err.println(debugF);
-		System.err.println(debugO);
-		System.err.println(debugR);
+//		System.err.println(debugF);
+//		System.err.println(debugO);
+//		System.err.println(debugR);
 
 		
 		sizedReturnImage.pushStyle();
