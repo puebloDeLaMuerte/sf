@@ -839,7 +839,8 @@ public class SM_Renderer extends PApplet{
 			pushStyle();
 			blendMode(BLEND);
 			for( PGraphics wg : wallGfxsAW) {
-				image(wg, xOff, yOff,displW,displH);
+				if( wg != null) image(wg, xOff, yOff,displW,displH);
+				else System.err.println("A WALL GRAPHICS WAS null IN RENDERER DRAW");
 				g.removeCache(g);
 			}
 

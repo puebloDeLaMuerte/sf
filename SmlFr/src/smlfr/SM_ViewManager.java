@@ -231,7 +231,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	public /*synchronized  manual*/ PImage getWallGfx(Character _wc, int _shdwOfset) {
 
 		if( wallArrangementViews.get(""+_wc) != null ) {
-			return wallArrangementViews.get(""+_wc).getGraphics(0, 1, _shdwOfset);  //       drawWall( 1 , _shdwOfset );
+			return wallArrangementViews.get(""+_wc)._drawWall4Renderer( 1, _shdwOfset);  //       drawWall( 1 , _shdwOfset );
 		}
 		else return null;
 	}
@@ -239,7 +239,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	public PImage getWallGfxHiRes(Character _wc, int _shdwOfset) {
 		
 		if( wallArrangementViews.get(""+_wc) != null ) {
-			return wallArrangementViews.get(""+_wc).getGraphics(0, 2, _shdwOfset);  //       drawWall( 1 , _shdwOfset );
+			return wallArrangementViews.get(""+_wc)._drawWall4Renderer( 2, _shdwOfset);  //       drawWall( 1 , _shdwOfset );
 		}
 		else return null;
 	}
@@ -247,7 +247,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
  	public /*synchronized  manual*/ PImage getLightsGfx( Character _wc) {
 
 		if( wallArrangementViews.get(""+_wc) != null ) {
-			return wallArrangementViews.get(""+_wc).getGraphics(1, 1, -1);//          drawLights( 1 );
+			return wallArrangementViews.get(""+_wc)._drawLights();//          drawLights( 1 );
 		}
 		else return null;
 	}

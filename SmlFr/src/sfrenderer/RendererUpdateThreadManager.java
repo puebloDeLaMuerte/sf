@@ -26,10 +26,10 @@ public class RendererUpdateThreadManager {
 	
 	public void color( Integer _previewColor, Character _previewWall, Integer _previewWallColor ) {
 		
-		renderer.increaseBusyQueueMax();
-		renderer.setBusy(true, Lang.rendererBusy);
-//		renderer.redraw();
-		renderer.loop();
+//		renderer.increaseBusyQueueMax();
+//		renderer.setBusy(true, Lang.rendererBusy);
+//		renderer.loop();
+
 
 //		System.out.println("threads.size: " + threads.size());
 		ColorUpdateThread t = new ColorUpdateThread( _previewColor, _previewWall, _previewWallColor);
@@ -43,10 +43,9 @@ public class RendererUpdateThreadManager {
 	
 	public void artworks(char _wallChar) {
 
-		renderer.increaseBusyQueueMax();
-		renderer.setBusy(true, Lang.rendererBusy);
-//		renderer.redraw();
-		renderer.loop();
+//		renderer.increaseBusyQueueMax();
+//		renderer.setBusy(true, Lang.rendererBusy);
+//		renderer.loop();
 		
 
 
@@ -64,10 +63,9 @@ public class RendererUpdateThreadManager {
 	
 	public void lights(char _wallChar) {
 		
-		renderer.increaseBusyQueueMax();
-		renderer.setBusy(true, Lang.rendererBusy);
-//		renderer.redraw();
-		renderer.loop();
+//		renderer.increaseBusyQueueMax();
+//		renderer.setBusy(true, Lang.rendererBusy);
+//		renderer.loop();
 
 //		System.out.println("threads.size: " + threads.size());
 		LightsUpdateThread t = new LightsUpdateThread(_wallChar);
@@ -134,6 +132,10 @@ public class RendererUpdateThreadManager {
 						
 			hasStartedUpdate = true;
 			
+			renderer.increaseBusyQueueMax();
+			renderer.setBusy(true, Lang.rendererBusy);
+			renderer.loop();
+
 			renderer.updateRoomColorLayer(previewColor, previewWall, previewWallColor);
 			
 			
@@ -203,6 +205,11 @@ public class RendererUpdateThreadManager {
 			}
 			
 			hasStartedUpdate = true;
+			
+			renderer.increaseBusyQueueMax();
+			renderer.setBusy(true, Lang.rendererBusy);
+			renderer.loop();
+			
 			renderer.updateArtworksLayer(wallChar);
 			
 
@@ -274,6 +281,11 @@ public class RendererUpdateThreadManager {
 			}
 			
 			hasStartedUpdate = true;
+
+			renderer.increaseBusyQueueMax();
+			renderer.setBusy(true, Lang.rendererBusy);
+			renderer.loop();
+
 			renderer.updateLightsLayer(wallChar);
 			
 			

@@ -4,6 +4,6 @@
     "projectName": "fitzgerald"
   },
   "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/furzi",
-  "museumData": "MuKuDeWe.sfm",
-  "midHeight": 1500
+  "midHeight": 1500,
+  "museumData": "MuKuDeWe.sfm"
 }
