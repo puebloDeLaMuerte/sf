@@ -91,7 +91,7 @@ public class SM_Wall implements UpdateListener {
 			}
 			
 			myArtworks.put(id, myRoom.getArtworkFromBase(id));
-			myArtworks.get(id).initProjectData(myWallName, posX, posY, light, shadow);
+			myArtworks.get(id).initProjectData(myWallName, myRoom.getRealName(), posX, posY, light, shadow);
 		}
 	}
 	

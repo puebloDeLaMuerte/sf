@@ -21,9 +21,9 @@ public class MeasureMenuItem extends JMenuItem {
 		
 		
 		
-		System.out.println("the action event COMMAND is this: " + event.getActionCommand());
-		System.out.println("the action event SOURCE  is this: " + event.getSource());
-		System.out.println("the action event CLASS   is this: " + event.getSource().getClass());
+//		System.out.println("the action event COMMAND is this: " + event.getActionCommand());
+//		System.out.println("the action event SOURCE  is this: " + event.getSource());
+//		System.out.println("the action event CLASS   is this: " + event.getSource().getClass());
 		
 		super.fireActionPerformed(event);
 	}

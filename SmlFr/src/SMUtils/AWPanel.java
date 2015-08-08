@@ -35,7 +35,7 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
     private SM_Artwork myArtwork;
     
     private JPopupMenu menu;
-    private MeasureMenuItem measurements;
+    private MeasureMenuItem measurements, remove;
     
     public AWPanel(ActionListener ls, SM_Artwork _s) {
         addMouseListener(this);
@@ -49,9 +49,12 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 		
 		menu = new JPopupMenu();
 		measurements = new MeasureMenuItem(Lang.editMeasurements, _s);
-				
+		remove = new MeasureMenuItem(Lang.RemoveArtwork, _s);		
 
 		measurements.addActionListener(ls);
+		remove.addActionListener(ls);
+		
+		menu.add(remove);
 		menu.add(measurements);
 		this.add(menu);
     }

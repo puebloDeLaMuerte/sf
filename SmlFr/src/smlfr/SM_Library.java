@@ -146,7 +146,8 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 
         pack();
 
-        setTitle("Library");
+        setTitle( fm.getProjectName() + "  -  Library");
+        
         boolean sd = fm.isSaveDirty();
         setSaveDirtyMark(sd);
         
@@ -305,8 +306,8 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 	}
 
 	public void setSaveDirtyMark( boolean _sd) {
-		if(_sd) setTitle("Library (unsaved changes)");
-		else setTitle("Library");
+		if(_sd) setTitle("Library:   " + fm.getProjectName() + "   ("+ Lang.unsavedChangesTag +")");
+		else setTitle("Library:   " + fm.getProjectName());
 	}
 
 
@@ -326,9 +327,20 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 			}
 		}
 		if( e.getSource().getClass() == SMUtils.MeasureMenuItem.class) {
+			
+			if( e.getActionCommand() == Lang.editMeasurements) {
 									
-			MeasureMenuItem i = (MeasureMenuItem)e.getSource();			
-			SMUtils.ArtworkMeasurementChooser awc = new SMUtils.ArtworkMeasurementChooser(this, i.getArtwork());
+				MeasureMenuItem i = (MeasureMenuItem)e.getSource();			
+				SMUtils.ArtworkMeasurementChooser awc = new SMUtils.ArtworkMeasurementChooser(this, i.getArtwork());
+				
+			} else if( e.getActionCommand() == Lang.RemoveArtwork) {
+				
+				SM_Artwork a = ((MeasureMenuItem)e.getSource()).getArtwork();			
+				
+				WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, a.getName(), ' ', "Library", a.getRoom(), a.getWallChar());
+
+				fm.updateRequested(r);
+			}
 		}
 	}
 

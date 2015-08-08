@@ -29,6 +29,7 @@ public class SM_Artwork {
 	
 	// init from project
 	private String			isInWall;
+	private String			wallRealName = "";
 	private int[]			artworkPosInWall;
 	private boolean			light;
 	private boolean			shadow;
@@ -115,8 +116,9 @@ public class SM_Artwork {
 //	}
 	}
 	
-	public void initProjectData( String _isInWall, int _posX, int _posY, boolean _hasLight, boolean _drawShadow) {
+	public void initProjectData( String _isInWall, String _wallRealName, int _posX, int _posY, boolean _hasLight, boolean _drawShadow) {
 		isInWall = _isInWall;
+		wallRealName = _wallRealName;
 		artworkPosInWall = new int[2];
 		setTotalWallPos(_posX, _posY);
 
@@ -259,10 +261,9 @@ public class SM_Artwork {
 	public String getWallHumanReadable() {
 		if( isInWall != null ) {
 						
-			String r = isInWall.substring(isInWall.indexOf('_')+2, isInWall.lastIndexOf('_'));
 			String w = isInWall.substring(isInWall.lastIndexOf('_')+1, isInWall.length());
 			
-			return Lang.room+" " + r + " "+ Lang.wall+" " + w;
+			return wallRealName + " "+ Lang.wall+" " + w;
 		}
 		else return null;
 	}
@@ -281,10 +282,10 @@ public class SM_Artwork {
 		
 	}
 
-	public void setWall(SM_FileManager sm_FileManager, String _wall) {
-		// TODO not implemented yet
-		System.out.println("I GET CALLED, FIX ME!!!");
+	public void setWall(SM_FileManager sm_FileManager, String _wall, String _wallRealName) {
+
 		isInWall = _wall;
+		wallRealName = _wallRealName;
 	}
 	
 	// Position

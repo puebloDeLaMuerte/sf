@@ -1137,11 +1137,11 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		if ( ! e.getTargetRoom().equalsIgnoreCase("Library")) {
 			SM_Room thisRm = base.getRoom(this, e.getTargetRoom());
 			if (!thisRm.hasArtworkOnWall(e.getName(), e.getTargetWall())) {
-				thisAw.setWall(this, targetWall);
+				thisAw.setWall(this, targetWall, thisRm.getRealName());
 				thisRm.addArtworkToWall(this, thisAw, e.getTargetWall());
 			}
 		} else {
-			thisAw.setWall(this, null);
+			thisAw.setWall(this, null, null);
 		}
 		
 		

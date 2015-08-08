@@ -91,6 +91,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	private float[]								npos;
 	private char								wallOver;
 	private SM_Artwork							artOver;
+	private SM_Artwork							menuArtOver;
 	private boolean								drag;
 	private float 								mx;
 	private float 								my;
@@ -140,10 +141,10 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		pMenu.add(pMenuRemoveArtwork);
 		pMenu.add(pMenuChangeColor);
 		pMenu.add(new JSeparator());
-		pMenu.add(pMenuEnterExitRoom);
-		pMenu.add(new JSeparator());
-		pMenu.add(export);
 		pMenu.add(savePr);
+		pMenu.add(export);
+		pMenu.add(new JSeparator());
+		pMenu.add(pMenuEnterExitRoom);
 		pMenu.add(new JSeparator());
 		pMenu.add(quitSF);
 		
@@ -658,8 +659,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 
 	public void mousePressed() {
 		
-		if( artOver != null ) pMenuRemoveArtwork.setEnabled(true);
-		else pMenuRemoveArtwork.setEnabled(false);
+		if( artOver != null ) {
+			pMenuRemoveArtwork.setEnabled(true);
+			menuArtOver = artOver;
+		}
+		else {
+			pMenuRemoveArtwork.setEnabled(false);
+			menuArtOver = null;
+		}
 		
 		if( mouseButton == RIGHT ) {
 			if( myRoom.getSaveDirty() ) {
@@ -720,9 +727,9 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			new WallColorChooser(this, wallOver, myRoom.getRoomColor(), wallColor);
 			
 			
-		} else if( artOver != null && e.getActionCommand().equalsIgnoreCase(Lang.RemoveArtwork)) {
+		} else if( menuArtOver != null && e.getActionCommand().equalsIgnoreCase(Lang.RemoveArtwork)) {
 			
-			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, artOver.getName(), ' ', "Library", myRoom.getName(), artOver.getWallChar());
+			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, menuArtOver.getName(), ' ', "Library", myRoom.getName(), menuArtOver.getWallChar());
 
 			myRoom.fireUpdateRequest(r);
 		} else if( e.getActionCommand().equalsIgnoreCase(Lang.enterRoom)) {
