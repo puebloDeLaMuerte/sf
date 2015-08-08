@@ -92,13 +92,19 @@ public class SM_WindowManager{
 //				base.rooms.get(rst).unregisterArtworkUpdateListeners();
 				base.rooms.get(r).endView();
 					
+			}
+			
+			for( String r : rooms) {
+				
 				if( r.equalsIgnoreCase(_requestedRoom) ) {
 					
 					base.lib.setSize(rst.getSize(2, 1));
 					base.lib.setLocation(rst.getPos(0, 2));
 					base.rooms.get(r).initArrangementView(rst.getSize(1, 1), rst.getPos(2, 2), base);
 				}
+				
 			}
+			
 			System.gc();
 			state = progState.ROOM;
 			

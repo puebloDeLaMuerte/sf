@@ -57,6 +57,7 @@ import SMUtils.WallColorChooser;
 
 import processing.core.PApplet;
 import processing.core.PShape;
+import processing.event.MouseEvent;
 import updateModel.UpdateEvent;
 import updateModel.ArtworkUpdateRequestEvent;
 import updateModel.UpdateType;
@@ -182,12 +183,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		
 		shape(greyRoom,0,0);
 
-		
 		fill(0);
-
-//		if( this.getClass().getName() == smlfr.SM_RoomProjectView.class.getName() ) {
-//			drawName = true;
-//		} else drawName = false;
 
 //		redraw();
 		setupRun = true;
@@ -692,6 +688,19 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //		}
 	}
 	
+	public void mouseClicked(MouseEvent e) {
+		if(e.getCount() > 1) {
+			if ( this.getClass() == smlfr.SM_RoomProjectView.class) {
+				myRoom.requestRoomEnter();
+			}
+		}
+	}
+	
+	public void mouseExited() {
+		mouseX = 0;
+		mouseY = 0;	
+	}
+	
 	public void keyPressed() {
 //		if( keyCode == SHIFT) {
 //			moveWindow = true;
@@ -707,12 +716,6 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //		}
 	}
 	
-	public void mouseExited() {
-		mouseX = 0;
-		mouseY = 0;	
-	}
-	
-
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {

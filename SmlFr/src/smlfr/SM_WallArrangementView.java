@@ -923,6 +923,22 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 						
 						thisPos.sub(referencePos);
 						thisPos.add(nPos);
+						
+						// check for wallBounds
+						
+						if( thisPos.x < 0) {
+							thisPos.x = 0;
+						}
+						if( (thisPos.y - a.getTotalHeight()) < 0) {
+							thisPos.y = a.getTotalHeight();
+						}
+						if( (thisPos.x + a.getTotalWidth()) > myWall.getWidth()) {
+							thisPos.x -= ( thisPos.x + a.getTotalWidth() - myWall.getWidth() );
+						}
+						if( thisPos.y > myWall.getHeight()) {
+							thisPos.y = myWall.getHeight() ;
+						}
+						
 					
 						ArtworkUpdateRequestEvent e;
 						
@@ -941,6 +957,21 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				} else if( awOver != null ) {  
 					
 					// fire single update
+					
+					// check for wallBounds
+					
+					if( nPos.x < 0) {
+						nPos.x = 0;
+					}
+					if( (nPos.y - awOver.getTotalHeight()) < 0) {
+						nPos.y = awOver.getTotalHeight();
+					}
+					if( (nPos.x + awOver.getTotalWidth()) > myWall.getWidth()) {
+						nPos.x -= ( nPos.x + awOver.getTotalWidth() - myWall.getWidth() );
+					}
+					if( nPos.y > myWall.getHeight()) {
+						nPos.y = myWall.getHeight() ;
+					}
 				
 					ArtworkUpdateRequestEvent e;
 				
@@ -1411,14 +1442,14 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	
 	private void snapToMidHeight() {
 		
-		SM_Artwork[] aws;
+		SM_Artwork[] aws = getSelectedArtworks();
 		
-		if (awOver != null) {
-			aws = new SM_Artwork[1];
-			aws[0] = awOver;
-		} else {
-			aws = getSelectedArtworks();
-		}
+//		if (awOver != null) {
+//			aws = new SM_Artwork[1];
+//			aws[0] = awOver;
+//		} else {
+//			aws = getSelectedArtworks();
+//		}
 		
 		boolean first = true;
 		for (SM_Artwork a : aws) {
