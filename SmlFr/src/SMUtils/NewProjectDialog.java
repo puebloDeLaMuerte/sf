@@ -8,11 +8,15 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 public class NewProjectDialog extends JOptionPane {
 
@@ -26,12 +30,14 @@ public class NewProjectDialog extends JOptionPane {
 		
 		this.rooms = rooms;
 		this.realNames = realNames;
+		
+		
 	}
 
-	public void showDialog() {
+	public int showDialog() {
 		
-		super.showOptionDialog(null, makePanel(), Lang.newProjectNameTitle, OK_CANCEL_OPTION, QUESTION_MESSAGE, null, getOptions(), 0);
-
+		int r =  super.showOptionDialog(null, makePanel(), Lang.newProjectNameTitle, OK_CANCEL_OPTION, QUESTION_MESSAGE, null, getOptions(), 0);
+		return r;
 	}
 	
 	private JPanel makePanel() {
@@ -44,6 +50,7 @@ public class NewProjectDialog extends JOptionPane {
 		p.add(Box.createRigidArea(new Dimension(0,5)));
 		nameField = new JTextField();
 		nameField.setColumns(30);
+		nameField.addAncestorListener(new RequestFocusListener());
 		p.add(nameField, Component.LEFT_ALIGNMENT);
 		
 		p.add(Box.createRigidArea(new Dimension(0,5)));
@@ -72,6 +79,13 @@ public class NewProjectDialog extends JOptionPane {
 	}
 	
 	public String getProjectName() {
+		
+		String text = nameField.getText();
+		
+		if( text.trim().isEmpty() ) {
+			return null;
+		}
+		
 		return nameField.getText();
 	}
 	
@@ -102,4 +116,27 @@ public class NewProjectDialog extends JOptionPane {
 		return ret;
 	}
 	
+	public class RequestFocusListener implements AncestorListener {
+	    @Override
+	    public void ancestorAdded(final AncestorEvent e) {
+	        final AncestorListener al = this;
+	        SwingUtilities.invokeLater(new Runnable() {
+
+	            @Override
+	            public void run() {
+	                final JComponent component = e.getComponent();
+	                component.requestFocusInWindow();
+	                component.removeAncestorListener(al);
+	            }
+	        });
+	    }
+
+	    @Override
+	    public void ancestorMoved(final AncestorEvent e) {
+	    }
+
+	    @Override
+	    public void ancestorRemoved(final AncestorEvent e) {
+	    }
+	}
 }

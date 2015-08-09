@@ -414,15 +414,24 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 	public File newProject() {
 		
-				
-		NewProjectDialog d = new NewProjectDialog( getRoomsInArchitecture(), getRoomRealNamesInArchitecture() );
-		d.showDialog();
+		String projectName = null;
+		String[] _selectedRooms = null;
 		
-		String projectName = d.getProjectName();
-		String[] _selectedRooms = d.getSelectedRooms();
+		while (projectName == null || _selectedRooms.length == 0) {
+			NewProjectDialog d = new NewProjectDialog(getRoomsInArchitecture(), getRoomRealNamesInArchitecture());
+			
+			int r = d.showDialog();
 		
+			System.err.println(r);
+			
+			if( r == 2 || r == -1 ) return null;
+			
+			projectName = d.getProjectName();
+			_selectedRooms = d.getSelectedRooms();
+			
+			
+		}
 		
-
 		if( projectName == null || _selectedRooms.length == 0) return null;
 		
 		System.out.println("the NAME NEAM NESM NESAM  ----->> "+projectName);
@@ -457,6 +466,8 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			case 1:
 				
 				importedAws = base.in.batchImport(artLibSaveLocation, false);
+				
+				if( importedAws == null ) return null;
 				
 				JSONArray lib = new JSONArray();
 				

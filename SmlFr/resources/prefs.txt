@@ -3,7 +3,7 @@
     "projectPath": "/Users/philipptoegel/Desktop/ffff/fitzgerald/fitzgerald.sfp",
     "projectName": "fitzgerald"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/furzi",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff",
   "midHeight": 1500,
   "museumData": "MuKuDeWe.sfm"
 }

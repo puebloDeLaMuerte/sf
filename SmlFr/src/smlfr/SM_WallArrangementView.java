@@ -82,6 +82,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 	int 							shadowAmount = 10;//8;
 	int 							shadowOfsetAmount = 5;
+	private Object					awLock, lgLock;
 	
 	int count = 0;
 
@@ -91,12 +92,14 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		this.base = base;
 		
+		awLock = new Object();
+		lgLock = new Object();
+		
 		myWall = _myW;
 		dt = new DropTarget(this,this);
 		myMidHeight = myWall.getMidHeight();
 		
 		initMenu();
-		
 		
 		for( String a : myWall.getArtworks().keySet() ) {
 			SM_Artwork aw = myWall.getArtworks().get(a);
@@ -120,7 +123,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		int resultHeight;
 		int resultWidth;
 
-		System.out.println("\n\navailable space: "+_size.width+" x "+_size.height);
+//		System.out.println("\n\navailable space: "+_size.width+" x "+_size.height);
 		
 		// Querformat
 		if( aspect <= 1) {   
@@ -255,20 +258,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	public void setup() {
 		scale = ((float)mySize.width ) / ((float)myWall.getWidth());
 		wlGfx = createGraphics(width, height);
-//		bg = createGraphics(mySize.width, mySize.height);
-//		bg.beginDraw();
-//		bg.background(255);
-//		for(int intx=0; intx<mySize.width; intx++) {
-//			for(int inty=0; inty<mySize.height; inty++) {
-//				bg.stroke(random(248,255));
-//				bg.point(intx,inty);
-//			}
-//		}
-//		bg.endDraw();
 
-//		wlGfx = createGraphics(mySize.width, mySize.height);
-		
-//		rectMode(CORNER);
 		frameRate(15);
 	}
 	
@@ -390,19 +380,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 
-//	/**
-//	 *  0 for Wall
-//	 *  1 for Lights
-//	 */
-//	public synchronized PGraphics getGraphics(int what, int mode, int shadowOfset) {
-//		switch (what) {
-//		
-//		case 0: 	return _drawWall( mode, shadowOfset);
-//		case 1: 	return _drawLights( mode );
-//		default:	return null;
-//
-//		}
-//	}
 	
 	/**
 	 * 
@@ -542,299 +519,303 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	 * @param shadowOfset
 	 * @return PGraphics with aspect ration of wall. Returns null if mode is not 1, or 2
 	 */
-	public synchronized PGraphics _drawWall4Renderer( int _mode, int shadowOfset) {
+	public  PGraphics _drawWall4Renderer( int _mode, int shadowOfset) {
 		
-		float drawScale;
-		
-//		wlGfxReady = false;
-		loadMissingAWGraphics();
-		
-		PGraphics gfx;
-		
-		if( _mode == 1 ) {
+		synchronized( awLock ) {
 			
-// for Renderer
-			
-			float fact = 1;
-			
-			if( height < 600 ) {
-				
-				fact = 600f / (float)height;
-			}
-			if( width < 600f  && width < height) {
-				
-				fact = 600f / (float)width;
-			}
-			if( fact > 3f) fact = 3f;
-//			System.err.println("fact: " + fact);
-			
-			gfx = createGraphics( (int)(width*fact), (int)(height*fact));
-			
-//			System.err.println("wall    size: " + myWall.getWidth() +" x " + myWall.getHeight());
-//			System.err.println("norm    size: " + width +" x "+ height);
-//			System.err.println("wallGfx size: " + gfx.width +" x " + gfx.height);
-			
-			drawScale = ((float)gfx.width ) / ((float)myWall.getWidth());
-			
-		} else if( _mode == 2 ) {
-			
-// for SaveImage (hi res)
-			
-			gfx = createGraphics(width*3, height*3);
-			drawScale = ((float)gfx.width ) / ((float)myWall.getWidth());
-			
-		} else {
-			return null;
-		}
-		
-		
-		gfx.clear();
-		gfx.beginDraw();
-		
-		
-		
-		// DRAW Schatten
-		
-		if(myWall.getArtworksArray().length > 0 ) {
 
-//			if(!awDrag && _mode == 0) awOver = null;
 
-			// how much blur?
-//			float blur = gfx.width / 300f;
-			
-			float blur = 3.5f;
-			
-//			if( blur > 6) blur = 6;
-//			if( blur < 3) blur = 3;
-//			blur++;
-			
-			
-			
-			for( SM_Artwork a : myWall.getArtworksArray() ) {
+			float drawScale;
 
-				int[] tmpPos = a.getTotalWallPos();
+			//		wlGfxReady = false;
+			loadMissingAWGraphics();
 
-				if( a.hasShadow() ) {	
-					PVector totalPos = wptos( new PVector(tmpPos[0]-shadowAmount-(shadowOfsetAmount * shadowOfset), tmpPos[1]-shadowAmount-(shadowAmount*2)), drawScale );
-					PVector totalSize = astos( new PVector(a.getTotalWidth()+(shadowAmount*2), a.getTotalHeight()+(shadowAmount*0.5f)), drawScale);
+			PGraphics gfx;
 
-					int plus = 15;
-					
-					PGraphics shdw = createGraphics((int)(totalSize.x + (2*plus)), (int)(totalSize.y + (2*plus)) );
-					shdw.beginDraw();
-					shdw.noStroke();
-//					shdw.background(200,0,0,80);
-					shdw.fill(60);
-					shdw.rect(plus, plus, totalSize.x, totalSize.y);
-					shdw.filter(BLUR, blur);
-					shdw.endDraw();
-					
-					gfx.image(shdw, totalPos.x-plus, totalPos.y-plus-1, totalSize.x + (2*plus), totalSize.y + (2*plus));
-					
-					
-					
-//					gfx.pushStyle();
-//					gfx.fill(50);
-//					gfx.rect( totalPos.x, totalPos.y, totalSize.x, totalSize.y );
-//					gfx.popStyle();
+			if( _mode == 1 ) {
+
+				// for Renderer
+
+				float fact = 1;
+
+				if( height < 600 ) {
+
+					fact = 600f / (float)height;
 				}
-//			}
-//		}
+				if( width < 600f  && width < height) {
 
-//		int blur = gfx.width / 350;
-//		if( blur > 6) blur = 6;
-//		if( blur < 3) blur = 3;
-//		
-//
-//
-//		gfx.filter(BLUR, /*3*/ blur);
-
-		
-		
-//		if(myWall.getArtworksArray().length > 0 ) {
-			
-			
-//			for( SM_Artwork a : myWall.getArtworksArray() ) {
-
-				
-//				int[] tmpPos = a.getTotalWallPos();
-				PVector totalPos = wptos( new PVector(tmpPos[0], tmpPos[1]), drawScale );
-
-				PVector totalSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), drawScale);
-				
-				
-				int[] tmpPos2 = a.getPptWallPos();
-				PVector pptPos = wptos( new PVector(tmpPos2[0], tmpPos2[1]), drawScale );
-				
-				int[] tmpPos3= a.getPptSize();
-				PVector pptSize = astos(new PVector(tmpPos3[0], tmpPos3[1]), drawScale);
-				
-				int[] tmpPos4 = a.getArtworkWallPos();
-				PVector artworkPos = wptos( new PVector(tmpPos4[0], tmpPos4[1]), drawScale );
-				
-				int[] tmpPos5 = a.getArtworkSize();
-				PVector artworkSize = astos(new PVector(tmpPos5[0], tmpPos5[1]), drawScale);
-				
-
-					
-				
-//				int shadowFact = 5;
-				
-
-				// draw frame
-				
-				if(a.hasFrame()) {
-					gfx.image(a.getFrameGfx(), totalPos.x, totalPos.y, totalSize.x, totalSize.y);
+					fact = 600f / (float)width;
 				}
-				
-				// draw ppt
-				
-				if(a.hasPassepartout()) {
-					gfx.noStroke();
-					gfx.pushStyle();
-					if( _mode == 0 &&  isValidDrag() && a.isSelected() ) {
-						gfx.fill(200,190,170,75);
-					} else {						
-						gfx.fill(200,190,170,255);
+				if( fact > 3f) fact = 3f;
+				//			System.err.println("fact: " + fact);
+
+				gfx = createGraphics( (int)(width*fact), (int)(height*fact));
+
+				//			System.err.println("wall    size: " + myWall.getWidth() +" x " + myWall.getHeight());
+				//			System.err.println("norm    size: " + width +" x "+ height);
+				//			System.err.println("wallGfx size: " + gfx.width +" x " + gfx.height);
+
+				drawScale = ((float)gfx.width ) / ((float)myWall.getWidth());
+
+			} else if( _mode == 2 ) {
+
+				// for SaveImage (hi res)
+
+				gfx = createGraphics(width*3, height*3);
+				drawScale = ((float)gfx.width ) / ((float)myWall.getWidth());
+
+			} else {
+				return null;
+			}
+
+
+			gfx.clear();
+			gfx.beginDraw();
+
+
+
+			// DRAW Schatten
+
+			if(myWall.getArtworksArray().length > 0 ) {
+
+				//			if(!awDrag && _mode == 0) awOver = null;
+
+				// how much blur?
+				//			float blur = gfx.width / 300f;
+
+				float blur = 3.5f;
+
+				//			if( blur > 6) blur = 6;
+				//			if( blur < 3) blur = 3;
+				//			blur++;
+
+
+
+				for( SM_Artwork a : myWall.getArtworksArray() ) {
+
+					int[] tmpPos = a.getTotalWallPos();
+
+					if( a.hasShadow() ) {	
+						PVector totalPos = wptos( new PVector(tmpPos[0]-shadowAmount-(shadowOfsetAmount * shadowOfset), tmpPos[1]-shadowAmount-(shadowAmount*2)), drawScale );
+						PVector totalSize = astos( new PVector(a.getTotalWidth()+(shadowAmount*2), a.getTotalHeight()+(shadowAmount*0.5f)), drawScale);
+
+						int plus = 15;
+
+						PGraphics shdw = createGraphics((int)(totalSize.x + (2*plus)), (int)(totalSize.y + (2*plus)) );
+						shdw.beginDraw();
+						shdw.noStroke();
+						//					shdw.background(200,0,0,80);
+						shdw.fill(60);
+						shdw.rect(plus, plus, totalSize.x, totalSize.y);
+						shdw.filter(BLUR, blur);
+						shdw.endDraw();
+
+						gfx.image(shdw, totalPos.x-plus, totalPos.y-plus-1, totalSize.x + (2*plus), totalSize.y + (2*plus));
+
+
+
+						//					gfx.pushStyle();
+						//					gfx.fill(50);
+						//					gfx.rect( totalPos.x, totalPos.y, totalSize.x, totalSize.y );
+						//					gfx.popStyle();
 					}
-					gfx.rect(pptPos.x, pptPos.y, pptSize.x, pptSize.y);
-					gfx.popStyle();
-				}
-				
-				// draw artwork
-				PImage aa = a.getGfx();
-				
-				if (aa != null) {
-					gfx.image(aa, artworkPos.x, artworkPos.y, artworkSize.x,
-							artworkSize.y);
-				} else {
-					System.err.println("ES W€HRE DA GEWESEN, in WallArrangementView, nŠmlich!");
-				}
-				g.removeCache(gfx);
+					//			}
+					//		}
 
-				
-				
+					//		int blur = gfx.width / 350;
+					//		if( blur > 6) blur = 6;
+					//		if( blur < 3) blur = 3;
+					//		
+					//
+					//
+					//		gfx.filter(BLUR, /*3*/ blur);
+
+
+
+					//		if(myWall.getArtworksArray().length > 0 ) {
+
+
+					//			for( SM_Artwork a : myWall.getArtworksArray() ) {
+
+
+					//				int[] tmpPos = a.getTotalWallPos();
+					PVector totalPos = wptos( new PVector(tmpPos[0], tmpPos[1]), drawScale );
+
+					PVector totalSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), drawScale);
+
+
+					int[] tmpPos2 = a.getPptWallPos();
+					PVector pptPos = wptos( new PVector(tmpPos2[0], tmpPos2[1]), drawScale );
+
+					int[] tmpPos3= a.getPptSize();
+					PVector pptSize = astos(new PVector(tmpPos3[0], tmpPos3[1]), drawScale);
+
+					int[] tmpPos4 = a.getArtworkWallPos();
+					PVector artworkPos = wptos( new PVector(tmpPos4[0], tmpPos4[1]), drawScale );
+
+					int[] tmpPos5 = a.getArtworkSize();
+					PVector artworkSize = astos(new PVector(tmpPos5[0], tmpPos5[1]), drawScale);
+
+
+
+
+					//				int shadowFact = 5;
+
+
+					// draw frame
+
+					if(a.hasFrame()) {
+						gfx.image(a.getFrameGfx(), totalPos.x, totalPos.y, totalSize.x, totalSize.y);
+					}
+
+					// draw ppt
+
+					if(a.hasPassepartout()) {
+						gfx.noStroke();
+						gfx.pushStyle();
+						if( _mode == 0 &&  isValidDrag() && a.isSelected() ) {
+							gfx.fill(200,190,170,75);
+						} else {						
+							gfx.fill(200,190,170,255);
+						}
+						gfx.rect(pptPos.x, pptPos.y, pptSize.x, pptSize.y);
+						gfx.popStyle();
+					}
+
+					// draw artwork
+					PImage aa = a.getGfx();
+
+					if (aa != null) {
+						gfx.image(aa, artworkPos.x, artworkPos.y, artworkSize.x,
+								artworkSize.y);
+					} else {
+						System.err.println("ES W€HRE DA GEWESEN, in WallArrangementView, nŠmlich!");
+					}
+					g.removeCache(gfx);
+
+
+
+				}
 			}
-		}
-		gfx.endDraw();
-		ready = true;
-		if(_mode == 1) artworkUpdatePending = false;
+			gfx.endDraw();
+			ready = true;
+			if(_mode == 1) artworkUpdatePending = false;
+		
 		return gfx;
+		}
 	}
 	
-	public synchronized PGraphics _drawLights() {
+	public  PGraphics _drawLights() {
 		
-		
-		// prepare Draw...
-		
-		PGraphics lGfx; 
+		synchronized( lgLock ) {
+			// prepare Draw...
 
-		float drawScale;
+			PGraphics lGfx; 
+
+			float drawScale;
 
 
+			//			lGfx = createGraphics(width, height);
+			lGfx = createGraphics(width/2, height/2);
+			//			lGfx = createGraphics((int)(width*0.8f), (int)(height*0.8f));
 
-		// TODO test if results in renderer are better if high values are chosen
+			drawScale = ((float)lGfx.width ) / ((float)myWall.getWidth());
 
-		//			lGfx = createGraphics(width, height);
-		lGfx = createGraphics(width/2, height/2);
-		//			lGfx = createGraphics((int)(width*0.8f), (int)(height*0.8f));
 
-		drawScale = ((float)lGfx.width ) / ((float)myWall.getWidth());
-		
-		
-		// prepare Light Sprite ( size to wall-drawing Size )
-		
-		PImage wallLightSprite;
-		
-		try {
-			
-			wallLightSprite = (PImage) lightSprite.clone();
-			PVector thisSize = astos( 2500, 4142, drawScale );
-			wallLightSprite.resize((int)thisSize.x, (int)thisSize.y);
+			// prepare Light Sprite ( size to wall-drawing Size )
 
-			
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-			wallLightSprite = null;
-		}
-		
-		// draw Lights...
-		
-		lGfx.beginDraw();
-		
-		if(myWall.getArtworksArray().length > 0 ) {
+			PImage wallLightSprite;
 
-			for( SM_Artwork a : myWall.getArtworksArray() ) {
+			try {
 
-				if( a.hasLight() ) {
-					
-					
-					int lightsCount = a.getLightsCount();
-					int thisLightOffsetX, thisLightOffsetY;
+				wallLightSprite = (PImage) lightSprite.clone();
+				PVector thisSize = astos( 2500, 4142, drawScale );
+				wallLightSprite.resize((int)thisSize.x, (int)thisSize.y);
 
-					PVector awSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), drawScale);
-					
-					// resize LightSprite According to awSize
-					
-					PImage thisLightSprite = null;
-					float awSizeFact =1;
-					
-					try {
-						thisLightSprite = (PImage) wallLightSprite.clone();
-						
-						awSizeFact = (float)(a.getTotalWidth() + a.getTotalHeight()) / 4000f;
-						
-						if( awSizeFact < 1) {
-							awSizeFact += (1 - awSizeFact) * 0.6f;
+
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+				wallLightSprite = null;
+			}
+
+			// draw Lights...
+
+			lGfx.beginDraw();
+
+			if(myWall.getArtworksArray().length > 0 ) {
+
+				for( SM_Artwork a : myWall.getArtworksArray() ) {
+
+					if( a.hasLight() ) {
+
+
+						int lightsCount = a.getLightsCount();
+						int thisLightOffsetX, thisLightOffsetY;
+
+						PVector awSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), drawScale);
+
+						// resize LightSprite According to awSize
+
+						PImage thisLightSprite = null;
+						float awSizeFact =1;
+
+						try {
+							thisLightSprite = (PImage) wallLightSprite.clone();
+
+							awSizeFact = (float)(a.getTotalWidth() + a.getTotalHeight()) / 4000f;
+
+							if( awSizeFact < 1) {
+								awSizeFact += (1 - awSizeFact) * 0.6f;
+							}
+							thisLightSprite.resize((int)(thisLightSprite.width * awSizeFact), (int)(thisLightSprite.height * awSizeFact));
+
+							thisLightOffsetX = thisLightSprite.width / 2;
+							thisLightOffsetY = (int)(thisLightSprite.height * 0.6f);
+
+						} catch(Exception e) {
+							thisLightOffsetX = 0;
+							thisLightOffsetY = 0;
 						}
-						thisLightSprite.resize((int)(thisLightSprite.width * awSizeFact), (int)(thisLightSprite.height * awSizeFact));
-						
-						thisLightOffsetX = thisLightSprite.width / 2;
-						thisLightOffsetY = (int)(thisLightSprite.height * 0.6f);
-						
-					} catch(Exception e) {
-						thisLightOffsetX = 0;
-						thisLightOffsetY = 0;
-					}
-					
-					// calculate Position
-					
-					float thisLightOfset = awSize.x / ( lightsCount +1 );
-					float thisInitialOfset;
-					if( lightsCount >1) {
-						thisInitialOfset = thisLightOfset / 2;
-						thisLightOfset = thisLightOfset * lightsCount;
-						thisLightOfset /= (lightsCount -1);
-					} else {
-						thisInitialOfset = thisLightOfset;
-					}
-					
-					for (int i = 0; i < lightsCount; i++) {
-						
-						PVector lightPos = wptos( new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]), drawScale );
-						
-						lightPos.x -= thisLightOffsetX;
-//						lightPos.x += thisLightOfset * i;
-						lightPos.x += thisInitialOfset + ((thisLightOfset) * i);
-						
-						lightPos.y -= thisLightOffsetY;
-						lightPos.y += (awSize.y / 2) * awSizeFact;
 
-						lGfx.image(thisLightSprite, lightPos.x , lightPos.y , thisLightSprite.width, thisLightSprite.height );
-						
-//						lGfx.pushStyle();
-//						lGfx.noFill();
-//						lGfx.stroke(255);
-//						lGfx.rect(lightPos.x , lightPos.y , thisLightSprite.width, thisLightSprite.height);
-//						lGfx.line(lightPos.x, lightPos.y, lightPos.x + thisLightSprite.width, lightPos.y + thisLightSprite.height);
-//						lGfx.line(lightPos.x, lightPos.y + thisLightSprite.height, lightPos.x + thisLightSprite.width, lightPos.y);
-//						lGfx.popStyle();
+						// calculate Position
+
+						float thisLightOfset = awSize.x / ( lightsCount +1 );
+						float thisInitialOfset;
+						if( lightsCount >1) {
+							thisInitialOfset = thisLightOfset / 2;
+							thisLightOfset = thisLightOfset * lightsCount;
+							thisLightOfset /= (lightsCount -1);
+						} else {
+							thisInitialOfset = thisLightOfset;
+						}
+
+						for (int i = 0; i < lightsCount; i++) {
+
+							PVector lightPos = wptos( new PVector(a.getTotalWallPos()[0], a.getTotalWallPos()[1]), drawScale );
+
+							lightPos.x -= thisLightOffsetX;
+							//						lightPos.x += thisLightOfset * i;
+							lightPos.x += thisInitialOfset + ((thisLightOfset) * i);
+
+							lightPos.y -= thisLightOffsetY;
+							lightPos.y += (awSize.y / 2) * awSizeFact;
+
+							lGfx.image(thisLightSprite, lightPos.x , lightPos.y , thisLightSprite.width, thisLightSprite.height );
+
+							//						lGfx.pushStyle();
+							//						lGfx.noFill();
+							//						lGfx.stroke(255);
+							//						lGfx.rect(lightPos.x , lightPos.y , thisLightSprite.width, thisLightSprite.height);
+							//						lGfx.line(lightPos.x, lightPos.y, lightPos.x + thisLightSprite.width, lightPos.y + thisLightSprite.height);
+							//						lGfx.line(lightPos.x, lightPos.y + thisLightSprite.height, lightPos.x + thisLightSprite.width, lightPos.y);
+							//						lGfx.popStyle();
+						}
 					}
 				}
 			}
+			lGfx.endDraw();
+			return lGfx;
 		}
-		lGfx.endDraw();
-		return lGfx;
 	}
 	
 	
@@ -991,8 +972,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		
 	}
-	
-	
 	
 	private void deselectAll() {
 		

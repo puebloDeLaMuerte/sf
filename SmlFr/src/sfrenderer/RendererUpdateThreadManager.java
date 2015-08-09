@@ -22,6 +22,7 @@ public class RendererUpdateThreadManager {
 		super();		
 		renderer = r;
 		threads = new ArrayList<UpdateThread>(0);
+
 	}
 	
 	public void color( Integer _previewColor, Character _previewWall, Integer _previewWallColor ) {
