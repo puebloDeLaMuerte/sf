@@ -595,7 +595,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 					int[] tmpPos = a.getTotalWallPos();
 
-					if( a.hasShadow() ) {	
+					if( a.hasShadow() ) {
 						PVector totalPos = wptos( new PVector(tmpPos[0]-shadowAmount-(shadowOfsetAmount * shadowOfset), tmpPos[1]-shadowAmount-(shadowAmount*2)), drawScale );
 						PVector totalSize = astos( new PVector(a.getTotalWidth()+(shadowAmount*2), a.getTotalHeight()+(shadowAmount*0.5f)), drawScale);
 
@@ -605,13 +605,16 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 						shdw.beginDraw();
 						shdw.noStroke();
 						//					shdw.background(200,0,0,80);
-						shdw.fill(60);
+						shdw.fill(0);//60);
 						shdw.rect(plus, plus, totalSize.x, totalSize.y);
 						shdw.filter(BLUR, blur);
 						shdw.endDraw();
 
+						gfx.pushStyle();
+//						gfx.blendMode(MULTIPLY);
+						gfx.tint(255, 160);
 						gfx.image(shdw, totalPos.x-plus, totalPos.y-plus-1, totalSize.x + (2*plus), totalSize.y + (2*plus));
-
+						gfx.popStyle();
 
 
 						//					gfx.pushStyle();

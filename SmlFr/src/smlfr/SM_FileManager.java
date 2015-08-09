@@ -845,6 +845,9 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			if( aw.getFrameStyle() == FrameStyle.NONE ) {
 				aw.setFrameStyle(FrameStyle.STANDART);
 			}
+			if( awFile.getString("frameStyle").equals(FrameStyle.NONE.toString()) ) {
+				awFile.setString("frameStyle", FrameStyle.STANDART.toString());
+			}
 		}
 		awFile.setJSONArray("frameSize", fs);
 		
@@ -1217,6 +1220,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		System.out.println();
 		System.out.println("the fileManager has received an update request: WallColor");
+		System.out.println("from: " + e.getSource().getClass().getName());
 		System.out.println("for room: "+ e.getRoomName());
 		if( e.isSingleWall() ) System.out.println("it's for this wall only: " + e.getWallCharacter());
 		else System.out.println("for the entire room");
@@ -1224,6 +1228,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		System.out.println("color: "+e.getColor()+": ["+temp.getRed()+","+temp.getGreen()+","+temp.getBlue()+"]");
 		if( e.isPreview() ) System.out.println("it is a preview");
 		else System.out.println("it's for real!");
+		if( e.isOriginalColorRequested()) System.out.println("originalColor is Requested");
 		
 		/**
 		 *  
@@ -1256,7 +1261,6 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				lsnr.doUpdate(o);
 			}
 		}
-		
 		else 
 
 		

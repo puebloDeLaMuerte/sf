@@ -65,6 +65,7 @@ public class SM_Renderer extends PApplet{
 	private volatile PGraphics[]	wallGfxsAW;
 	private	volatile PGraphics[]	wallGfxsLG;
 	private volatile char[]			wallGfxsId;
+	private boolean					colorPreview = false;
 
 	private Skewmator				skewmator;
 
@@ -310,11 +311,16 @@ public class SM_Renderer extends PApplet{
 		int w = layers[5].width;
 		int h = layers[5].height;
 		
-		
+		colorPreview = false;
 		int c;
 		
-		if( _previewColor == null ) c = vm.getRoomColor();
-		else c = _previewColor;
+		if( _previewColor == null ) {
+			c = vm.getRoomColor();
+		}
+		else {
+			c = _previewColor;
+			colorPreview = true;
+		}
 
 
 		Color clr = new Color(c);
@@ -338,6 +344,9 @@ public class SM_Renderer extends PApplet{
 			boolean hasWallColor  = vm.hasWallColor(wc); 
 			boolean isPreviewWall = ( (Character)wc == _previewWall);
 			
+//			if( isPreviewWall ) colorPreview = true;
+			
+			
 //			System.out.println("isPrreviewWall calculated for \""+wc+"\" and previewWall \""+_previewWall+"\" ---> "+isPreviewWall);
 			
 			if( hasWallColor || isPreviewWall ) {
@@ -346,6 +355,7 @@ public class SM_Renderer extends PApplet{
 				
 				if( isPreviewWall ) {
 					col = new Color(_previewWallColor);
+					colorPreview = true;
 				} else {					
 					col = new Color(vm.getWallColor(wc));
 				}
@@ -799,11 +809,13 @@ public class SM_Renderer extends PApplet{
 		
 		// draw Licht
 
-		if(b3) {
+		if(b3 && !colorPreview) {
 			pushStyle();
-//			blendMode(ADD);
-			tint(255, 70);
+//			tint(255, 70);
+						
+			tint(vm.getRoomColor());
 			
+			int id = 0;
 			for( PGraphics lg : wallGfxsLG) {
 				while(lg == null) { try { System.out.println("waiting on lights");Thread.sleep(100); } catch(Exception e){
 					System.err.println("Thread.sleep(): waiting for lights FAILED");
@@ -812,7 +824,18 @@ public class SM_Renderer extends PApplet{
 				
 				if( lg != null ) {
 					try {
+						
+						boolean wallColor = vm.hasWallColor(wallGfxsId[id]);
+						
+						if( wallColor ) {
+							pushStyle();
+							tint(vm.getWallColor(wallGfxsId[id]));
+						}						
+						
 						image(lg, xOff, yOff,displW,displH);
+						
+						if( wallColor ) popStyle();
+						
 					} catch( Exception e ) {
 						if( e.getClass() == java.lang.NullPointerException.class ) {
 							System.err.println("RENDERER: DRAW: lights image is null - NullPointer");
@@ -825,6 +848,7 @@ public class SM_Renderer extends PApplet{
 				
 				
 				g.removeCache(g);
+				id++;
 			}
 			
 			g.removeCache(g);
@@ -1040,9 +1064,23 @@ public class SM_Renderer extends PApplet{
 		if(b3) {
 			img.pushStyle();
 			//blendMode(ADD);
-			img.tint(255, 70);
+			img.tint(vm.getRoomColor());
+			
+			int id = 0;
 			for( PGraphics lg : wallGfxsLG) {
+				
+				boolean wallColor = vm.hasWallColor(wallGfxsId[id]);
+				
+				if( wallColor ) {
+					img.pushStyle();
+					img.tint(vm.getWallColor(wallGfxsId[id]));
+				}						
+				
 				img.image(lg, 0, 0,w,h);
+				
+				if( wallColor ) img.popStyle();
+				
+				id++;
 				previewAdvance[0] = pa++;
 			}
 //			img.removeCache(img);

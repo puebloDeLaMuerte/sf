@@ -226,22 +226,27 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 
 				if (changeRoom.isSelected()) {
 					parent.roomColorCallback(color.getRGB(), false);
+//					parent.originalColorCallback();
+
 				} else {
 					parent.wallColorCallback(color.getRGB(), wallOver, false);
+//					parent.originalColorCallback();
 				}
 				
 			}
 			this.setVisible(false);
+			return;
+
 		}
 		
 		
 		else if(e.getSource() == cancelBtn) {
 			
+			canceled = true;
 			// make Renderer display the data held by the room:
 //			parent.roomColorCallback(originalColor.getRGB(),true);
 			parent.originalColorCallback();
 			
-			canceled = true;
 			this.setVisible(false);
 		}
 		
@@ -304,15 +309,14 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 	@Override
 	public void propertyChange(PropertyChangeEvent pe) {
 
-		Object s = pe.getSource();
 		
+			Object s = pe.getSource();
+			if (s == fieldRed || s == fieldGreen || s == fieldBlue) {
+
+				evaluateFields();
+				sendPreviewCallbacks();
+			}
 		
-		
-		if(s == fieldRed || s == fieldGreen || s == fieldBlue) {
-			
-			evaluateFields();
-			sendPreviewCallbacks();
-		}
 	}
 	
 	private void evaluateFields() {
@@ -345,7 +349,7 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 	
 	private void sendPreviewCallbacks() {
 		
-		if(!canceled){
+		if(! (canceled || approved) ){
 			
 			// Room Color
 			if( changeRoom.isSelected() ) {

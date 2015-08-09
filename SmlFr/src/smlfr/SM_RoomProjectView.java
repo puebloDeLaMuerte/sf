@@ -436,6 +436,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //		super.init();
 //	}
 	
+	
 	public void originalColorCallback() {
 
 		WallColorUpdateRequestEvent e = null;
