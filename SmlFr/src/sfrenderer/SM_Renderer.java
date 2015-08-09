@@ -481,6 +481,10 @@ public class SM_Renderer extends PApplet{
 							manualMask(wallGfxsLG[i], cropMask);
 
 						}
+						
+						// mask the wallGfx with shadowmask to make it hide behind obstacles
+
+						manualWallColorMask(wallGfxsLG[i], layers[4]);
 					}
 				}
 			}
@@ -488,6 +492,8 @@ public class SM_Renderer extends PApplet{
 			
 		}
 
+		
+		
 		double endmili =  (millis() - lmili);
 		
 	System.out.println("RENDERER: LIGHTS UPDATE: "+ _wallChar +" end. time:" + endmili);

@@ -304,47 +304,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 		
 		
-//		// DRAW Artwork drag
-//		
-//		if( awOver != null && isValidDrag() ) {
-//			
-//			SM_Artwork[] dragAws;
-//			if( !awOver.isSelected() ) {
-//				dragAws = new SM_Artwork[1];
-//				dragAws[0] = awOver;
-//			} else {
-//				dragAws = getSelectedArtworks();
-//			}
-//			
-//			PVector referencePos = wptos(awOver.getTotalWallPos()[0], awOver.getTotalWallPos()[1], scale);
-//			
-//			for(SM_Artwork a : dragAws) {
-//				
-//				PVector thisPos	= wptos(a.getTotalWallPos()[0], a.getTotalWallPos()[1], scale);
-//				
-//				thisPos.sub(referencePos);
-//			
-//				PVector wh = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), scale);
-//				
-//				float y;
-//				if( shiftLoc ) {
-//					y = wptos(0,a.getTotalWallPos()[1], scale).y - thisPos.y;
-//				} else {
-//					y = mouseY+awDragOfset.y;
-//				}
-//				
-//				thisPos.x += mouseX+awDragOfset.x;
-//				thisPos.y += y;
-//				
-//				pushStyle();
-//				noFill();
-//				rect(thisPos.x, thisPos.y, wh.x, wh.y);
-//				popStyle();
-//			}
-//			
-//			
-//		}
-		
 		// DRAW selected
 		
 		if(myWall.getArtworksArray().length > 0 ) {
