@@ -197,7 +197,7 @@ public class RendererUpdateThreadManager {
 					unregisterThread(this);
 					return;
 				}
-				System.err.println("update thread waiting... "+this.getName());
+//				System.err.println("update thread waiting... "+this.getName());
 				try {
 					Thread.sleep(50);
 				} catch( Exception e ) {
@@ -269,11 +269,11 @@ public class RendererUpdateThreadManager {
 				
 				if(go) break;
 				if(abort) {
-					System.err.println("thread aborted");
+//					System.err.println("thread aborted");
 					unregisterThread(this);
 					return;
 				}
-				System.err.println("update thread waiting... "+this.getName());
+//				System.err.println("update thread waiting... "+this.getName());
 				try {
 					Thread.sleep(50);
 				} catch( Exception e ) {

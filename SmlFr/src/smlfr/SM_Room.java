@@ -267,6 +267,15 @@ public class SM_Room {
 		myArrangementView.setMinimumSize(_size);
 		myArrangementView.frame.add(myArrangementView);
 		myArrangementView.init(fl, this, myViewAngles);
+		
+		while( !myArrangementView.isSetupRun() ) {
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				System.err.println("wait on RoomArrangementView: setup was interrupted " + e.getMessage());
+			}
+		}
+		
 		myArrangementView.setMenuExit();
 		myArrangementView.frame.pack();
 		myArrangementView.frame.setVisible(true);

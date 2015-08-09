@@ -23,7 +23,8 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	private char[]							activeViews;
 	private char[]							visibleViews;
 	
-
+	private boolean							isinitialized = false;
+	
 	public SM_RoomArrangementView(int w, int h, SmlFr base) {
 		super(w,h, base);
 	}
@@ -43,7 +44,11 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 //			PShape s = wallsActiveGfx.get(c);
 //			s.disableStyle();
 //		}
-		
+		isinitialized = true;
+	}
+	
+	public boolean isInitialized() {
+		return isinitialized;
 	}
 
 	

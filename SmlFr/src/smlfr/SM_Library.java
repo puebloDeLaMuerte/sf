@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 //import java.awt.datatransfer.DataFlavor;
 //import java.awt.datatransfer.Transferable;
 //import java.awt.datatransfer.UnsupportedFlavorException;
@@ -75,14 +77,35 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		fm = _fm;
 		standartColor = new Color(0.96f,0.96f,0.96f);
 		
-
+		this.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                setScrollpaneSize();
+            }
+        });
 	}
 	
-	
 	public void setSize(Dimension d) {
-		if( panels == null ) super.setSize(d.width, d.height - ctrlHeight);
-		else super.setSize(d.width, d.height);
+
+		if( panels == null ) {
+			super.setSize(d.width, d.height - ctrlHeight);
+		}
+		else {
+			super.setSize(d.width, d.height);
+			setScrollpaneSize();
+		}
+	
+	}
+	
+	private void setScrollpaneSize() {
 		
+		if (panels != null) {
+			int r = (int) Math.floor((float) this.getSize().width
+					/ (float) labelX);
+			int rows = (int) Math.ceil((panels.size() / r));
+			rows++; // for savety reasons
+			int contentHeight = (int) (rows * labelY) + (rows * 8);
+			artworksPanel.setPreferredSize(new Dimension(scrollPanel.getWidth(), contentHeight));
+		}
 	}
 	
 	public final void initUI() {
@@ -133,12 +156,16 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
         scrollPanel.setBorder(new EmptyBorder(new Insets(10, 0, 0, 0)));
         scrollPanel.setPreferredSize(this.getSize());
         
-        int r = (int)Math.floor((float)this.getSize().width / (float)labelX);
+        setScrollpaneSize();
         
-        int contentHeight = (int)(Math.ceil((panels.size() / r)) * (labelY))+labelY;
-        
-
-        artworksPanel.setPreferredSize(new Dimension(scrollPanel.getWidth(), contentHeight));
+//        int r = (int)Math.floor((float)this.getSize().width / (float)labelX);
+//
+//        int rows = (int)Math.ceil((panels.size() / r));
+//        rows++; // for savety reasons
+//        int contentHeight = (int)(rows * labelY) + (rows * 8);
+//        
+//
+//        artworksPanel.setPreferredSize(new Dimension(scrollPanel.getWidth(), contentHeight));
         panel.add(scrollPanel, BorderLayout.CENTER);
         
                 
@@ -213,6 +240,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		panels.put(awName,panel);
 	}
 
+	
 	private void sortAWPanels() {
 						
 		
