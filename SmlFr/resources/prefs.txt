@@ -1,9 +1,9 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/PROJEKTE/Föhr/Das Meer/Das Meer.sfp",
-    "projectName": "Das Meer"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/fitzgerald/fitzgerald.sfp",
+    "projectName": "fitzgerald"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/PROJEKTE/Föhr/Das Meer",
-  "midHeight": 1500,
-  "museumData": "MuKuDeWe.sfm"
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/werner",
+  "museumData": "MuKuDeWe.sfm",
+  "midHeight": 1500
 }
