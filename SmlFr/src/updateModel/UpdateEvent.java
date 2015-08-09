@@ -2,7 +2,6 @@ package updateModel;
 
 import java.util.ArrayList;
 import java.util.EventObject;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 public class UpdateEvent extends EventObject {

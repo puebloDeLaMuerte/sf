@@ -2,9 +2,6 @@ package smlfr;
 
 import java.io.File;
 
-import com.sun.tools.javac.jvm.Code.StackMapFormat;
-
-
 import processing.core.PImage;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
@@ -77,7 +74,7 @@ public class SM_Artwork {
 //		frameSize = null;
 //		passepartoutSize = null;
 //	}
-//	
+//
 //	SM_Artwork(String _artist, String _title, String _invNr, int _sizeX, int _sizeY, FrameStyle _frame, int _frameTop, int _frameBottom, int _frameLeft, int _frameRight){
 //		artist = _artist;
 //		title = _title;
@@ -93,7 +90,7 @@ public class SM_Artwork {
 //		frameSize[3] = _frameRight;
 //		passepartoutSize = null;
 //	}
-//	
+//
 //	SM_Artwork(String _artist, String _title, String _invNr, int _sizeX, int _sizeY, FrameStyle _frame, int _frameTop, int _frameBottom, int _frameLeft, int _frameRight, int _pTop, int _pBottom, int _pLeft, int _pRight) {
 //		artist = _artist;
 //		title = _title;
@@ -112,7 +109,7 @@ public class SM_Artwork {
 //		passepartoutSize[1] = _pBottom;
 //		passepartoutSize[2] = _pLeft;
 //		passepartoutSize[3] = _pRight;
-//				
+//
 //	}
 	}
 	
@@ -290,7 +287,7 @@ public class SM_Artwork {
 	
 	// Position
 	
-	public void setTotalWallPos(int x, int y) {		
+	public void setTotalWallPos(int x, int y) {
 		
 		int pY = y;
 		int pX = x;

@@ -14,6 +14,10 @@ import processing.pdf.*;
 
 public class SM_Exporter extends PApplet {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6017892142123801896L;
 	SM_ExportWall[] 	walls;
 	String 				saveLoc;
 	String 				roomRealName;
@@ -40,6 +44,7 @@ public class SM_Exporter extends PApplet {
 		}
 	}
 	
+	@Override
 	public void setup() {
 		
 		System.out.println("EXPORTER: starting export...");

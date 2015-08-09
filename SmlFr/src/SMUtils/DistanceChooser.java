@@ -23,6 +23,10 @@ import smlfr.SM_WallArrangementView;
 
 public class DistanceChooser extends JFrame implements ActionListener, ChangeListener {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1771393544799061396L;
 	private JSpinner 	spinner;
 	private JButton		okBtn, cancelBtn;
 	private JLabel		text;
@@ -44,7 +48,7 @@ public class DistanceChooser extends JFrame implements ActionListener, ChangeLis
 		System.out.println(gap);
 		if(gap < 0 ) gap = 0;
 		
-		SpinnerModel model = new SpinnerNumberModel(gap, 0, 100000, 15); 
+		SpinnerModel model = new SpinnerNumberModel(gap, 0, 100000, 15);
 		
 		
 		spinner 		= new JSpinner(model);
@@ -57,7 +61,7 @@ public class DistanceChooser extends JFrame implements ActionListener, ChangeLis
 		cancelBtn.addActionListener(this);
 		
 		JPanel p = new JPanel( new BorderLayout());
-		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);		
+		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 		p.setBorder(padding);
 		
 		JPanel b = new JPanel();
@@ -77,7 +81,7 @@ public class DistanceChooser extends JFrame implements ActionListener, ChangeLis
 		this.setAlwaysOnTop(true);
 		this.setResizable(false);
 		java.awt.Rectangle window = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-		this.setLocation((int)(window.width/2 - this.getSize().getWidth()/2), (int)(window.height/2 - this.getSize().getHeight()/2));		
+		this.setLocation((int)(window.width/2 - this.getSize().getWidth()/2), (int)(window.height/2 - this.getSize().getHeight()/2));
 		this.setVisible(true);
 		
 		parent.distanceCallback((Integer)spinner.getModel().getValue(), aws);

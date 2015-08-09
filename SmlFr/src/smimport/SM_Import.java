@@ -3,19 +3,14 @@ package smimport;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 import java.util.LinkedHashMap;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.data.JSONObject;
@@ -110,7 +105,7 @@ public class SM_Import extends PApplet  {
 			
 			PImage fullGfx = loadArtworkImage(_in.getImageFolder(), _in.getImageName() );   //  (Folder , Artwork Name without .extension);
 			
-			// resize image to standart size 
+			// resize image to standart size
 			
 			PImage[] sizedImages = resizeToStandartSize(fullGfx);
 			
@@ -147,7 +142,7 @@ public class SM_Import extends PApplet  {
 		pan.setBackground(Color.LIGHT_GRAY);
 		pan.add(txt);
 		pan.setSize(250, 80);
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();		
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		pan.setLocation(dim.width/2 - 175, dim.height/2-40);
 		pan.setVisible(true);
 
@@ -225,7 +220,7 @@ public class SM_Import extends PApplet  {
 				non += " - ";
 				non += e.getMessage();
 				unimportedArtworks.add(non);
-			}	
+			}
 		}
 		
 		
@@ -256,7 +251,7 @@ public class SM_Import extends PApplet  {
 				PImage fullGfx = loadArtworkImage(imgfolder, iNr);   //  (Folder , Artwork Name without .extension);
 				
 				
-				// resize to standart size 
+				// resize to standart size
 				
 				PImage[] sizedImages = resizeToStandartSize(fullGfx);
 				
@@ -319,7 +314,7 @@ public class SM_Import extends PApplet  {
 
 		String[] returnArray = sucessfulImports.toArray(new String[sucessCount]);
 
-		if( intoExistingProject) {	
+		if( intoExistingProject) {
 			fm.importedArtworksIntoProject( returnArray );
 		}
 		return returnArray;
@@ -383,7 +378,7 @@ public class SM_Import extends PApplet  {
 			frameFormat[0] = xsize;
 			frameFormat[1] = xsize;
 			frameFormat[2] = ysize;
-			frameFormat[3] = ysize;	
+			frameFormat[3] = ysize;
 			
 			if( _tmpPptSize != null ) {
 				
@@ -418,7 +413,7 @@ public class SM_Import extends PApplet  {
 				
 				fullGfx.resize( (int)(fullGfx.width * fact), (int)(fullGfx.height * fact));
 								
-			}				
+			}
 			
 	
 			// Display the Image
@@ -431,7 +426,7 @@ public class SM_Import extends PApplet  {
 			
 			// Resize to MEDIUM:
 			fact = 1;
-			PImage medGfx = (PImage)fullGfx.clone(); 
+			PImage medGfx = (PImage)fullGfx.clone();
 			
 			if( fullGfx.width > fullGfx.height ) {
 				fact = (float)mediumSize / (float)fullGfx.width;

@@ -11,6 +11,7 @@ public class ImageExporter extends Thread {
 		this.filename = filename;
 	}
 	
+	@Override
 	public void run() {
 		
 		renderer.loop();

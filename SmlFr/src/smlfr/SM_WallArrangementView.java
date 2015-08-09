@@ -1,6 +1,5 @@
 package smlfr;
 
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.dnd.DropTarget;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import javax.swing.Box;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -26,8 +24,6 @@ import SMUtils.DistanceChooser;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
-import SMUtils.SM_Frames;
-
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -46,7 +42,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 	private SmlFr					base;
 	
-	private SM_Wall					myWall; 
+	private SM_Wall					myWall;
 	private SM_ViewManager  		vm;
 	private Dimension				mySize;
 	private PGraphics				wlGfx;
@@ -126,7 +122,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 //		System.out.println("\n\navailable space: "+_size.width+" x "+_size.height);
 		
 		// Querformat
-		if( aspect <= 1) {   
+		if( aspect <= 1) {
 			
 			resultHeight = (int)(_size.width * aspect);
 			resultWidth = _size.width;
@@ -179,7 +175,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		frameStyles = new JMenuItem[ FrameStyle.values().length ];
 		for( FrameStyle fst : SMUtils.FrameStyle.values() ) {
 			
-			String style = fst.toString(); 
+			String style = fst.toString();
 
 			frameStyles[i] = new JMenuItem(style);
 			frameStyles[i].addActionListener(this);
@@ -242,6 +238,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 	}
 	
+	@Override
 	public Dimension getSize() {
 		return mySize;
 	}
@@ -255,6 +252,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	}
 	
 	
+	@Override
 	public void setup() {
 		scale = ((float)mySize.width ) / ((float)myWall.getWidth());
 		wlGfx = createGraphics(width, height);
@@ -262,6 +260,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		frameRate(15);
 	}
 	
+	@Override
 	public void draw() {
 		
 		loadMissingAWGraphics();
@@ -450,25 +449,25 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				// make transparent if drag
 				
 //				gfx.fill(230,230,230,100);
-//				
+//
 //				if( isValidDrag() ) {
-//					
+//
 //					if( awOver != null && !awOver.isSelected() ) {
-//						
+//
 //						if( a == awOver ) {
 //							gfx.tint(255,75);
 //						} else {
 //							gfx.tint(255,255);
 //						}
-//						
+//
 //					} else {
-//						
+//
 //						if( a.isSelected() ) {
 //							gfx.tint(255,75);
 //						} else {
 //							gfx.tint(255,255);
 //						}
-//						
+//
 //					}
 //				} else {
 //					gfx.tint(255, 255);
@@ -566,7 +565,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 							gfx.pushStyle();
 							if(  isValidDrag() && da.isSelected() ) {
 								gfx.fill(200,190,170,75);
-							} else {						
+							} else {
 								gfx.fill(200,190,170,255);
 							}
 							gfx.rect(pptPos.x, pptPos.y, pptSize.x, pptSize.y);
@@ -723,7 +722,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 					//		int blur = gfx.width / 350;
 					//		if( blur > 6) blur = 6;
 					//		if( blur < 3) blur = 3;
-					//		
+					//
 					//
 					//
 					//		gfx.filter(BLUR, /*3*/ blur);
@@ -773,7 +772,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 						gfx.pushStyle();
 						if( _mode == 0 &&  isValidDrag() && a.isSelected() ) {
 							gfx.fill(200,190,170,75);
-						} else {						
+						} else {
 							gfx.fill(200,190,170,255);
 						}
 						gfx.rect(pptPos.x, pptPos.y, pptSize.x, pptSize.y);
@@ -808,7 +807,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		synchronized( lgLock ) {
 			// prepare Draw...
 
-			PGraphics lGfx; 
+			PGraphics lGfx;
 
 			float drawScale;
 
@@ -923,7 +922,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	}
 	private PVector astos(PVector _inpos, float scl) {
 
-		_inpos.mult(scl);		
+		_inpos.mult(scl);
 		return _inpos;
 	}
 	
@@ -1063,7 +1062,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				
 					a.setSelected(true);
 				}
-			} 
+			}
 			
 		}
 
@@ -1076,6 +1075,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		for( SM_Artwork a : myWall.getArtworksArray() ) a.setSelected(false);
 	}
 
+	@Override
 	public void mousePressed() {
 
 		dragStart = new PVector(mouseX,mouseY);
@@ -1087,6 +1087,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 	
+	@Override
 	public void mouseReleased() {
 		
 		if( awDrag ) {
@@ -1143,7 +1144,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 						myWall.myRoom.fireUpdateRequest(e);
 					}
 					
-				} else if( awOver != null ) {  
+				} else if( awOver != null ) {
 					
 					// fire single update
 					
@@ -1179,13 +1180,15 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 		
+	@Override
 	public void mouseDragged() {
 		if( awOver == null) selectionDrag = true;
 	}
 	
+	@Override
 	public void mouseClicked() {
 		
-		if( awOver != null && mouseButton != RIGHT) {			
+		if( awOver != null && mouseButton != RIGHT) {
 
 			awOver.toggleSelected();
 
@@ -1220,6 +1223,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 
+	@Override
 	public void keyPressed() {
 		if( keyCode == ESC ) {
 			key =0;
@@ -1230,6 +1234,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 	
+	@Override
 	public void keyReleased() {
 		if(keyCode == SHIFT) {
 			shiftLoc = false;
@@ -1265,7 +1270,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			snapToMidHeight();
 		}
 		
-		else 
+		else
 		
 		if( action.equalsIgnoreCase(Lang.RemoveArtwork) && awOver != null) {
 			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, awOver.getName(), ' ', "Library", myWall.myRoom.getName(), awOver.getWallChar());
@@ -1290,7 +1295,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		else if( e.getSource() == allignLeft	) allignArtworks( getSelectedArtworks(), AllignmentTypes.LEFT);
 		else if( e.getSource() == allignRight	) allignArtworks( getSelectedArtworks(), AllignmentTypes.RIGHT);
 		
-		else if( e.getSource() == distEqual	) distanceEqual( getSelectedArtworks() ); 
+		else if( e.getSource() == distEqual	) distanceEqual( getSelectedArtworks() );
 		else if( e.getSource() == distValue ) distanceValue( getSelectedArtworks() );
 		
 	
@@ -1326,7 +1331,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				
 				averageMid += a.getArtworkWallPos()[1] - ( a.getArtworkSize()[1] / 2 );
 			}
-			averageMid /= aws.length;			
+			averageMid /= aws.length;
 			
 			boolean first = true;
 			for( SM_Artwork a : aws ) {
@@ -1355,7 +1360,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				
 				averageMid += a.getArtworkWallPos()[0] + ( a.getArtworkSize()[0] / 2 );
 			}
-			averageMid /= aws.length;			
+			averageMid /= aws.length;
 			
 			first = true;
 			for( SM_Artwork a : aws ) {
@@ -1389,7 +1394,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			// wieviele multiple updates werden es sein?
 			
 			int multipleCount = 0;
-			for( SM_Artwork a : aws ) {	
+			for( SM_Artwork a : aws ) {
 				if( a.getTotalWallPos()[1] < topYpos ) {
 					multipleCount++;
 				}
@@ -1466,7 +1471,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			int leftmost = aws[0].getTotalWallPos()[0];
 			
 			for( SM_Artwork a : aws) {
-				if( a.getTotalWallPos()[0] < leftmost ) leftmost = a.getTotalWallPos()[0]; 
+				if( a.getTotalWallPos()[0] < leftmost ) leftmost = a.getTotalWallPos()[0];
 			}
 			
 			first = true;
@@ -1489,7 +1494,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			int rightmost = aws[0].getTotalWallPos()[0] + aws[0].getTotalWidth();
 			
 			for (SM_Artwork a : aws) {
-				if( a.getTotalWallPos()[0] + a.getTotalWidth() > rightmost ) rightmost = a.getTotalWallPos()[0] + a.getTotalWidth(); 
+				if( a.getTotalWallPos()[0] + a.getTotalWidth() > rightmost ) rightmost = a.getTotalWallPos()[0] + a.getTotalWidth();
 			}
 			
 			first = true;
@@ -1507,7 +1512,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			
 		default:
 			break;
-		}	
+		}
 	}
 	
 	private void distanceEqual( SM_Artwork[] aws ) {
@@ -1553,7 +1558,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			if(i==1) count = aws.length-2;
 			
 			ArtworkUpdateRequestEvent r = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), newX, a.getTotalWallPos()[1]);
-			myWall.myRoom.fireUpdateRequest(r);	
+			myWall.myRoom.fireUpdateRequest(r);
 		}
 		
 	}
@@ -1608,7 +1613,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			if(i==1) count = aws.length-1;
 			
 			ArtworkUpdateRequestEvent r = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), newX, a.getTotalWallPos()[1]);
-			myWall.myRoom.fireUpdateRequest(r);	
+			myWall.myRoom.fireUpdateRequest(r);
 		}
 		
 	}
@@ -1624,7 +1629,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			if(first) count = aws.length;
 			first = false;
 			ArtworkUpdateRequestEvent r = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), p[0], p[1]);
-			myWall.myRoom.fireUpdateRequest(r);	
+			myWall.myRoom.fireUpdateRequest(r);
 		}
 		
 	}
@@ -1649,6 +1654,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 	
+	@Override
 	public void artworkMeasurementCallback(LinkedHashMap<String, Object> data) {
 		ArtworkUpdateRequestEvent e = new ArtworkUpdateRequestEvent(this, false, -1, data);
 		myWall.myRoom.fireUpdateRequest(e);
@@ -1728,6 +1734,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		else return true;
 	}
 	
+	@Override
 	public void dispose() {
 		
 		
@@ -1736,7 +1743,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 //		frame.setVisible(false);
 		super.dispose();
 //		if( frame == null ) System.out.println("frame is null, again... ");
-//		
+//
 //		frame.dispose();
 //		frame.setVisible(false);
 		frame = null;

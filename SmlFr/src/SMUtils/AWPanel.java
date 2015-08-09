@@ -9,15 +9,12 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
-import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.Border;
@@ -26,6 +23,10 @@ import smlfr.SM_Artwork;
 
 public class AWPanel extends JPanel implements MouseListener, DragGestureListener, Transferable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1502344721307357946L;
 	private boolean isHighlighted;
     private Border blackBorder = BorderFactory.createLineBorder(Color.BLACK,0);
     private Border redBorder = BorderFactory.createLineBorder(Color.BLACK,5);
@@ -49,7 +50,7 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 		
 		menu = new JPopupMenu();
 		measurements = new MeasureMenuItem(Lang.editMeasurements, _s);
-		remove = new MeasureMenuItem(Lang.RemoveArtwork, _s);		
+		remove = new MeasureMenuItem(Lang.RemoveArtwork, _s);
 
 		measurements.addActionListener(ls);
 		remove.addActionListener(ls);

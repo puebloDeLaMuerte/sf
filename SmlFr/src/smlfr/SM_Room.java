@@ -17,9 +17,6 @@ import java.util.TreeMap;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.sun.tools.javac.comp.Todo;
-import com.sun.xml.internal.bind.v2.TODO;
-
 import SMUtils.Lang;
 import SMUtils.awFileSize;
 import SMUtils.progState;
@@ -129,7 +126,7 @@ public class SM_Room {
 							crops[f] = relViews.getJSONObject(v).getJSONArray("viewCrop").getFloat(f);
 							if( crops[f] < 0 ) break;
 						}
-					}	
+					}
 				}
 				
 				wallSkewInThisView.put(wallName, skews);
@@ -205,7 +202,7 @@ public class SM_Room {
 		
 		
 		//#########
-//		
+//
 //		JFrame f = new JFrame();
 //		f.setLayout(new BorderLayout());
 //		f.addWindowListener(this);
@@ -213,10 +210,10 @@ public class SM_Room {
 ////		s.width  *= 2;
 ////		s.height *=2;
 //		SM_WallArrangementView wallArr = new SM_WallArrangementView((SM_Wall)view.myWalls.get(_wall), s, new Dimension(400, 10), this );
-//		
-//		
+//
+//
 //		wallArr.frame = f;
-//		
+//
 //
 //
 //		wallArr.resize(wallArr.getSize());
@@ -229,7 +226,7 @@ public class SM_Room {
 //		wallArr.frame.setLocation(0, _of);
 //		wallArr.frame.setTitle(Lang.wall+" "+wallArr.getWallName().substring(wallArr.getWallName().lastIndexOf('_')+1));
 //
-//		
+//
 
 		
 		
@@ -413,11 +410,11 @@ public class SM_Room {
 //	public void unregisterArtworkUpdateListeners() {
 //		System.out.println("ROOM: unregistering listeners...");
 //		if( myProjectView != null ) {
-//			
-//			
-//			
+//
+//
+//
 //		} else if( myArrangementView != null) {
-//			
+//
 //		}
 //	}
 	
@@ -448,8 +445,8 @@ public class SM_Room {
 			SM_Artwork[] aws 			= wl.getArtworksArray();
 			SM_ExportArtwork[] exaws	= new SM_ExportArtwork[aws.length];
 			
-			for( int ii =0; ii< aws.length; ii++) {		
-				exaws[ii] = new SM_ExportArtwork(aws[ii].getName(), aws[ii].getTotalWallPos(), aws[ii].getTotalWidth(), aws[ii].getTotalHeight()); 
+			for( int ii =0; ii< aws.length; ii++) {
+				exaws[ii] = new SM_ExportArtwork(aws[ii].getName(), aws[ii].getTotalWallPos(), aws[ii].getTotalWidth(), aws[ii].getTotalHeight());
 			}
 			
 			exwls[i] = new SM_ExportWall(""+wl.getWallChar(), exaws, wl.getWidth(), wl.getHeight());

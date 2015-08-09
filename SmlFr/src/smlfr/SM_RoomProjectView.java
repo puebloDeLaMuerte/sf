@@ -1,12 +1,6 @@
 package smlfr;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -24,34 +18,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.Icon;
-import javax.swing.JColorChooser;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.text.MaskFormatter;
-
-import org.apache.poi.hssf.util.HSSFColor.BLACK;
-
-
-
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
 import SMUtils.WallColorChooser;
@@ -59,9 +33,6 @@ import SMUtils.WallColorChooser;
 import processing.core.PApplet;
 import processing.core.PShape;
 import processing.event.MouseEvent;
-import updateModel.UpdateEvent;
-import updateModel.ArtworkUpdateRequestEvent;
-import updateModel.UpdateType;
 import updateModel.WallColorUpdateRequestEvent;
 import updateModel.WallUpdateRequestEvent;
 
@@ -119,6 +90,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		this.base = base;
 	}
 	
+	@Override
 	public void setup() {
 				
 
@@ -194,6 +166,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		return setupRun;
 	}
 	
+	@Override
 	public void draw() {
 
 //		System.out.println(myRoom.getName()+" "+count++);
@@ -377,7 +350,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		if( orientation == 0 || orientation == 2 ) {
 			
 			normalizedSize   = map(_aw.getTotalWidth(),        0, _wl.getWidth(), 0, _wl.getNavPos()[2] - _wl.getNavPos()[0]);
-			normalizedPosX1  = map(_aw.getTotalWallPos()[0], 0, _wl.getWidth(), _wl.getNavPos()[0], _wl.getNavPos()[2]); 
+			normalizedPosX1  = map(_aw.getTotalWallPos()[0], 0, _wl.getWidth(), _wl.getNavPos()[0], _wl.getNavPos()[2]);
 			normalizedPosX2  = normalizedPosX1+normalizedSize;
 			
 		}else if( orientation == 1 || orientation == 3) {
@@ -427,13 +400,13 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	}
 	
 //	public void init(JFrame _frame, int[] _size, File _filePath, SM_Room _room) {
-//		
+//
 //		mySize = _size;
 //		myFrame = _frame;
 //		myFilePath = _filePath;
 //		myRoom = _room;
 //		myWalls = myRoom.getWalls();
-//		
+//
 //		super.init();
 //	}
 	
@@ -561,7 +534,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 				}
 				
 				// Artwork too big for this wall?
-				SM_Wall w = (SM_Wall)myWalls.get(wallOver); 
+				SM_Wall w = (SM_Wall)myWalls.get(wallOver);
 				if( w.getWidth() < myRoom.getArtworkFromBase(name).getTotalWidth()  ) {
 					
 //					int i = javax.swing.JOptionPane.showConfirmDialog(this, Lang.artworkTooBigForWall_1 + myRoom.getArtworkFromBase(name).getWidth() + Lang.artworkTooBigForWall_2 + w.getWidth() + Lang.artworkTooBigForWall_3);
@@ -655,6 +628,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		
 	}
 
+	@Override
 	public void mousePressed() {
 		
 		if( artOver != null ) {
@@ -678,18 +652,20 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		mY = MouseInfo.getPointerInfo().getLocation().y;
 	}
 
+	@Override
 	public void mouseDragged() {
 		
 //		if(moveWindow) {
 //			int deltaX = myFrame.getLocation().x+MouseInfo.getPointerInfo().getLocation().x-mX;
 //			int deltaY = myFrame.getLocation().y+MouseInfo.getPointerInfo().getLocation().y-mY;
-//			
+//
 //			myFrame.setLocation(deltaX, deltaY);
 //			mX = MouseInfo.getPointerInfo().getLocation().x;
 //			mY = MouseInfo.getPointerInfo().getLocation().y;
 //		}
 	}
 	
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getCount() > 1) {
 			if ( this.getClass() == smlfr.SM_RoomProjectView.class) {
@@ -698,11 +674,13 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		}
 	}
 	
+	@Override
 	public void mouseExited() {
 		mouseX = 0;
-		mouseY = 0;	
+		mouseY = 0;
 	}
 	
+	@Override
 	public void keyPressed() {
 //		if( keyCode == SHIFT) {
 //			moveWindow = true;
@@ -712,6 +690,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		}
 	}
 	
+	@Override
 	public void keyReleased() {
 //		if( keyCode == SHIFT ) {
 //			moveWindow = false;
@@ -764,6 +743,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	
 	
 
+	@Override
 	public void dispose() {
 		frame.dispose();
 //		myFrame.dispose();

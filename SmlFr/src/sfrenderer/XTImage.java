@@ -37,7 +37,7 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 
 public class XTImage {
     
-    private BufferedImage bufferedImage = null; 
+    private BufferedImage bufferedImage = null;
     private java.util.ArrayList corners = null;
     
     private float outputQuality = 1f; //0.9f; //0.5f;
@@ -81,7 +81,7 @@ public class XTImage {
     }
     
     public XTImage(int width, int height){
-        this.bufferedImage = 
+        this.bufferedImage =
                 new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         
         this.g2d = getGraphics();
@@ -118,7 +118,7 @@ public class XTImage {
     //**************************************************************************
     //** Set/Update Corners (Skew)
     //**************************************************************************
-    /**  Used to skew an image by updating the corner coordinates. Coordinates are 
+    /**  Used to skew an image by updating the corner coordinates. Coordinates are
      *   supplied in clockwise order starting from the upper left corner.
      */
       public void setCorners(float x0, float y0,  //UL
@@ -130,7 +130,7 @@ public class XTImage {
           this.bufferedImage = skew.setCorners(x0,y0,x1,y1,x2,y2,x3,y3);
           
           if (corners==null) corners = new java.util.ArrayList();
-          else corners.clear();        
+          else corners.clear();
           corners.add((Float)x0); corners.add((Float)y0);
           corners.add((Float)x1); corners.add((Float)y1);
           corners.add((Float)x2); corners.add((Float)y2);
@@ -337,7 +337,7 @@ public class XTImage {
         }
 
 
-        protected BufferedImage filterPixelsNN( BufferedImage dst, int width, 
+        protected BufferedImage filterPixelsNN( BufferedImage dst, int width,
                 int height, int[] inPixels, Rectangle transformedSpace )
         {
             int srcWidth = width;
@@ -557,7 +557,7 @@ public class XTImage {
    <pre>
     for (String fontName : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()){
         System.out.println(fontName);
-    }   
+    }
    </pre>
    */
     public XTImage(String text, String fontName, int fontSize, int r, int g, int b){
@@ -711,8 +711,8 @@ public class XTImage {
   //**************************************************************************
   /**  Returns the width of the image, in pixels. */
     
-    public int getWidth(){ 
-        return bufferedImage.getWidth(); 
+    public int getWidth(){
+        return bufferedImage.getWidth();
     }
 
 
@@ -721,8 +721,8 @@ public class XTImage {
   //**************************************************************************
   /**  Returns the height of the image, in pixels. */
     
-    public int getHeight(){ 
-        return bufferedImage.getHeight(); 
+    public int getHeight(){
+        return bufferedImage.getHeight();
     }
 
 
@@ -745,7 +745,7 @@ public class XTImage {
   //**************************************************************************
   //** addText
   //**************************************************************************
-  /**  Used to add text to the image at a given position. 
+  /**  Used to add text to the image at a given position.
    *  @param x Lower left coordinate of the text
    *  @param y Lower left coordinate of the text
    */
@@ -797,8 +797,8 @@ public class XTImage {
   //**************************************************************************
   //** addPoint
   //**************************************************************************
-  /**  Simple drawing function used to set color of a specific pixel in the 
-   *   image. 
+  /**  Simple drawing function used to set color of a specific pixel in the
+   *   image.
    */
     public void addPoint(int x, int y, int r, int g, int b){
         setColor(x,y,new Color(r,g,b));
@@ -824,10 +824,10 @@ public class XTImage {
   //**************************************************************************
   //** getColor
   //**************************************************************************
-  /**  Used to retrieve the color (ARGB) values for a specific pixel in the 
+  /**  Used to retrieve the color (ARGB) values for a specific pixel in the
    *   image. Returns a java.awt.Color object. Note that input x,y values are
-   *   relative to the upper left corner of the image, starting at 0,0. 
-   */    
+   *   relative to the upper left corner of the image, starting at 0,0.
+   */
     public Color getColor(int x, int y){
         //return new Color(bufferedImage.getRGB(x, y)); //<--This will return an incorrect alpha value
         
@@ -895,15 +895,15 @@ public class XTImage {
   //**************************************************************************
   //** addImage
   //**************************************************************************
-  /**  Used to add an image "overlay" to the existing image at a given 
+  /**  Used to add an image "overlay" to the existing image at a given
    *   position. This method can also be used to create image mosiacs.
    */
-    public void addImage(BufferedImage in, int x, int y, boolean expand){         
+    public void addImage(BufferedImage in, int x, int y, boolean expand){
         
         int x2 = 0;
-        int y2 = 0;        
+        int y2 = 0;
         int w = bufferedImage.getWidth();
-        int h = bufferedImage.getHeight();        
+        int h = bufferedImage.getHeight();
         
         if (expand){
 
@@ -974,10 +974,10 @@ public class XTImage {
   //**************************************************************************
   //** addImage
   //**************************************************************************
-  /**  Used to add an image "overlay" to the existing image at a given 
+  /**  Used to add an image "overlay" to the existing image at a given
    *   position. This method can also be used to create image mosiacs.
-   */    
-    public void addImage(XTImage in, int x, int y, boolean expand){ 
+   */
+    public void addImage(XTImage in, int x, int y, boolean expand){
         addImage(in.getBufferedImage(),x,y,expand);
     }
 
@@ -1027,7 +1027,7 @@ public class XTImage {
             }
 
 
-            input.close(); 
+            input.close();
         }
         catch(Exception e){
             //e.printStackTrace();
@@ -1038,9 +1038,9 @@ public class XTImage {
   //**************************************************************************
   //** Rotate
   //**************************************************************************
-  /**  Used to rotate the image (clockwise). Rotation angle is specified in 
-   *   degrees relative to the top of the image. 
-   */    
+  /**  Used to rotate the image (clockwise). Rotation angle is specified in
+   *   degrees relative to the top of the image.
+   */
     public void rotate(double Degrees){
         
       //Define Image Center (Axis of Rotation)
@@ -1062,12 +1062,12 @@ public class XTImage {
            //Rotates the given point theta radians around (cx,cy)
             int x = (int) Math.round(
                 Math.cos(theta)*(corners[i]-cx) -
-                Math.sin(theta)*(corners[i+1]-cy)+cx 
+                Math.sin(theta)*(corners[i+1]-cy)+cx
             );
              
             int y = (int) Math.round(
                 Math.sin(theta)*(corners[i]-cx) +
-                Math.cos(theta)*(corners[i+1]-cy)+cy 
+                Math.cos(theta)*(corners[i+1]-cy)+cy
             );
 
            //Update our bounds
@@ -1083,7 +1083,7 @@ public class XTImage {
         cy = (int)(cy-minY);
 
       //Create Buffered Image
-        BufferedImage result = new BufferedImage(maxX-minX, maxY-minY, 
+        BufferedImage result = new BufferedImage(maxX-minX, maxY-minY,
                                                  BufferedImage.TYPE_INT_ARGB);
         
       //Create Graphics
@@ -1093,7 +1093,7 @@ public class XTImage {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                              RenderingHints.VALUE_ANTIALIAS_ON);
         
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                              RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         
       //Rotate the image
@@ -1161,8 +1161,8 @@ public class XTImage {
   //**************************************************************************
   //** setWidth
   //**************************************************************************
-  /**  Resizes the image to a given width. The original aspect ratio is 
-   *   maintained. 
+  /**  Resizes the image to a given width. The original aspect ratio is
+   *   maintained.
    */
     public void setWidth(int Width){
         double ratio = (double)Width/(double)this.getWidth();
@@ -1170,8 +1170,8 @@ public class XTImage {
         double dw = this.getWidth() * ratio;
         double dh = this.getHeight() * ratio;
 
-        int outputWidth =  (int)Math.round(dw); 
-        int outputHeight = (int)Math.round(dh); 
+        int outputWidth =  (int)Math.round(dw);
+        int outputHeight = (int)Math.round(dh);
         
         resize(outputWidth,outputHeight);
     }
@@ -1180,8 +1180,8 @@ public class XTImage {
   //**************************************************************************
   //** setHeight
   //**************************************************************************
-  /**  Resizes the image to a given height. The original aspect ratio is 
-   *   maintained. 
+  /**  Resizes the image to a given height. The original aspect ratio is
+   *   maintained.
    */
     public void setHeight(int Height){
         double ratio = (double)Height/(double)this.getHeight();
@@ -1189,8 +1189,8 @@ public class XTImage {
         double dw = this.getWidth() * ratio;
         double dh = this.getHeight() * ratio;
 
-        int outputWidth =  (int)Math.round(dw); 
-        int outputHeight = (int)Math.round(dh); 
+        int outputWidth =  (int)Math.round(dw);
+        int outputHeight = (int)Math.round(dh);
         
         resize(outputWidth,outputHeight);
     }
@@ -1199,8 +1199,8 @@ public class XTImage {
   //**************************************************************************
   //** Resize (Overloaded Member)
   //**************************************************************************
-  /**  Used to resize an image. Does NOT automatically retain the original 
-   *   aspect ratio. 
+  /**  Used to resize an image. Does NOT automatically retain the original
+   *   aspect ratio.
    */
     public void resize(int Width, int Height){
         resize(Width,Height,false);
@@ -1210,7 +1210,7 @@ public class XTImage {
   //**************************************************************************
   //** Resize
   //**************************************************************************
-  /**  Used to resize an image. Provides the option to maintain the original 
+  /**  Used to resize an image. Provides the option to maintain the original
    *   aspect ratio (relative to the output width).
    */
     public void resize(int Width, int Height, boolean maintainRatio){
@@ -1237,8 +1237,8 @@ public class XTImage {
             double dw = width * ratio;
             double dh = height * ratio;
 
-            outputWidth =  (int)Math.round(dw); 
-            outputHeight = (int)Math.round(dh); 
+            outputWidth =  (int)Math.round(dw);
+            outputHeight = (int)Math.round(dh);
 
             if (outputWidth>width || outputHeight>height){
                 outputWidth=width;
@@ -1267,11 +1267,11 @@ public class XTImage {
     
     
   //**************************************************************************
-  //** Get Corners 
+  //** Get Corners
   //**************************************************************************
-  /**  Used to retrieve the corner coordinates of the image. Coordinates are 
-   *   supplied in clockwise order starting from the upper left corner. This 
-   *   information is particularly useful for generating drop shadows, inner 
+  /**  Used to retrieve the corner coordinates of the image. Coordinates are
+   *   supplied in clockwise order starting from the upper left corner. This
+   *   information is particularly useful for generating drop shadows, inner
    *   and outer glow, and reflections.
    *   NOTE: Coordinates are not updated after resize(), rotate(), or addImage()
    */
@@ -1317,7 +1317,7 @@ public class XTImage {
       //apply convolution
         BufferedImage out = new BufferedImage(width, height, getImageType());
         BufferedImageOp op = new ConvolveOp(kernel);
-        out = op.filter(bufferedImage, out); 
+        out = op.filter(bufferedImage, out);
         
       //replace 2 pixel border created via convolution
         java.awt.Image overlay = out.getSubimage(2,2,width-4,height-4);
@@ -1341,8 +1341,8 @@ public class XTImage {
   //**************************************************************************
   //** Desaturate
   //**************************************************************************
-  /**  Used to desaturate an image by a specified percentage (expressed as 
-   *   a double or float). The larger the percentage, the greater the 
+  /**  Used to desaturate an image by a specified percentage (expressed as
+   *   a double or float). The larger the percentage, the greater the
    *   desaturation and the "grayer" the image. Valid ranges are from 0-1.
    */
     
@@ -1393,9 +1393,9 @@ public class XTImage {
   //**************************************************************************
   //** Flip (Horizonal)
   //**************************************************************************
-  /**  Used to flip an image along it's y-axis (horizontal). Vertical flipping 
+  /**  Used to flip an image along it's y-axis (horizontal). Vertical flipping
    *   is supported via the rotate method (i.e. rotate +/-180).
-   */    
+   */
     public void flip(){
         BufferedImage out = new BufferedImage(getWidth(), getHeight(), getImageType());
         AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
@@ -1556,7 +1556,7 @@ public class XTImage {
   //**************************************************************************
   /** Used to remove excess pixels around an image by cropping the image to its
    *  "true" extents. Crop bounds are determined by finding pixels that *don't*
-   *  match the input color. For example, you can trim off excess black pixels 
+   *  match the input color. For example, you can trim off excess black pixels
    *  around an image by specifying an rgb value of 0,0,0. Similarly, you can
    *  trim off pure white pixels around an image by specifying an rgb value of
    *  255,255,255. Note that transparent pixels are considered as null values
@@ -1697,8 +1697,8 @@ public class XTImage {
   //**************************************************************************
   //** saveAs
   //**************************************************************************
-  /**  Exports the image to a file. Output format is determined by the output 
-   *   file extension. 
+  /**  Exports the image to a file. Output format is determined by the output
+   *   file extension.
    */
     public void saveAs(String PathToImageFile){
         saveAs(new java.io.File(PathToImageFile));
@@ -1708,8 +1708,8 @@ public class XTImage {
   //**************************************************************************
   //** saveAs
   //**************************************************************************
-  /**  Exports the image to a file. Output format is determined by the output 
-   *   file extension. 
+  /**  Exports the image to a file. Output format is determined by the output
+   *   file extension.
    */
     public void saveAs(java.io.File OutputFile){
         try{
@@ -1724,7 +1724,7 @@ public class XTImage {
                 output.close();
             }
             else{
-                RenderedImage rendImage = bufferedImage; 
+                RenderedImage rendImage = bufferedImage;
                 if (isJPEG2000(FileExtension)){
                     ImageIO.write(rendImage, "JPEG 2000", OutputFile);
                 }
@@ -1744,7 +1744,7 @@ public class XTImage {
     /*
     public void setCacheDirectory(java.io.File cacheDirectory){
         try{
-            if (cacheDirectory.isFile()){ 
+            if (cacheDirectory.isFile()){
                 cacheDirectory = cacheDirectory.getParentFile();
             }
             cacheDirectory.mkdirs();
@@ -1764,8 +1764,8 @@ public class XTImage {
   //**************************************************************************
   //** setOutputQuality
   //**************************************************************************
-  /**  Used to set the output quality/compression ratio. Only applies when 
-   *   creating JPEG images. Applied only when writing the image to a file or 
+  /**  Used to set the output quality/compression ratio. Only applies when
+   *   creating JPEG images. Applied only when writing the image to a file or
    *   byte array.
    */
     public void setOutputQuality(double percentage){
@@ -1783,7 +1783,7 @@ public class XTImage {
     
     private boolean isJPEG(String FileExtension){
         FileExtension = FileExtension.trim().toLowerCase();
-        if (FileExtension.equals("jpg") || 
+        if (FileExtension.equals("jpg") ||
             FileExtension.equals("jpeg") ||
             FileExtension.equals("jpe") ||
             FileExtension.equals("jff") ){
@@ -1800,8 +1800,8 @@ public class XTImage {
     
     private boolean isJPEG2000(String FileExtension){
         FileExtension = FileExtension.trim().toLowerCase();
-        if (FileExtension.equals("jp2") || 
-            FileExtension.equals("jpc") || 
+        if (FileExtension.equals("jp2") ||
+            FileExtension.equals("jpc") ||
             FileExtension.equals("j2k") ||
             FileExtension.equals("jpx") ){
             return true;
@@ -1948,14 +1948,15 @@ public class XTImage {
   //**************************************************************************
   //** equals
   //**************************************************************************
-  /**  Used to compare this image to another. If the ARGB values match, this 
-   *   method will return true. 
+  /**  Used to compare this image to another. If the ARGB values match, this
+   *   method will return true.
    */
-    public boolean equals(Object obj){
+    @Override
+	public boolean equals(Object obj){
         if (obj!=null){
             if (obj instanceof XTImage){
                 XTImage image = (XTImage) obj;
-                if (image.getWidth()==this.getWidth() && 
+                if (image.getWidth()==this.getWidth() &&
                     image.getHeight()==this.getHeight())
                 {
                     
@@ -2029,7 +2030,7 @@ public class XTImage {
   //** getIptcTags
   //**************************************************************************
   /** Used to parse IPTC metadata and return a list of key/value pairs found
-   *  in the metadata. You can retrieve specific IPTC metadata values like 
+   *  in the metadata. You can retrieve specific IPTC metadata values like
    *  this:
    <pre>
     javaxt.io.Image image = new javaxt.io.Image("/temp/image.jpg");
@@ -2089,7 +2090,7 @@ public class XTImage {
   //**************************************************************************
   //** getGpsTags
   //**************************************************************************
-  /** Used to parse EXIF metadata and return a list of key/value pairs 
+  /** Used to parse EXIF metadata and return a list of key/value pairs
    *  associated with GPS metadata. Values can be Strings, Integers, or raw
    *  Byte Arrays.
    */
@@ -2179,7 +2180,7 @@ public class XTImage {
   //**************************************************************************
   //** getGPSDatum
   //**************************************************************************
-  /** Returns the datum associated with the GPS coordinate. Value is 
+  /** Returns the datum associated with the GPS coordinate. Value is
    *  derived from EXIF GPS metadata (tag 0x0012).
    */
     public String getGPSDatum(){
@@ -2240,7 +2241,7 @@ public class XTImage {
             for (Node unknownNode : unknownNodes){
                 tags.add((IIOMetadataNode) unknownNode);
             }
-        }  
+        }
         return tags.toArray(new IIOMetadataNode[tags.size()]);
     }
 
@@ -2296,7 +2297,7 @@ public class XTImage {
                 }
             }
         }
-        return "";               
+        return "";
     }
 
 
@@ -2472,7 +2473,7 @@ private class MetadataParser {
   //**************************************************************************
   //** getTags
   //**************************************************************************
-  /** Returns key/value pairs representing the EXIF or IPTC data. 
+  /** Returns key/value pairs representing the EXIF or IPTC data.
    */
     public HashMap<Integer, Object> getTags(String dir) {
         return tags.get(dir);

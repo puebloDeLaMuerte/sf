@@ -77,7 +77,7 @@ public class SM_MeasureFormatter {
 			frameFormat[0] = xsize;
 			frameFormat[1] = xsize;
 			frameFormat[2] = ysize;
-			frameFormat[3] = ysize;	
+			frameFormat[3] = ysize;
 			
 			if( _tmpPptSize != null ) {
 				

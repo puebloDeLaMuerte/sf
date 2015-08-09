@@ -4,6 +4,10 @@ import java.util.EventObject;
 
 public class WallColorUpdateRequestEvent extends EventObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3813343036901043314L;
 	private String 		roomName;
 	private int 		color;
 	private Character	wallCharacter;

@@ -1,12 +1,10 @@
 package SMUtils;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -21,6 +19,10 @@ import javax.swing.event.AncestorListener;
 
 public class NewProjectDialog extends JOptionPane {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2753128148982641430L;
 	JTextField nameField;
 	JCheckBox[] roomBoxes;
 	

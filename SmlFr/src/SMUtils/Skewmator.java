@@ -10,6 +10,10 @@ import sfrenderer.XTImage;
 
 public class Skewmator extends PApplet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8423078796809664172L;
 	int baseX, baseY;
 	PGraphics skewGraphics;
 	
@@ -59,7 +63,7 @@ public class Skewmator extends PApplet {
 	
 	public PImage skewToWall(PImage inImage, PVector lo, PVector ro, PVector ru, PVector lu, int bezugX, int bezugY, int canvasWidth, int canvasHeight, SkewMode mode) {
 		
-		float scale; 
+		float scale;
 		if( canvasWidth >0 ) {
 			scale = (float)canvasWidth / (float)baseX;
 //			System.out.println("scale calculated from width and baseX: "+scale);
@@ -184,7 +188,7 @@ public class Skewmator extends PApplet {
 		
 //		if( mode == SkewMode.LIGHTS) skewedImage.filter(BLUR, 2);
 		
-		//   now, scale the returnImage if you need to 
+		//   now, scale the returnImage if you need to
 		/** (remember, it's all set to be 1200x800 fixed size till now!!) */
 		//   draw the skewed image onto a returnimage of desired scale
 			   ///////
@@ -211,7 +215,7 @@ public class Skewmator extends PApplet {
 		g.removeCache(sizedReturnImage);
 		sizedReturnImage.endDraw();
 		
-		// the image is now ready to be drawn onto any surface that 
+		// the image is now ready to be drawn onto any surface that
 		// fits the scale value (1200*scale x 800*scale)
 
 		// bitteschšn!
@@ -285,7 +289,7 @@ public class Skewmator extends PApplet {
 		pg.endDraw();
 		wall = pg.get();
 				
-		// mask the image		
+		// mask the image
 		//wall.mask(mask);
 				
 		return wall;

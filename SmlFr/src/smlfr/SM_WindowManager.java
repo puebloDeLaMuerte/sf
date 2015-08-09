@@ -2,16 +2,8 @@ package smlfr;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.util.HashMap;
-
-import javax.swing.JFrame;
 
 import SMUtils.Lang;
 import SMUtils.Raster;
@@ -72,7 +64,7 @@ public class SM_WindowManager{
 			
 		if( state == progState.PROJECT && _requestedState == progState.ROOM    ) {
 			
-			if(fm.isSaveDirty()) {						
+			if(fm.isSaveDirty()) {
 				int decide = javax.swing.JOptionPane.showOptionDialog(null, Lang.unsavedChanges, Lang.unsavedChangesTitle, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.DEFAULT_OPTION, base.getQuestionIcon(), Lang.yesNoCancelOptions, 0);
 				switch (decide) {
 				case 0:
@@ -119,7 +111,7 @@ public class SM_WindowManager{
 		if( state == progState.ROOM    && _requestedState == progState.PROJECT ) {
 			
 			
-			if(fm.isSaveDirty()) {						
+			if(fm.isSaveDirty()) {
 				int decide = javax.swing.JOptionPane.showOptionDialog(null, Lang.unsavedChanges, Lang.unsavedChangesTitle, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.DEFAULT_OPTION, base.getIcon(), Lang.yesNoCancelOptions, 0);
 				switch (decide) {
 				case 0:

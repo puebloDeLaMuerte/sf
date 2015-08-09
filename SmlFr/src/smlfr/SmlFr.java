@@ -5,7 +5,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.HashMap;
 import javax.swing.ImageIcon;
@@ -59,6 +58,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 
 		
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				SmlFr app = new SmlFr();
 				app.initialize();
@@ -112,12 +112,12 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 //			final Thread mainThread = Thread.currentThread();
 //				Runtime.getRuntime().addShutdownHook(new Thread() {
 //					public void run() {
-//						
+//
 //						System.err.println("SHUTDOWNHOOK WAS CALLED!");
 //						fm.requestQuit();
-//						
+//
 //						try {
-//							
+//
 //							mainThread.join();
 //						} catch (InterruptedException e) {
 //							System.err.println("THE MUCH DREADED ERROR HAS OCCURED");
@@ -134,7 +134,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 
 		
 		
-		// DIALOG Message: load a project - 
+		// DIALOG Message: load a project -
 		
 		String[] prev = fm.getPreviousProject();
 		String msg = Lang.initializeFromWhere_1 + prev[0] + Lang.initializeFromWhere_2;
@@ -201,13 +201,13 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 		
 		// PROJECT INIT
 		
-		// // init (general) Artworks 
+		// // init (general) Artworks
 		
 		String[] aws = fm.getArtLibraryFromProject();
 		artworks = new HashMap<String, SM_Artwork>();
 		for(int a=0;a<aws.length; a++) {
 
-			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]), fm.getImageFilePathForArtwork(aws[a], awFileSize.MEDIUM), frameGfxs ));	
+			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]), fm.getImageFilePathForArtwork(aws[a], awFileSize.MEDIUM), frameGfxs ));
 		}
 		
 	

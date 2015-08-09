@@ -102,7 +102,7 @@ public class SM_Wall implements UpdateListener {
 		
 		for( String s : myArtworks.keySet() ) {
 			SM_Artwork a = myArtworks.get(s);
-			if( (a.getTotalHeight() - a.getTotalWallPos()[1]) < 5  ) adOfset += a.getTotalWidth() + 100; 
+			if( (a.getTotalHeight() - a.getTotalWallPos()[1]) < 5  ) adOfset += a.getTotalWidth() + 100;
 		}
 		
 		_aw.setTotalWallPos(adOfset % mySize[0], _aw.getTotalHeight());

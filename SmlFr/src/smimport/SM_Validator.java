@@ -18,7 +18,7 @@ public class SM_Validator {
 		boolean result = false;
 
 		try {
-			int x = Integer.parseInt(text);			
+			int x = Integer.parseInt(text);
 			result = true;
 		} catch (Exception e) {
 			result = false;

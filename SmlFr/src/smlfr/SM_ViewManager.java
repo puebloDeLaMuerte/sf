@@ -129,7 +129,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}			
+			}
 		}
 		renderer.frame.pack();
 		renderer.frame.setVisible(true);
@@ -153,7 +153,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		Point rpos = renderer.getLocationOnScreen();
 		
 		if( lpos.y > 150 && rpos.x > 150 ) {
-			maxAvailableSpace = new Dimension(rpos.x, lpos.y-(rpos.y));		
+			maxAvailableSpace = new Dimension(rpos.x, lpos.y-(rpos.y));
 		} else {
 			maxAvailableSpace = wm.getRaster();
 		}
@@ -176,7 +176,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		return wallArr;
 		
 	}
-//	
+//
 //	public String getLightGfxPath() {
 //		return wm.getLightGfxPath();
 //	}

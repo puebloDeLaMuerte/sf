@@ -7,12 +7,8 @@ import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import com.sun.xml.internal.bind.v2.TODO;
-
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -194,7 +190,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			} catch(Exception e) { e.printStackTrace(); }
 		}
 		else {
-			preferences.setString(_key, _value);	
+			preferences.setString(_key, _value);
 		}
 		saveJSONObject(preferences, preferencesPath.getAbsolutePath());
 	}
@@ -214,8 +210,8 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				j = null;
 			}
 		}else{
-			javax.swing.JOptionPane.showMessageDialog(this, 
-					Lang.couldntFindPrefs, Lang.warning, 
+			javax.swing.JOptionPane.showMessageDialog(this,
+					Lang.couldntFindPrefs, Lang.warning,
 					javax.swing.JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
 			j = null;
 		}
@@ -389,10 +385,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			if (fileString.endsWith(".tmp")) {
 				
 				fileString = fileString.substring(0, fileString.indexOf('.'));
-				String tmpProjectDenotedPath = loadJSONObject(file).getString("projectPath"); 
+				String tmpProjectDenotedPath = loadJSONObject(file).getString("projectPath");
 				
-				if( 
-						fileString.equals(loadingProjName) && 
+				if(
+						fileString.equals(loadingProjName) &&
 						file.lastModified() > _f.lastModified() &&
 						tmpProjectDenotedPath.equals(loadingProjPath)
 				   ) {
@@ -413,7 +409,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		pp[1] = preferences.getJSONObject("previousProject").getString("projectPath");
 
 		
-		return pp;		
+		return pp;
 	}
 
 	public File newProject() {
@@ -458,7 +454,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 
 
-			JSONObject theNewProj = creator.makeNewProjectFile(projectName, _selectedRooms); 
+			JSONObject theNewProj = creator.makeNewProjectFile(projectName, _selectedRooms);
 			String[] importedAws;
 
 			int q = javax.swing.JOptionPane.showOptionDialog(null, Lang.importNowTitle, Lang.importNow, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, base.getIcon(), Lang.importNowBtns, 2);
@@ -606,7 +602,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 		for( int i=0; i< rooms.size(); i++) {
 
-			rms[i] = rooms.getJSONObject(i).getString("roomName"); 
+			rms[i] = rooms.getJSONObject(i).getString("roomName");
 		}
 
 		return rms;
@@ -761,7 +757,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		for (int i = 0; i < importedAws.length; i++) {
 			
-			base.artworks.put(importedAws[i], new SM_Artwork( loadArtwork(importedAws[i]), getImageFilePathForArtwork(importedAws[i], awFileSize.MEDIUM), base.frameGfxs ));	
+			base.artworks.put(importedAws[i], new SM_Artwork( loadArtwork(importedAws[i]), getImageFilePathForArtwork(importedAws[i], awFileSize.MEDIUM), base.frameGfxs ));
 		}
 		
 		
@@ -941,7 +937,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	public synchronized void unregisterArrViewAWUpdateListeners() {
 		
 //		for( int i = updateListeners_ArrViews.getListenerCount(); i > 0; i--) {
-//			
+//
 //			updateListeners_ArrViews.remove(t, l)
 //		}
 		
@@ -979,6 +975,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	}
 	
 	
+	@Override
 	public synchronized boolean updateRequested(ArtworkUpdateRequestEvent e) {
 		
 		if( queueType != null &&  e.getType() != queueType ) return false;
@@ -1053,7 +1050,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			File thisAwFile = new File(artLibraryPath.getAbsolutePath() + "/" +eventAW + ".sfa");
 			
 			JSONObject thisAWjson = loadJSONObject(thisAwFile);
-			thisAWjson.setString("frameStyle", e.getNewFrameStyle().name() );	
+			thisAWjson.setString("frameStyle", e.getNewFrameStyle().name() );
 			saveJSONObject(thisAWjson, thisAwFile.getAbsolutePath());
 			
 			String wall = base.artworks.get(eventAW).getWall();
@@ -1108,23 +1105,23 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 			
 //			UpdateEvent e2;
-//			
+//
 //			if( dataQueue.size() == 0 ) {  // fire blank
 //				e2 = new UpdateEvent(this, UpdateType.BLANK, null);
 //			}
-//			
+//
 //			e2 = new UpdateEvent(this, queueType, dataQueue);
-//	
-//					
+//
+//
 //			for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 //				lsnr.doUpdate(e2);
-//	
+//
 //			}
 //			for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
 //				lsnr.doUpdate(e2);
-//	
+//
 //			}
-//			
+//
 		}
 		
 		
@@ -1235,16 +1232,16 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		if( e.isOriginalColorRequested()) System.out.println("originalColor is Requested");
 		
 		/**
-		 *  
+		 * 
 		 *  Lieber Pip aus der Zukunft.
-		 *  
+		 * 
 		 *  Durch die unten stehende abfrage aus dem Event: e.isOriginalColorRequested() kann man sich
 		 *  das ganze e.isPreview() sparen. Alles wird dadurch einfacher: hier, aber auch im Update-Type,
 		 *  der sich ja durch alles mögliche durchzieht!
 		 * 
 		 *  Man müsste dafür zunächst im WallColorChooser die stellen durch den OriginalColorCallback ersetzen,
 		 *  die bisher die alte ".isPreview" Methode benutzen... dann die ganze Kette von da aufrollen.
-		 *  
+		 * 
 		 * 	Das könnte man mal ändern, wenn der singleWallColor Commit gemacht ist!
 		 * 
 		 * 	dein pip
@@ -1265,7 +1262,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				lsnr.doUpdate(o);
 			}
 		}
-		else 
+		else
 
 		
 		if( !e.isSingleWall() ) {
@@ -1375,7 +1372,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				
 			}
 			
-			else 
+			else
 			
 			{
 			

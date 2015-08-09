@@ -28,17 +28,18 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.NumberFormatter;
 
 import smlfr.SM_Artwork;
-import smlfr.SM_WallArrangementView;
 import SMUtils.SM_MeasureFormatter;
 
 public class ArtworkMeasurementChooser extends JFrame implements ActionListener {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7210225327039702769L;
 	private JFormattedTextField 	inputFrameHeight, inputFrameWidth;
 	private JFormattedTextField		inputPptWidth, inputPptHeight;
 	private JFormattedTextField		inputAwWidth, inputAwHeight;
@@ -98,7 +99,7 @@ public class ArtworkMeasurementChooser extends JFrame implements ActionListener 
 		
 		this.setTitle(Lang.editArtwork + artwork.getName());
 		
-		JPanel content = new JPanel( new BorderLayout(10, 10));		
+		JPanel content = new JPanel( new BorderLayout(10, 10));
 		
 		content.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
@@ -126,7 +127,7 @@ public class ArtworkMeasurementChooser extends JFrame implements ActionListener 
 		this.setSize(440, 280);
 		
 		java.awt.Rectangle window = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-		this.setLocation((int)(window.width/2 - this.getSize().getWidth()/2), (int)(window.height/2 - this.getSize().getHeight()/2));		
+		this.setLocation((int)(window.width/2 - this.getSize().getWidth()/2), (int)(window.height/2 - this.getSize().getHeight()/2));
 
 		
 		this.setVisible(true);
@@ -202,7 +203,7 @@ public class ArtworkMeasurementChooser extends JFrame implements ActionListener 
 		
 		c.gridx = 4;
 		JLabel prevAw= new JLabel( prevAwHeight +" x "+prevAwWidth );
-		fp.add(prevAw, c);		
+		fp.add(prevAw, c);
 		
 		
 		c.anchor = GridBagConstraints.LINE_START;
@@ -280,13 +281,18 @@ public class ArtworkMeasurementChooser extends JFrame implements ActionListener 
 		format.setMaximumFractionDigits(0);
 		
 		JFormattedTextField field = new JFormattedTextField(new NumberFormatter(format) {
-		    @Override
+		    /**
+			 * 
+			 */
+			private static final long serialVersionUID = -1974547896128708523L;
+
+			@Override
 		    public Object stringToValue(String text) throws ParseException {
 		        if(text.trim().isEmpty())
 		            return 0;
 		        return super.stringToValue(text);
 		    }
-		}); 
+		});
 		
 //		field.getDocument().addDocumentListener(this);
 		

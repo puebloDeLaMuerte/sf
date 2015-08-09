@@ -52,6 +52,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	}
 
 	
+	@Override
 	public void draw() {
 
 //		vm.checkRendererUpdate();
@@ -103,6 +104,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	}
 	
 	
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		if( e.getClickCount() > 1 ) {
 			char woc = super.getWallOverChar();
@@ -116,6 +118,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		super.mouseClicked(e);
 	}
 	
+	@Override
 	public void mouseEntered(MouseEvent e) {
 		if(e.getSource().getClass().equals(ViewMenuItem.class)) {
 
@@ -129,6 +132,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		}
 	}
 	
+	@Override
 	public void mouseExited(MouseEvent e) {
 		if(e.getSource().getClass().equals(ViewMenuItem.class)) {
 			System.out.println("SCHNABLER");
@@ -141,6 +145,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		vm.dispose();
 	}
 	
+	@Override
 	public void dispose() {
 		System.out.println("closing this Arrview");
 		super.dispose();

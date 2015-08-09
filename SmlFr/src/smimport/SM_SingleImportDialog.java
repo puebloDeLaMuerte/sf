@@ -30,6 +30,11 @@ import SMUtils.Lang;
 
 public class SM_SingleImportDialog extends JFrame implements ActionListener, DocumentListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8653790249086717664L;
+
 	private JTextField[]				requiredFields, textFields, requiredNumberFields;
 	
 	private JTextField					TF_invNr, TF_title, TF_artist, TF_imageLocation;
@@ -115,7 +120,7 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		
 		textFields = new JTextField[4];
 		
-		textFields[0] = TF_invNr;	
+		textFields[0] = TF_invNr;
 		textFields[1] = TF_title;
 		textFields[2] = TF_artist;
 		textFields[3] = TF_imageLocation;
@@ -274,7 +279,7 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		
 		
 		java.awt.Rectangle window = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-		this.setLocation((int)(window.width/2 - this.getSize().getWidth()/2), (int)(window.height/2 - this.getSize().getHeight()/2));		
+		this.setLocation((int)(window.width/2 - this.getSize().getWidth()/2), (int)(window.height/2 - this.getSize().getHeight()/2));
 		
 		this.setVisible(true);
 		
@@ -380,7 +385,7 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		else
 		if ( e.getSource() == browseBtn ) {
 			
-			fc.showOpenDialog(this);			
+			fc.showOpenDialog(this);
 			TF_imageLocation.setText(fc.getSelectedFile().getAbsolutePath());
 		}
 	}
@@ -399,17 +404,17 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 	@Override
 	public void changedUpdate(DocumentEvent arg0) {
 		
-		evaluateAndSetOkBtn();		
+		evaluateAndSetOkBtn();
 	}
 
 	@Override
 	public void insertUpdate(DocumentEvent arg0) {
-		evaluateAndSetOkBtn();		
+		evaluateAndSetOkBtn();
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent arg0) {
-		evaluateAndSetOkBtn();		
+		evaluateAndSetOkBtn();
 	}
 
 	private JFormattedTextField makeNumberField() {
@@ -420,7 +425,12 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		format.setMaximumFractionDigits(0);
 		
 		return new JFormattedTextField(new NumberFormatter(format) {
-		    @Override
+		    /**
+			 * 
+			 */
+			private static final long serialVersionUID = 268299469088363794L;
+
+			@Override
 		    public Object stringToValue(String text) throws ParseException {
 		        if(text.trim().isEmpty())
 		            return null;
@@ -477,6 +487,7 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		}
 	}
 	
+	@Override
 	public String getTitle() {
 		if (hasValidData) {
 			return TF_title.getText().trim();

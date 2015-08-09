@@ -23,7 +23,7 @@ public class SM_EXCELReader {
 	private JFileChooser								chooser;
 
 	private POIFSFileSystem 							fs;
-	private HSSFWorkbook 								wb;	
+	private HSSFWorkbook 								wb;
 	private HSSFSheet 									sheet;
 
 	private ArrayList<LinkedHashMap<String, String>> 	lines;
@@ -91,7 +91,7 @@ public class SM_EXCELReader {
 				if( testCell != null) {
 					testString = testCell.getStringCellValue();
 					if( !testString.isEmpty() ) validRow = true;
-				}				
+				}
 				System.out.println("this string: "+testString+" evaluated to "+validRow);
 				
 				// transfer cell data to "lines" (internal data storage)

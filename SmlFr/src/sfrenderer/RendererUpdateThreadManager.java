@@ -2,10 +2,6 @@ package sfrenderer;
 
 import java.util.ArrayList;
 
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
 import SMUtils.Lang;
 import SMUtils.UpdateThread;
 
@@ -19,7 +15,7 @@ public class RendererUpdateThreadManager {
 	
 	public RendererUpdateThreadManager(SM_Renderer r) {
 		
-		super();		
+		super();
 		renderer = r;
 		threads = new ArrayList<UpdateThread>(0);
 
@@ -37,7 +33,7 @@ public class RendererUpdateThreadManager {
 		threads.add(t);
 		
 		t.start();
-		System.out.println("threads.size: " + threads.size());		
+		System.out.println("threads.size: " + threads.size());
 //		System.out.println("alive: "+t.isAlive());
 
 	}
@@ -53,7 +49,7 @@ public class RendererUpdateThreadManager {
 //		System.out.println("threads.size: " + threads.size());
 		ArtworksUpdateThread t = new ArtworksUpdateThread(_wallChar);
 		registerThread( t );
-		t.start();		
+		t.start();
 //		System.out.println("alive: "+t.isAlive());
 //		System.out.println("threads.size: " + threads.size());
 //		for( int i = 0; i<threads.size(); i++ ) {
@@ -72,7 +68,7 @@ public class RendererUpdateThreadManager {
 		LightsUpdateThread t = new LightsUpdateThread(_wallChar);
 		registerThread( t);
 		t.start();
-		System.out.println("threads.size: " + threads.size());		
+		System.out.println("threads.size: " + threads.size());
 //		System.out.println("alive: "+t.isAlive());
 		
 	}
@@ -121,13 +117,16 @@ public class RendererUpdateThreadManager {
 			this.setName("RendererColorUpdateThread");
 		}
 		
+		@Override
 		public char getWallChar() {
 			return ' ';
 		}
 		
+		@Override
 		public boolean hasStartedUpdate() {
 			return hasStartedUpdate;
 		}
+		@Override
 		public void run() {
 			
 						
@@ -155,14 +154,17 @@ public class RendererUpdateThreadManager {
 			this.setName("RendererArtworksUpdateThread");
 		}
 		
+		@Override
 		public char getWallChar() {
 			return wallChar;
 		}
 		
+		@Override
 		public boolean hasStartedUpdate() {
 			return hasStartedUpdate;
 		}
 		
+		@Override
 		public void run() {
 			
 			boolean go;
@@ -231,14 +233,17 @@ public class RendererUpdateThreadManager {
 			this.setName("RendererLightsUpdateThread");
 		}
 		
+		@Override
 		public char getWallChar() {
 			return wallChar;
 		}
 		
+		@Override
 		public boolean hasStartedUpdate() {
 			return hasStartedUpdate;
 		}
 		
+		@Override
 		public void run() {
 			
 			boolean go;

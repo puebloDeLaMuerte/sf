@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -23,7 +22,6 @@ import javax.swing.JColorChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
@@ -34,10 +32,14 @@ import smlfr.SM_RoomProjectView;
 public class WallColorChooser extends JFrame implements ActionListener, PropertyChangeListener {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1547944709851288007L;
 	private JPanel 					content, input, buttons				;
 	private JLabel 					msg, r, g, b						  	;
 	private JFormattedTextField 	fieldRed, fieldGreen, fieldBlue		    	;
-	private ButtonGroup 			radioBtns							      		;	
+	private ButtonGroup 			radioBtns							      		;
 	private JRadioButton 			changeRoom, changeWall				        		;
 	private JCheckBox				preview								        			;
 	private JButton					okBtn, cancelBtn, colorBtn, noWallColorBtn 					;
@@ -70,7 +72,7 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 		roomColor = new Color(_roomColor);
 		if( _wallColor == 0 ) {
 			wallColor = roomColor;
-		} else {			
+		} else {
 			wallColor = new Color(_wallColor);
 		}
 		

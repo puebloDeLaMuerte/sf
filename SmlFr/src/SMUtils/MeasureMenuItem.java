@@ -7,6 +7,10 @@ import smlfr.SM_Artwork;
 
 public class MeasureMenuItem extends JMenuItem {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -197459445673230557L;
 	private SM_Artwork myAw;
 	
 	public MeasureMenuItem(String text, SM_Artwork aw) {

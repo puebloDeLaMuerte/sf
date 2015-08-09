@@ -4,8 +4,6 @@ package sfrenderer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.image.BufferedImage;
-
 import java.io.File;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -23,7 +21,6 @@ import SMUtils.pTimedEventGenerator;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
-import processing.core.PVector;
 import processing.event.MouseEvent;
 import smlfr.SM_ViewAngle;
 import smlfr.SM_ViewManager;
@@ -46,7 +43,7 @@ public class SM_Renderer extends PApplet{
 	
 	private JPopupMenu				pMenu;
 	private JMenuItem				savePreview;
-	private ViewMenuItem[]			pMenuViews;	
+	private ViewMenuItem[]			pMenuViews;
 	
 	public RendererUpdateThreadManager		update;
 	private pTimedEventGenerator			tGen;
@@ -70,7 +67,7 @@ public class SM_Renderer extends PApplet{
 	private Skewmator				skewmator;
 
 	private double 					aspect;
-	private float 					scale;
+//	private float 					scale;
 	private int 					ySize = 600;
 	private int						photoX = 1200;
 	private int						photoY = 800;
@@ -79,7 +76,7 @@ public class SM_Renderer extends PApplet{
 	
 	public boolean 					setupRun = false;
 	
-	private boolean 				devGUI = true;
+	private boolean 				devGUI = false;
 	
 	private boolean					isBusy = false;
 	private String					busyMessage = "";
@@ -89,7 +86,7 @@ public class SM_Renderer extends PApplet{
 
 	private boolean					isDrawingPreview = false;
 	private String					previewStatus;
-	private int[]					previewAdvance;						
+	private int[]					previewAdvance;
 	
 	private boolean					savetyDraw = false;
 
@@ -165,6 +162,7 @@ public class SM_Renderer extends PApplet{
 		currentPath = new File(  generalPath.getAbsolutePath()+currentFileStub   );
 	}
 	
+	@Override
 	public void init() {
 		super.init();
 	}
@@ -193,6 +191,7 @@ public class SM_Renderer extends PApplet{
 		pMenu.add(savePreview);
 	}
 	
+	@Override
 	public void setup() {
 		
 		setupRun = false;
@@ -203,7 +202,7 @@ public class SM_Renderer extends PApplet{
 		layers = new PImage[7];
 		layers[0] = loadImage(currentPath.getAbsolutePath()+currentFileStub+"_Hintergrund.png");
 		
-		scale = (float)ySize / (float)layers[0].width;
+//		scale = (float)ySize / (float)layers[0].width;
 		
 		zoomFact = 1.0f;
 		xOffset = 0;
@@ -233,7 +232,7 @@ public class SM_Renderer extends PApplet{
 
 
 
-		/* 
+		/*
 		 * [0] Background	FILE
 		 * [1] Color		dynamic
 		 * [2] light		VIEWMANAGER
@@ -341,7 +340,7 @@ public class SM_Renderer extends PApplet{
 		
 		for(char wc : currentView.getWallChars() ) {
 						
-			boolean hasWallColor  = vm.hasWallColor(wc); 
+			boolean hasWallColor  = vm.hasWallColor(wc);
 			boolean isPreviewWall = ( (Character)wc == _previewWall);
 			
 //			if( isPreviewWall ) colorPreview = true;
@@ -356,7 +355,7 @@ public class SM_Renderer extends PApplet{
 				if( isPreviewWall ) {
 					col = new Color(_previewWallColor);
 					colorPreview = true;
-				} else {					
+				} else {
 					col = new Color(vm.getWallColor(wc));
 				}
 				
@@ -615,7 +614,7 @@ public class SM_Renderer extends PApplet{
 //				}
 //				artworksLayer.endDraw();
 //				layers[3] = artworksLayer;
-//				
+//
 				
 				
 			}
@@ -699,6 +698,7 @@ public class SM_Renderer extends PApplet{
 	
 	
 	
+	@Override
 	public void redraw() {
 //		System.out.println("RENDERER: DRAW FLAG: "+this.redraw);
 //		System.out.println("RENDERER: REDRAW CALLED");
@@ -754,6 +754,7 @@ public class SM_Renderer extends PApplet{
 		}
 	}
 	
+	@Override
 	public void draw(){
 
 		
@@ -775,7 +776,6 @@ public class SM_Renderer extends PApplet{
 				try {
 					Thread.sleep(100);
 				} catch (Exception e) {
-					// TODO: handle exception
 				}
 				System.out.println("Waiting for layers [9]...");
 			}
@@ -796,7 +796,6 @@ public class SM_Renderer extends PApplet{
 				try {
 					Thread.sleep(100);
 				} catch (Exception e) {
-					// TODO: handle exception
 				}
 				System.out.println("Waiting for layers [1]...");
 			}
@@ -836,7 +835,7 @@ public class SM_Renderer extends PApplet{
 						if( wallColor ) {
 							pushStyle();
 							tint(vm.getWallColor(wallGfxsId[id]));
-						}						
+						}
 						
 						image(lg, xOff, yOff,displW,displH);
 						
@@ -848,8 +847,6 @@ public class SM_Renderer extends PApplet{
 						}
 					}
 					
-				} else {
-					System.err.println("RENDERER: DRAW: lights image is null");
 				}
 				
 				
@@ -859,7 +856,7 @@ public class SM_Renderer extends PApplet{
 			
 			g.removeCache(g);
 			popStyle();
-		}  
+		}
 
 //		System.out.println("RENDERER: DRAW: artworks");
 		
@@ -890,7 +887,6 @@ public class SM_Renderer extends PApplet{
 				try {
 					Thread.sleep(100);
 				} catch (Exception e) {
-					// TODO: handle exception
 				}
 				System.out.println("Waiting for layers [4]...");
 			}
@@ -926,7 +922,7 @@ public class SM_Renderer extends PApplet{
 			rect(0, height -16, width, height);
 			
 			fill(20,20,200);
-			float fake = map( busyclock, 0, 1, 0, ((busyQueueMax - busyQueueProgress)/2)); 
+			float fake = map( busyclock, 0, 1, 0, ((busyQueueMax - busyQueueProgress)/2));
 			rect(0, height-16, map(busyQueueProgress, 0, busyQueueMax, 0, width) + fake, height);
 			
 			fill(255);
@@ -1080,7 +1076,7 @@ public class SM_Renderer extends PApplet{
 				if( wallColor ) {
 					img.pushStyle();
 					img.tint(vm.getWallColor(wallGfxsId[id]));
-				}						
+				}
 				
 				img.image(lg, 0, 0,w,h);
 				
@@ -1091,7 +1087,7 @@ public class SM_Renderer extends PApplet{
 			}
 //			img.removeCache(img);
 			img.popStyle();
-		}  
+		}
 
 		previewAdvance[0] = pa++;
 		
@@ -1142,6 +1138,7 @@ public class SM_Renderer extends PApplet{
 	}
 	
 	
+	@Override
 	public void mousePressed() {
 		if( mouseButton == RIGHT && setupRun) {
 			for( JMenuItem m : pMenuViews) {
@@ -1158,6 +1155,7 @@ public class SM_Renderer extends PApplet{
 	}
 
 	
+	@Override
 	public void mouseDragged() {
 		xOffset += mouseX-pmouseX;
 		yOffset += mouseY-pmouseY;
@@ -1167,6 +1165,7 @@ public class SM_Renderer extends PApplet{
 	}
 	
 	
+	@Override
 	public void mouseWheel(MouseEvent event) {
 		
 		float e = event.getCount();
@@ -1179,7 +1178,7 @@ public class SM_Renderer extends PApplet{
 			yOffset -= (int)(0.5f * ((float)height*f));
 
 		}
-		else if( e > 0 ) { 
+		else if( e > 0 ) {
 			f =  0.04f;
 			xOffset -= (int)(((float)mouseX / (float)width) * ((float)width*f));
 			yOffset -= (int)(((float)mouseY / (float)height) * ((float)height*f));
@@ -1215,6 +1214,7 @@ public class SM_Renderer extends PApplet{
 		return pMenu.isVisible();
 	}
 
+	@Override
 	public void keyPressed() {
 		if( keyCode == ESC) {
 			key = 0;
@@ -1243,6 +1243,7 @@ public class SM_Renderer extends PApplet{
 	}
 
 	
+	@Override
 	public Dimension getSize() {
 		return new Dimension((int)(ySize * aspect), ySize);
 	}
@@ -1269,6 +1270,7 @@ public class SM_Renderer extends PApplet{
 	
 	
 	
+	@Override
 	public void dispose() {
 		System.err.println("Renderer goodbye...1");
 		

@@ -207,10 +207,10 @@ public class SM_ExportArtwork {
 				
 //			int meLToItL = myNearestNeighbourY.getWallPosX() - myWallPosX;
 //			int meRtoItR = myWallPosX+myWidth - myNearestNeighbourY.getWallPosX()-myNearestNeighbourY.getWidth();
-//			
+//
 //			myYDistDrawPos[0] = myWallPosX + meLToItL + (meRtoItR / 2);
 //			myYDistDrawPos[2] = myYDistDrawPos[0];
-//			
+//
 //			myYDistDrawPos[1] = myNearestNeighbourY.getWallPosY() + myNearestNeighbourY.getHeight();
 //			myYDistDrawPos[3] = myWallPosY;
 		}

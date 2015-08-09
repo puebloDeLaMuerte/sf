@@ -42,7 +42,6 @@ import SMUtils.ArtworkMeasurementParent;
 import SMUtils.Lang;
 import SMUtils.MeasureMenuItem;
 import SMUtils.awFileSize;
-import SMUtils.ArtworkMeasurementChooser;
 
 public class SM_Library extends JFrame implements UpdateListener, ActionListener, ArtworkMeasurementParent {
 	
@@ -78,12 +77,14 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		standartColor = new Color(0.96f,0.96f,0.96f);
 		
 		this.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent e) {
+            @Override
+			public void componentResized(ComponentEvent e) {
                 setScrollpaneSize();
             }
         });
 	}
 	
+	@Override
 	public void setSize(Dimension d) {
 
 		if( panels == null ) {
@@ -163,7 +164,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 //        int rows = (int)Math.ceil((panels.size() / r));
 //        rows++; // for savety reasons
 //        int contentHeight = (int)(rows * labelY) + (rows * 8);
-//        
+//
 //
 //        artworksPanel.setPreferredSize(new Dimension(scrollPanel.getWidth(), contentHeight));
         panel.add(scrollPanel, BorderLayout.CENTER);
@@ -358,12 +359,12 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 			
 			if( e.getActionCommand() == Lang.editMeasurements) {
 									
-				MeasureMenuItem i = (MeasureMenuItem)e.getSource();			
+				MeasureMenuItem i = (MeasureMenuItem)e.getSource();
 				SMUtils.ArtworkMeasurementChooser awc = new SMUtils.ArtworkMeasurementChooser(this, i.getArtwork());
 				
 			} else if( e.getActionCommand() == Lang.RemoveArtwork) {
 				
-				SM_Artwork a = ((MeasureMenuItem)e.getSource()).getArtwork();			
+				SM_Artwork a = ((MeasureMenuItem)e.getSource()).getArtwork();
 				
 				WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, a.getName(), ' ', "Library", a.getRoom(), a.getWallChar());
 

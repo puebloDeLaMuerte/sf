@@ -26,7 +26,7 @@ public class Raster {
 		
 		realscreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 //		System.out.println(realscreen.width+" x "+realscreen.height);
-//		
+//
 		screen = Toolkit.getDefaultToolkit().getScreenSize();
 		System.out.println(screen.width+" x "+screen.height);
 		

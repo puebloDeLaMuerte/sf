@@ -1,8 +1,8 @@
 package SMUtils;
 
 public enum FrameStyle {
-	NONE, 
-	STANDART, 
+	NONE,
+	STANDART,
 	WOOD_DARK_BROWN,
 	WOOD_MEDIUM_BROWN,
 	WOOD_LIGHT_BROWN,
