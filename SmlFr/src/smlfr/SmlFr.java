@@ -52,6 +52,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 	private boolean				 		firstStart = true;
 	public  ImageIcon					icon = null;
 	public  ImageIcon					warn = null;
+	public  ImageIcon					question = null;
 
 	
 	public static void main(String _args[]) {
@@ -76,8 +77,9 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 		if( firstStart ) {
 
 			
+			icon = new ImageIcon("resources/sf_icon_Transp.png");
 			warn = new ImageIcon("resources/sf_warning_Transp.png");
-			
+			question = new ImageIcon("resources/sf_question_Transp.png");
 			
 			fm = new SM_FileManager(this, warn);
 			wm = new SM_WindowManager(fm, this);
@@ -87,7 +89,6 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 			fm.loadFrames(frameGfxs);
 			// gui stuff here, keep in mind that you might have to step away from transparent windows and such...
 			
-			icon = new ImageIcon("resources/sf_icon_Transp.png");
 			javax.swing.JLabel label = new javax.swing.JLabel(new ImageIcon("resources/sf_transparent_150x150.png") );
 			base = this;
 			base.add(label);
@@ -315,6 +316,10 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 	
 	public ImageIcon getWarningIcon() {
 		return warn;
+	}
+	
+	public ImageIcon getQuestionIcon() {
+		return question;
 	}
 
 	public SM_WindowManager getWindowManager() {

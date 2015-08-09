@@ -328,9 +328,8 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			
 			int overwrite = 99;
 			String message = Lang.overwrite_1 + exportLoc.getName() + Lang.overwrite_2;
-			if( fcVal == 0 && exportLoc.exists() ) overwrite = JOptionPane.showConfirmDialog(null, message , Lang.overwriteTitle, JOptionPane.YES_NO_OPTION);
-			
-			
+			if( fcVal == 0 && exportLoc.exists() ) overwrite = JOptionPane.showConfirmDialog(null, message , Lang.overwriteTitle, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, base.getQuestionIcon());
+						
 			boolean success = false;
 			if (overwrite == 0 || overwrite == 99) {
 				String filename = exportLoc.getAbsolutePath();

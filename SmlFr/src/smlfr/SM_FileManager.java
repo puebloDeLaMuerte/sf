@@ -177,6 +177,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return loadImage("resources/light/Light_Cone_White.png");
 	}
 	
+	public ImageIcon getQuestionIcon() {
+		return base.getQuestionIcon();
+	}
+	
 	// PREFERENCES
 
 	public synchronized void updatePrefs(String _key, String _value) {
@@ -204,15 +208,15 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			} catch (Exception e) {
 				
 				javax.swing.JOptionPane.showMessageDialog(this,
-						Lang.couldntLoadPrefs, "couldn't load",
-						javax.swing.JOptionPane.WARNING_MESSAGE);
+						Lang.couldntLoadPrefs, Lang.warning,
+						javax.swing.JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
 				System.exit(1);
 				j = null;
 			}
 		}else{
 			javax.swing.JOptionPane.showMessageDialog(this, 
-					Lang.couldntFindPrefs, "couldn't find file...", 
-					javax.swing.JOptionPane.WARNING_MESSAGE);
+					Lang.couldntFindPrefs, Lang.warning, 
+					javax.swing.JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
 			j = null;
 		}
 		return j;
@@ -227,7 +231,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	public JSONObject loadMuseumData() {
 
 		if( !museumPath.exists() ) {
-			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntFindMuseum, "couldn't find...", javax.swing.JOptionPane.WARNING_MESSAGE);
+			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntFindMuseum, Lang.warning, javax.swing.JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
 			System.exit(1);
 		}
 
@@ -237,7 +241,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			j = loadJSONObject(museumPath);
 		} catch (Exception e) {
 
-			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntLoadMuseumData, "couldn't load...", javax.swing.JOptionPane.WARNING_MESSAGE);
+			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntLoadMuseumData, "couldn't load...", javax.swing.JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
 			System.exit(1);
 			j = null;
 		}
@@ -418,7 +422,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		String[] _selectedRooms = null;
 		
 		while (projectName == null || _selectedRooms.length == 0) {
-			NewProjectDialog d = new NewProjectDialog(getRoomsInArchitecture(), getRoomRealNamesInArchitecture());
+			NewProjectDialog d = new NewProjectDialog(getRoomsInArchitecture(), getRoomRealNamesInArchitecture(), base.getIcon());
 			
 			int r = d.showDialog();
 		
@@ -457,7 +461,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			JSONObject theNewProj = creator.makeNewProjectFile(projectName, _selectedRooms); 
 			String[] importedAws;
 
-			int q = javax.swing.JOptionPane.showOptionDialog(null, Lang.importNowTitle, Lang.importNow, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, null, Lang.importNowBtns, 2);
+			int q = javax.swing.JOptionPane.showOptionDialog(null, Lang.importNowTitle, Lang.importNow, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, base.getIcon(), Lang.importNowBtns, 2);
 
 			switch (q) {
 			case 0:
@@ -557,7 +561,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 		else {
 			String msg = Lang.couldntLoadProject_1 + _f.getName() + Lang.couldntLoadProject_2 + _f.getPath();
-			javax.swing.JOptionPane.showMessageDialog(this,msg, "couldn't find...", javax.swing.JOptionPane.WARNING_MESSAGE);
+			javax.swing.JOptionPane.showMessageDialog(this,msg, Lang.warning, javax.swing.JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
 			loaded = false;
 		}
 		
@@ -658,7 +662,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			aw = loadJSONObject(filePath);
 		}
 		else {
-			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntLoadArtwork+"\npath: "+filePath, "couldn't load ...", javax.swing.JOptionPane.WARNING_MESSAGE, icon);
+			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntLoadArtwork+"\npath: "+filePath, "couldn't load ...", javax.swing.JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
 			System.exit(1);
 			aw=null;
 		}
@@ -1458,7 +1462,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			int choose = javax.swing.JOptionPane.showOptionDialog(null,
 					Lang.wantToSaveBeforExit, Lang.wantToSaveBeforExitTitle,
 					javax.swing.JOptionPane.YES_NO_CANCEL_OPTION,
-					javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, null,
+					javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, getQuestionIcon(),
 					Lang.saveOnExitOptions, 2);
 			
 			System.out.println("returnvalue: "+choose);

@@ -41,6 +41,7 @@ public class Lang {
 	
 	// errors: Programm Handling
 	
+	public static String	artworkTooBig_title =			"Kunstwerk zu groß!";
 	public static String	artworkTooBigForWall_1  = 		"Dieses Kunstwerk passt nicht an diese Wand.\n	Breite des Kunstwerks: ";
 	public static String	artworkTooBigForWall_2  = 		" mm\n	Breite der Wand; ";
 	public static String	artworkTooBigForWall_3  = 		" mm.";
@@ -77,7 +78,7 @@ public class Lang {
 	public static String	restoreProjectTitle 			= "Projekt Wiederherstellen?";
 	public static String	restoreProjectMessage 			= "\n<html><body style='width: 300px'><b>Es wurde eine Wiederherstellungsdatei für dieses Projekt gefunden!</b><br><br>Wurde SimuFöhr beim letzten mal unvorhergesehen beendet? Falls dies der Fall ist, haben Sie jetzt die Möglichkeit, unngesicherte Speicherstände der letzten Sitzung wiederherzustellen.<br><br><b>HINWEIS!</b><br><i>Bitte beenden Sie SimuFöhr immer über den Menüpunkt <b>\"Simuföhr beenden...\"</b> um diese Meldung in Zukunft zu vermeiden.</i>";
 	public static Object[]	restoreProjectOptions 			= new String[] {"Wiederherstellen", "Nein, danke!"};
-	public static String	overwrite_1 					= "Es existiert bereits eine Datei mit dem Namen \"";
+	public static String	overwrite_1 					= "Es existiert bereits eine Datei mit dem Namen \n\"";
 	public static String	overwrite_2 					= "\"\n\nWollen Sie die Datei überschreiben?";
 	public static String	overwriteTitle 					= "Datei überschreiben?";
 	
@@ -159,16 +160,16 @@ public class Lang {
 	
 	// Export
 	
-	public static String	exportMenu 			= "Maße exportieren...";
-	public static String	measureSheetTitle 	= "Projekt:";
-	public static String	exportRoomName 		= "Raum:";
-	public static String	exportWallName 		= "Wand:";
-	public static String	exportWallMeasures 	= "Wandmaß (mm):";
-	public static String	exportDate			= "Stand:";
-	public static String	exportListTitle	    = "Hängung-Listenansicht: (horizontal x vertikal in mm)";
-	public static String	exportSuccess_1		= "Die Vermaßungsdatei wurde erfolgreich exportiert.\n\nSie befindet sich in Projektordner unter\n";
-	public static String	exportSuccess_2		= "";
-	public static String 	busyRenderingPreviewToFile = "Speichere Vorschau";
+	public static String	exportMenu 					= "Maße exportieren...";
+	public static String	measureSheetTitle 			= "Projekt:";
+	public static String	exportRoomName 				= "Raum:";
+	public static String	exportWallName 				= "Wand:";
+	public static String	exportWallMeasures 			= "Wandmaß (mm):";
+	public static String	exportDate					= "Stand:";
+	public static String	exportListTitle	    		= "Hängung-Listenansicht: (horizontal x vertikal in mm)";
+	public static String	exportSuccess_1				= "Die Vermaßungsdatei wurde erfolgreich exportiert.\n\nSie befindet sich in Projektordner unter\n";
+	public static String	exportSuccess_title			= "Datei gespeichert";
+	public static String 	busyRenderingPreviewToFile 	= "Speichere Vorschau";
 
 	
 	// Errors
@@ -182,7 +183,7 @@ public class Lang {
 	public static String	err_loadingJpg				= "Beim laden des Bildes ist ein Fehler aufgetreten.";
 	
 	
-	public static String 	deleteMessage_1 			= "Wollen Sie folgende Kunstwerke wirklich löschen?\n" +
+	public static String 	deleteMessage_1 			= "\nWollen Sie folgende Kunstwerke wirklich löschen?\n" +
 															"Beachten Sie dass das Projekt dabei gesichert werden muss.\n";
 	public static String 	deleteMessage_2				= "\n\nProjekt jetzt sichern und Kunstwerke löschen?";
 	public static String 	deleteTitle 				= "Kunstwerke löschen...";

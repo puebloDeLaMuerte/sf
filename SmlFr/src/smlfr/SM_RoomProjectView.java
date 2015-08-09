@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.JColorChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -564,7 +565,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 				if( w.getWidth() < myRoom.getArtworkFromBase(name).getTotalWidth()  ) {
 					
 //					int i = javax.swing.JOptionPane.showConfirmDialog(this, Lang.artworkTooBigForWall_1 + myRoom.getArtworkFromBase(name).getWidth() + Lang.artworkTooBigForWall_2 + w.getWidth() + Lang.artworkTooBigForWall_3);
-					javax.swing.JOptionPane.showMessageDialog(this, Lang.artworkTooBigForWall_1 + myRoom.getArtworkFromBase(name).getTotalWidth() + Lang.artworkTooBigForWall_2 + w.getWidth() + Lang.artworkTooBigForWall_3, "Artwork doesn't fit!", javax.swing.JOptionPane.OK_OPTION);
+					javax.swing.JOptionPane.showMessageDialog(this, Lang.artworkTooBigForWall_1 + myRoom.getArtworkFromBase(name).getTotalWidth() + Lang.artworkTooBigForWall_2 + w.getWidth() + Lang.artworkTooBigForWall_3, Lang.artworkTooBig_title, javax.swing.JOptionPane.OK_OPTION, base.getWarningIcon());
 					bgg = 0;
 					bgb = 0;
 					dtde.rejectDrop();
@@ -749,7 +750,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		} else if( e.getActionCommand().equalsIgnoreCase(Lang.saveProject)){
 			boolean saved = myRoom.requestSave();
 			
-			if(saved) javax.swing.JOptionPane.showMessageDialog(null, Lang.saved);
+			if(saved) javax.swing.JOptionPane.showMessageDialog(null, Lang.saved, "", JOptionPane.INFORMATION_MESSAGE, (Icon)base.getIcon());
+			
 			
 		} else if( e.getActionCommand().equalsIgnoreCase(Lang.exportMenu)){
 			

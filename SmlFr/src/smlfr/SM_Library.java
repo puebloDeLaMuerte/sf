@@ -381,7 +381,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		}
 		message += Lang.deleteMessage_2;
 		
-		int decide = JOptionPane.showConfirmDialog(this, message, Lang.deleteTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		int decide = JOptionPane.showConfirmDialog(this, message, Lang.deleteTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, fm.getQuestionIcon());
 		if( decide == 0) {
 			
 			for(SM_Artwork aw : aws) {

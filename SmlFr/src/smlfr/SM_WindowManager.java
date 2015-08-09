@@ -73,7 +73,7 @@ public class SM_WindowManager{
 		if( state == progState.PROJECT && _requestedState == progState.ROOM    ) {
 			
 			if(fm.isSaveDirty()) {						
-				int decide = javax.swing.JOptionPane.showOptionDialog(null, Lang.unsavedChanges, Lang.unsavedChangesTitle, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.DEFAULT_OPTION, base.getIcon(), Lang.yesNoCancelOptions, 0);
+				int decide = javax.swing.JOptionPane.showOptionDialog(null, Lang.unsavedChanges, Lang.unsavedChangesTitle, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.DEFAULT_OPTION, base.getQuestionIcon(), Lang.yesNoCancelOptions, 0);
 				switch (decide) {
 				case 0:
 					return;

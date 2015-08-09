@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -26,17 +27,19 @@ public class NewProjectDialog extends JOptionPane {
 	String[] rooms;
 	String[] realNames;
 	
-	public NewProjectDialog(String[] rooms, String[] realNames) {
+	ImageIcon icon;
+	
+	public NewProjectDialog(String[] rooms, String[] realNames, ImageIcon icon) {
 		
 		this.rooms = rooms;
 		this.realNames = realNames;
-		
+		this.icon = icon;
 		
 	}
 
 	public int showDialog() {
 		
-		int r =  super.showOptionDialog(null, makePanel(), Lang.newProjectNameTitle, OK_CANCEL_OPTION, QUESTION_MESSAGE, null, getOptions(), 0);
+		int r =  super.showOptionDialog(null, makePanel(), Lang.newProjectNameTitle, OK_CANCEL_OPTION, QUESTION_MESSAGE, icon, getOptions(), 0);
 		return r;
 	}
 	

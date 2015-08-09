@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import com.sun.tools.javac.comp.Todo;
 import com.sun.xml.internal.bind.v2.TODO;
@@ -483,9 +484,7 @@ public class SM_Room {
 		export.dispose();
 		export = null;
 		
-		javax.swing.JOptionPane.showMessageDialog(null, Lang.exportSuccess_1 + ".../"+base.fm.getProjectName()+"/export/"+myRealName+".pdf");
-		
-		
+		javax.swing.JOptionPane.showMessageDialog(null, Lang.exportSuccess_1 + ".../"+base.fm.getProjectName()+"/export/"+myRealName+".pdf", Lang.exportSuccess_title,  JOptionPane.INFORMATION_MESSAGE, base.getIcon());
 	}
 
 	public File getExportPath() {
