@@ -267,6 +267,12 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		loadMissingAWGraphics();
 		
 		
+		if( isValidDrag() ) {
+			frameRate(35);
+		} else {
+			frameRate(15);
+		}
+		
 		background(230);
 
 	
@@ -298,46 +304,46 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 		
 		
-		// DRAW Artwork drag
-		
-		if( awOver != null && isValidDrag() ) {
-			
-			SM_Artwork[] dragAws;
-			if( !awOver.isSelected() ) {
-				dragAws = new SM_Artwork[1];
-				dragAws[0] = awOver;
-			} else {
-				dragAws = getSelectedArtworks();
-			}
-			
-			PVector referencePos = wptos(awOver.getTotalWallPos()[0], awOver.getTotalWallPos()[1], scale);
-			
-			for(SM_Artwork a : dragAws) {
-				
-				PVector thisPos	= wptos(a.getTotalWallPos()[0], a.getTotalWallPos()[1], scale);
-				
-				thisPos.sub(referencePos);
-			
-				PVector wh = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), scale);
-				
-				float y;
-				if( shiftLoc ) {
-					y = wptos(0,a.getTotalWallPos()[1], scale).y - thisPos.y;
-				} else {
-					y = mouseY+awDragOfset.y;
-				}
-				
-				thisPos.x += mouseX+awDragOfset.x;
-				thisPos.y += y;
-				
-				pushStyle();
-				noFill();
-				rect(thisPos.x, thisPos.y, wh.x, wh.y);
-				popStyle();
-			}
-			
-			
-		}
+//		// DRAW Artwork drag
+//		
+//		if( awOver != null && isValidDrag() ) {
+//			
+//			SM_Artwork[] dragAws;
+//			if( !awOver.isSelected() ) {
+//				dragAws = new SM_Artwork[1];
+//				dragAws[0] = awOver;
+//			} else {
+//				dragAws = getSelectedArtworks();
+//			}
+//			
+//			PVector referencePos = wptos(awOver.getTotalWallPos()[0], awOver.getTotalWallPos()[1], scale);
+//			
+//			for(SM_Artwork a : dragAws) {
+//				
+//				PVector thisPos	= wptos(a.getTotalWallPos()[0], a.getTotalWallPos()[1], scale);
+//				
+//				thisPos.sub(referencePos);
+//			
+//				PVector wh = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), scale);
+//				
+//				float y;
+//				if( shiftLoc ) {
+//					y = wptos(0,a.getTotalWallPos()[1], scale).y - thisPos.y;
+//				} else {
+//					y = mouseY+awDragOfset.y;
+//				}
+//				
+//				thisPos.x += mouseX+awDragOfset.x;
+//				thisPos.y += y;
+//				
+//				pushStyle();
+//				noFill();
+//				rect(thisPos.x, thisPos.y, wh.x, wh.y);
+//				popStyle();
+//			}
+//			
+//			
+//		}
 		
 		// DRAW selected
 		
@@ -391,7 +397,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		float drawScale;
 		
-//		wlGfxReady = false;
 		loadMissingAWGraphics();
 		
 		PGraphics gfx;
@@ -442,67 +447,198 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				}
 				
 				
+				PImage aa;
+				
+// ----->   	// if the artwork is not being draged around right now, draw it
+				
+				if ( !( (a.isSelected() || a == awOver) && isValidDrag()) || ( a!=awOver && !awOver.isSelected()) ) {
+					
+					
+					// draw frame
+					if (a.hasFrame()) {
+						gfx.image(a.getFrameGfx(), totalPos.x, totalPos.y,
+								totalSize.x, totalSize.y);
+					}
+
+					// draw ppt
+					if (a.hasPassepartout()) {
+						gfx.noStroke();
+						gfx.pushStyle();
+						if (isValidDrag() && a.isSelected()) {
+							gfx.fill(200, 190, 170, 75);
+						} else {
+							gfx.fill(200, 190, 170, 255);
+						}
+						gfx.rect(pptPos.x, pptPos.y, pptSize.x, pptSize.y);
+						gfx.popStyle();
+					}
+
+					// draw artwork
+					aa = a.getGfx();
+					if (aa != null) {
+						gfx.image(aa, artworkPos.x, artworkPos.y,
+								artworkSize.x, artworkSize.y);
+					} else {
+						System.err
+								.println("ES WÄHRE DA GEWESEN, in WallArrangementView, nämlich!");
+					}
+					g.removeCache(gfx);
+				}
+				
+					
+				
+				
 				// make transparent if drag
 				
-				gfx.fill(230,230,230,100);
+//				gfx.fill(230,230,230,100);
+//				
+//				if( isValidDrag() ) {
+//					
+//					if( awOver != null && !awOver.isSelected() ) {
+//						
+//						if( a == awOver ) {
+//							gfx.tint(255,75);
+//						} else {
+//							gfx.tint(255,255);
+//						}
+//						
+//					} else {
+//						
+//						if( a.isSelected() ) {
+//							gfx.tint(255,75);
+//						} else {
+//							gfx.tint(255,255);
+//						}
+//						
+//					}
+//				} else {
+//					gfx.tint(255, 255);
+//				}
 				
-				if( isValidDrag() ) {
+				
+				
+				
+				
+				
+				// DRAW Artwork drag
+				
+				if( awOver != null && isValidDrag() ) {
 					
-					if( awOver != null && !awOver.isSelected() ) {
-						
-						if( a == awOver ) {
-							gfx.tint(255,75);
-						} else {
-							gfx.tint(255,255);
-						}
-						
+					SM_Artwork[] dragAws;
+					if( !awOver.isSelected() ) {
+						dragAws = new SM_Artwork[1];
+						dragAws[0] = awOver;
 					} else {
+						dragAws = getSelectedArtworks();
+					}
+					
+					PVector referencePos = wptos(awOver.getTotalWallPos()[0], awOver.getTotalWallPos()[1], scale);
+//					PVector referencePosPpt = wptos(awOver.getPptWallPos()[0], awOver.getPptWallPos()[1], scale);
+//					PVector referencePosAw = wptos( awOver.getArtworkWallPos()[0], awOver.getArtworkWallPos()[1], scale);
+					
+					for(SM_Artwork da : dragAws) {
 						
-						if( a.isSelected() ) {
-							gfx.tint(255,75);
+						PVector thisPos	= wptos(da.getTotalWallPos()[0], da.getTotalWallPos()[1], scale);
+						
+						thisPos.sub(referencePos);
+						
+//						tmpPos = a.getTotalWallPos();
+//						totalPos = wptos( new PVector(tmpPos[0], tmpPos[1]), drawScale );
+
+						totalSize = astos( new PVector(da.getTotalWidth(), da.getTotalHeight()), drawScale);
+						
+						
+//						tmpPos2 = da.getPptWallPos();
+						pptPos = wptos( da.getPptWallPos()[0], da.getPptWallPos()[1], drawScale );
+						pptPos.sub(referencePos);
+						
+						tmpPos3= da.getPptSize();
+						pptSize = astos(new PVector(tmpPos3[0], tmpPos3[1]), drawScale);
+						
+//						tmpPos4 = da.getArtworkWallPos();
+						artworkPos = wptos( da.getArtworkWallPos()[0], da.getArtworkWallPos()[1], drawScale );
+						artworkPos.sub(referencePos);
+						
+						tmpPos5 = da.getArtworkSize();
+						artworkSize = astos(new PVector(tmpPos5[0], tmpPos5[1]), drawScale);
+						
+					
+						PVector wh = astos( new PVector(da.getTotalWidth(), da.getTotalHeight()), scale);
+						
+						float yt, yp, ya;
+						if( shiftLoc ) {
+							yt = wptos(0,da.getTotalWallPos()[1], scale).y - thisPos.y;
+							yp = wptos(0,da.getPptWallPos()[1], scale).y - pptPos.y;
+							ya = wptos(0,da.getArtworkWallPos()[1], scale).y - artworkPos.y;
 						} else {
-							gfx.tint(255,255);
+							yt = mouseY+awDragOfset.y;
+							yp = mouseY+awDragOfset.y;
+							ya = mouseY+awDragOfset.y;
+							
 						}
+						
+						thisPos.x += mouseX+awDragOfset.x;
+						thisPos.y += yt;
+						
+						pptPos.x += mouseX+awDragOfset.x;
+						pptPos.y += yp;
+						
+						artworkPos.x += mouseX+awDragOfset.x;
+						artworkPos.y += ya;
+						
+						pushStyle();
+						noFill();
+//						rect(thisPos.x, thisPos.y, wh.x, wh.y);
+						popStyle();
+						
+						
+						
+						
+						// draw frame
+						
+						if(da.hasFrame()) {
+							gfx.image(da.getFrameGfx(), thisPos.x, thisPos.y, totalSize.x, totalSize.y);
+						}
+						
+						// draw ppt
+						
+						if(da.hasPassepartout()) {
+							gfx.noStroke();
+							gfx.pushStyle();
+							if(  isValidDrag() && da.isSelected() ) {
+								gfx.fill(200,190,170,75);
+							} else {						
+								gfx.fill(200,190,170,255);
+							}
+							gfx.rect(pptPos.x, pptPos.y, pptSize.x, pptSize.y);
+							gfx.popStyle();
+						}
+						
+						// draw artwork
+						aa = da.getGfx();
+						
+						if (aa != null) {
+							gfx.image(aa, artworkPos.x, artworkPos.y, artworkSize.x,
+									artworkSize.y);
+						} else {
+							System.err.println("ES WÄHRE DA GEWESEN, in WallArrangementView, nämlich!");
+						}
+						g.removeCache(gfx);
+						
+						
 						
 					}
-				} else {
-					gfx.tint(255, 255);
-				}
 					
+					
+				}
 				
-				int shadowFact = 5;
+				
+				
+				
+				
+				
 				
 
-				// draw frame
-				
-				if(a.hasFrame()) {
-					gfx.image(a.getFrameGfx(), totalPos.x, totalPos.y, totalSize.x, totalSize.y);
-				}
-				
-				// draw ppt
-				
-				if(a.hasPassepartout()) {
-					gfx.noStroke();
-					gfx.pushStyle();
-					if(  isValidDrag() && a.isSelected() ) {
-						gfx.fill(200,190,170,75);
-					} else {						
-						gfx.fill(200,190,170,255);
-					}
-					gfx.rect(pptPos.x, pptPos.y, pptSize.x, pptSize.y);
-					gfx.popStyle();
-				}
-				
-				// draw artwork
-				PImage aa = a.getGfx();
-				
-				if (aa != null) {
-					gfx.image(aa, artworkPos.x, artworkPos.y, artworkSize.x,
-							artworkSize.y);
-				} else {
-					System.err.println("ES WÄHRE DA GEWESEN, in WallArrangementView, nämlich!");
-				}
-				g.removeCache(gfx);
 
 				
 				
