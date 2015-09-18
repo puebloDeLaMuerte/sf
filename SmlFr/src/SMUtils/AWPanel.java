@@ -1,7 +1,11 @@
 package SMUtils;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -9,12 +13,16 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.Border;
@@ -27,7 +35,7 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 	 * 
 	 */
 	private static final long serialVersionUID = -1502344721307357946L;
-	private boolean isHighlighted;
+	private boolean isHighlighted, isShiftKeyPressed;
     private Border blackBorder = BorderFactory.createLineBorder(Color.BLACK,0);
     private Border redBorder = BorderFactory.createLineBorder(Color.BLACK,5);
 
@@ -37,8 +45,12 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
     
     private JPopupMenu menu;
     private MeasureMenuItem measurements, remove;
+    private ActionListener listener;
+    private JLabel walltxt; 
     
     public AWPanel(ActionListener ls, SM_Artwork _s) {
+    	
+    	setKeyListening();
         addMouseListener(this);
         setBorder(blackBorder);
         setFocusable(true);
@@ -54,11 +66,38 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 
 		measurements.addActionListener(ls);
 		remove.addActionListener(ls);
+		listener = ls;
 		
 		menu.add(remove);
 		menu.add(measurements);
 		this.add(menu);
     }
+    
+    private void setKeyListening() {
+    	KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+
+    		@Override
+    		public boolean dispatchKeyEvent(KeyEvent ke) {
+    			synchronized (this) {
+    				switch (ke.getID()) {
+    				case KeyEvent.KEY_PRESSED:
+    					if (ke.getKeyCode() == KeyEvent.VK_SHIFT) {
+    						isShiftKeyPressed = true;
+    					}
+    					break;
+
+    				case KeyEvent.KEY_RELEASED:
+    					if (ke.getKeyCode() == KeyEvent.VK_SHIFT) {
+    						isShiftKeyPressed = false;
+    					}
+    					break;
+    				}
+    				return false;
+    			}
+    		}
+    	});
+    }
+    
     
     public String getArtist() {
     	return myArtwork.getArtis();
@@ -85,8 +124,25 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
     	return s[0] * s[1];
     }
 
-    public void setToolTipText() {
+    public void setWallIndicatorText(Font font) {
+    	
     	super.setToolTipText(myArtwork.getWallHumanReadable());
+    	
+    	String wlStrg = myArtwork.getWallHumanReadable();
+    	
+    	
+    	if( wlStrg != null) {
+    		if( walltxt == null ) {
+    			walltxt = new JLabel("<html><p>"+wlStrg+"</p></html>");
+    			walltxt.setFont(font);
+    			this.add(walltxt);
+
+    		}
+    		walltxt.setText("<html><font color=white><p>"+wlStrg+"</p></html>");
+    	} else {
+    		this.remove(walltxt);
+    		walltxt = null;
+    	}
     }
 
 
@@ -118,17 +174,26 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 		
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			
+			if( ! isShiftKeyPressed ) {
+				listener.actionPerformed(new ActionEvent(this, -1, "deselectAll"));
+			}
+
 			isHighlighted = !isHighlighted;
 			if (isHighlighted)
 				setBorder(redBorder);
 			else
 				setBorder(blackBorder);
+			
 		} else if (e.getButton() == MouseEvent.BUTTON3) {
 			
 			menu.show(this, 30, 30);
 		}
 	}
 	
+	public void deselect() {
+		isHighlighted = false;
+		setBorder( blackBorder );
+	}
 
 	@Override
 	public void dragGestureRecognized(DragGestureEvent dge) {

@@ -202,6 +202,8 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 
 		JLabel imgLbl = new JLabel(icn);
 		imgLbl.setMinimumSize(new Dimension(50,50));
+		imgLbl.setPreferredSize(new Dimension(50,50));
+		imgLbl.setMaximumSize(new Dimension(50,50));
 		
 		JLabel ntxt = new JLabel(awName);
 		ntxt.setFont(font);
@@ -223,19 +225,21 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		
 		AWPanel panel = new AWPanel(this, artworks.get(awName));
 		panel.setLayout(new FlowLayout( FlowLayout.LEFT, 2,2 ));
-		if(artworks.get(awName).getWall() != null ) {
-			panel.setBackground(Color.LIGHT_GRAY);
-			panel.setToolTipText();
-		} else {
-			panel.setBackground(standartColor);
-		}
+//		panel.setLayout(new BorderLayout(2, 2));
 		panel.setPreferredSize(new Dimension(labelX,labelY));
+
 		panel.add(imgLbl);
 		panel.add(ntxt);
 		panel.add(atxt);
 		panel.add(ttxt);
 		panel.add(stxt);
 		
+		if(artworks.get(awName).getWall() != null ) {
+			panel.setBackground(Color.LIGHT_GRAY);
+			panel.setWallIndicatorText(font);
+		} else {
+			panel.setBackground(standartColor);
+		}
 		
 		artworksPanel.add(panel);
 		panels.put(awName,panel);
@@ -320,11 +324,11 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 			
 			if(artworks.get(e.getName()).getWall() == null) {
 				panels.get(e.getName()).setBackground(standartColor);
-				panels.get(e.getName()).setToolTipText();
+				panels.get(e.getName()).setWallIndicatorText(font);
 			}
 			else {
 				panels.get(e.getName()).setBackground(Color.lightGray);
-				panels.get(e.getName()).setToolTipText();
+				panels.get(e.getName()).setWallIndicatorText(font);
 			}
 			
 			break;
@@ -347,6 +351,10 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 				
 			fm.requestImport();
 		}
+		if(e.getActionCommand().equalsIgnoreCase("deselectAll")) {
+						
+			deselectAllArtworks(((AWPanel)e.getSource()).getInvNr());
+		}
 		if (e.getSource() == sort) {
 			sortAWPanels();
 		}
@@ -360,7 +368,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 			if( e.getActionCommand() == Lang.editMeasurements) {
 									
 				MeasureMenuItem i = (MeasureMenuItem)e.getSource();
-				SMUtils.ArtworkMeasurementChooser awc = new SMUtils.ArtworkMeasurementChooser(this, i.getArtwork());
+				new SMUtils.ArtworkMeasurementChooser(this, i.getArtwork());
 				
 			} else if( e.getActionCommand() == Lang.RemoveArtwork) {
 				
@@ -431,6 +439,19 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		return returnArray;
 	}
 
+	public void deselectAllArtworks(String exceptThis) {
+		
+		SM_Artwork[] sel = getSelectedArtworks();
+		
+		for( SM_Artwork a : sel ) {
+			
+			String as = a.getName();			
+			if( as != exceptThis) {
+				panels.get(as).deselect();
+			}
+		}
+	}
+	
 	public void updateArtworksMap(HashMap<String, SM_Artwork> _artworks) {
 		artworks = _artworks;
 	}
