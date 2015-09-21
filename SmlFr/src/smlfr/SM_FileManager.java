@@ -432,10 +432,9 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 		}
 		
+		// early exit:
 		if( projectName == null || _selectedRooms.length == 0) return null;
-		
-		System.out.println("the NAME NEAM NESM NESAM  ----->> "+projectName);
-		
+				
 		
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fc.setMultiSelectionEnabled(false);
@@ -444,29 +443,42 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		if( i == JFileChooser.APPROVE_OPTION) {
 
-			System.out.println( "schau genau hier!  ::--->>"+fc.getSelectedFile());
+			File selected = fc.getSelectedFile();
 			
-			File projectFileSaveLoc = new File(fc.getSelectedFile()+"/"+projectName);
-			File artLibSaveLocation = new File(fc.getSelectedFile()+"/"+projectName+"/"+projectName+"_lib");
+			if( selected == null ) {
+				
+				selected = fc.getCurrentDirectory();
+			}
 			
-			System.out.println("projectFileSaveLoc: "+projectFileSaveLoc.getAbsolutePath());
-			System.out.println("artLibSaveLocation: "+artLibSaveLocation.getAbsolutePath());
+			// early exit:
+			if( selected == null ) return null;
+			
+			File projectFileSaveLoc = new File(selected+"/"+projectName);
+			File artLibSaveLocation = new File(selected+"/"+projectName+"/"+projectName+"_lib");
+			
+			System.out.println("NEW: projectFileSaveLoc: "+projectFileSaveLoc.getAbsolutePath());
+			System.out.println("NEW: artLibSaveLocation: "+artLibSaveLocation.getAbsolutePath());
 			
 
 
 			JSONObject theNewProj = creator.makeNewProjectFile(projectName, _selectedRooms);
 			String[] importedAws;
 
-			int q = javax.swing.JOptionPane.showOptionDialog(null, Lang.importNowTitle, Lang.importNow, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, base.getIcon(), Lang.importNowBtns, 2);
-
+			
+			int q = -1;
+			
+			while( q == -1 ) {
+				q = javax.swing.JOptionPane.showOptionDialog(null, Lang.importNowTitle, Lang.importNow, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, base.getIcon(), Lang.importNowBtns, 2);
+			}
+			
 			switch (q) {
 			case 0:
-				System.out.println("NEIN GESAGT!");
 				break;
 			case 1:
 				
 				importedAws = base.in.batchImport(artLibSaveLocation, false);
 				
+				// early exit:
 				if( importedAws == null ) return null;
 				
 				JSONArray lib = new JSONArray();
@@ -481,7 +493,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			default:
 				break;
 			}
-			
+
 			String pFileName = projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp";
 			System.out.println("THE PROJECT WILL BE SAVED AS: "+pFileName);
 			
@@ -490,7 +502,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 			updatePrefs("fileChooserCurrentDirectory", projectFileSaveLoc.getAbsolutePath());
 
-			return new File(projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp");
+			return new File(pFileName);
 			
 		} else {
 			return null;

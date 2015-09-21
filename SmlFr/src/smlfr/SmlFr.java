@@ -27,11 +27,9 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 
 	
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -4943542664716794448L;
-	public static final String versionString = "1.0.2";
+	public static final String versionString = "1.0.3";
 	
 	
 	// Modules
@@ -306,9 +304,6 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 		return artworks.get(key);
 	}
 	
-	public void sayHi() {
-		
-	}
 
 	public ImageIcon getIcon() {
 		return icon;
