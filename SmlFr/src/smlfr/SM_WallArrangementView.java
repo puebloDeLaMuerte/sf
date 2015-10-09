@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import javax.swing.Box;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
@@ -997,6 +998,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			SM_Artwork aw = myWall.getArtworks().get(a);
 			if( ! aw.hasGfx() ) {
 				aw.setGfx( loadImage(aw.getFilePath().getAbsolutePath())  );
+			}
+			if( ! aw.hasGfx() ) {
+				String msg = Lang.noGraphicsfound +"\n " + aw.getName();
+				JOptionPane.showConfirmDialog(this, msg, Lang.err_loadImageFile, JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, base.warn);
 			}
 		}
 		

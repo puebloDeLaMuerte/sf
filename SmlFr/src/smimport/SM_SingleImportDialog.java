@@ -40,7 +40,7 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 	private JTextField					TF_invNr, TF_title, TF_artist, TF_imageLocation;
 	private JLabel						L_invNr, L_title, L_artist, L_imageFile, L_width, L_height, L_artworkMeasure, L_frameMeasure, L_pptMeasure;
 	private JFormattedTextField			NF_artworkWidth, NF_artworkHeight, NF_frameWidth, NF_frameHeight, NF_pptWidth, NF_pptHeight;
-	private JButton						okBtn, cancelBtn, browseBtn, batchBtn;
+	private JButton						okBtn, cancelBtn, browseBtn, batchBtn, collectionButton;
 	
 	private JFileChooser				fc;
 	
@@ -153,6 +153,9 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		browseBtn.addActionListener(this);
 		batchBtn = new JButton(Lang.batchImport);
 		batchBtn.addActionListener(this);
+		collectionButton = new JButton( Lang.importCollection );
+		collectionButton.addActionListener(this);
+		collectionButton.setEnabled(true);
 		
 		// do Layout
 		
@@ -271,6 +274,7 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		
 		JPanel btnPanel = new JPanel();
 		
+		btnPanel.add(collectionButton);
 		btnPanel.add(batchBtn);
 		btnPanel.add(cancelBtn);
 		btnPanel.add(okBtn);
@@ -359,7 +363,14 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		
+		if( e.getSource() == cancelBtn) {
+			
+			this.setVisible(false);
+			
+			// return early
+			return;
+		}
+		else
 		if( e.getSource() == okBtn ) {
 			
 			if( !parent.checkAlreadyInProject( TF_invNr.getText()) ) {
@@ -372,12 +383,12 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 			}
 			
 		} else
-		if( e.getSource() == cancelBtn) {
+		if( e.getSource() == batchBtn) {
 			
 			this.setVisible(false);
-		}
-		else
-		if( e.getSource() == batchBtn) {
+			parent.batchImport(artLibrarySaveLocation, false);
+		}else
+		if( e.getSource() == collectionButton ) {	
 			
 			this.setVisible(false);
 			parent.batchImport(artLibrarySaveLocation, true);
@@ -389,6 +400,8 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 			TF_imageLocation.setText(fc.getSelectedFile().getAbsolutePath());
 		}
 	}
+
+
 
 	private void evaluateAndSetOkBtn() {
 

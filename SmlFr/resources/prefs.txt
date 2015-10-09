@@ -1,9 +1,10 @@
 {
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/Desktop/ffff/test/test.sfp",
-    "projectName": "test"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/hanswurst/hanswurst.sfp",
+    "projectName": "hanswurst"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/test",
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/hanswurst",
   "midHeight": 1500,
-  "museumData": "MuKuDeWe.sfm"
+  "museumData": "MuKuDeWe.sfm",
+  "collectionPath": "/Users/philipptoegel/git/SimulFöhr/SmlFr/collections/Sammlung_MKDW/Sammlung_MKDW.xls"
 }

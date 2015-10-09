@@ -37,10 +37,18 @@ public class SM_Artwork {
 	private boolean			hasFrameGfx;
 
 	private boolean			selected = false;
+	private boolean 		collection = false;
 
 	SM_Artwork(JSONObject _j, File _path, SM_Frames _frames) {
 		myPath = _path;
 		frames = _frames;
+		
+		// check if isCollection flag exists in file
+		try {
+			collection = _j.getBoolean("isCollection");
+		} catch (Exception e) {
+			collection = false;
+		}
 		
 		artist = _j.getString("artist");
 		title = _j.getString("title");
@@ -125,6 +133,10 @@ public class SM_Artwork {
 
 	
 	// getters setters
+	
+	public boolean isCollection() {
+		return collection;
+	}
 	
 	public boolean isSelected() {
 		return selected;

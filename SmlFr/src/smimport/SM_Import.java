@@ -1,7 +1,9 @@
 package smimport;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ import SMUtils.FrameStyle;
 import SMUtils.Lang;
 
 import smlfr.SM_FileManager;
+import smlfr.SM_Wall;
+import smlfr.SM_WallArrangementView;
 import smlfr.SmlFr;
 
 public class SM_Import extends PApplet  {
@@ -27,8 +31,10 @@ public class SM_Import extends PApplet  {
 	 * 
 	 */
 	private static final long serialVersionUID = -3888359190816520969L;
-//	private SmlFr		 			base;
+	
+	private SmlFr		 			base;
 	private JFileChooser			chooser;
+	private ImportGui				gui;
 
 	
 	private SM_FileManager		 	fm;
@@ -40,10 +46,11 @@ public class SM_Import extends PApplet  {
 	private final int thumbSize = 50;
 
 	public SM_Import (SM_FileManager _fm, SmlFr _base) {
-//		base = _base;
+		
 		fm = _fm;
-		ex = new SM_EXCELReader();
+		ex = new SM_EXCELReader(_base);
 		cr = new SM_JSONCreator(fm);
+		base = _base;
 		
 		chooser = new JFileChooser(new File("."));
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -99,7 +106,7 @@ public class SM_Import extends PApplet  {
 			if( frameSize.length > 0 ) frameStyle = FrameStyle.STANDART;
 			else frameStyle = FrameStyle.NONE;
 			
-			JSONObject aw = cr.makeNewArtworkFile(invNr, artist, title, size, frameSize, pptSize, frameStyle);
+			JSONObject aw = cr.makeNewArtworkFile(invNr, artist, title, size, frameSize, pptSize, frameStyle, false, null);
 			
 			// load Artwork Image
 			
@@ -134,28 +141,40 @@ public class SM_Import extends PApplet  {
 		}
 	}
 	
-	public String[] batchImport(File _artLibSaveLocation, boolean intoExistingProject) {
-		
-		
-		JFrame pan = new JFrame();
-		JTextArea txt = new JTextArea(Lang.importPleaseWait);
-		pan.setBackground(Color.LIGHT_GRAY);
-		pan.add(txt);
-		pan.setSize(250, 80);
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		pan.setLocation(dim.width/2 - 175, dim.height/2-40);
-		pan.setVisible(true);
+	public String[] batchImport(File _artLibSaveLocation, boolean _collection) {
 
-		System.out.println("will import artworks to this location: "+_artLibSaveLocation.getAbsolutePath());
 		
-		File excelLocation = ex.loadExcelData();
+		gui = initImportGui();
+		
+//		JFrame pan = new JFrame();
+//		JTextArea txt = new JTextArea(Lang.importPleaseWait);
+//		pan.setBackground(Color.LIGHT_GRAY);
+//		pan.add(txt);
+//		pan.setSize(250, 80);
+//		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+//		pan.setLocation(dim.width/2 - 175, dim.height/2-40);
+//		pan.setVisible(true);
+		
+		gui.setTitle("initializing file...");
+
+		
+		File excelLocation = ex.loadExcelData(_collection);
+				
 		
 		if(excelLocation == null ) {
-			pan.setVisible(false);
-			pan = null;
+			gui.setVisible(false);
+			gui = null;
 			return null;
 		}
 		
+		gui.setMax(ex.getExcelLength());
+				
+//		if( _collection ) {
+//			
+//			_artLibSaveLocation = new File(base.fm.getCollectionPath() + "/" + base.fm.getCollectionName() + "/imported");
+//		}
+
+		System.out.println("will import artworks to this location: "+_artLibSaveLocation.getAbsolutePath());
 		System.out.println("we got our exel from here\n we'll get the images from here!\n"+excelLocation.getAbsolutePath());
 
 
@@ -163,6 +182,8 @@ public class SM_Import extends PApplet  {
 		LinkedHashMap<String, JSONObject> importArtworks = new LinkedHashMap<String, JSONObject>();
 		ArrayList<String> unimportedArtworks = new ArrayList<String>();
 		ArrayList<String> sucessfulImports = new ArrayList<String>();
+		
+		gui.setTitle("importing data...");
 		
 		
 		int howmany = ex.getExcelLength();
@@ -209,7 +230,10 @@ public class SM_Import extends PApplet  {
 				/////    (it's the only value not needed to store in the json anyways....
 				////	 Michi Special!
 				
-				importArtworks.put(invNr, cr.makeNewArtworkFile(invNr, artist, title, size, frameSize, pptSize, frameStyle));
+				String colName = null;
+				if( _collection ) colName = base.fm.getCollectionName();
+				
+				importArtworks.put(invNr, cr.makeNewArtworkFile(invNr, artist, title, size, frameSize, pptSize, frameStyle, _collection, colName));
 			}
 			catch( Exception e ) {
 				e.printStackTrace();
@@ -221,6 +245,7 @@ public class SM_Import extends PApplet  {
 				non += e.getMessage();
 				unimportedArtworks.add(non);
 			}
+			gui.increaseCurrent(1);
 		}
 		
 		
@@ -229,6 +254,8 @@ public class SM_Import extends PApplet  {
 		///	  	Michi Special - normally the FileName would be gotten from		  \\\
 		//    	the Excel, and appear here as the KeySet();						   \\
 
+		gui.setTitle("loading files...");
+		gui.increaseMax(importArtworks.size());
 
 		for( String a : importArtworks.keySet() ) {
 			
@@ -244,9 +271,17 @@ public class SM_Import extends PApplet  {
 				
 				System.out.println("trying to load this image file: " + excelLocation.getAbsolutePath()+"/"+iNr+".png");
 				
+				gui.setStatus(iNr);
+				
 				// Load the Image
 				
 				File imgfolder = new File(excelLocation.getAbsolutePath());
+				
+//				if( !_collection ) {
+//					imgfolder = new File(excelLocation.getAbsolutePath());
+//				} else {
+//					imgfolder = new File(excelLocation.getAbsolutePath()+"/images");
+//				}
 				
 				PImage fullGfx = loadArtworkImage(imgfolder, iNr);   //  (Folder , Artwork Name without .extension);
 				
@@ -286,11 +321,10 @@ public class SM_Import extends PApplet  {
 				unimportedArtworks.add(non);
 				
 			}
-			
+			gui.increaseCurrent(1);
 		}
 		
-		pan.setVisible(false);
-		pan = null;
+		
 		
 		
 		// Message: Success
@@ -314,12 +348,46 @@ public class SM_Import extends PApplet  {
 
 		String[] returnArray = sucessfulImports.toArray(new String[sucessCount]);
 
-		if( intoExistingProject) {
-			fm.importedArtworksIntoProject( returnArray );
-		}
+		
+		fm.importedArtworksIntoProject( returnArray );
+		
+		gui.setTitle("finishing...");
+		gui.setStatus("");
+		gui.setVisible(false);
+		gui.frame.setVisible(false);
+		gui = null;
+		
 		return returnArray;
 	}
 	
+	private ImportGui initImportGui() {
+		
+		JFrame f = new JFrame();
+		f.setLayout(new BorderLayout());
+		
+
+		ImportGui gui = new ImportGui();
+		
+
+		
+		gui.frame = f;
+
+		gui.resize(gui.getSize());
+		gui.setPreferredSize(gui.getSize());
+		gui.setMinimumSize(gui.getSize());
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		gui.frame.setLocation(dim.width/2 - 175, dim.height/2-40);
+		gui.frame.setResizable(false);
+		gui.frame.add(gui);
+		gui.init();
+		gui.frame.pack();
+		gui.frame.setVisible(true);
+//		gui.frame.setLocation(0);
+//		wallArr.frame.setTitle(Lang.wall+" "+wallArr.getWallName().substring(wallArr.getWallName().lastIndexOf('_')+1));
+		
+		return gui;
+	}
+
 	private LinkedHashMap<String, int[]> measurementInputFormatToInternalFormat( int[] _tmpSize, int[] _tmpFrameSize, int[] _tmpPptSize  ) {
 		 
 

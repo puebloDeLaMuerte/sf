@@ -3,9 +3,11 @@ package smimport;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -15,10 +17,14 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 
+import smlfr.SmlFr;
+
 import SMUtils.Lang;
 
 public class SM_EXCELReader {
 
+	private SmlFr										base;
+	
 	private JPanel										pane;
 	private JFileChooser								chooser;
 
@@ -29,8 +35,9 @@ public class SM_EXCELReader {
 	private ArrayList<LinkedHashMap<String, String>> 	lines;
 
 
-	public SM_EXCELReader() {
+	public SM_EXCELReader( SmlFr base) {
 
+		this.base = base;
 
 		pane = new JPanel();
 		chooser = new JFileChooser(new File("."));
@@ -39,19 +46,65 @@ public class SM_EXCELReader {
 		chooser.setFileFilter(filter);
 	}
 
-	public File loadExcelData() {
+	public File loadExcelData(boolean fromCollection) {
 
-		chooser.setMultiSelectionEnabled(false);
-		chooser.setDialogTitle(Lang.whereIsExcelFile);
-		int returnVal = chooser.showOpenDialog( pane );
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			System.out.println("You chose to open this file: " +
-					chooser.getSelectedFile().getName());
-		} else return null;
+		File excelFile = null;
+		
+		
+		if (! fromCollection) {
+			chooser.setMultiSelectionEnabled(false);
+			chooser.setDialogTitle(Lang.whereIsExcelFile);
+			int returnVal = chooser.showOpenDialog(pane);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+				excelFile = chooser.getSelectedFile();
+			} else
+				excelFile = null;
+		} else {
+			
+			// check Excel properties			
+			
+			if( !base.fm.hasCollection() ) {
+				
+				
+				chooser.setMultiSelectionEnabled(false);
+				chooser.setDialogTitle(Lang.whereIsExcelFileForCollection);
+				chooser.setCurrentDirectory( base.fm.getCollectionFile() );
+				int returnVal = chooser.showOpenDialog(pane);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					
+					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+					excelFile = chooser.getSelectedFile();
+					
+				} else {
+					excelFile = null;
+					return null;
+				}
 
+			} else { // if it has a collection
+				
+//				File collFile = new File( "collections/" + base.fm.getCollectionName()+"/raw/"+base.fm.getCollectionName()+".xls");
+				File collFile = base.fm.getCollectionFile();
+				
+				if( collFile.exists() ) excelFile = collFile;
+				else {
+					JOptionPane.showConfirmDialog(null, Lang.collectionNotFound_1 + base.fm.getCollectionFile().getAbsolutePath() + Lang.collectionNotFound_2, Lang.warning, JOptionPane.CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
+					return null;
+				}
+			}
+			
+			
+			
+			// load exel from Collection
+//			excelFile = new File( base.fm.getCollectionURL() );
+		}
+		
+		if( excelFile == null ) return null;
+		
+		
 		FileInputStream stream = null;
 		try {
-			stream = new FileInputStream(chooser.getSelectedFile());
+			stream = new FileInputStream(excelFile);
 
 			fs = new POIFSFileSystem(stream);
 			wb = new HSSFWorkbook(fs);
@@ -139,7 +192,15 @@ public class SM_EXCELReader {
 				}
 			}
 		}
-		return chooser.getSelectedFile().getParentFile();
+		
+		if( fromCollection && !base.fm.hasCollection() && lines.size() > 0 ) {
+			
+			base.fm.updatePrefs("collectionPath", excelFile.getAbsolutePath());
+		}
+		
+
+		return excelFile.getParentFile();
+		
 	}
 
 	public String getInvNr(int _idx) {

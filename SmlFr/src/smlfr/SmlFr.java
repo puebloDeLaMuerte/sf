@@ -81,7 +81,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 			
 			fm = new SM_FileManager(this, warn);
 			wm = new SM_WindowManager(fm, this);
-			in = new SM_Import(fm, base);
+			in = new SM_Import(fm, this);
 			
 			frameGfxs = new SM_Frames();
 			fm.loadFrames(frameGfxs);

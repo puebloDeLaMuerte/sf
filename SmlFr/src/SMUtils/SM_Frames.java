@@ -18,7 +18,7 @@ public class SM_Frames {
 	private PImage frame_pomp_gold_and_black;
 
 	public void setFrameImg(FrameStyle _style, PImage _i) {
-
+	
 		switch (_style) {
 		case WOOD_DARK_BROWN:
 			frame_wood_dark_brown = _i;

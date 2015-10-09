@@ -1,8 +1,14 @@
 package SMUtils;
 
+import javax.swing.Icon;
+
 public class Lang {
 	
-	public enum langs {DE};
+	public enum langs {DE}
+
+
+	public static final Object CollectionNotFound = null;
+
 	
 	// misc
 	
@@ -20,12 +26,16 @@ public class Lang {
 	public static String 	couldntLoadMuseumData = 	"Die Museumsdaten konnten nicht geladen werden.\nDie Datei scheint beschädigt zu sein.";
 	public static String	couldntLoadProject_1 = 		"Das Projekt konnte nicht geladen werden.\nStellen Sie sicher dass sich die Datei ";
 	public static String	couldntLoadProject_2 = 		" in diesem Ordner befindet: \n";
-	public static String	couldntLoadArtwork = 		"Die folgenden Library-Dateien konnten nicht geladen werden.\nStellen Sie sicher, dass sich der Ordner mit dem\nSuffix \"_lib\" im selben Ordner wie die Projektadtei befindet.";
+	public static String	couldntLoadArtwork = 		"<html><body style='width: 300px'>Die folgenden Library-Dateien konnten nicht geladen werden. Stellen Sie sicher, dass sich der Ordner mit dem Suffix \"_lib\" im selben Ordner wie die Projektadtei befindet, und dass der Sammlungs_Ordner die korrekten Sammlungs-Dateien enthält.\nInventarnummer: ";
 	public static String	couldntImport_1 = 			"Diese Kunstwerke konnten leider nicht importiert werden:\n\n";
 	public static String	couldntImport_2 = 			"\nÜberprüfen Sie die Excel-Tabelle auf fehlerhafte Einträge" +
 														"\nund stellen Sie sicher, dass sich die angegebenen" +
 														"\nBildateien im selben Ordner mit der Tabelle befinden." +
 														"\n\nAlle übrigen Kunstwerke wurden erfolgreich importiert!";
+	public static String	collectionNotFound_1 =		"Die Sammlungs-Datei wurde nicht gefunden:\n\n\"";
+	public static String	collectionNotFound_2 =		"\"\n\nStellen Sie sicher, dass der Sammlungs-Ordner" +
+														"\nkorrekt benannt ist, und alle nötigen Dateien enthält." +
+														"\n(Excel Tabelle und Bilddateien)";
 	public static String	prevVersion_WallColor = 	"Diese Projektdatei wurde von einer früheren SimuFöhr Version erstellt. (v0.1.11 oder früher)" +
 														"In der aktuellen Version ist es möglich, die Wandfarbe zu editieren." +
 														"Die Wandfarbe wurde auf Weiß (255,255,255) gesetzt. Sie können diese nun ändern.";
@@ -56,9 +66,13 @@ public class Lang {
 	public static String 	unsavedChangesTitle 			= "Änderungen speichern?";
 	public static Object 	unsavedChanges 					= "Es wurden ungesicherte Änderungen vorgenommen,\nwollen Sie das Projekt jetzt speichern?";
 	public static String[]	yesNoCancelOptions 				= new String[] { "Abbrechen", "Nein", "Ja" };
-	public static String[]  importNowBtns 					= new String[] { "später", "Ja" };
-	public static String 	importNow 						= "Wollen Sie jetzt bereits Kunstwerke importieren,\noder ein leeres Projekt erstellen?";
-	public static Object 	importNowTitle 					= "Kunstwerke importieren?";
+	public static String[]  importNowBtns 					= new String[] { "später", "importieren" };
+	public static String 	importNow_1						= "Wollen Sie jetzt bereits Kunstwerke importieren,";
+	public static String 	importNow_2						= "oder ein leeres Projekt erstellen?";
+	public static String 	importNowTitle 					= "Kunstwerke importieren?";
+	public static String	importArtworks					= "nur Kunstwerke";
+	public static String	importColl						= "nur Sammlung";
+	public static String	importBoth						= "beides";
 	public static String	importPleaseWait			 	= "\n  Importiere Kunstwerke ...\n  Bitte haben Sie etwas Geduld.";
 	public static Object 	newProjectName 					= "Projektname:";
 	public static String 	newProjectNameTitle 			= "Neues Projekt...";
@@ -73,6 +87,8 @@ public class Lang {
 	public static String	saveProject 					= "Projekt sichern";
 	public static String	saved 							= "Projekt erfolgreich gespeichert.";
 	public static String	whereIsExcelFile 				= "Wo befindet sich die Excel-Tabelle?";
+	public static String 	whereIsExcelFileForCollection	= "Wählen Sie eine Sammlung:";
+
 	public static String	restoreProjectTitle 			= "Projekt Wiederherstellen?";
 	public static String	restoreProjectMessage 			= "\n<html><body style='width: 300px'><b>Es wurde eine Wiederherstellungsdatei für dieses Projekt gefunden!</b><br><br>Wurde SimuFöhr beim letzten mal unvorhergesehen beendet? Falls dies der Fall ist, haben Sie jetzt die Möglichkeit, unngesicherte Speicherstände der letzten Sitzung wiederherzustellen.<br><br><b>HINWEIS!</b><br><i>Bitte beenden Sie SimuFöhr immer über den Menüpunkt <b>\"Simuföhr beenden...\"</b> um diese Meldung in Zukunft zu vermeiden.</i>";
 	public static Object[]	restoreProjectOptions 			= new String[] {"Wiederherstellen", "Nein, danke!"};
@@ -155,6 +171,8 @@ public class Lang {
 	public static String	imageFile 			= "Bilddatei:";
 	public static String	browse 				= "durchsuchen...";
 	public static String	batchImport 		= "Aus Tabelle...";
+	public static String	importCollection	= "Sammlung importieren";
+	public static String 	includeCollection	= "Sammlung importieren";
 	
 	// Export
 	
@@ -185,7 +203,10 @@ public class Lang {
 															"Beachten Sie dass das Projekt dabei gesichert werden muss.\n";
 	public static String 	deleteMessage_2				= "\n\nProjekt jetzt sichern und Kunstwerke löschen?";
 	public static String 	deleteTitle 				= "Kunstwerke löschen...";
-	
+	public static String 	noGraphicsfound				= "Keine Bilddatei gefunden für:";
+	public static Object 	noCollectionSpecified		= "\n<html><body style='width: 300px'>Es wurde kein Pfad für die Sammlungs-Dateien in den Voreinstellungen gefunden.<br><i>Vermeiden Sie es, die 'prefs.txt' Datei manuell zu ändern!";
+
+
 	
 	
 	}

@@ -71,13 +71,16 @@ public class SM_JSONCreator  {
 	}
 	
 
-	public JSONObject makeNewArtworkFile( String _invNr, String _artist, String _title, int[] _size, int[] _frameSize, int[] _pptSize, FrameStyle _framsStyle ) {
+	public JSONObject makeNewArtworkFile( String _invNr, String _artist, String _title, int[] _size, int[] _frameSize, int[] _pptSize, FrameStyle _framsStyle, boolean _isCollection, String _collectionName ) {
 		JSONObject aw = new JSONObject();
 		
 		aw.setString("invNr", _invNr);
 		aw.setString("title", _title);
 		aw.setString("artist", _artist);
 		aw.setString("frameStyle", _framsStyle.toString());
+		
+		aw.setBoolean("isCollection", _isCollection);
+		if( _isCollection ) aw.setString("collectionName", _collectionName);
 		
 		JSONArray fs = new JSONArray();
 		if( _frameSize.length > 0 ) {

@@ -1,12 +1,22 @@
 package smlfr;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.event.EventListenerList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -84,6 +94,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 
 		// init file paths and load files:
+				
 		
 		resourcesPath   = new File("resources");
 		preferencesPath = new File("resources/prefs.txt");
@@ -177,6 +188,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return base.getQuestionIcon();
 	}
 	
+
 	// PREFERENCES
 
 	public synchronized void updatePrefs(String _key, String _value) {
@@ -222,6 +234,47 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return preferences.getInt("midHeight");
 	}
 
+	
+	public synchronized File getCollectionFile() {
+		
+		if( hasCollection() ) {
+			try {
+				File col = new File(preferences.getString("collectionPath"));
+				if( col.exists() ) return col;
+				else return null;
+				
+			} catch (Exception e) {
+				return null;
+			}
+		} else return null;
+	}
+
+	public synchronized String getCollectionName() {
+		
+		if( !hasCollection() ) return null;
+		
+		String cString = preferences.getString("collectionPath");
+		
+		int idx1 = cString.lastIndexOf("/")+1;
+		int idx2 = cString.lastIndexOf(".");
+		
+		return cString.substring(idx1, idx2);
+		
+		
+	}
+	
+	public synchronized boolean hasCollection() {
+		
+		if( preferences != null ) {
+			try {
+				preferences.getString("collectionPath");
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		} else return false;
+	}
+	
 	// MUSEUM:
 
 	public JSONObject loadMuseumData() {
@@ -456,6 +509,8 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			File projectFileSaveLoc = new File(selected+"/"+projectName);
 			File artLibSaveLocation = new File(selected+"/"+projectName+"/"+projectName+"_lib");
 			
+			projectPath = new File(projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp");
+			
 			System.out.println("NEW: projectFileSaveLoc: "+projectFileSaveLoc.getAbsolutePath());
 			System.out.println("NEW: artLibSaveLocation: "+artLibSaveLocation.getAbsolutePath());
 			
@@ -464,34 +519,68 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			JSONObject theNewProj = creator.makeNewProjectFile(projectName, _selectedRooms);
 			String[] importedAws;
 
+			JPanel panel = new JPanel();
+			BoxLayout l = new BoxLayout(panel, BoxLayout.Y_AXIS);
+			panel.setLayout(l);
+			
+			ButtonGroup group = new ButtonGroup();
+			JRadioButton  btn_awks = new JRadioButton(Lang.importArtworks);
+			JRadioButton  btn_coll = new JRadioButton(Lang.importColl);
+			JRadioButton  btn_both = new JRadioButton(Lang.importBoth);
+			group.add(btn_awks);
+			group.add(btn_coll);
+			group.add(btn_both);
+			btn_awks.setSelected(true);
+			
+//			JCheckBox importCollection = new JCheckBox(Lang.includeCollection);
+			JLabel label1 = new JLabel(Lang.importNow_1);
+			JLabel label2 = new JLabel(Lang.importNow_2);
+			
+			panel.add(label1);
+			panel.add(Box.createRigidArea(new Dimension(0,3)));
+			panel.add(label2);
+			panel.add(Box.createRigidArea(new Dimension(0,13)));
+//			panel.add(importCollection);
+			panel.add(btn_awks);
+			panel.add(Box.createRigidArea(new Dimension(0,3)));
+			panel.add(btn_coll);
+			panel.add(Box.createRigidArea(new Dimension(0,3)));
+			panel.add(btn_both);
+			panel.validate();
+			
 			
 			int q = -1;
 			
 			while( q == -1 ) {
-				q = javax.swing.JOptionPane.showOptionDialog(null, Lang.importNowTitle, Lang.importNow, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, base.getIcon(), Lang.importNowBtns, 2);
+				q = javax.swing.JOptionPane.showOptionDialog(null, panel, Lang.importNowTitle, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, base.getIcon(), Lang.importNowBtns, 2);
 			}
 			
-			switch (q) {
-			case 0:
-				break;
-			case 1:
-				
-				importedAws = base.in.batchImport(artLibSaveLocation, false);
-				
-				// early exit:
-				if( importedAws == null ) return null;
+			if( q == 1) {
 				
 				JSONArray lib = new JSONArray();
 				
-				for( String aw : importedAws) {
-					lib.append(aw);
+				if( btn_awks.isSelected() || btn_both.isSelected() ) {
+					
+					importedAws = base.in.batchImport(artLibSaveLocation, false);
+					
+					for( String aw : importedAws) {
+						lib.append(aw);
+					}
 				}
 				
-				theNewProj.setJSONArray("artLibrary", lib);
+				if( btn_coll.isSelected() || btn_both.isSelected() ) {
+					
+					importedAws = base.in.batchImport(artLibSaveLocation, true);
+
+					for( String aw : importedAws) {
+						lib.append(aw);
+					}					
+				}
 				
-				break;
-			default:
-				break;
+				// early exit
+				if( lib.size() == 0) return null;
+				
+				theNewProj.setJSONArray("artLibrary", lib);
 			}
 
 			String pFileName = projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp";
@@ -586,7 +675,6 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		}
 	}
 	
-
 	private synchronized void loadFromTmp(File _f) {
 		
 		JSONObject tmpData = loadJSONObject(_f);
@@ -605,6 +693,17 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		loaded = true;
 	}
 	
+	
+//	
+//	public synchronized long getCollectionTimestamp() {
+//		if( hasCollection() ) {
+//			try {
+//				return project.getInt("collectionTimestamp");
+//			} catch (Exception e) {
+//				return -1;
+//			}
+//		} else return 0;
+//	}
 	
 	public synchronized String[] getRoomNamesInProject() {
 
@@ -664,30 +763,53 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	
 	public synchronized JSONObject loadArtwork(String _name) {
 		
-		String filePath = projectPath.getAbsolutePath().substring(0, projectPath.getAbsolutePath().length()-4)+"_lib/"+_name+".sfa";
+		//   try to load Artwork.
+		//   Try from project first.
+		//   if it fails, try from collection.
+		//   if all fails: display error and return null.
+		
+//		String filePath = projectPath.getAbsolutePath().substring(0, projectPath.getAbsolutePath().length()-4)+"_lib/"+_name+".sfa";
+		File projectArtworkFile = getJSONFilePathForArtwork(_name);
 		JSONObject aw;
-		if(new File(filePath).exists()) {
-			aw = loadJSONObject(filePath);
-		}
-		else {
-			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntLoadArtwork+"\npath: "+filePath, "couldn't load ...", javax.swing.JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
+		
+		if( projectArtworkFile != null ) {
+			
+			aw = loadJSONObject(projectArtworkFile.getAbsolutePath());
+			
+		} else {
+							
+			javax.swing.JOptionPane.showMessageDialog(this, Lang.couldntLoadArtwork+_name, "couldn't load ...", javax.swing.JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
 			System.exit(1);
 			aw=null;
+			
 		}
 		return aw;
 	}
 	
+//	public synchronized File getJSONFilePartForCollectionArtwork( String _name ) {
+//		
+//		String filePath = getCollectionPath() + "/" + getCollectionName() + "/imported/" + _name + ".sfa";
+//		
+//		File file = new File(filePath);
+//		if( file.exists() ) return file;
+//		else return null;	
+//	}
+	
 	
 	public synchronized File getJSONFilePathForArtwork(String _name) {
 		
-		String filePath = projectPath.getAbsolutePath().substring(0, projectPath.getAbsolutePath().length()-4)+"_lib/"+_name+".sfa";
-		File file = new File(filePath);
-		if( file.exists() ) return file;
+		if( projectPath != null ) {
+			String filePath = projectPath.getAbsolutePath().substring(0, projectPath.getAbsolutePath().length()-4)+"_lib/"+_name+".sfa";
+			File file = new File(filePath);
+			if( file.exists() ) return file;
+			else return null;
+		}
 		else return null;
 	}
 	
 	
 	public synchronized File getImageFilePathForArtwork(String _artwork, SMUtils.awFileSize _size) {
+		
 		
 		String sufx;
 		switch (_size) {
