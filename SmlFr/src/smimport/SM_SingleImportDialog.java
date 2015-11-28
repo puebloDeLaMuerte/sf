@@ -376,7 +376,9 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 			if( !parent.checkAlreadyInProject( TF_invNr.getText()) ) {
 			
 				packImportData();
+				
 				parent.singleImport(artLibrarySaveLocation, this);
+				
 				this.setVisible(false);
 			} else {
 				JOptionPane.showMessageDialog(this, Lang.err_InvNrAlreadyExists, Lang.editAwErrorTitle, JOptionPane.WARNING_MESSAGE);
@@ -386,12 +388,25 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		if( e.getSource() == batchBtn) {
 			
 			this.setVisible(false);
-			parent.batchImport(artLibrarySaveLocation, false);
+			
+			ImportThread th = new ImportThread("importThread");
+			th.prepareBatchImport(parent, artLibrarySaveLocation, false, true);
+			th.start();
+			
+//			parent.batchImport(artLibrarySaveLocation, false, true);
+			
 		}else
 		if( e.getSource() == collectionButton ) {	
 			
 			this.setVisible(false);
-			parent.batchImport(artLibrarySaveLocation, true);
+			
+			ImportThread th = new ImportThread( "importThread" );
+			
+			th.prepareBatchImport(parent, artLibrarySaveLocation, true, true);
+			th.start();
+			
+//			parent.batchImport(artLibrarySaveLocation, true, true);
+			
 		}
 		else
 		if ( e.getSource() == browseBtn ) {

@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import processing.core.PApplet;
@@ -34,7 +35,7 @@ public class SM_Import extends PApplet  {
 	
 	private SmlFr		 			base;
 	private JFileChooser			chooser;
-	private ImportGui				gui;
+	protected ImportGui				gui;
 
 	
 	private SM_FileManager		 	fm;
@@ -141,10 +142,11 @@ public class SM_Import extends PApplet  {
 		}
 	}
 	
-	public String[] batchImport(File _artLibSaveLocation, boolean _collection) {
+	public String[] batchImport(File _artLibSaveLocation, boolean _collection, boolean intoExistingProject) {
 
 		
 		gui = initImportGui();
+		
 		
 //		JFrame pan = new JFrame();
 //		JTextArea txt = new JTextArea(Lang.importPleaseWait);
@@ -348,8 +350,9 @@ public class SM_Import extends PApplet  {
 
 		String[] returnArray = sucessfulImports.toArray(new String[sucessCount]);
 
-		
-		fm.importedArtworksIntoProject( returnArray );
+		if( intoExistingProject ) {
+			fm.importedArtworksIntoProject( returnArray );
+		}
 		
 		gui.setTitle("finishing...");
 		gui.setStatus("");

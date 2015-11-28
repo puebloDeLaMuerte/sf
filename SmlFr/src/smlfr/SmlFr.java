@@ -29,7 +29,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 	
 
 	private static final long serialVersionUID = -4943542664716794448L;
-	public static final String versionString = "1.0.3";
+	public static final String versionString = "1.0.4";
 	
 	
 	// Modules

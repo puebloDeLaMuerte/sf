@@ -23,6 +23,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.data.*;
+import smimport.ImportThread;
 import smimport.SM_JSONCreator;
 import updateModel.UpdateEvent;
 import updateModel.UpdateListener;
@@ -509,7 +510,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			File projectFileSaveLoc = new File(selected+"/"+projectName);
 			File artLibSaveLocation = new File(selected+"/"+projectName+"/"+projectName+"_lib");
 			
-			projectPath = new File(projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp");
+//			projectPath = new File(projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp");
 			
 			System.out.println("NEW: projectFileSaveLoc: "+projectFileSaveLoc.getAbsolutePath());
 			System.out.println("NEW: artLibSaveLocation: "+artLibSaveLocation.getAbsolutePath());
@@ -561,26 +562,58 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				
 				if( btn_awks.isSelected() || btn_both.isSelected() ) {
 					
-					importedAws = base.in.batchImport(artLibSaveLocation, false);
+//					importedAws = base.in.batchImport(artLibSaveLocation, false, false);
 					
-					for( String aw : importedAws) {
-						lib.append(aw);
-					}
+					ImportThread th = new ImportThread("importThread");
+					th.prepareBatchImport(base.in, artLibSaveLocation, false, false);
+					th.setWaitForProject(base.wm);
+					th.start();
+					
+					// wait for results
+//					while( !th.hasResults() ) {
+//						try {
+//							Thread.sleep(80);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+//					importedAws = th.getImportedArtworks();
+//					
+//					for( String aw : importedAws) {
+//						lib.append(aw);
+//					}
 				}
 				
 				if( btn_coll.isSelected() || btn_both.isSelected() ) {
 					
-					importedAws = base.in.batchImport(artLibSaveLocation, true);
+//					importedAws = base.in.batchImport(artLibSaveLocation, true, false);
 
-					for( String aw : importedAws) {
-						lib.append(aw);
-					}					
+					ImportThread th = new ImportThread("importThread");
+					th.prepareBatchImport(base.in, artLibSaveLocation, true, false);
+					th.setWaitForProject(base.wm);
+					th.start();
+					
+					// wait for results
+//					while( !th.hasResults() ) {
+//						try {
+//							Thread.sleep(80);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+//					importedAws = th.getImportedArtworks();
+//					
+//					for( String aw : importedAws) {
+//						lib.append(aw);
+//					}					
 				}
 				
 				// early exit
-				if( lib.size() == 0) return null;
+//				if( lib.size() == 0) return null;
 				
-				theNewProj.setJSONArray("artLibrary", lib);
+//				theNewProj.setJSONArray("artLibrary", lib);
 			}
 
 			String pFileName = projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp";
