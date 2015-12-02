@@ -29,7 +29,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 	
 
 	private static final long serialVersionUID = -4943542664716794448L;
-	public static final String versionString = "1.0.4";
+	public static final String versionString = "1.0.5";
 	
 	
 	// Modules
@@ -54,6 +54,14 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 	
 	public static void main(String _args[]) {
 
+		System.out.println("SimuFoehr launched");
+		if(_args.length >0) {
+			System.out.println("with args:");
+		
+			for( String a : _args) {
+				System.out.println(" - "+a);
+			}
+		}
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

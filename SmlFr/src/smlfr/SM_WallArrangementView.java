@@ -21,6 +21,7 @@ import javax.swing.JSeparator;
 
 import SMUtils.AllignmentTypes;
 import SMUtils.ArtworkMeasurementParent;
+import SMUtils.DistanceCalculator;
 import SMUtils.DistanceChooser;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
@@ -56,7 +57,11 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	private float 					xOffsetPx, yOffsetPx;
 	private int						myMidHeight;
 	
-	private volatile SM_Artwork		awOver, menuAW;
+	private volatile SM_Artwork		awOver, pAwOver, menuAW;
+	private double					awOverTimestamp;
+	private boolean					showDistances = false;
+	private DistanceCalculator		dcDraw, dcValues;
+	 
 //	private ArrayList<SM_Artwork> 	selectedAws;
 	private boolean 				awDrag = false;
 	private boolean					selectionDrag = false;
@@ -79,6 +84,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 	int 							shadowAmount = 10;//8;
 	int 							shadowOfsetAmount = 5;
+	int								showDistanceMillis = 800;
 	private Object					awLock, lgLock;
 	
 	int count = 0;
@@ -88,6 +94,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		super();
 		
 		this.base = base;
+		
+//		dc = new DistanceCalculator();
 		
 		awLock = new Object();
 		lgLock = new Object();
@@ -277,10 +285,22 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 	
 		// Mittelhöhe
+
+		
 		pushStyle();
+//		if ( showDistances  ) {
+//			stroke(200, 100);
+//		} else {
+//			stroke(150);
+//		}
 		stroke(150);
-		line(0, wptos(0,myMidHeight, scale).y, wptos(myWall.getWidth(),0,scale).x, wptos(0,myMidHeight, scale).y );
+		
+		line(0, wptos(0, myMidHeight, scale).y,
+				wptos(myWall.getWidth(), 0, scale).x,
+				wptos(0, myMidHeight, scale).y);
 		popStyle();
+	
+	
 		
 		
 		// DRAW wall
@@ -354,17 +374,57 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	 */
 	public PGraphics _drawWall4ArrangementView() {
 		
-		float drawScale;
+
+// ----->		// prepare the drawing
 		
-		loadMissingAWGraphics();
+				float drawScale;
+				
+				loadMissingAWGraphics();
+				
+				PGraphics gfx;
+				
+				gfx = wlGfx;
+				drawScale = scale;
+				
+				gfx.clear();
+				gfx.beginDraw();
+				
+				
 		
-		PGraphics gfx;
+// ----->		// check mouseOver
+
+				if(!awDrag ) awOver = null;
+
+				for(SM_Artwork a : myWall.getArtworksArray()) {
+					if( checkMouseOver(a) && !awDrag) {
+						awOver = a;
+					}
+				}
+				if( awOver != null && awOver != pAwOver ) {
+					awOverTimestamp = millis();
+				}
+				if ( pAwOver != null && awOver == null ) {
+					showDistances = false;
+				}
+				pAwOver = awOver;
+
+//  ----->		// check awOverTimestamp
 		
-		gfx = wlGfx;
-		drawScale = scale;
+				
+				
+				
+		if( awOver != null && awOverTimestamp != -1 && (millis()-awOverTimestamp > showDistanceMillis  ) ) {
+			
+			calculateDistances();
+			
+			awOverTimestamp = -1;
+			showDistances = true;
+		}
 		
-		gfx.clear();
-		gfx.beginDraw();
+
+		
+// ----->		// do the drawing
+
 		
 		
 		// DRAW Schatten
@@ -372,7 +432,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		if(myWall.getArtworksArray().length > 0 ) {
 			
-			if(!awDrag ) awOver = null;
 			
 			for( SM_Artwork a : myWall.getArtworksArray() ) {
 
@@ -395,16 +454,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				int[] tmpPos5 = a.getArtworkSize();
 				PVector artworkSize = astos(new PVector(tmpPos5[0], tmpPos5[1]), drawScale);
 				
-// 	----->   	// check and assign awOver
-				
-				if( !awDrag ) {
-					if( mouseX > totalPos.x && mouseX < (totalPos.x + totalSize.x) ) {
-						if( mouseY > totalPos.y && mouseY < (totalPos.y + totalSize.y) ) {
-							awOver = a;
-						}
-					}
-				}
-				
+// 	----->   	
 				
 				PImage aa;
 				
@@ -439,10 +489,140 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 								artworkSize.x, artworkSize.y);
 					} else {
 						System.err
-								.println("ES WÄHRE DA GEWESEN, in WallArrangementView, nämlich!");
+								.println("aa = null !!");
 					}
 					g.removeCache(gfx);
+				
 				}
+			
+				// draw distances
+
+				if(showDistances && !isValidDrag() && dcDraw != null && dcDraw.isReady()  ) {
+
+					SM_ExportArtwork awDraw		=   dcDraw.getQuerryArtwork(a.getName()); 
+					awDraw.calculateNearestNeighbours( dcDraw.getAllArtworks() );
+					awDraw.calculateDistanceMeasureDrawPos();
+					
+					SM_ExportArtwork awValues	= dcValues.getQuerryArtwork(a.getName());
+					awValues.calculateNearestNeighbours( dcValues.getAllArtworks() );
+					awValues.calculateDistanceMeasureDrawPos();
+
+					if( awDraw != null && awValues != null) {
+
+						gfx.stroke(0);
+						
+						int f = 5;
+						
+//							e.calculateNearestNeighbours(dc.getAllArtworks());
+//							e.calculateDistanceMeasureDrawPos();
+
+//							if( !e.hasNearestX() ) {
+//								gfx.line(	totalPos.x + totalSize.x,
+//											totalPos.y,
+//											gfx.width,
+//											totalPos.y
+//										);
+//							}
+						
+						if( awValues.hasNearestY() ) {
+							
+							
+							int[] c = awDraw.getDistDrawPosY();
+							
+
+							
+							gfx.pushStyle();
+							gfx.stroke(180);
+							gfx.fill(180);
+							gfx.line( c[0], c[1], c[2], c[3] );
+							
+							gfx.text( awValues.getDistanceToNearestY()+" mm", c[0]+(f/2), c[1]+(3*f) );
+							
+							gfx.popStyle();
+						}
+						
+						if( awValues.hasNearestX() ) {
+							
+							
+							int[] c = awDraw.getDistDrawPosX();
+							gfx.pushStyle();
+
+							gfx.stroke(180);
+							gfx.fill(180);
+							
+							gfx.line(c[0], c[1], c[2], c[3]);
+							gfx.text( awValues.getDistanceToNearestX()+" mm", c[0]+(f/2), c[1]-(f/2) );
+							
+							gfx.popStyle();
+						}
+						else {
+							
+							gfx.pushStyle();
+
+							gfx.stroke(180);
+							gfx.fill(180);
+							
+							gfx.line( 0 ,awDraw.getWallPosY()+(awDraw.getHeight()/2), awDraw.getWallPosX(), awDraw.getWallPosY()+(awDraw.getHeight()/2));
+							gfx.text( awValues.getWallPosX()+" mm", (awDraw.getWallPosX()/2)+(f/2), awDraw.getWallPosY()+(awDraw.getHeight()/2)-(f/2) );
+							
+							gfx.popStyle();
+							
+//							gfx.pushStyle();
+//
+//							gfx.stroke(180);
+//							gfx.fill(180);
+//							
+//							gfx.line( 0 ,totalPos.y+(totalSize.y/2), totalPos.x, totalPos.y+(totalSize.y/2));
+//							
+//							gfx.text( awValues.getWallPosX()+" mm", (totalPos.x/2)-f, totalPos.y+(totalSize.y/2)-f);
+//							
+//							gfx.popStyle();
+							
+							
+						}
+						
+						if( awValues.isRightmost() ) {
+							
+							int[] c = awDraw.getDistToRightDrawPos();
+							
+
+							
+							gfx.pushStyle();
+
+							gfx.stroke(180);
+							gfx.fill(180);
+							gfx.line(c[0], c[1], c[2], c[3]);
+							
+							gfx.text( awValues.getDistanceToRight()+" mm", c[0]+(f/2)+(awDraw.getDistanceToRight()/2), c[1]-(f/2) );
+							
+							gfx.popStyle();
+							
+						}
+
+						if( awValues.isLowest() ) {
+
+							int[] c = awDraw.getDistToBottomDrawPos();
+
+							gfx.pushStyle();
+
+							gfx.stroke(180);
+							gfx.fill(180);
+							gfx.line(c[0], c[1], c[2], c[3]);
+//							gfx.line(c[0], gfx.height-c[1], c[2], gfx.height-c[3]);
+
+							gfx.text( awValues.getDistanceToBottom()+" mm", c[0]+(f/2), c[1]-(f/2)+(awDraw.getDistanceToBottom()/2) );
+
+							gfx.popStyle();
+
+						}
+
+
+
+
+					}
+				}
+					
+					
 				
 					
 				
@@ -580,29 +760,28 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 							gfx.image(aa, artworkPos.x, artworkPos.y, artworkSize.x,
 									artworkSize.y);
 						} else {
-							System.err.println("ES WÄHRE DA GEWESEN, in WallArrangementView, nämlich!");
+							System.err.println("aa = null !!");
 						}
+						
+						
+						
+						
 						g.removeCache(gfx);
-						
-						
 						
 					}
 					
 					
 				}
 				
-				
-				
-				
-				
-				
-				
-
 
 				
 				
 			}
 		}
+		
+	
+
+
 		gfx.endDraw();
 		ready = true;
 		return gfx;
@@ -916,6 +1095,62 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 	
+	
+	private void calculateDistances() {
+		
+//		awOverTimestamp = -1;
+		
+		SM_ExportArtwork[] aws = null;
+		SM_ExportWall w = null;
+				
+		
+		dcValues 	= new DistanceCalculator(false);
+		dcDraw 		= new DistanceCalculator(true);
+		
+//		dcDraw.join(dcValues.getId());
+
+		// init dcValues
+
+		aws = new SM_ExportArtwork[ myWall.getArtworksArray().length];
+		
+		int i = 0;
+		for( SM_Artwork a : myWall.getArtworksArray() ) {
+			
+			aws[i] = new SM_ExportArtwork(a.getName(), a.getTotalWallPos(), a.getTotalWidth(), a.getTotalHeight() );
+			i++;
+		}
+		w = new SM_ExportWall(myWall.getWallName(), aws, myWall.getWidth(), myWall.getHeight());
+		
+		dcValues.prepare(w, aws, myWall.getWidth(), myWall.getHeight());
+		
+//		dcValues.start();
+		dcValues.calculate();
+		
+				
+		// init dcDraw
+		
+		aws = new SM_ExportArtwork[ myWall.getArtworksArray().length];
+		
+		i = 0;
+		for( SM_Artwork a : myWall.getArtworksArray() ) {
+			int[] tmpPos = a.getTotalWallPos();
+			PVector totalPos = wptos( new PVector(tmpPos[0], tmpPos[1]), scale );
+			PVector totalSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), scale);
+			
+			aws[i] = new SM_ExportArtwork(a.getName(), new int[]{(int)totalPos.x, (int)totalPos.y} , (int)totalSize.x, (int)totalSize.y);
+			i++;
+		}
+		
+		w = new SM_ExportWall(myWall.getWallName(), aws, wlGfx.width, wlGfx.height);
+		
+		dcDraw.prepare(w, aws, wlGfx.width, wlGfx.height);
+		
+		//dcDraw.start();
+		dcDraw.calculate();
+		
+		
+//		showDistances = true;
+	}
 	
 	// artwork Size to Screen
 	private PVector astos(int _inX, int _inY, float scl) {
@@ -1255,6 +1490,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	@Override
  	public void doUpdate(UpdateEvent e) {
 		artworkUpdatePending = true;
+		calculateDistances();
 //		awOver = null;
 	}
 	
