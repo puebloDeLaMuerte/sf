@@ -235,7 +235,6 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		return preferences.getInt("midHeight");
 	}
 
-	
 	public synchronized File getCollectionFile() {
 		
 		if( hasCollection() ) {
@@ -275,6 +274,46 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			}
 		} else return false;
 	}
+	
+	public synchronized int getDisplayMeasuresMillis() {
+		
+		
+		int m;
+		try {			
+			m = preferences.getInt("measureDisplayMillis");
+		} catch (Exception e) {
+			m = 800;
+		}
+		
+		return m;
+	}
+	
+	public synchronized int getShadowAmount() {
+		
+		int s;
+		try {			
+			s = preferences.getInt("shadowAmount");
+		} catch (Exception e) {
+			s = 10;
+		}
+		
+		return s;
+		
+	}
+	
+	public synchronized int getShadowOfsetAmount() {
+		
+		int s;
+		try {			
+			s = preferences.getInt("shadowOfsetAmount");
+		} catch (Exception e) {
+			s = 5;
+		}
+		
+		return s;
+		
+	}
+	
 	
 	// MUSEUM:
 

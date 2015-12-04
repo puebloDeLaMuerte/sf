@@ -80,6 +80,7 @@ public class DistanceChooser extends JFrame implements ActionListener, ChangeLis
 		this.pack();
 		this.setAlwaysOnTop(true);
 		this.setResizable(false);
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		java.awt.Rectangle window = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 		this.setLocation((int)(window.width/2 - this.getSize().getWidth()/2), (int)(window.height/2 - this.getSize().getHeight()/2));
 		this.setVisible(true);
@@ -95,7 +96,7 @@ public class DistanceChooser extends JFrame implements ActionListener, ChangeLis
 		}
 		
 		if( e.getSource() == cancelBtn ) {
-			parent.distanceCancelCallback(aws, originalPositions);
+			parent.positionCancelCallback(aws, originalPositions);
 			this.setVisible(false);
 		}
 		

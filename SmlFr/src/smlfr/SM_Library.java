@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -219,7 +220,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		ttxt.setFont(font);
 		ttxt.setBackground(Color.gray);
 		
-		String size = artworks.get(awName).getTotalWidth()+" x "+artworks.get(awName).getTotalHeight();
+		String size = artworks.get(awName).getTotalWidth()+" x "+artworks.get(awName).getTotalHeight()+"   ";
 		JLabel stxt = new JLabel(size);
 		stxt.setFont(font);
 		
@@ -240,6 +241,16 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		} else {
 			panel.setBackground(standartColor);
 		}
+		
+//		Graphics g = panel.get  //getGraphics();
+//		
+//		panel.paint(g);
+//		g.setColor(new Color(255,192,0));
+//		
+//		int[] xc = new int[]{panel.getWidth()-15, panel.getWidth(), panel.getWidth()};
+//		int[] yc = new int[]{panel.getHeight(), panel.getHeight()-15, panel.getHeight()};
+//		
+//		g.fillPolygon( xc, yc,3);
 		
 		artworksPanel.add(panel);
 		panels.put(awName,panel);
@@ -306,6 +317,11 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 			
 		case Grš§e:
 			if( pan1.getSizeSquared() > pan2.getSizeSquared()) d = 1;
+			else d = -1;
+			break;
+			
+		case Sammlung:
+			if( pan1.isCollection() && !pan2.isCollection() ) d = 1;
 			else d = -1;
 			break;
 		}

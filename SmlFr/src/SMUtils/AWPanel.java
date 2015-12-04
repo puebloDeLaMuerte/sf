@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.datatransfer.DataFlavor;
@@ -46,7 +47,7 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
     private JPopupMenu menu;
     private MeasureMenuItem measurements, remove;
     private ActionListener listener;
-    private JLabel walltxt; 
+    private JLabel walltxt;
     
     public AWPanel(ActionListener ls, SM_Artwork _s) {
     	
@@ -71,6 +72,25 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 		menu.add(remove);
 		menu.add(measurements);
 		this.add(menu);
+    }
+    
+    public void paint(Graphics g)
+    {
+    	super.paint(g);
+    	
+    	if (myArtwork.isCollection()) {
+			//All triangle corner x coordinate
+			int[] xc = new int[] { this.getWidth() - 15, this.getWidth(),
+					this.getWidth() };
+			//All triangle corner y coordinate
+			int[] yc = new int[] { this.getHeight(), this.getHeight() - 15,
+					this.getHeight() };
+			//Set color base on RGB
+			// native
+			g.setColor(new Color(121, 209, 237));
+			//Draw triangle in JPanel
+			g.fillPolygon(xc, yc, 3);
+		}
     }
     
     private void setKeyListening() {
@@ -98,6 +118,9 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
     	});
     }
     
+    public boolean isCollection() {
+    	return myArtwork.isCollection();
+    }
     
     public String getArtist() {
     	return myArtwork.getArtis();

@@ -100,7 +100,7 @@ public class Lang {
 	public static String[]	initializeFromWhereButtons 	= new String[] { "Neues Projekt", "Projekt laden...", "letztes öffnen" };
 	public static String	SM_filetypes 				= "Nur SimuFöhr Dateien";
 	
-	public static enum 		/* REFACTOR THIS FOR CHANGES!!!*/ sortOptions { Künstler, Titel, InvNr, Größe }; // REFACTOR!!!!!
+	public static enum 		/* REFACTOR THIS FOR CHANGES!!!*/ sortOptions { Künstler, Titel, InvNr, Größe, Sammlung }; // REFACTOR!!!!!
 	public static String	ok 							= "Ok";
 	public static String	cancel 						= "Abrechen";
 	public static String	apply						= "Anwenden";
@@ -119,6 +119,7 @@ public class Lang {
 	public static String	changeSingleWallColor_2 	= " ändern";
 	public static String	changeColorInvalidValues 	= "Die eingegebenen Werte sind ungültig!\nDie Eingabe darf nur aus Ziffern bestehen.";
 	public static String	snapToMidHeight 			= "auf Mittelhöhe setzen";
+	public static String	posFromBorder				= "Abstand von...";
 	public static String 	enterRoom 					= "Raum betreten";
 	public static String 	exitRoom 					= "Raum verlassen";
 	public static String	closeWall 					= "Wand schließen";
@@ -158,6 +159,10 @@ public class Lang {
 	public static String	distanceSelection					= "gleichmäßig";
 	public static String	distanceFixed						= "fester Wert";
 	public static String	distTxt								= "Abstand in mm";
+	public static String	top									= "oben";
+	public static String	bottom								= "unten";
+	public static String	left								= "links";
+	public static String	right								= "rechts";
 	
 	// Import
 	

@@ -26,6 +26,7 @@ import SMUtils.DistanceChooser;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
+import SMUtils.WallRelativePositionChooser;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -72,7 +73,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	private JPopupMenu				pMenu;
 	private JMenuItem				putBack, snapToMidHeight, close;
 	private JMenuItem				allignMidHoriz, allignMidVert, allignTop, allignBottom, allignLeft, allignRight;
-	private JMenuItem				distEqual, distValue;
+	private JMenuItem				distEqual, distValue, posFromBorder;
 	private JMenuItem[]				frameStyles;
 	private JMenu					editArtwork, allign, distance;
 	private JMenuItem				editMeasurements;
@@ -82,9 +83,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	private boolean					artworkUpdatePending = true;
 	private boolean					firstTime = true;
 		
-	int 							shadowAmount = 10;//8;
-	int 							shadowOfsetAmount = 5;
-	int								showDistanceMillis = 800;
+	int 							shadowAmount;//10;;
+	int 							shadowOfsetAmount;//5;
+	int								showDistanceMillis;
 	private Object					awLock, lgLock;
 	
 	int count = 0;
@@ -163,6 +164,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		snapToMidHeight = new JMenuItem(Lang.snapToMidHeight);
 		snapToMidHeight.addActionListener(this);
 		snapToMidHeight.setEnabled(false);
+
+		posFromBorder = new JMenuItem(Lang.posFromBorder);
+		posFromBorder.addActionListener(this);
+		posFromBorder.setEnabled(false);
 		
 		editArtwork = new JMenu(Lang.editArtwork);
 		editArtwork.setEnabled(true);
@@ -236,12 +241,13 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		close.addActionListener(this);
 		close.setEnabled(true);
 		
-		pMenu.add(snapToMidHeight);
 		pMenu.add(putBack);
 		pMenu.add(editArtwork);
 		pMenu.add(new JSeparator());
+		pMenu.add(snapToMidHeight);
 		pMenu.add(allign);
 		pMenu.add(distance);
+		pMenu.add(posFromBorder);
 		pMenu.add(new JSeparator());
 		pMenu.add(close);
 		
@@ -266,6 +272,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		scale = ((float)mySize.width ) / ((float)myWall.getWidth());
 		wlGfx = createGraphics(width, height);
 
+		showDistanceMillis 	= base.fm.getDisplayMeasuresMillis();
+		shadowAmount 		= base.fm.getShadowAmount();
+		shadowOfsetAmount 	= base.fm.getShadowOfsetAmount();
+		
 		frameRate(15);
 	}
 	
@@ -408,9 +418,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				}
 				pAwOver = awOver;
 
-//  ----->		// check awOverTimestamp
-		
 				
+//  ----->		// check awOverTimestamp
 				
 				
 		if( awOver != null && awOverTimestamp != -1 && (millis()-awOverTimestamp > showDistanceMillis  ) ) {
@@ -425,8 +434,6 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 // ----->		// do the drawing
 
-		
-		
 		// DRAW Schatten
 		
 		
@@ -1443,16 +1450,19 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				putBack.setEnabled(true);
 				editArtwork.setEnabled(true);
 				snapToMidHeight.setEnabled(true);
+				posFromBorder.setEnabled(true);
 			} else {
 				putBack.setEnabled(false);
 				editArtwork.setEnabled(false);
 				snapToMidHeight.setEnabled(false);
+				posFromBorder.setEnabled(false);
 			}
 			
 			if( getSelectedArtworks().length > 1 ) {
 				allign.setEnabled(true);
 				distance.setEnabled(true);
 				snapToMidHeight.setEnabled(true);
+				posFromBorder.setEnabled(true);
 			} else {
 				allign.setEnabled(false);
 				distance.setEnabled(false);
@@ -1527,6 +1537,18 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 			
 
+		}
+		
+		else if( e.getSource() == posFromBorder) {
+			
+			SM_Artwork[] aws = getSelectedArtworks();
+			
+			if( aws.length == 0 && menuAW != null ) {
+				aws = new SM_Artwork[1];
+				aws[0] = menuAW;
+			}
+			
+			posFromBorder(aws);
 		}
 		
 		else if( e.getSource() == allignMidHoriz) allignArtworks( getSelectedArtworks(), AllignmentTypes.MID_HORIZONTAL);
@@ -1859,7 +1881,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 	}
 	
-	public void distanceCancelCallback(SM_Artwork[] aws, LinkedHashMap<String, int[]> oPos) {
+	public void positionCancelCallback(SM_Artwork[] aws, LinkedHashMap<String, int[]> oPos) {
 		
 		boolean first = true;
 		for (SM_Artwork a : aws) {
@@ -1893,6 +1915,51 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			ArtworkUpdateRequestEvent rq = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), a.getTotalWallPos()[0], (myMidHeight)+(a.getTotalHeight()/2)  );
 			myWall.myRoom.fireUpdateRequest(rq);
 		}
+	}
+	
+	private void posFromBorder( SM_Artwork[] aws) {
+		
+		LinkedHashMap<String, int[]> pos = new LinkedHashMap<String, int[]>(aws.length);
+		
+		for (SM_Artwork a : aws) {
+			pos.put(a.getName(), a.getTotalWallPos());
+		}
+		
+		WallRelativePositionChooser d = new WallRelativePositionChooser(this, pos, aws);
+	}
+	
+	/**
+	 * orientation: 0: top
+	 * 				1: bottom
+	 * 				2: left
+	 * 				3: right
+	 */
+	public void posFromBorderCallback( SM_Artwork[] aws, int value, int orientation ) {
+
+		boolean first = true;
+		for( SM_Artwork a : aws ) {
+			
+			int newPos = 0;
+			
+			if( orientation == 0 ) newPos = myWall.getHeight()-value;
+			if( orientation == 1 ) newPos = value + a.getTotalHeight();
+			if( orientation == 2 ) newPos = value;
+			if( orientation == 3 ) newPos = myWall.getWidth() - a.getTotalWidth() - value;
+			
+			int count = 0;
+			if(first) count = aws.length;
+			first = false;
+			
+			ArtworkUpdateRequestEvent rq = null;
+			if( orientation == 0 || orientation == 1) {
+				rq = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), a.getTotalWallPos()[0], newPos  );
+			}
+			if( orientation == 2 || orientation == 3) {
+				rq = new ArtworkUpdateRequestEvent(this, true, count, a.getName(), newPos, a.getTotalWallPos()[1]  );
+			}
+			myWall.myRoom.fireUpdateRequest(rq);
+		}
+		
 	}
 	
 	@Override
