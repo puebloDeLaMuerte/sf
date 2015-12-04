@@ -51,6 +51,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	private PGraphics				wlGfx;
 
 	private PImage					lightSprite;
+	private int						backgroundColor = 230;
 	
 	private boolean					ready = false;
 
@@ -291,7 +292,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			frameRate(15);
 		}
 		
-		background(230);
+		background(backgroundColor);
+//		background(15,0,25);
 
 	
 		// Mittelhšhe
@@ -505,6 +507,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				// draw distances
 
 				if(showDistances && !isValidDrag() && dcDraw != null && dcDraw.isReady()  ) {
+					
 
 					SM_ExportArtwork awDraw		=   dcDraw.getQuerryArtwork(a.getName()); 
 					awDraw.calculateNearestNeighbours( dcDraw.getAllArtworks() );
@@ -514,22 +517,17 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 					awValues.calculateNearestNeighbours( dcValues.getAllArtworks() );
 					awValues.calculateDistanceMeasureDrawPos();
 
-					if( awDraw != null && awValues != null) {
+					boolean skip = false;
+					if( keyPressed && !a.getName().equals(awOver.getName()) ) {
+						skip = true;
+					}
+						
+						
+					if( awDraw != null && awValues != null && !skip) {
 
 						gfx.stroke(0);
 						
 						int f = 5;
-						
-//							e.calculateNearestNeighbours(dc.getAllArtworks());
-//							e.calculateDistanceMeasureDrawPos();
-
-//							if( !e.hasNearestX() ) {
-//								gfx.line(	totalPos.x + totalSize.x,
-//											totalPos.y,
-//											gfx.width,
-//											totalPos.y
-//										);
-//							}
 						
 						if( awValues.hasNearestY() ) {
 							
@@ -539,11 +537,16 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 							
 							gfx.pushStyle();
+							gfx.noStroke();
+							gfx.fill(backgroundColor);
+							String s = awValues.getDistanceToNearestY()+" mm";
+							gfx.rect(c[0]+(f/2)-2, c[1]+(3*f)+3, gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
+							
+							
 							gfx.stroke(180);
 							gfx.fill(180);
 							gfx.line( c[0], c[1], c[2], c[3] );
-							
-							gfx.text( awValues.getDistanceToNearestY()+" mm", c[0]+(f/2), c[1]+(3*f) );
+							gfx.text( s, c[0]+(f/2), c[1]+(3*f) );
 							
 							gfx.popStyle();
 						}
@@ -554,36 +557,35 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 							int[] c = awDraw.getDistDrawPosX();
 							gfx.pushStyle();
 
+							gfx.noStroke();
+							gfx.fill(backgroundColor);
+							String s = awValues.getDistanceToNearestX()+" mm";
+							gfx.rect(c[0]+(f/2)-2, c[1]-(f/2)+3, gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
+							
 							gfx.stroke(180);
 							gfx.fill(180);
 							
 							gfx.line(c[0], c[1], c[2], c[3]);
-							gfx.text( awValues.getDistanceToNearestX()+" mm", c[0]+(f/2), c[1]-(f/2) );
+							gfx.text( s, c[0]+(f/2), c[1]-(f/2) );
 							
 							gfx.popStyle();
 						}
 						else {
 							
 							gfx.pushStyle();
+							
+							gfx.noStroke();
+							gfx.fill(backgroundColor);
+							String s = awValues.getWallPosX()+" mm";
+							gfx.rect(((awDraw.getWallPosX()/2)+(f/2))-2, awDraw.getWallPosY()+(awDraw.getHeight()/2)-(f/2)+3, gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
 
 							gfx.stroke(180);
 							gfx.fill(180);
 							
 							gfx.line( 0 ,awDraw.getWallPosY()+(awDraw.getHeight()/2), awDraw.getWallPosX(), awDraw.getWallPosY()+(awDraw.getHeight()/2));
-							gfx.text( awValues.getWallPosX()+" mm", (awDraw.getWallPosX()/2)+(f/2), awDraw.getWallPosY()+(awDraw.getHeight()/2)-(f/2) );
+							gfx.text( s, (awDraw.getWallPosX()/2)+(f/2), awDraw.getWallPosY()+(awDraw.getHeight()/2)-(f/2) );
 							
 							gfx.popStyle();
-							
-//							gfx.pushStyle();
-//
-//							gfx.stroke(180);
-//							gfx.fill(180);
-//							
-//							gfx.line( 0 ,totalPos.y+(totalSize.y/2), totalPos.x, totalPos.y+(totalSize.y/2));
-//							
-//							gfx.text( awValues.getWallPosX()+" mm", (totalPos.x/2)-f, totalPos.y+(totalSize.y/2)-f);
-//							
-//							gfx.popStyle();
 							
 							
 						}
@@ -596,11 +598,16 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 							
 							gfx.pushStyle();
 
+							gfx.noStroke();
+							gfx.fill(backgroundColor);
+							String s = awValues.getDistanceToRight()+" mm";
+							gfx.rect(c[0]+(f/2)+(awDraw.getDistanceToRight()/2)-2, c[1]-(f/2)+3, gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
+							
 							gfx.stroke(180);
 							gfx.fill(180);
 							gfx.line(c[0], c[1], c[2], c[3]);
 							
-							gfx.text( awValues.getDistanceToRight()+" mm", c[0]+(f/2)+(awDraw.getDistanceToRight()/2), c[1]-(f/2) );
+							gfx.text( s, c[0]+(f/2)+(awDraw.getDistanceToRight()/2), c[1]-(f/2) );
 							
 							gfx.popStyle();
 							
@@ -612,12 +619,17 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 							gfx.pushStyle();
 
+							gfx.noStroke();
+							gfx.fill(backgroundColor);
+							String s = awValues.getDistanceToBottom()+" mm";
+							gfx.rect(c[0]+(f/2)-2, c[1]-(f/2)+3+(awDraw.getDistanceToBottom()/2), gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
+							
 							gfx.stroke(180);
 							gfx.fill(180);
 							gfx.line(c[0], c[1], c[2], c[3]);
 //							gfx.line(c[0], gfx.height-c[1], c[2], gfx.height-c[3]);
 
-							gfx.text( awValues.getDistanceToBottom()+" mm", c[0]+(f/2), c[1]-(f/2)+(awDraw.getDistanceToBottom()/2) );
+							gfx.text( s, c[0]+(f/2), c[1]-(f/2)+(awDraw.getDistanceToBottom()/2) );
 
 							gfx.popStyle();
 
