@@ -267,8 +267,12 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		if( preferences != null ) {
 			try {
-				preferences.getString("collectionPath");
-				return true;
+				String f = preferences.getString("collectionPath");
+				if( new File(f).exists()) {
+					return true;
+				} else {
+					return false;
+				}
 			} catch (Exception e) {
 				return false;
 			}

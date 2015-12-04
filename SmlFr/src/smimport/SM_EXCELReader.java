@@ -86,7 +86,9 @@ public class SM_EXCELReader {
 //				File collFile = new File( "collections/" + base.fm.getCollectionName()+"/raw/"+base.fm.getCollectionName()+".xls");
 				File collFile = base.fm.getCollectionFile();
 				
-				if( collFile.exists() ) excelFile = collFile;
+				if( collFile.exists() ) {
+					excelFile = collFile;
+				}
 				else {
 					JOptionPane.showConfirmDialog(null, Lang.collectionNotFound_1 + base.fm.getCollectionFile().getAbsolutePath() + Lang.collectionNotFound_2, Lang.warning, JOptionPane.CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
 					return null;

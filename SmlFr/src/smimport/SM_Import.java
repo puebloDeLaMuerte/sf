@@ -164,7 +164,7 @@ public class SM_Import extends PApplet  {
 				
 		
 		if(excelLocation == null ) {
-			gui.setVisible(false);
+			gui.frame.setVisible(false);
 			gui = null;
 			return null;
 		}
