@@ -324,6 +324,8 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			
 			System.err.println(fcVal);
 			
+			if( fcVal == 1 ) return;
+			
 			exportLoc = ch.getSelectedFile();
 			
 			int overwrite = 99;
