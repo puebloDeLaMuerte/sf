@@ -144,7 +144,18 @@ public class SM_EXCELReader {
 				Cell testCell = theRow.getCell(0);
 				String testString = null;
 				if( testCell != null) {
-					testString = testCell.getStringCellValue();
+					
+					try {
+						testString = testCell.getStringCellValue();
+					} catch (Exception e) {
+						try {
+//							int test = (int)testCell.getNumericCellValue();
+							double test = testCell.getNumericCellValue();
+							
+							testString = ""+test;
+						} catch (Exception e2) {
+						}
+					}
 					if( !testString.isEmpty() ) validRow = true;
 				}
 				System.out.println("this string: "+testString+" evaluated to "+validRow);
@@ -156,12 +167,23 @@ public class SM_EXCELReader {
 
 						Cell cell = theRow.getCell(j);
 
-						if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
+						if (cell != null && ( j == 0 || cell.getCellType() == Cell.CELL_TYPE_STRING)) {
 
 							switch (j) {
 							case 0:
-								ln.put("inv-Nr", theRow.getCell(0)
-										.getStringCellValue());
+								String s = null;
+								try {
+									s = theRow.getCell(0).getStringCellValue();
+								} catch (Exception e) {
+									try {
+										int test = (int)theRow.getCell(0).getNumericCellValue();
+										s = ""+test;
+									} catch (Exception e2) {
+									}
+								}
+								
+								ln.put("inv-Nr", s);
+//								ln.put("inv-Nr", theRow.getCell(0).getStringCellValue());
 								break;
 							case 1:
 								ln.put("artist", theRow.getCell(1)

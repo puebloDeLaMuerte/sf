@@ -1,13 +1,13 @@
 {
   "shadowAmount": 10,
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/Desktop/ffff/Petersburg/Petersburg.sfp",
-    "projectName": "Petersburg"
+    "projectPath": "/Users/philipptoegel/Desktop/ffff/petula/petula.sfp",
+    "projectName": "petula"
   },
+  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/petula",
   "shadowOfsetAmount": 5,
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/asdf",
-  "museumData": "MuKuDeWe.sfm",
   "midHeight": 1500,
+  "museumData": "MuKuDeWe.sfm",
   "collectionPath": "/Users/philiddddddddddpptoegel/git/SimulFöhr/SmlFr/collections/Sammlung_MKDW/Sammlung_MKDW.xls",
   "measureDisplayMillis": 200
 }

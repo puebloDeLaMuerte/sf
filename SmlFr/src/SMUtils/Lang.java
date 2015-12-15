@@ -1,6 +1,5 @@
 package SMUtils;
 
-import javax.swing.Icon;
 
 public class Lang {
 	
