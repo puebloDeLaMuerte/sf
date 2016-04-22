@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
@@ -16,6 +17,7 @@ import javax.swing.JSeparator;
 import SMUtils.Lang;
 import SMUtils.SkewMode;
 import SMUtils.Skewmator;
+import SMUtils.SysInfo;
 import SMUtils.ViewMenuItem;
 import SMUtils.pTimedEventGenerator;
 import processing.core.PApplet;
@@ -77,6 +79,7 @@ public class SM_Renderer extends PApplet{
 	public boolean 					setupRun = false;
 	
 	private boolean 				devGUI = false;
+	private String					devBuff = "       ";
 	
 	private boolean					isBusy = false;
 	private String					busyMessage = "";
@@ -89,9 +92,13 @@ public class SM_Renderer extends PApplet{
 	private int[]					previewAdvance;
 	
 	private boolean					savetyDraw = false;
+	private double					lastUpdate = 0;
+	private double					lastUpdateColor = 0;
+	private double					lastUpdateLights = 0;
+	private double					lastUpdateArtworks = 0;
 
 	double			Ac = 0, Lc =0;
-	double		dA, dL;
+	double			dA, dL;
 	
 	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath, int _YSize) {
 //		super();
@@ -124,7 +131,7 @@ public class SM_Renderer extends PApplet{
 
 	}
 	
-	public void changeView( SM_ViewAngle _view ) {
+	public synchronized void changeView( SM_ViewAngle _view ) {
 		
 		
 //		layers = null;
@@ -307,6 +314,8 @@ public class SM_Renderer extends PApplet{
 	 */
 	protected synchronized void updateRoomColorLayer( Integer _previewColor, Character _previewWall, Integer _previewWallColor ) {
 		
+		
+		
 		int w = layers[5].width;
 		int h = layers[5].height;
 		
@@ -388,7 +397,7 @@ public class SM_Renderer extends PApplet{
 					skewValues[i+1]	-= yOffset;
 				}
 
-				// zeichnen der Farbe fŸr eine Wand::
+				// zeichnen der Farbe fï¿½r eine Wand::
 				
 				PGraphics wcGfx = createGraphics(w,h);
 				
@@ -435,7 +444,7 @@ public class SM_Renderer extends PApplet{
 		
 		if(setupRun) ;//redraw();
 		
-		
+		lastUpdate = millis();
 		
 	}
 	
@@ -506,7 +515,7 @@ public class SM_Renderer extends PApplet{
 	
 	
 //	redraw();
-	
+	lastUpdate = millis();
 	}
 	
 	protected synchronized void updateArtworksLayer( char _wallChar ) {
@@ -631,7 +640,7 @@ public class SM_Renderer extends PApplet{
 		
 		dA += endmili * ( 1 / Ac );
 		
-		
+		lastUpdate = millis();
 	}
 	
 	
@@ -751,6 +760,14 @@ public class SM_Renderer extends PApplet{
 		if( update.getQueueLength() <= 0) {
 			this.setBusy(false, Lang.rendererBusy);
 			this.redraw();
+			
+			if( millis() - lastUpdate > 4000 ) {
+				for( char w : wallGfxsId ) {
+					updateArtworksLayer(w);
+					updateLightsLayer(w);
+				}
+				updateRoomColorLayer(null, null, null);
+			}
 		}
 	}
 	
@@ -866,7 +883,10 @@ public class SM_Renderer extends PApplet{
 			pushStyle();
 			blendMode(BLEND);
 			for( PGraphics wg : wallGfxsAW) {
-				if( wg != null) image(wg, xOff, yOff,displW,displH);
+				if( wg != null) try{
+					image(wg, xOff, yOff,displW,displH);
+				} catch (Exception e) { System.err.println("we caught this error: ");e.printStackTrace();}
+				
 				else System.err.println("A WALL GRAPHICS WAS null IN RENDERER DRAW");
 				g.removeCache(g);
 			}
@@ -898,6 +918,8 @@ public class SM_Renderer extends PApplet{
 //		System.out.println("RENDERER: DRAW: anim+gui");
 		
 		drawGUI();
+		if( frameCount % 3 == 0) System.gc(); 
+		
 	}
 	
 	
@@ -1219,6 +1241,23 @@ public class SM_Renderer extends PApplet{
 		if( keyCode == ESC) {
 			key = 0;
 		} else {
+			
+			
+			
+			try {
+			devBuff = devBuff.substring(1, 6);
+			devBuff += key;
+			if( devBuff.equalsIgnoreCase("info++")) {
+				SysInfo.displayMessage();
+			}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			
+			
+			
 			if (devGUI) {
 				if (key == '1')
 					b1 = !b1;
@@ -1237,6 +1276,9 @@ public class SM_Renderer extends PApplet{
 					updateLightsLayer(w);
 				}
 				updateRoomColorLayer(null, null, null);
+			}
+			if( key == 'i') {
+				
 			}
 			redraw();
 		}
@@ -1275,7 +1317,10 @@ public class SM_Renderer extends PApplet{
 		System.err.println("Renderer goodbye...1");
 		
 //		tGen.dispose();
-//		tGen.setEnabled(false);
+		
+		
+		if( tGen.isEnabled() ) tGen.setEnabled(false);
+		
 		tGen.dispose();
 		
 		frame.dispose();
