@@ -20,7 +20,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import SMUtils.Lang;
 import SMUtils.SM_Frames;
-import SMUtils.SysInfo;
 import SMUtils.awFileSize;
 import SMUtils.progState;
 
@@ -37,7 +36,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 	
 
 	private static final long serialVersionUID = -4943542664716794448L;
-	public static final String versionString = "1.0.5";
+	public static final String versionString = "1.0.6";
 	
 	
 	// Modules

@@ -761,18 +761,18 @@ public class SM_Renderer extends PApplet{
 			this.setBusy(false, Lang.rendererBusy);
 			this.redraw();
 			
-			if( millis() - lastUpdate > 4000 ) {
-				for( char w : wallGfxsId ) {
-					updateArtworksLayer(w);
-					updateLightsLayer(w);
-				}
-				updateRoomColorLayer(null, null, null);
-			}
+//			if( millis() - lastUpdate > 4000 ) {
+//				for( char w : wallGfxsId ) {
+//					updateArtworksLayer(w);
+//					updateLightsLayer(w);
+//				}
+//				updateRoomColorLayer(null, null, null);
+//			}
 		}
 	}
 	
 	@Override
-	public void draw(){
+	public synchronized void draw(){
 
 		
 		background(255);

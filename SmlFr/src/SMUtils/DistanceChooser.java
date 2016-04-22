@@ -77,8 +77,8 @@ public class DistanceChooser extends JFrame implements ActionListener, ChangeLis
 		p.add(b, BorderLayout.PAGE_END);
 
 		this.setContentPane(p);
-		this.pack();
 		this.setAlwaysOnTop(true);
+		this.pack();
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		java.awt.Rectangle window = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();

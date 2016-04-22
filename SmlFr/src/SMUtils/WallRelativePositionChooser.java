@@ -123,9 +123,9 @@ public class WallRelativePositionChooser extends JFrame implements ActionListene
 		
 		
 		this.setContentPane(p);
+		this.setAlwaysOnTop(true);
 		this.pack();
 		this.setSize(250, 187);
-		this.setAlwaysOnTop(true);
 //		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		java.awt.Rectangle window = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
