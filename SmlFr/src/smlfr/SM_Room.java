@@ -263,7 +263,7 @@ public class SM_Room {
 		f.setLayout(new BorderLayout());
 		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		f.setUndecorated(true);
-		f.setAlwaysOnTop(true);
+//		f.setAlwaysOnTop(true);
 		myArrangementView = new SM_RoomArrangementView(_size.width, _size.height, base);
 		f.add(myArrangementView);
 		File fl = basw.fm.getFilePathForRoom(myRoomName);
