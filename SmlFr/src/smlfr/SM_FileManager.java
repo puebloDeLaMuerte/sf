@@ -25,20 +25,21 @@ import processing.core.PImage;
 import processing.data.*;
 import smimport.ImportThread;
 import smimport.SM_JSONCreator;
-import updateModel.UpdateEvent;
-import updateModel.UpdateListener;
-import updateModel.ArtworkUpdateRequestEvent;
-import updateModel.ArtworkUpdateRequestListener;
-import updateModel.UpdateType;
-import updateModel.WallColorUpdateRequestEvent;
-import updateModel.WallUpdateRequestEvent;
 
 import SMUtils.FileManagerSheduledUpdateThread;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.NewProjectDialog;
 import SMUtils.SM_Frames;
+import SMUtils.artworkActionType;
 import SMUtils.awFileSize;
+import SMupdateModel.ArtworkUpdateRequestEvent;
+import SMupdateModel.ArtworkUpdateRequestListener;
+import SMupdateModel.UpdateEvent;
+import SMupdateModel.UpdateListener;
+import SMupdateModel.UpdateType;
+import SMupdateModel.WallColorUpdateRequestEvent;
+import SMupdateModel.WallUpdateRequestEvent;
 
 public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListener {
 
@@ -318,6 +319,18 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 	}
 	
+	public synchronized int getScrollPaneSpeed() {
+		
+		int s;
+		try {			
+			s = preferences.getInt("scrollPaneSpeed");
+		} catch (Exception e) {
+			System.err.println("FM: no scrollPaneSpeed found in prefs");
+			s = 16;
+		}
+		
+		return s;
+	}
 	
 	// MUSEUM:
 
@@ -1377,7 +1390,13 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			System.out.println("Getting This Wall: "+e.getOriginWall() +" in this room: "+e.getOriginRoom());
 			
 			SM_Wall originSM_Wall = (SM_Wall)base.getRoom(this, e.getOriginRoom()).getWalls().get((e.getOriginWall()));
-			originSM_Wall.removeArtwork(e.getName());
+			
+			originSM_Wall.artwork(artworkActionType.REMOVE, e.getName(), null);
+			
+//			originSM_Wall.artwork(SM_Wall.artworkActionType.REMOVE, e.getName(), null);
+			
+//			originSM_Wall.removeArtwork(e.getName());
+			
 		}
 		
 		// update Json
@@ -1417,7 +1436,13 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		System.out.println(e2);
 		for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 			lsnr.doUpdate(e2);
-			System.out.println("fire regular  " + lsnr.getClass());
+			System.out.print("fire regular  " + lsnr.getClass());
+			
+			if( lsnr.getClass() == SM_Wall.class ) {
+				System.out.println( ((SM_Wall)lsnr).getWallName() );
+				
+			}
+			else System.out.println();
 		}
 		for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
 			lsnr.doUpdate(e2);
@@ -1447,12 +1472,12 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		 * 
 		 *  Durch die unten stehende abfrage aus dem Event: e.isOriginalColorRequested() kann man sich
 		 *  das ganze e.isPreview() sparen. Alles wird dadurch einfacher: hier, aber auch im Update-Type,
-		 *  der sich ja durch alles mšgliche durchzieht!
+		 *  der sich ja durch alles mï¿½gliche durchzieht!
 		 * 
-		 *  Man mŸsste dafŸr zunŠchst im WallColorChooser die stellen durch den OriginalColorCallback ersetzen,
+		 *  Man mï¿½sste dafï¿½r zunï¿½chst im WallColorChooser die stellen durch den OriginalColorCallback ersetzen,
 		 *  die bisher die alte ".isPreview" Methode benutzen... dann die ganze Kette von da aufrollen.
 		 * 
-		 * 	Das kšnnte man mal Šndern, wenn der singleWallColor Commit gemacht ist!
+		 * 	Das kï¿½nnte man mal ï¿½ndern, wenn der singleWallColor Commit gemacht ist!
 		 * 
 		 * 	dein pip
 		 * 

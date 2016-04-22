@@ -29,12 +29,13 @@ import javax.swing.JSeparator;
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
 import SMUtils.WallColorChooser;
+import SMUtils.artworkActionType;
+import SMupdateModel.WallColorUpdateRequestEvent;
+import SMupdateModel.WallUpdateRequestEvent;
 
 import processing.core.PApplet;
 import processing.core.PShape;
 import processing.event.MouseEvent;
-import updateModel.WallColorUpdateRequestEvent;
-import updateModel.WallUpdateRequestEvent;
 
 public class SM_RoomProjectView extends PApplet implements DropTargetListener, DragGestureListener, Transferable, ActionListener {
 
@@ -220,6 +221,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 			text( artOver.getName(), 5 + (( width + thumbwidth)/2) - 50, 18);
 			text(artOver.getTitle(), 5 + (( width + thumbwidth)/2) - 50, 34);
 			image(artOver.getThumb(), ((width-thumbwidth)/2) - 50 , 5);
+			g.removeCache(g);
+			g.removeCache(artOver.getThumb());
 			popStyle();
 		}
 		
@@ -235,6 +238,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		rect(0,0,width, height);
 		popStyle();
 		
+		//String ppp = (mx) + " / " + (my);
+		//text(ppp, 200,200);
 
 	}
 	
@@ -250,14 +255,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //			line( wl.getNavPos()[0] * width, wl.getNavPos()[1] * height, wl.getNavPos()[2] * width, wl.getNavPos()[3] * height );
 			
 			
-			if( wl.getArtworksArray().length > 0 ) {
+			if( (Integer)wl.artwork(artworkActionType.HOWMANY, null, null) > 0 ) {
 
 				//PShape s = wallsActiveGfx.get(wl.getWallChar());
 
 				pushStyle();
 				rectMode(CORNERS);
 				noStroke();
-				for(SM_Artwork aw : wl.getArtworksArray()) {
+				for(SM_Artwork aw : (SM_Artwork[])wl.artwork(artworkActionType.GET_ARRAY, null, null)) {
 					
 					
 					
@@ -519,7 +524,9 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 							
 			try {
 				
-				String[] arr = (String[])dtde.getTransferable().getTransferData(SM_DataFlavor.SM_AW_Flavor);
+				Transferable transferable = dtde.getTransferable();
+				
+				String[] arr = (String[])transferable.getTransferData(SM_DataFlavor.SM_AW_Flavor);
 				String name = arr[0];
 				String originRoom = arr[1];
 				char originWall = arr[2].charAt(arr[2].length()-1);
@@ -592,8 +599,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	}
 	
 	@Override
-	public Object getTransferData(DataFlavor flavor)
-			throws UnsupportedFlavorException, IOException {
+	public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
 			String[] t = new String[] { artOver.getName(), myRoom.getName(), artOver.getWall() ,"SM_Artwork" };
 		return t;
 	}

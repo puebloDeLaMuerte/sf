@@ -18,8 +18,14 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import SMUtils.Lang;
+import SMUtils.artworkActionType;
 import SMUtils.awFileSize;
 import SMUtils.progState;
+import SMupdateModel.ArtworkUpdateRequestEvent;
+import SMupdateModel.ArtworkUpdateRequestListener;
+import SMupdateModel.UpdateListener;
+import SMupdateModel.WallColorUpdateRequestEvent;
+import SMupdateModel.WallUpdateRequestEvent;
 
 //import com.sun.tools.jdi.LinkedHashMap;
 
@@ -27,11 +33,6 @@ import processing.core.PImage;
 import processing.core.PShape;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
-import updateModel.UpdateListener;
-import updateModel.ArtworkUpdateRequestEvent;
-import updateModel.ArtworkUpdateRequestListener;
-import updateModel.WallColorUpdateRequestEvent;
-import updateModel.WallUpdateRequestEvent;
 
 
 
@@ -232,6 +233,14 @@ public class SM_Room {
 		
 	}
 	
+	public void initProjectView2(Dimension _size, Point _loc, SmlFr base) {
+		
+		starterThread thread = new starterThread();
+		thread.setName("RoomArr starter Thread");
+		thread.set(_size, _loc, base, this);
+		thread.start();
+	}
+	
 	public void initArrangementView(Dimension _size, Point _loc, SmlFr basw) {
 		
 //		JFrame f = new JFrame();
@@ -254,7 +263,7 @@ public class SM_Room {
 		f.setLayout(new BorderLayout());
 		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		f.setUndecorated(true);
-//		f.setAlwaysOnTop(true);
+		f.setAlwaysOnTop(true);
 		myArrangementView = new SM_RoomArrangementView(_size.width, _size.height, base);
 		f.add(myArrangementView);
 		File fl = basw.fm.getFilePathForRoom(myRoomName);
@@ -305,7 +314,7 @@ public class SM_Room {
 		for( Object c : myWalls.keySet() ) {
 			SM_Wall w = (SM_Wall)myWalls.get(c);
 			
-			if( w.hasArtwork(_name) && w.getWallChar() == _wallChar ) return true;
+			if( (Integer)w.artwork(artworkActionType.HAS, _name, null) == 1 && w.getWallChar() == _wallChar ) return true;
 			
 		}
 		return false;
@@ -313,7 +322,7 @@ public class SM_Room {
 	
 	public void addArtworkToWall(SM_FileManager fm, SM_Artwork _aw, char _wall) {
 		SM_Wall w = (SM_Wall)myWalls.get((char)_wall);
-		w.addArtwork(_aw, _aw.getName());
+		w.artwork(artworkActionType.ADD, _aw.getName(), _aw);
 	}
 	
 	public void setRoomcolor( int _c) {
@@ -442,7 +451,7 @@ public class SM_Room {
 			
 			SM_Wall wl 					= myWalls.get(_forWalls[i]);
 			
-			SM_Artwork[] aws 			= wl.getArtworksArray();
+			SM_Artwork[] aws 			= (SM_Artwork[]) wl.artwork(artworkActionType.GET_ARRAY, null,null);
 			SM_ExportArtwork[] exaws	= new SM_ExportArtwork[aws.length];
 			
 			for( int ii =0; ii< aws.length; ii++) {
@@ -490,6 +499,55 @@ public class SM_Room {
 	}
 	
 	
+	class starterThread extends Thread{
+		
+		private Dimension size;
+		private Point point;
+		private SmlFr base;
+		private SM_Room room;
+		
+		public void set(Dimension _size, Point _loc, SmlFr base, SM_Room _room) {
+			this.size = _size;
+			this.point = _loc;
+			this.base = base;
+			this.room = _room;
+		}
+		
+		public void run() {
+			
+			JFrame f = new JFrame();
+			f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			f.setLayout(new BorderLayout());
+			f.setUndecorated(true);
+			myProjectView = new SM_RoomProjectView(size.width, size.height, base);
+//			f.setAlwaysOnTop(true);
+			f.add(myProjectView);
+			File fl = base.fm.getFilePathForRoom(myRoomName);
+
+			myProjectView.frame = f;
+			myProjectView.resize(size.width, size.height);
+			myProjectView.setPreferredSize(size);
+			myProjectView.setMinimumSize(size);
+			myProjectView.frame.add(myProjectView);
+			myProjectView.init(fl, room);
+			
+			while( !myProjectView.isSetupRun() ) {
+				try {
+					Thread.sleep(20);
+				} catch (InterruptedException e) {
+					System.err.println("wait on RoomProjectView: setup was interrupted " + e.getMessage());
+				}
+			}
+			
+			myProjectView.frame.pack();
+			myProjectView.frame.setResizable(false);
+			myProjectView.frame.setLocation(point.x, point.y);
+			myProjectView.frame.setTitle(myRealName);
+			myProjectView.frame.setVisible(true);
+			
+		}
+		
+	}
 	
 }
 

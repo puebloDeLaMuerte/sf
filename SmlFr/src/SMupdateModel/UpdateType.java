@@ -1,4 +1,4 @@
-package updateModel;
+package SMupdateModel;
 
 public enum UpdateType {
 	BLANK,

@@ -5,9 +5,10 @@ import java.util.LinkedHashMap;
 
 import javax.swing.event.EventListenerList;
 
-import updateModel.UpdateEvent;
-import updateModel.UpdateListener;
-import updateModel.UpdateType;
+import SMupdateModel.UpdateEvent;
+import SMupdateModel.UpdateListener;
+import SMupdateModel.UpdateType;
+
 
 public class FileManagerSheduledUpdateThread extends Thread {
 

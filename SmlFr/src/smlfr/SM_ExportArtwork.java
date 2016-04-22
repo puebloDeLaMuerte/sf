@@ -62,10 +62,10 @@ public class SM_ExportArtwork {
 			
 			if( it != this ) {
 	
-				// Sind wir Ÿber oder untereinander?
+				// Sind wir ï¿½ber oder untereinander?
 				if( it.getWallPosX()+it.getWidth() > myWallPosX && !(it.getWallPosX() > myWallPosX+myWidth)  ) {
 	
-					// nŠher als alle anderen?
+					// nï¿½her als alle anderen?
 					int thisDistance = myWallPosY - it.getWallPosY() - it.getHeight();
 	
 					if( thisDistance >= 0 && thisDistance < distance ) {
@@ -98,7 +98,7 @@ public class SM_ExportArtwork {
 				// Sind wir nebeneinander?
 				if (it.getWallPosY() + it.getHeight() > myWallPosY && !(it.getWallPosY() > myWallPosY + myHeight)) {
 	
-					// nŠher als alle anderen?
+					// nï¿½her als alle anderen?
 					int thisDistance = myWallPosX - it.getWallPosX() - it.getWidth();
 	
 					if ( thisDistance >= 0 && thisDistance < distance) {
@@ -174,7 +174,7 @@ public class SM_ExportArtwork {
 	//			myXDistDrawPos[2] = myWallPosX;
 			}
 			
-			if( isRightmost ) {
+			if( true/*isRightmost*/ ) {
 				distanceToRight = myWall.getWidth() - myWallPosX - myWidth;
 				
 				distRightDrawPos = new int[4];
@@ -185,7 +185,7 @@ public class SM_ExportArtwork {
 				distRightDrawPos[3] = distRightDrawPos[1];
 			}
 			
-			if( isLowest ) {
+			if( true/*isLowest */) {
 				distanceToBottom = myWall.getHeight() - myWallPosY - myHeight;
 				
 				distBottomDrawPos = new int[4];

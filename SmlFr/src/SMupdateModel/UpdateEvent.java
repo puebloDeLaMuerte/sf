@@ -1,4 +1,5 @@
-package updateModel;
+package SMupdateModel;
+
 
 import java.util.ArrayList;
 import java.util.EventObject;

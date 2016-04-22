@@ -1,11 +1,15 @@
 package smimport;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+
+import javax.swing.JFrame;
 
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class ImportGui extends PApplet {
+public class ProgressGui extends PApplet {
 
 	private String		status, title;
 	private int			current, max;
@@ -56,5 +60,33 @@ public class ImportGui extends PApplet {
 	
 	public void increaseCurrent( int increment ) {
 		current += increment;
+	}
+	
+	public static ProgressGui create() {
+		
+		JFrame f = new JFrame();
+		f.setLayout(new BorderLayout());
+		
+
+		ProgressGui gui = new ProgressGui();
+		
+
+		
+		gui.frame = f;
+
+		gui.resize(gui.getSize());
+		gui.setPreferredSize(gui.getSize());
+		gui.setMinimumSize(gui.getSize());
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		gui.frame.setLocation(dim.width/2 - 175, dim.height/2-40);
+		gui.frame.setResizable(false);
+		gui.frame.add(gui);
+		gui.init();
+		gui.frame.pack();
+		gui.frame.setVisible(true);
+//		gui.frame.setLocation(0);
+//		wallArr.frame.setTitle(Lang.wall+" "+wallArr.getWallName().substring(wallArr.getWallName().lastIndexOf('_')+1));
+		
+		return gui;
 	}
 }

@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -19,12 +20,13 @@ import processing.core.PImage;
 
 import SMUtils.Lang;
 import SMUtils.ViewMenuItem;
+import SMUtils.artworkActionType;
+import SMupdateModel.UpdateEvent;
+import SMupdateModel.UpdateListener;
+import SMupdateModel.UpdateType;
 
 import sfrenderer.ImageExporter;
 import sfrenderer.SM_Renderer;
-import updateModel.UpdateEvent;
-import updateModel.UpdateListener;
-import updateModel.UpdateType;
 
 public class SM_ViewManager implements ActionListener, WindowListener, UpdateListener {
 	
@@ -114,6 +116,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		renderer.resize(renderer.getSize());
 		renderer.setPreferredSize(renderer.getSize());
 		renderer.setMinimumSize(renderer.getSize());
+
 		renderer.frame.add(renderer);
 		//
 		renderer.init();
@@ -131,6 +134,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 				e.printStackTrace();
 			}
 		}
+//		renderer.frame.setAlwaysOnTop(true);
 		renderer.frame.pack();
 		renderer.frame.setVisible(true);
 		renderer.frame.setLocation(wm.getScreen().width-renderer.getSize().width,0);
@@ -270,9 +274,9 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 						 // make Artwork Graphics null, hope for heapspace to be cleared!
 						//
 						SM_Wall w = wallArrangementViews.get(s).getWall();
-						HashMap<String, SM_Artwork> aws = w.getArtworks();
-						for( String as : aws.keySet() ) {
-							SM_Artwork aw = w.getArtwork(as);
+//						HashMap<String, SM_Artwork> aws = w.getArtworks();
+//						for( String as : aws.keySet() ) {
+						for( SM_Artwork aw : (SM_Artwork[])w.artwork(artworkActionType.GET_ARRAY, null, null) ) {
 							aw.unloadGraphics();
 						}
 					
@@ -315,7 +319,19 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 				}
 			}
 			
+			
 			File exportLoc = new File(myRoomArrView.myRoom.getExportPath().getAbsolutePath()+"/"+name+".png");
+			
+			if( !exportLoc.getParentFile().exists() ) {
+//				try {
+//					File n = new File(exportLoc.getParent() + "/");
+//					n.createNewFile();
+					exportLoc.getParentFile().mkdirs();
+//				} catch (IOException e1) {
+//					e1.printStackTrace();
+//				}
+			}
+			
 			
 
 			JFileChooser ch = new JFileChooser(exportLoc);

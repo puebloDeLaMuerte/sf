@@ -1,13 +1,14 @@
 {
   "shadowAmount": 10,
   "previousProject": {
-    "projectPath": "/Users/philipptoegel/Desktop/ffff/petula/petula.sfp",
-    "projectName": "petula"
+    "projectPath": "/Users/pht/Desktop/Schreibtisch alt - SORTIEREN!!!/ffff/sandra und ihr team/sandra und ihr team.sfp",
+    "projectName": "sandra und ihr team"
   },
-  "fileChooserCurrentDirectory": "/Users/philipptoegel/Desktop/ffff/petula",
   "shadowOfsetAmount": 5,
-  "midHeight": 1500,
+  "fileChooserCurrentDirectory": "/Users/pht/Desktop/gerneauchnicht",
   "museumData": "MuKuDeWe.sfm",
-  "collectionPath": "/Users/philiddddddddddpptoegel/git/SimulFöhr/SmlFr/collections/Sammlung_MKDW/Sammlung_MKDW.xls",
+  "midHeight": 1500,
+  "scrollPaneSpeed": 16,
+  "collectionPath": "/Users/philipptoegel/Desktop/gggggggggggg/Sammlung Kunst der Westküste/Sammlung Kunst der Westküste.xls",
   "measureDisplayMillis": 200
 }

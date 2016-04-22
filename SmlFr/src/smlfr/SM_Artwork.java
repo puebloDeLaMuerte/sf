@@ -456,7 +456,11 @@ public class SM_Artwork {
 	}
 	
 	public PImage getThumb() {
-		return myThumb;
+		if (myThumb != null) {
+			return myThumb;
+		} else {
+			return new PImage(50,50);
+		}
 	}
 	
 	public JSONObject getAsJsonObjectForProject(SM_FileManager fm) {

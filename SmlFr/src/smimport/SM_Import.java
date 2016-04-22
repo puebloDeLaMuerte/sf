@@ -9,10 +9,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -35,7 +37,7 @@ public class SM_Import extends PApplet  {
 	
 	private SmlFr		 			base;
 	private JFileChooser			chooser;
-	protected ImportGui				gui;
+	protected ProgressGui				gui;
 
 	
 	private SM_FileManager		 	fm;
@@ -145,7 +147,9 @@ public class SM_Import extends PApplet  {
 	public String[] batchImport(File _artLibSaveLocation, boolean _collection, boolean intoExistingProject) {
 
 		
-		gui = initImportGui();
+//		gui = initImportGui();
+		
+		gui = ProgressGui.create();
 		
 		
 //		JFrame pan = new JFrame();
@@ -215,7 +219,7 @@ public class SM_Import extends PApplet  {
 
 				}
 
-				// Transform Data from Input Format to SimuFšhr Format
+				// Transform Data from Input Format to SimuFï¿½hr Format
 				
 				LinkedHashMap<String, int[]> convertedMeasures = measurementInputFormatToInternalFormat(tmpSize, tmpFrameSize, tmpPptSize);
 				
@@ -327,7 +331,7 @@ public class SM_Import extends PApplet  {
 		}
 		
 		
-		
+		gui.setStatus(Lang.finishingImport);
 		
 		// Message: Success
 		JPanel p = new JPanel();
@@ -338,14 +342,33 @@ public class SM_Import extends PApplet  {
 		
 		if( unimportedArtworks.size() > 0) {
 			
-			String uim = Lang.couldntImport_1;
+			p = new JPanel();
+			p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+			
+			JTextArea i1 = new JTextArea(Lang.couldntImport_1);
+			i1.setBackground(p.getBackground());
+		
+			String uim = "";
 			for( String s : unimportedArtworks ) {
 				System.err.println( "couldn't import "+s );
-				uim += "	- "+s+"\n";
+				uim += "- "+s+"\n";
 			}
-			uim += Lang.couldntImport_2;
-
-			javax.swing.JOptionPane.showMessageDialog(p, uim, Lang.warning, javax.swing.JOptionPane.WARNING_MESSAGE);
+			
+			JTextArea i2 = new JTextArea(Lang.couldntImport_2);
+			i2.setBackground(p.getBackground());
+			
+			JTextArea textArea = new JTextArea(uim);
+			JScrollPane scrollPane = new JScrollPane(textArea);  
+			textArea.setLineWrap(false);  
+			scrollPane.setPreferredSize( new Dimension( 500, 300 ) );
+			
+			
+			p.add(i1);
+			p.add(scrollPane);
+			p.add(i2);
+			
+			
+			javax.swing.JOptionPane.showMessageDialog(null, p, Lang.warning, javax.swing.JOptionPane.WARNING_MESSAGE, base.getWarningIcon());
 		}
 
 		String[] returnArray = sucessfulImports.toArray(new String[sucessCount]);
@@ -363,13 +386,14 @@ public class SM_Import extends PApplet  {
 		return returnArray;
 	}
 	
-	private ImportGui initImportGui() {
+	@Deprecated
+	private ProgressGui initImportGui() {
 		
 		JFrame f = new JFrame();
 		f.setLayout(new BorderLayout());
 		
 
-		ImportGui gui = new ImportGui();
+		ProgressGui gui = new ProgressGui();
 		
 
 		

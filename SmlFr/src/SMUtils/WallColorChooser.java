@@ -265,6 +265,8 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
                     Lang.changeColorTitle,
                     color);
 			
+			System.out.println("we returned from the color chooser dialog.");
+			
 			if( newColor != null) {
 				redInt   = (int)newColor.getRed();
 				greenInt = (int)newColor.getGreen();
@@ -273,7 +275,12 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 				fieldRed.setText(""+redInt);
 				fieldGreen.setText(""+greenInt);
 				fieldBlue.setText(""+blueInt);
+				
+				evaluateFields();
+				sendPreviewCallbacks();
 			}
+
+			System.out.println("color button pressed");
 		}
 		
 		

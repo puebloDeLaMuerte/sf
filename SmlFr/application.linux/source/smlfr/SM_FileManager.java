@@ -1177,9 +1177,9 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		UpdateEvent e2 = new UpdateEvent(this, UpdateType.WALL, dataList);
 		
 		System.out.println(e2);
-		for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
+		for(SMupdateModel.UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 			lsnr.doUpdate(e2);
-			System.out.println("fire regular  " + lsnr.getClass());
+			System.out.println("fire regular  " + lsnr.getClass() + "   -   " + lsnr.toString());
 		}
 		for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
 			lsnr.doUpdate(e2);
@@ -1207,12 +1207,12 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		 *  
 		 *  Durch die unten stehende abfrage aus dem Event: e.isOriginalColorRequested() kann man sich
 		 *  das ganze e.isPreview() sparen. Alles wird dadurch einfacher: hier, aber auch im Update-Type,
-		 *  der sich ja durch alles mšgliche durchzieht!
+		 *  der sich ja durch alles mï¿½gliche durchzieht!
 		 * 
-		 *  Man mŸsste dafŸr zunŠchst im WallColorChooser die stellen durch den OriginalColorCallback ersetzen,
+		 *  Man mï¿½sste dafï¿½r zunï¿½chst im WallColorChooser die stellen durch den OriginalColorCallback ersetzen,
 		 *  die bisher die alte ".isPreview" Methode benutzen... dann die ganze Kette von da aufrollen.
 		 *  
-		 * 	Das kšnnte man mal Šndern, wenn der singleWallColor Commit gemacht ist!
+		 * 	Das kï¿½nnte man mal ï¿½ndern, wenn der singleWallColor Commit gemacht ist!
 		 * 
 		 * 	dein pip
 		 * 

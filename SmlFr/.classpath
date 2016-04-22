@@ -77,11 +77,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/philipptoegel/eclipse_workspace/libs/google-gson-2.2.4/gson-2.2.4-javadoc.jar"/>
-	<classpathentry kind="lib" path="/Users/philipptoegel/eclipse_workspace/libs/google-gson-2.2.4/gson-2.2.4-sources.jar"/>
-	<classpathentry kind="lib" path="/Users/philipptoegel/eclipse_workspace/libs/google-gson-2.2.4/gson-2.2.4.jar"/>
-	<classpathentry kind="lib" path="/Users/philipptoegel/eclipse_workspace/libs/poi-3.10.1/poi-3.10.1-20140818.jar"/>
-	<classpathentry kind="lib" path="/Users/philipptoegel/eclipse_workspace/libs/processingPDF/pdf/library/itext.jar"/>
-	<classpathentry kind="lib" path="/Users/philipptoegel/eclipse_workspace/libs/processingPDF/pdf/library/pdf.jar"/>
+	<classpathentry kind="lib" path="/Users/pht/Desktop/old git/eclipse_workspace Kopie/libs/google-gson-2.2.4/gson-2.2.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="/Users/pht/Desktop/old git/eclipse_workspace Kopie/libs/google-gson-2.2.4/gson-2.2.4-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/pht/Desktop/old git/eclipse_workspace Kopie/libs/google-gson-2.2.4/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="/Users/pht/Desktop/old git/eclipse_workspace Kopie/libs/poi-3.10.1/poi-3.10.1-20140818.jar"/>
+	<classpathentry kind="lib" path="/Users/pht/Desktop/old git/eclipse_workspace Kopie/libs/processingPDF/pdf/library/itext.jar"/>
+	<classpathentry kind="lib" path="/Users/pht/Desktop/old git/eclipse_workspace Kopie/libs/processingPDF/pdf/library/pdf.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

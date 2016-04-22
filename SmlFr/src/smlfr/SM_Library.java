@@ -9,6 +9,8 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 //import java.awt.datatransfer.DataFlavor;
@@ -32,10 +34,6 @@ import java.util.LinkedHashMap;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import updateModel.ArtworkUpdateRequestEvent;
-import updateModel.UpdateEvent;
-import updateModel.UpdateListener;
-import updateModel.WallUpdateRequestEvent;
 
 
 import SMUtils.AWPanel;
@@ -43,8 +41,13 @@ import SMUtils.ArtworkMeasurementParent;
 import SMUtils.Lang;
 import SMUtils.MeasureMenuItem;
 import SMUtils.awFileSize;
+import SMupdateModel.ArtworkUpdateRequestEvent;
+import SMupdateModel.UpdateEvent;
+import SMupdateModel.UpdateListener;
+import SMupdateModel.WallUpdateRequestEvent;
+import smimport.ProgressGui;
 
-public class SM_Library extends JFrame implements UpdateListener, ActionListener, ArtworkMeasurementParent {
+public class SM_Library extends JFrame implements UpdateListener, ActionListener, ArtworkMeasurementParent /*, AdjustmentListener*/ {
 	
 	/**
 	 * 
@@ -72,6 +75,8 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 	private JButton 	deleteBtn;
 	
 	public SM_Library (SM_FileManager _fm, HashMap<String, SM_Artwork> _artworks ) {
+		
+		System.out.println("Library creation in progress...");
 		
 		artworks = _artworks;
 		fm = _fm;
@@ -101,20 +106,22 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 	private void setScrollpaneSize() {
 		
 		if (panels != null) {
-			int r = (int) Math.floor((float) this.getSize().width
-					/ (float) labelX);
+			int r = (int) Math.floor((float) (this.getSize().width - this.getInsets().left - this.getInsets().right -10) / (float) (labelX + 4) );
 			int rows = (int) Math.ceil((panels.size() / r));
 			rows++; // for savety reasons
-			int contentHeight = (int) (rows * labelY) + (rows * 8);
+			rows++;
+			int contentHeight = (int) (rows * (labelY+4));
 			artworksPanel.setPreferredSize(new Dimension(scrollPanel.getWidth(), contentHeight));
 		}
 	}
 	
 	public final void initUI() {
-
+		
+		System.out.println("LIBRARY: initUI");
+		
         JPanel panel = new JPanel(new BorderLayout());
         JPanel controlPanel = new JPanel();
-
+        
         controlPanel.setBackground(new Color(0.96f,0.96f,0.96f));
         controlPanel.setPreferredSize(new Dimension(250, ctrlHeight));
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
@@ -134,7 +141,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
         deleteBtn = new JButton(Lang.deleteBtn);
         deleteBtn.setFocusable(false);
         deleteBtn.addActionListener(this);
-             
+        
         controlPanel.add(importBtn);
         controlPanel.add(deleteBtn);
         
@@ -152,11 +159,16 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
         
         panels = new HashMap<String, AWPanel>();
         artworksPanel = createArtworksPanel(artworks);
-      
+        
         scrollPanel = new JScrollPane(artworksPanel);
         scrollPanel.setBackground(Color.white);
         scrollPanel.setBorder(new EmptyBorder(new Insets(10, 0, 0, 0)));
         scrollPanel.setPreferredSize(this.getSize());
+        int speed = fm.getScrollPaneSpeed();
+        scrollPanel.getVerticalScrollBar().setUnitIncrement(speed);
+
+//        scrollPanel.getVerticalScrollBar().addAdjustmentListener(this);
+//        scrollPanel.getHorizontalScrollBar().addAdjustmentListener(this);
         
         setScrollpaneSize();
         
@@ -170,11 +182,13 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 //        artworksPanel.setPreferredSize(new Dimension(scrollPanel.getWidth(), contentHeight));
         panel.add(scrollPanel, BorderLayout.CENTER);
         
-                
+        
         add(panel);
-
+        
+//        setAlwaysOnTop(true);
+        
         pack();
-
+        
         setTitle( fm.getProjectName() + "  -  Library");
         
         boolean sd = fm.isSaveDirty();
@@ -185,14 +199,30 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 
 	private JPanel createArtworksPanel(HashMap<String, SM_Artwork> _awks) {
 		
+		System.out.println("LIBRARY: creating artworks Panel...");
+		
 		JPanel awp = new JPanel();
 		awp.setLayout(new FlowLayout(FlowLayout.LEFT));
 		awp.setBackground(Color.white);
 		
+		int sze = _awks.size() +1;
+		int cnt = 1;
+		
+//		ProgressGui gui = ProgressGui.create();
+//		gui.setTitle(Lang.loadingArtworks);
+		
 		for( String s : _awks.keySet() ) {
 			
+			System.out.print(s+" ");
+//			gui.setStatus((int)(((float)((float)cnt/(float)sze))*100) +" %" ); 
+			this.setTitle( Lang.loadingArtworks + ((int)(((float)((float)cnt/(float)sze))*100) +" %" ) );
 			createSingleAWPanel(s, awp);
+			cnt++;
 		}
+		
+//		gui.setVisible(false);
+//		gui.frame.setVisible(false);
+//		gui = null;
 		
 		return awp;
 	}
@@ -303,7 +333,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		int d = 0;
 		
 		switch (sortBy) {
-		case KŸnstler :
+		case KÃ¼nstler :
 			d = pan1.getArtist().compareToIgnoreCase(pan2.getArtist());
 			break;
 
@@ -315,7 +345,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 			d = pan1.getInvNr().compareToIgnoreCase(pan2.getInvNr());
 			break;
 			
-		case Grš§e:
+		case GrÃ¶ÃŸe:
 			if( pan1.getSizeSquared() > pan2.getSizeSquared()) d = 1;
 			else d = -1;
 			break;
@@ -412,7 +442,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 			for(SM_Artwork aw : aws) {
 				;
 				
-				// Bild abhŠngen, falls an Wand
+				// Bild abhï¿½ngen, falls an Wand
 				
 				if( aw.getWall() != null) {
 					
@@ -480,5 +510,10 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		ArtworkUpdateRequestEvent e = new ArtworkUpdateRequestEvent(this, false, -1, data);
 		fm.updateRequested(e);
 	}
+
+//	@Override
+//	public void adjustmentValueChanged(AdjustmentEvent arg0) {
+//		this.repaint();
+//	}
 	
 }

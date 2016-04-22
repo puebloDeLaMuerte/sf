@@ -1,18 +1,26 @@
 package smlfr;
 
-import java.awt.Color;
-import java.awt.GraphicsEnvironment;
+import java.awt.*;
+//import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.io.File;
+//import java.util.HashMap;
 import java.util.HashMap;
-import javax.swing.ImageIcon;
+//import java.util.HashMap;
+
+import javax.swing.*;
+
+//import javax.swing.ImageIcon;
+//import javax.swing.JFrame;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import SMUtils.Lang;
 import SMUtils.SM_Frames;
+import SMUtils.SysInfo;
 import SMUtils.awFileSize;
 import SMUtils.progState;
 
@@ -55,6 +63,10 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 	public static void main(String _args[]) {
 
 		System.out.println("SimuFoehr launched");
+		
+//		SysInfo.displayMessage();
+        
+		
 		if(_args.length >0) {
 			System.out.println("with args:");
 		
@@ -95,14 +107,22 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 			fm.loadFrames(frameGfxs);
 			// gui stuff here, keep in mind that you might have to step away from transparent windows and such...
 			
-			javax.swing.JLabel label = new javax.swing.JLabel(new ImageIcon("resources/icons/sf_transparent_150x150.png") );
+			JLabel label = new JLabel(new ImageIcon("resources/icons/sf_transparent_150x150.png") );
 			base = this;
+			
 			base.add(label);
+			//UPDATE// base.add(label);
 
 //			java.awt.Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //			base.setSize(150,150);
+			
 			Rectangle realscreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+			
+//			Toolkit tk = Toolkit.getDefaultToolkit();
+			
+//			Dimension realscreen = tk.getScreenSize();
 			base.setSize(realscreen.width, realscreen.height);
+			
 
 			base.setUndecorated(true);
 			base.setBackground(new Color(1f,1f,1f));
@@ -190,10 +210,11 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 		// // init rooms in Project from architecture (without project data)
 		
 		String[] s = fm.getRoomNamesInProject() ;
-		System.out.println("the rooms in this project:");
+		System.out.print("the rooms in this project: ");
 		for(String ss : s) {
-			System.out.println(ss);
+			System.out.print(ss+", ");
 		}
+		System.out.println();
 		
 		rooms = new HashMap<String, SM_Room>();
 		
@@ -201,6 +222,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 			
 			JSONObject room = fm.getRoomFromArchitecture(s[ii]);
 			rooms.put(s[ii], new SM_Room(base, s[ii], room, fm.getFilePathForRoom(s[ii])));
+			System.out.println("created: "+rooms.get(s[ii]).getName());
 		}
 
 		
@@ -209,15 +231,20 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 		
 		// // init (general) Artworks
 		
+		System.out.println("creating artworks...");
+		
 		String[] aws = fm.getArtLibraryFromProject();
 		artworks = new HashMap<String, SM_Artwork>();
 		for(int a=0;a<aws.length; a++) {
 
 			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]), fm.getImageFilePathForArtwork(aws[a], awFileSize.MEDIUM), frameGfxs ));
+//			System.out.println("created: " + artworks.get(aws[a]).getName());
 		}
 		
 	
 		// // init (in Rooms) Artworks
+		
+		System.out.println("putting Artworks in Rooms...");
 		
 		JSONArray jRooms = fm.getRoomsInProject();
 		// rooms
@@ -226,6 +253,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 			JSONObject jRoom = jRooms.getJSONObject(r);
 			SM_Room sfRoom = rooms.get(jRoom.getString("roomName"));
 			
+			System.out.print(rooms.get(jRoom.getString("roomName"))+" ");
 			
 			// walls
 			for( Object w : sfRoom.getWalls().keySet() ) {
@@ -241,9 +269,11 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 			
 			
 		}
+		System.out.println();
 		
 		// // init WallColor for Rooms and Walls if present
 		
+		System.out.println("init wallColor...");
 		
 		jRooms = fm.getRoomsInProject();
 		
@@ -295,7 +325,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 		
 		
 		
-	
+		System.out.println("requesting state change now: PROJECT");
 		
 		wm.requestStateChange(progState.PROJECT, null);
 	}

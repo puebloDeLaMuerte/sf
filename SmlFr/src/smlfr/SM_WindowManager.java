@@ -41,6 +41,7 @@ public class SM_WindowManager{
 					if( x <= 5) {
 						Point loc = rst.getPos(1+(x%2), y);
 						base.rooms.get(r).initProjectView(rst.getSize(1, 1), loc, base);
+//						base.rooms.get(r).initProjectView2(rst.getSize(1, 1), loc, base);
 						x++;
 						if(x%2==0)y++;
 					} else {
@@ -189,12 +190,17 @@ public class SM_WindowManager{
 		case ROOM:
 
 			tLib.setSize(rst.getSize(2, 1));
-			tLib.setLocation(rst.getPos(0, 3));
+			System.out.println("Library size: "+rst.getSize(2, 1).getWidth() + " - " + rst.getSize(2, 1).getHeight());
+			tLib.setLocation(rst.getPos(0, 2));
+			System.out.println("Library pos:  "+rst.getPos(0, 2).getX() + " - " + rst.getPos(0, 3).getY());
 			break;
 
 		default:
 			tLib.setSize(rst.getSize(1, 3));
+			System.out.println("Library size: "+rst.getSize(2, 1).getWidth() + " - " + rst.getSize(2, 1).getHeight());
 			tLib.setLocation(0, 0);
+			System.out.println("Library pos:  "+rst.getPos(0, 2).getX() + " - " + rst.getPos(0, 3).getY());
+
 			break;
 		}
 		

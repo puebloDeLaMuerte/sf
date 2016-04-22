@@ -41,10 +41,10 @@ public class Raster {
 		JFrame blah = new JFrame();
 		blah.pack();
 		
-		System.out.println("top: " + blah.getInsets().top);
-		System.out.println("bot: " + blah.getInsets().bottom);
-		System.out.println("lft: " + blah.getInsets().left);
-		System.out.println("rgt: " + blah.getInsets().right);
+//		System.out.println("top: " + blah.getInsets().top);
+//		System.out.println("bot: " + blah.getInsets().bottom);
+//		System.out.println("lft: " + blah.getInsets().left);
+//		System.out.println("rgt: " + blah.getInsets().right);
 
 		windowDecorX = blah.getInsets().left + blah.getInsets().right;
 		windowDecorY = blah.getInsets().top  + blah.getInsets().bottom;
@@ -52,16 +52,16 @@ public class Raster {
         GraphicsConfiguration config = _base.getGraphicsConfiguration();
         GraphicsDevice sd = config.getDevice();
         
-        System.out.println(sd.getIDstring());
-        System.out.println("x: "+sd.getDefaultConfiguration().getBounds().x);
-        System.out.println("y: "+sd.getDefaultConfiguration().getBounds().y);
-        System.out.println("w: "+sd.getDefaultConfiguration().getBounds().width);
-        System.out.println("h: "+sd.getDefaultConfiguration().getBounds().height);
+//        System.out.println(sd.getIDstring());
+//        System.out.println("x: "+sd.getDefaultConfiguration().getBounds().x);
+//        System.out.println("y: "+sd.getDefaultConfiguration().getBounds().y);
+//        System.out.println("w: "+sd.getDefaultConfiguration().getBounds().width);
+//        System.out.println("h: "+sd.getDefaultConfiguration().getBounds().height);
         insets = Toolkit.getDefaultToolkit().getScreenInsets(sd.getDefaultConfiguration());
-        System.out.println("task bar top:  "+insets.top);
-        System.out.println("task bar bottom:  "+insets.bottom);
-        System.out.println("task bar left:  "+insets.left);
-        System.out.println("task bar right:  "+insets.right);
+//        System.out.println("task bar top:  "+insets.top);
+//        System.out.println("task bar bottom:  "+insets.bottom);
+//        System.out.println("task bar left:  "+insets.left);
+//        System.out.println("task bar right:  "+insets.right);
         
         topOffset = insets.top;
 		

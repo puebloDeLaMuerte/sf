@@ -1,13 +1,16 @@
 package smlfr;
 
 import java.util.HashMap;
+import java.util.Set;
+
+import SMUtils.artworkActionType;
+import SMupdateModel.UpdateEvent;
+import SMupdateModel.UpdateListener;
 
 
 import processing.core.PImage;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
-import updateModel.UpdateEvent;
-import updateModel.UpdateListener;
 
 public class SM_Wall implements UpdateListener {
 	
@@ -23,6 +26,7 @@ public class SM_Wall implements UpdateListener {
 	
 	// from Project:
 	private HashMap<String, SM_Artwork>		myArtworks;
+//	public enum								artworkActionType { ADD, REMOVE, HAS, GET_AW, GET_KEYS, GET_ARRAY};
 	private Integer							myWallColor;
 	private boolean							hasColor;
 	
@@ -65,7 +69,7 @@ public class SM_Wall implements UpdateListener {
 	public boolean hasColor() {
 		return hasColor;
 	}
-	
+		
 	public void setArtworks(JSONArray _awks) {
 
 		myArtworks = new HashMap<String, SM_Artwork>();
@@ -94,9 +98,58 @@ public class SM_Wall implements UpdateListener {
 			myArtworks.get(id).initProjectData(myWallName, myRoom.getRealName(), posX, posY, light, shadow);
 		}
 	}
+		
+	public synchronized Object artwork( artworkActionType type, String _name, SM_Artwork _aw) {
+		
+		switch (type) {
+		
+		case ADD:
+			
+			if( _name == null || _aw == null) break;
+			addArtwork(_aw, _name);
+			break;
+
+		case REMOVE:
+			
+			if( _name == null) break;
+			removeArtwork(_name);
+			break;
+			
+		case HAS:
+			
+			if( _name == null) break;
+			if( hasArtwork(_name) ) {
+				return (Integer)1;
+			}else{
+				return (Integer)0;
+			}
+			
+		case HOWMANY:
+			return (Integer)myArtworks.size();
+			
+		case GET_AW:
+			
+			if( _name == null) break;
+			return getArtwork(_name);
+			
+		case GET_KEYS:
+			
+			return getArtworksKeys();
+			
+		case GET_ARRAY:
+			
+			return getArtworksArray();
+			
+		default:
+			return null;
+		}
+		
+		
+		return null;
+	}
 	
-	public void addArtwork(SM_Artwork _aw, String _awName) {
-		myArtworks.put(_awName, _aw);
+	private void addArtwork(SM_Artwork _aw, String _awName) {
+		
 		
 		int adOfset = 0;
 		
@@ -105,29 +158,35 @@ public class SM_Wall implements UpdateListener {
 			if( (a.getTotalHeight() - a.getTotalWallPos()[1]) < 5  ) adOfset += a.getTotalWidth() + 100;
 		}
 		
+		myArtworks.put(_awName, _aw);
+		
 		_aw.setTotalWallPos(adOfset % mySize[0], _aw.getTotalHeight());
 //		_aw.setTotalWallPos((mySize[0]/2)-(_aw.getTotalWidth()/2), (mySize[1]/2)+(_aw.getTotalHeight()/2));
 		System.out.println("added Artwork "+_aw.getTitle()+"\n  pos: "+((mySize[0]/2)-(_aw.getTotalWidth()/2))+" x "+((mySize[1]/2)+(_aw.getTotalHeight()/2)));
 	}
 	
-	public void removeArtwork(String _name) {
+	private void removeArtwork(String _name) {
 		System.out.println("Wall "+ myWallName+ " REMOVED: "+_name);
 		myArtworks.remove(_name);
 	}
 	
-	public boolean hasArtwork(String _name) {
+	private boolean hasArtwork(String _name) {
 		if(myArtworks.containsKey(_name)) return true;
 		else return false;
 	}
 	
-	public SM_Artwork getArtwork(String _name) {
+	private SM_Artwork getArtwork(String _name) {
 		if(myArtworks.containsKey(_name)) {
 			return myArtworks.get(_name);
 		}
 		else return null;
 	}
 	
-	public SM_Artwork[] getArtworksArray() {
+	private Set<String> getArtworksKeys(){
+		return myArtworks.keySet();
+	}
+
+	private SM_Artwork[] getArtworksArray() {
 		
 		SM_Artwork[] aws = new SM_Artwork[myArtworks.keySet().size()];
 		int i=0;
@@ -137,6 +196,7 @@ public class SM_Wall implements UpdateListener {
 		}
 		return aws;
 	}
+	
 	
 	public int getWidth() {
 		return mySize[0];
@@ -181,10 +241,6 @@ public class SM_Wall implements UpdateListener {
 		}
 	}
 
-	public HashMap<String, SM_Artwork> getArtworks() {
-		return myArtworks;
-	}
-	
 	@Override
 	public void doUpdate(UpdateEvent e) {
 		switch (e.getType()) {
@@ -200,4 +256,8 @@ public class SM_Wall implements UpdateListener {
 	public PImage getShadowImage() {
 		return myRoom.getShadowImage();
 	}
+
+
+
+	
 }

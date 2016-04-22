@@ -89,6 +89,8 @@ public class Skewmator extends PApplet {
 		PVector[] box = bigBox(lo, ro, ru, lu);
 		/**{smallestx, biggestx, smallesty, biggesty}**/
 
+//		float boxXsize =  (float)Math.ceil(box[1].x - box[0].x);
+//		float boxYsize =  (float)Math.ceil(box[3].y - box[2].y);
 		float boxXsize =  box[1].x - box[0].x;
 		float boxYsize =  box[3].y - box[2].y;
 		
@@ -157,6 +159,8 @@ public class Skewmator extends PApplet {
 			lu.mult(f);
 			boxXsize *= f;
 			boxYsize *= f;
+			boxXsize = (float)Math.ceil(boxXsize);
+			boxYsize = (float)Math.ceil(boxYsize);
 			
 			boxAnchorBigPicture.mult(f);
 			
@@ -218,7 +222,7 @@ public class Skewmator extends PApplet {
 		// the image is now ready to be drawn onto any surface that
 		// fits the scale value (1200*scale x 800*scale)
 
-		// bitteschšn!
+		// bitteschï¿½n!
 		
 		return sizedReturnImage;
 	}
@@ -270,7 +274,9 @@ public class Skewmator extends PApplet {
 
 		
 		// skew the image
+
 		img.setCorners((int)lo.x , (int)lo.y, (int)ro.x, (int)ro.y, (int)ru.x, (int)ru.y, (int)lu.x, (int)lu.y);
+//		img.setCorners((int)Math.floor(lo.x) , (int)Math.floor(lo.y), (int)Math.floor(ro.x), (int)Math.floor(ro.y), (int)Math.floor(ru.x), (int)Math.floor(ru.y), (int)Math.floor(lu.x), (int)Math.floor(lu.y));
 		
 //		System.out.println("sk: "+img.getWidth()+" x "+img.getHeight());
 

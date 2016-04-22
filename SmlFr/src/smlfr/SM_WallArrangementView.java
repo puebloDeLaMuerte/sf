@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.JMenu;
@@ -27,14 +28,16 @@ import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
 import SMUtils.WallRelativePositionChooser;
+import SMUtils.artworkActionType;
+import SMupdateModel.ArtworkUpdateRequestEvent;
+import SMupdateModel.UpdateEvent;
+import SMupdateModel.UpdateListener;
+import SMupdateModel.UpdateType;
+import SMupdateModel.WallUpdateRequestEvent;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
-import updateModel.UpdateEvent;
-import updateModel.UpdateListener;
-import updateModel.ArtworkUpdateRequestEvent;
-import updateModel.WallUpdateRequestEvent;
 
 public class SM_WallArrangementView extends PApplet implements DropTargetListener, UpdateListener, ActionListener, ArtworkMeasurementParent {
 
@@ -79,9 +82,12 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	private JMenu					editArtwork, allign, distance;
 	private JMenuItem				editMeasurements;
 	
+	private DistanceChooser			distanceChooser;
+	
 	private DropTarget				dt;
 	
 	private boolean					artworkUpdatePending = true;
+	private boolean					reCalculateDistances = true;
 	private boolean					firstTime = true;
 		
 	int 							shadowAmount;//10;;
@@ -108,8 +114,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		initMenu();
 		
-		for( String a : myWall.getArtworks().keySet() ) {
-			SM_Artwork aw = myWall.getArtworks().get(a);
+		for( String a : (Set<String>)myWall.artwork(artworkActionType.GET_KEYS,null,null)) {
+			
+			SM_Artwork aw = (SM_Artwork) myWall.artwork(artworkActionType.GET_AW, a, null);
 			PImage awimg = loadImage(aw.getFilePath().getAbsolutePath());
 			aw.setGfx( awimg  );
 		}
@@ -296,7 +303,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 //		background(15,0,25);
 
 	
-		// Mittelhšhe
+		// Mittelhï¿½he
 
 		
 		pushStyle();
@@ -338,8 +345,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		// DRAW selected
 		
-		if(myWall.getArtworksArray().length > 0 ) {
-			for( SM_Artwork a : myWall.getArtworksArray() ) {
+		SM_Artwork[] daAws = (SM_Artwork[]) myWall.artwork(artworkActionType.GET_ARRAY, null, null);
+		
+		if(daAws.length > 0 ) {
+			for( SM_Artwork a : daAws ) {
 				
 				if(a != null && a.isSelected() && !isValidDrag() ) {
 				
@@ -392,6 +401,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				float drawScale;
 				
 				loadMissingAWGraphics();
+				//calculateDistances();
 				
 				PGraphics gfx;
 				
@@ -407,7 +417,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 				if(!awDrag ) awOver = null;
 
-				for(SM_Artwork a : myWall.getArtworksArray()) {
+				SM_Artwork[] daAws = (SM_Artwork[]) myWall.artwork(artworkActionType.GET_ARRAY, null, null);
+				for(SM_Artwork a : daAws ) {
 					if( checkMouseOver(a) && !awDrag) {
 						awOver = a;
 					}
@@ -438,11 +449,12 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 		// DRAW Schatten
 		
+		SM_Artwork[] shadowAws = (SM_Artwork[]) myWall.artwork(artworkActionType.GET_ARRAY, null, null);
 		
-		if(myWall.getArtworksArray().length > 0 ) {
+		if(shadowAws.length > 0 ) {
 			
 			
-			for( SM_Artwork a : myWall.getArtworksArray() ) {
+			for( SM_Artwork a : shadowAws ) {
 
 				
 				int[] tmpPos = a.getTotalWallPos();
@@ -498,7 +510,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 								artworkSize.x, artworkSize.y);
 					} else {
 						System.err
-								.println("aa = null !!");
+								.println("artwork-gfx = null in drawWall4arrangementView");
 					}
 					g.removeCache(gfx);
 				
@@ -508,12 +520,38 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 				if(showDistances && !isValidDrag() && dcDraw != null && dcDraw.isReady()  ) {
 					
-
-					SM_ExportArtwork awDraw		=   dcDraw.getQuerryArtwork(a.getName()); 
-					awDraw.calculateNearestNeighbours( dcDraw.getAllArtworks() );
+					if( true /*reCalculateDistances*/ ) {
+						calculateDistances();
+						reCalculateDistances = false;
+					}
+					
+					// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
+					// TODO																		  TODO
+					// TODO build in checks for null values in SM_ExportArtwork					  TODO
+					// TODO alternatively: store the needed stuff in local variables??			  TODO
+					// TODO																		  TODO
+					// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
+					
+					
+					
+					SM_ExportArtwork awDraw		=   dcDraw.getQuerryArtwork(a.getName());
+					SM_ExportArtwork[] allAws = dcDraw.getAllArtworks();
+					
+					if( awDraw == null ) {
+						System.out.println( "BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK");
+						break;
+					}
+					
+					awDraw.calculateNearestNeighbours( allAws );
 					awDraw.calculateDistanceMeasureDrawPos();
 					
 					SM_ExportArtwork awValues	= dcValues.getQuerryArtwork(a.getName());
+					
+					if( awValues == null ) {
+						System.out.println( "BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK BREAK");
+						break;
+					}
+					
 					awValues.calculateNearestNeighbours( dcValues.getAllArtworks() );
 					awValues.calculateDistanceMeasureDrawPos();
 
@@ -534,43 +572,50 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 							
 							int[] c = awDraw.getDistDrawPosY();
 							
+							if( c != null ) {
+							
+								gfx.pushStyle();
+								gfx.noStroke();
+								gfx.fill(backgroundColor);
+								String s = awValues.getDistanceToNearestY()+" mm";
+								gfx.rect(c[0]+(f/2)-2, c[1]+(3*f)+3, gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
 
-							
-							gfx.pushStyle();
-							gfx.noStroke();
-							gfx.fill(backgroundColor);
-							String s = awValues.getDistanceToNearestY()+" mm";
-							gfx.rect(c[0]+(f/2)-2, c[1]+(3*f)+3, gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
-							
-							
-							gfx.stroke(180);
-							gfx.fill(180);
-							gfx.line( c[0], c[1], c[2], c[3] );
-							gfx.text( s, c[0]+(f/2), c[1]+(3*f) );
-							
-							gfx.popStyle();
+
+								gfx.stroke(180);
+								gfx.fill(180);
+								gfx.line( c[0], c[1], c[2], c[3] );
+								gfx.text( s, c[0]+(f/2), c[1]+(3*f) );
+
+								gfx.popStyle();
+							}
 						}
 						
 						if( awValues.hasNearestX() ) {
 							
 							
 							int[] c = awDraw.getDistDrawPosX();
-							gfx.pushStyle();
+							
+							if( c != null ) {
+								gfx.pushStyle();
 
-							gfx.noStroke();
-							gfx.fill(backgroundColor);
-							String s = awValues.getDistanceToNearestX()+" mm";
-							gfx.rect(c[0]+(f/2)-2, c[1]-(f/2)+3, gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
-							
-							gfx.stroke(180);
-							gfx.fill(180);
-							
-							gfx.line(c[0], c[1], c[2], c[3]);
-							gfx.text( s, c[0]+(f/2), c[1]-(f/2) );
-							
-							gfx.popStyle();
+								gfx.noStroke();
+								gfx.fill(backgroundColor);
+								String s = awValues.getDistanceToNearestX()+" mm";
+								gfx.rect(c[0]+(f/2)-2, c[1]-(f/2)+3, gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
+
+								gfx.stroke(180);
+								gfx.fill(180);
+
+								gfx.line(c[0], c[1], c[2], c[3]);
+								gfx.text( s, c[0]+(f/2), c[1]-(f/2) );
+
+								gfx.popStyle();
+							}
 						}
 						else {
+							
+							
+							
 							
 							gfx.pushStyle();
 							
@@ -594,22 +639,35 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 							
 							int[] c = awDraw.getDistToRightDrawPos();
 							
+							if( c != null ) {
+							
+								gfx.pushStyle();
 
-							
-							gfx.pushStyle();
+								gfx.noStroke();
+								gfx.fill(backgroundColor);
+								String s = awValues.getDistanceToRight()+" mm";
 
-							gfx.noStroke();
-							gfx.fill(backgroundColor);
-							String s = awValues.getDistanceToRight()+" mm";
-							gfx.rect(c[0]+(f/2)+(awDraw.getDistanceToRight()/2)-2, c[1]-(f/2)+3, gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
-							
-							gfx.stroke(180);
-							gfx.fill(180);
-							gfx.line(c[0], c[1], c[2], c[3]);
-							
-							gfx.text( s, c[0]+(f/2)+(awDraw.getDistanceToRight()/2), c[1]-(f/2) );
-							
-							gfx.popStyle();
+								float disttoright = awDraw.getDistanceToRight();
+								float c1 = c[0];
+								float f1 = f;
+								float v1 = c1+(f1/2)+(disttoright/2)-2;
+
+								float v2 = c[1]-(f/2)+3;
+
+								float v3 = gfx.textWidth(s)+4;
+
+								float v4 = -(gfx.textAscent()+3);
+
+								gfx.rect(v1, v2, v3, v4, 3);
+
+								gfx.stroke(180);
+								gfx.fill(180);
+								gfx.line(c[0], c[1], c[2], c[3]);
+
+								gfx.text( s, c[0]+(f/2)+(awDraw.getDistanceToRight()/2), c[1]-(f/2) );
+
+								gfx.popStyle();
+							}
 							
 						}
 
@@ -617,22 +675,23 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 							int[] c = awDraw.getDistToBottomDrawPos();
 
-							gfx.pushStyle();
+							if( c != null ) {
+								gfx.pushStyle();
 
-							gfx.noStroke();
-							gfx.fill(backgroundColor);
-							String s = awValues.getDistanceToBottom()+" mm";
-							gfx.rect(c[0]+(f/2)-2, c[1]-(f/2)+3+(awDraw.getDistanceToBottom()/2), gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
-							
-							gfx.stroke(180);
-							gfx.fill(180);
-							gfx.line(c[0], c[1], c[2], c[3]);
-//							gfx.line(c[0], gfx.height-c[1], c[2], gfx.height-c[3]);
+								gfx.noStroke();
+								gfx.fill(backgroundColor);
+								String s = awValues.getDistanceToBottom()+" mm";
+								gfx.rect(c[0]+(f/2)-2, c[1]-(f/2)+3+(awDraw.getDistanceToBottom()/2), gfx.textWidth(s)+4, -(gfx.textAscent()+3), 3);
 
-							gfx.text( s, c[0]+(f/2), c[1]-(f/2)+(awDraw.getDistanceToBottom()/2) );
+								gfx.stroke(180);
+								gfx.fill(180);
+								gfx.line(c[0], c[1], c[2], c[3]);
+								//							gfx.line(c[0], gfx.height-c[1], c[2], gfx.height-c[3]);
 
-							gfx.popStyle();
+								gfx.text( s, c[0]+(f/2), c[1]-(f/2)+(awDraw.getDistanceToBottom()/2) );
 
+								gfx.popStyle();
+							}
 						}
 
 
@@ -779,7 +838,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 							gfx.image(aa, artworkPos.x, artworkPos.y, artworkSize.x,
 									artworkSize.y);
 						} else {
-							System.err.println("aa = null !!");
+							System.err.println("artwork-gfx = null in drawWall4arrangementView");
 						}
 						
 						
@@ -869,7 +928,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 			// DRAW Schatten
 
-			if(myWall.getArtworksArray().length > 0 ) {
+			SM_Artwork[] shadowAws = (SM_Artwork[]) myWall.artwork(artworkActionType.GET_ARRAY, null, null);
+			
+			if(shadowAws.length > 0 ) {
 
 				//			if(!awDrag && _mode == 0) awOver = null;
 
@@ -884,7 +945,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 
 
-				for( SM_Artwork a : myWall.getArtworksArray() ) {
+				for( SM_Artwork a : shadowAws ) {
 
 					int[] tmpPos = a.getTotalWallPos();
 
@@ -985,7 +1046,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 						gfx.image(aa, artworkPos.x, artworkPos.y, artworkSize.x,
 								artworkSize.y);
 					} else {
-						System.err.println("ES W€HRE DA GEWESEN, in WallArrangementView, nŠmlich!");
+						System.err.println("ES Wï¿½HRE DA GEWESEN, in WallArrangementView, nï¿½mlich!");
 					}
 					g.removeCache(gfx);
 
@@ -1038,9 +1099,11 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 			lGfx.beginDraw();
 
-			if(myWall.getArtworksArray().length > 0 ) {
+			SM_Artwork[] lightAws = (SM_Artwork[]) myWall.artwork(artworkActionType.GET_ARRAY, null, null);
+			
+			if(lightAws.length > 0 ) {
 
-				for( SM_Artwork a : myWall.getArtworksArray() ) {
+				for( SM_Artwork a : lightAws ) {
 
 					if( a.hasLight() ) {
 
@@ -1130,10 +1193,12 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 
 		// init dcValues
 
-		aws = new SM_ExportArtwork[ myWall.getArtworksArray().length];
+		SM_Artwork[] daAws = (SM_Artwork[]) myWall.artwork(artworkActionType.GET_ARRAY, null, null);
+		
+		aws = new SM_ExportArtwork[ daAws.length];
 		
 		int i = 0;
-		for( SM_Artwork a : myWall.getArtworksArray() ) {
+		for( SM_Artwork a : daAws ) {
 			
 			aws[i] = new SM_ExportArtwork(a.getName(), a.getTotalWallPos(), a.getTotalWidth(), a.getTotalHeight() );
 			i++;
@@ -1148,10 +1213,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				
 		// init dcDraw
 		
-		aws = new SM_ExportArtwork[ myWall.getArtworksArray().length];
+		aws = new SM_ExportArtwork[ daAws.length];
 		
 		i = 0;
-		for( SM_Artwork a : myWall.getArtworksArray() ) {
+		for( SM_Artwork a : daAws ) {
 			int[] tmpPos = a.getTotalWallPos();
 			PVector totalPos = wptos( new PVector(tmpPos[0], tmpPos[1]), scale );
 			PVector totalSize = astos( new PVector(a.getTotalWidth(), a.getTotalHeight()), scale);
@@ -1248,14 +1313,17 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	
 	public void loadMissingAWGraphics() {
 		
-		for( String a : myWall.getArtworks().keySet() ) {
-			SM_Artwork aw = myWall.getArtworks().get(a);
+//		for( String a : myWall.getArtworks().keySet() ) {
+		for( SM_Artwork aw: (SM_Artwork[])myWall.artwork(artworkActionType.GET_ARRAY, null, null) ) {
+
 			if( ! aw.hasGfx() ) {
 				aw.setGfx( loadImage(aw.getFilePath().getAbsolutePath())  );
 			}
 			if( ! aw.hasGfx() ) {
 				String msg = Lang.noGraphicsfound +"\n " + aw.getName();
-				JOptionPane.showConfirmDialog(this, msg, Lang.err_loadImageFile, JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, base.warn);
+//				JOptionPane.showConfirmDialog(this, msg, Lang.err_loadImageFile, JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, base.warn);
+				JOptionPane.showMessageDialog(this, msg, Lang.err_loadImageFile, JOptionPane.OK_OPTION, null);
+				aw.setGfx(new PImage(100, 100));
 			}
 		}
 		
@@ -1281,7 +1349,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		ArrayList<SM_Artwork> selectedList = new ArrayList<SM_Artwork>();
 		
-		for( SM_Artwork aw : myWall.getArtworksArray() ) {
+		for( SM_Artwork aw : (SM_Artwork[])myWall.artwork(artworkActionType.GET_ARRAY, null, null) ) {
 			if( aw.isSelected() ) selectedList.add(aw);
 		}
 		
@@ -1309,7 +1377,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			minY = (int) lo.y;
 		}
 		
-		for (SM_Artwork a : myWall.getArtworksArray()) {
+		for (SM_Artwork a : (SM_Artwork[])myWall.artwork(artworkActionType.GET_ARRAY, null, null) ) {
 			
 			if( !shiftLoc ) a.setSelected(false);
 			
@@ -1331,7 +1399,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	
 	private void deselectAll() {
 		
-		for( SM_Artwork a : myWall.getArtworksArray() ) a.setSelected(false);
+		for( SM_Artwork a : (SM_Artwork[])myWall.artwork(artworkActionType.GET_ARRAY, null, null) ) a.setSelected(false);
 	}
 
 	@Override
@@ -1512,8 +1580,10 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	@Override
  	public void doUpdate(UpdateEvent e) {
 		artworkUpdatePending = true;
-		calculateDistances();
-//		awOver = null;
+		reCalculateDistances = true;
+		
+		if( e.getType() != UpdateType.POS_IN_WALL ) showDistances = false;
+
 	}
 	
 	@Override
@@ -1874,7 +1944,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			pos.put(a.getName(), a.getTotalWallPos());
 		}
 		
-		DistanceChooser d = new DistanceChooser(this, pos, aws, gap);
+		distanceChooser = new DistanceChooser(this, pos, aws, gap);
 	}
 	
 	public void distanceCallback(int dist, SM_Artwork[] aws) {
@@ -2009,7 +2079,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 				char originWall = arr[2].charAt(arr[2].length()-1);
 
 				// Artwork already on this wall?
-				if( myWall.hasArtwork(name) ) {
+				if( (Integer)myWall.artwork(artworkActionType.HAS, name, null) == 1 ) {
 					dtde.rejectDrop();
 					return;
 				}

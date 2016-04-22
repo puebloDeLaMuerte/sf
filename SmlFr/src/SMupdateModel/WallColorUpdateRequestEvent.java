@@ -1,4 +1,4 @@
-package updateModel;
+package SMupdateModel;
 
 import java.util.EventObject;
 
