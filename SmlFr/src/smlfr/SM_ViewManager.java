@@ -88,7 +88,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	public void initViews() {
 		int ofset = 0;
 		for( char w : renderer.getCurrentWallChars() ) {
-			System.out.println("getting arrview for "+w);
+			System.out.println("VIEW MANAGER: getting arrview for "+w);
 			wallArrangementViews.put(""+w, initWallArrangementView(w, 0/*ofset*/));
 			ofset += 40;
 //			renderer.updateArtworksLayer();
@@ -110,7 +110,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		f.setLayout(new BorderLayout());
 		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		renderer = new SM_Renderer(this,  _va, myRoomArrView.myRoom.getFilePath(), wm.getRaster().height*2);
-		System.out.println("renderer given this height: "+wm.getRaster().height*2);
+		System.out.println("VIEW MANAGER: renderer given this height: "+wm.getRaster().height*2);
 		
 		renderer.frame = f;
 		renderer.resize(renderer.getSize());
@@ -122,11 +122,11 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		renderer.init();
 		//
 //		renderer.resize(renderer.getSize());
-		System.out.println("vm: the renderer returns this size: " + renderer.getSize().width+" x "+renderer.getSize().height);
-		System.out.println("vm: the renderer-frame seems to be: "+renderer.frame.getWidth()+" x "+renderer.frame.getHeight());
+		System.out.println("VIEW MANAGER: vm: the renderer returns this size: " + renderer.getSize().width+" x "+renderer.getSize().height);
+		System.out.println("VIEW MANAGER: vm: the renderer-frame seems to be: "+renderer.frame.getWidth()+" x "+renderer.frame.getHeight());
 		int wait = 0;
 		while( !renderer.setupRun) {
-			System.out.println("waiting on Renderer setup() ...  "+wait++);
+			System.out.println("VIEW MANAGER: waiting on Renderer setup() ...  "+wait++);
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -260,7 +260,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	public synchronized void actionPerformed(ActionEvent e) {
 		
 		if( e.getSource().getClass().equals(ViewMenuItem.class)) {
-			System.out.println("This has happened: "+e.getActionCommand());
+			System.out.println("VIEW MANAGER: This has happened: "+e.getActionCommand());
 			ViewMenuItem sourceItem = (ViewMenuItem)e.getSource();
 			
 			
@@ -309,7 +309,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		
 		if( e.getActionCommand().equals(Lang.savePreviewImage)){
 			
-			System.out.println("saving preview image now");
+			System.out.println("VIEW MANAGER: saving preview image now");
 			
 			String name = "preview";
 			name = myRoomArrView.myRoom.getRealName();
@@ -358,7 +358,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 //				success = renderer.renderPreviewImage(filename);
 			}
 			
-//			System.out.println("success: "+success);
+//			System.out.println("VIEW MANAGER: success: "+success);
 		}
 		
 		System.gc();
@@ -373,7 +373,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			wallArrangementViews.get(""+_c).frame.setVisible(true);
 			wallArrangementViews.get(""+_c).setEnabled(true);
 			wallArrangementViews.get(""+_c).setVisible(true);
-			System.out.println("Wie wecken wir es wieder auf?");
+			System.out.println("VIEW MANAGER: Wie wecken wir es wieder auf?");
 		} else {
 			wallArrangementViews.get(""+_c).frame.toFront();
 		}
@@ -381,7 +381,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	}
 	
 	public synchronized void closeWallArr(String t){
-		System.out.println("finally, removing this windowwwwww: "+t);
+		System.out.println("VIEW MANAGER: finally, removing this windowwwwww: "+t);
 		for(String s : wallArrangementViews.keySet()) {
 
 			if( s.equalsIgnoreCase(t) ) {
@@ -394,12 +394,14 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 				}
 			}
 		}
-		System.out.println("WallArrangementViews: "+wallArrangementViews.size());
+		System.out.println("VIEW MANAGER: WallArrangementViews.size(): "+wallArrangementViews.size());
 		doActiveViews();
 	}
 	
 	public synchronized void sleepWallArr(String t){
-		System.out.println("fit's only going to be sleeping for a while: "+t);
+		
+		System.out.println("VIEW MANAGER: fit's only going to be sleeping for a while: "+t);
+		
 		for(String s : wallArrangementViews.keySet()) {
 
 			if( s.equalsIgnoreCase(t) ) {
@@ -410,26 +412,25 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 				}
 			}
 		}
-		System.out.println("WallArrangementViews: "+wallArrangementViews.size());
+		System.out.println("VIEW MANAGER: WallArrangementViews.size(): "+wallArrangementViews.size());
 		doActiveViews();
 	}
 	
 	public void dispose() {
 		
 		
-		if(renderer == null) System.out.println("ALARM GESCHLAGEN");
+		if(renderer == null) System.out.println("VIEW MANAGER: Arenderer is null !");
 		renderer.prepareFrameForClosing();
 		renderer.dispose();
 		renderer = null;
 		for( String s : wallArrangementViews.keySet() ) {
-			System.out.println("trying to dispose some views here!");
+			System.out.println("VIEW MANAGER: trying to dispose some views here!");
 			if( wallArrangementViews.get(s) != null) {
 				wallArrangementViews.get(s).setVisible(false);
 				wallArrangementViews.get(s).frame.setVisible(false);
 				wallArrangementViews.get(s).dispose();
-				System.out.println("disposed "+s);
+				System.out.println("VIEW MANAGER: disposed "+s);
 			}
-			System.out.println("this is how it went");
 		}
 		wallArrangementViews = null;
 	}
@@ -445,15 +446,17 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		System.out.println("disposing VM, this is the source from Window closes: " + e.getSource());
-		if (true/*e.getSource()*/) {
-			System.out.println(e.getSource());
+		
+		System.out.print("disposing VM: ");
+		
 			JFrame f = (JFrame) e.getSource();
 			f.setVisible(false);
 			String t = f.getTitle();
+			System.out.print(t);
 			t = t.substring(t.length() - 1);
+			System.out.println("VIEW MANAGER:  sleeping this WallArr: "+t);
 			sleepWallArr(t);
-		}
+		
 	}
 
 	@Override
@@ -494,7 +497,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		case POS_IN_WALL:
 			
 			for (String s : data.keySet()) {
-				System.out.println("VM: receiving update request: " + s + ": " + data.get(s));
+				System.out.println("VIEW MANAGER: receiving update request: " + s + ": " + data.get(s));
 				if (s.contains("wall")) {
 					Object o = data.get(s);
 					String os = (String) o;
@@ -518,7 +521,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		case FRAME_STYLE:
 			
 			for (String s : data.keySet()) {
-				System.out.println("VM: receiving update request: " + s + ": " + data.get(s));
+				System.out.println("VIEW MANAGER: receiving update request: " + s + ": " + data.get(s));
 				if (s.contains("wall")) {
 					
 					Object o = data.get(s);
@@ -581,7 +584,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		case WALL:
 			
 			for (String s : data.keySet()) {
-				System.out.println("VM: receiving update request: " + s + ": " + data.get(s));
+				System.out.println("VIEW MANAGER: receiving update request: " + s + ": " + data.get(s));
 				if (s.contains("wall")) {
 					
 					Object o = data.get(s);
@@ -602,7 +605,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			
 		case GENERAL_AW_DATA:
 			for (String s : data.keySet()) {
-				System.out.println("VM: receiving update request: " + s + ": " + data.get(s));
+				System.out.println("VIEW MANAGER: receiving update request: " + s + ": " + data.get(s));
 				if (s.contains("wall")) {
 					
 					Object o = data.get(s);
@@ -632,7 +635,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	
 	public synchronized void requestRendererUpdate( char _wc) {
 		if( renderer != null ) {
-			System.out.println("requesting Update");
+			System.out.println("VIEW MANAGER: requesting Update");
 			renderer.update.lights(_wc);
 			renderer.update.artworks(_wc);
 		}

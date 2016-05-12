@@ -190,16 +190,16 @@ public class SM_WindowManager{
 		case ROOM:
 
 			tLib.setSize(rst.getSize(2, 1));
-			System.out.println("Library size: "+rst.getSize(2, 1).getWidth() + " - " + rst.getSize(2, 1).getHeight());
+			System.out.println("WINDOW MANAGER: Library size: "+rst.getSize(2, 1).getWidth() + " - " + rst.getSize(2, 1).getHeight());
 			tLib.setLocation(rst.getPos(0, 2));
-			System.out.println("Library pos:  "+rst.getPos(0, 2).getX() + " - " + rst.getPos(0, 3).getY());
+			System.out.println("WINDOW MANAGER: Library pos:  "+rst.getPos(0, 2).getX() + " - " + rst.getPos(0, 3).getY());
 			break;
 
 		default:
 			tLib.setSize(rst.getSize(1, 3));
-			System.out.println("Library size: "+rst.getSize(2, 1).getWidth() + " - " + rst.getSize(2, 1).getHeight());
+			System.out.println("WINDOW MANAGER: Library size: "+rst.getSize(2, 1).getWidth() + " - " + rst.getSize(2, 1).getHeight());
 			tLib.setLocation(0, 0);
-			System.out.println("Library pos:  "+rst.getPos(0, 2).getX() + " - " + rst.getPos(0, 3).getY());
+			System.out.println("WINDOW MANAGER: Library pos:  "+rst.getPos(0, 2).getX() + " - " + rst.getPos(0, 3).getY());
 
 			break;
 		}

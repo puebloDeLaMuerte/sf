@@ -458,9 +458,9 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		if(tmp.exists()) {
 			tmp.delete();
-			System.out.println("TEMP FILE DELETED: "+tmp.getAbsolutePath());
+			System.out.println("FILE MANAGER: temp file deleted: "+tmp.getAbsolutePath());
 		}
-		else System.err.println("TEMP FILE DIDN'T EXIST!");
+		else System.err.println("FILE MANAGER: temp file didnt exist!");
 		
 	}
 	
@@ -568,8 +568,8 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 //			projectPath = new File(projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp");
 			
-			System.out.println("NEW: projectFileSaveLoc: "+projectFileSaveLoc.getAbsolutePath());
-			System.out.println("NEW: artLibSaveLocation: "+artLibSaveLocation.getAbsolutePath());
+			System.out.println("FILE MANAGER: NEW: projectFileSaveLoc: "+projectFileSaveLoc.getAbsolutePath());
+			System.out.println("FILE MANAGER: NEW: artLibSaveLocation: "+artLibSaveLocation.getAbsolutePath());
 			
 
 
@@ -673,7 +673,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			}
 
 			String pFileName = projectFileSaveLoc.getAbsolutePath()+"/"+projectName+".sfp";
-			System.out.println("THE PROJECT WILL BE SAVED AS: "+pFileName);
+			System.out.println("FILE MANAGER: THE PROJECT WILL BE SAVED AS: "+pFileName);
 			
 			
 			saveJSONObject(theNewProj, pFileName);
@@ -741,7 +741,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	private synchronized void loadRegular(File _f) {
 		
 		if( _f.exists() ) {
-			System.out.println("loading this project:\n"+_f.getAbsolutePath());
+			System.out.println("FILE MANAGER: loading this project:\n"+_f.getAbsolutePath());
 			project = loadJSONObject(_f);
 			loaded = true;
 		}
@@ -759,7 +759,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			updatePrefs("previousProject", p.toString());
 			
 			projectPath = _f;
-			System.out.println("projectPath: "+projectPath.getAbsolutePath());
+			System.out.println("FILE MANAGER: projectPath: "+projectPath.getAbsolutePath());
 			currentProjectName = p.getString("projectName");
 		}
 	}
@@ -1179,22 +1179,22 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	
 	public synchronized void unregisterViewManagerUpdateListeners() {
 
-		System.out.println("Trying to remove "+updateListeners_ArrViews.getListenerCount()+" Listeners");
+		System.out.println("FILE MANAGER: Trying to remove "+updateListeners_ArrViews.getListenerCount()+" Listeners");
 		
 		Object[] lstnrs = updateListeners.getListeners(UpdateListener.class);
 		
-		System.out.println("i have gotten "+lstnrs.length+" listeners as array");
+		System.out.println("FILE MANAGER: i have gotten "+lstnrs.length+" listeners as array");
 		
 		for( Object l : lstnrs ) {
 			UpdateListener ls = (UpdateListener)l;
 			
 			if(ls.getClass().equals(SM_ViewManager.class)) {
-				System.out.println("removing view manager...");
+				System.out.println("FILE MANAGER: removing view manager...");
 				updateListeners.remove(UpdateListener.class, ls);
 			}
 		}
 		
-		System.out.println("removed some, now its "+updateListeners.getListenerCount()+" Listeners");
+		System.out.println("FILE MANAGER: removed some, now its "+updateListeners.getListenerCount()+" Listeners");
 	}
 	
 	
@@ -1355,16 +1355,17 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	@Override
 	public synchronized void updateRequested(WallUpdateRequestEvent e) {
 		
+		System.out.println("FILE MANAGER: update requested");
 
-		System.out.println("the artwork name: "+  e.getName());
-		System.out.println("the target room: "+e.getTargetRoom());
+		System.out.println("   the artwork name: "+  e.getName());
+		System.out.println("   the target room: "+e.getTargetRoom());
 		
 		String targetWall = "w_"+e.getTargetRoom()+"_"+e.getTargetWall();
 		String originWall = "w_"+e.getOriginRoom()+"_"+e.getOriginWall();
 
 		
-		System.out.println("the Target is: "+targetWall);
-		System.out.println("the Origin is: "+originWall);
+		System.out.println("   the Target is: "+targetWall);
+		System.out.println("   the Origin is: "+originWall);
 		
 		// update artwork
 		// update room (Target)
@@ -1387,7 +1388,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		if( ! e.getOriginRoom().equalsIgnoreCase("Library")) {
 			
-			System.out.println("Getting This Wall: "+e.getOriginWall() +" in this room: "+e.getOriginRoom());
+			System.out.println("FILE MANAGER: Getting This Wall: "+e.getOriginWall() +" in this room: "+e.getOriginRoom());
 			
 			SM_Wall originSM_Wall = (SM_Wall)base.getRoom(this, e.getOriginRoom()).getWalls().get((e.getOriginWall()));
 			
@@ -1433,20 +1434,20 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		UpdateEvent e2 = new UpdateEvent(this, UpdateType.WALL, dataList);
 		
-		System.out.println(e2);
+		System.out.println("FILE MANAGER: fire update event" );
 		for(UpdateListener lsnr : updateListeners.getListeners(UpdateListener.class) ) {
 			lsnr.doUpdate(e2);
-			System.out.print("fire regular  " + lsnr.getClass());
-			
-			if( lsnr.getClass() == SM_Wall.class ) {
-				System.out.println( ((SM_Wall)lsnr).getWallName() );
-				
-			}
-			else System.out.println();
+//			System.out.print("fire regular  " + lsnr.getClass());
+//			
+//			if( lsnr.getClass() == SM_Wall.class ) {
+//				System.out.println( ((SM_Wall)lsnr).getWallName() );
+//				
+//			}
+//			else System.out.println();
 		}
 		for(UpdateListener lsnr : updateListeners_ArrViews.getListeners(UpdateListener.class) ) {
 			lsnr.doUpdate(e2);
-			System.out.println("fire arrView  " + lsnr.getClass());
+//			System.out.println("FILE MANAGER: fire arrView  " + lsnr.getClass());
 		}
 	}
 
@@ -1455,16 +1456,16 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	public synchronized void updateRequested(WallColorUpdateRequestEvent e) {
 		
 		System.out.println();
-		System.out.println("the fileManager has received an update request: WallColor");
-		System.out.println("from: " + e.getSource().getClass().getName());
-		System.out.println("for room: "+ e.getRoomName());
-		if( e.isSingleWall() ) System.out.println("it's for this wall only: " + e.getWallCharacter());
-		else System.out.println("for the entire room");
+		System.out.println("FILE MANAGER: the fileManager has received an update request: WallColor");
+		System.out.println("FILE MANAGER: from: " + e.getSource().getClass().getName());
+		System.out.println("FILE MANAGER: for room: "+ e.getRoomName());
+		if( e.isSingleWall() ) System.out.println("FILE MANAGER: it's for this wall only: " + e.getWallCharacter());
+		else System.out.println("FILE MANAGER: for the entire room");
 		Color temp = new Color(e.getColor());
-		System.out.println("color: "+e.getColor()+": ["+temp.getRed()+","+temp.getGreen()+","+temp.getBlue()+"]");
-		if( e.isPreview() ) System.out.println("it is a preview");
-		else System.out.println("it's for real!");
-		if( e.isOriginalColorRequested()) System.out.println("originalColor is Requested");
+		System.out.println("FILE MANAGER: color: "+e.getColor()+": ["+temp.getRed()+","+temp.getGreen()+","+temp.getBlue()+"]");
+		if( e.isPreview() ) System.out.println("FILE MANAGER: it is a preview");
+		else System.out.println("FILE MANAGER: it's for real!");
+		if( e.isOriginalColorRequested()) System.out.println("FILE MANAGER: originalColor is Requested");
 		
 		/**
 		 * 
@@ -1486,7 +1487,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		if( e.isOriginalColorRequested()) {
 			
-			System.out.println("FM: isOriginalColorRequested");
+			System.out.println("FILE MANAGER: isOriginalColorRequested");
 			
 			UpdateEvent o = new UpdateEvent(this, UpdateType.ORIGINAL_COLOR, null);
 			
@@ -1502,11 +1503,11 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		if( !e.isSingleWall() ) {
 			
-			System.out.println("FM: isRoom");
+			System.out.println("FILE MANAGER: isRoom");
 			
 			if(!e.isPreview()) {
 				
-				System.out.println("FM: is NO preview");
+				System.out.println("FILE MANAGER: is NO preview");
 			
 				// Set Room Color:
 				
@@ -1543,7 +1544,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 			else // send preview event:
 			{
-				System.out.println("FM: isPreview");
+				System.out.println("FILE MANAGER: isPreview");
 				
 				LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
 				data.put("roomName", e.getRoomName());
@@ -1565,12 +1566,12 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		
 		if( e.isSingleWall() ) {
 			
-			System.out.println("FM: isSingleWall");
+			System.out.println("FILE MANAGER: FM: isSingleWall");
 
 			
 			if( e.isDeleteWallColor() ) {
 				
-				System.out.println("FM: DELETE SAYS THE FILE MANAGER");
+				System.out.println("FILE MANAGER: DELETE SAYS THE FILE MANAGER");
 				
 				// update Wall-Object
 				
@@ -1613,7 +1614,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 				if( ! e.isPreview() ) {
 					
-					System.out.println("FM: is NO preview");
+					System.out.println("FILE MANAGER: is NO preview");
 					
 					// update JSON
 					
@@ -1661,7 +1662,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 					
 				{
 					
-					System.out.println("FM: isPreview");
+					System.out.println("FILE MANAGER: isPreview");
 
 					
 					LinkedHashMap<String, Object> data = new LinkedHashMap<String, Object>();
@@ -1697,7 +1698,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 					javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, getQuestionIcon(),
 					Lang.saveOnExitOptions, 2);
 			
-			System.out.println("returnvalue: "+choose);
+			System.out.println("FILE MANAGER: returnvalue: "+choose);
 			
 			switch (choose) {
 			case 1:
@@ -1714,10 +1715,10 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			}
 		}
 		else {
-			System.err.println("exiting");
+			System.err.println("FILE MANAGER: exiting");
 			System.exit(0);
 		}
-		System.err.println("QUIT REQUEST SHOULD BE HANDELED");
+		System.err.println("FILE MANAGER: QUIT REQUEST SHOULD BE HANDELED! They however were not this time!");
 	}
 
 

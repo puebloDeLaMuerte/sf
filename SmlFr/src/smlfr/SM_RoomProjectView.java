@@ -556,7 +556,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 				
 //				WallUpdateRequestEvent e = new WallUpdateRequestEvent(this, name, wallOver, myRoom.getName());
 				
-				System.out.println("firing this update Request event: "+name+" "+ wallOver+" "+ myRoom.getName()+" "+ originRoom+" "+ originWall);
+				System.out.println("ROOM_PROJ_VIEW: firing this update Request event: "+name+" "+ wallOver+" "+ myRoom.getName()+" "+ originRoom+" "+ originWall);
 				
 				WallUpdateRequestEvent e = new WallUpdateRequestEvent(this, name, wallOver, myRoom.getName(), originRoom, originWall);
 

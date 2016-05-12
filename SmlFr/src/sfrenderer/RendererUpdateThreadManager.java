@@ -28,13 +28,13 @@ public class RendererUpdateThreadManager {
 //		renderer.loop();
 
 
-//		System.out.println("threads.size: " + threads.size());
+//		System.out.println("RENDERER_UPDATE_THREAD_MANAGER threads.size: " + threads.size());
 		ColorUpdateThread t = new ColorUpdateThread( _previewColor, _previewWall, _previewWallColor);
 		threads.add(t);
 		
 		t.start();
-		System.out.println("threads.size: " + threads.size());
-//		System.out.println("alive: "+t.isAlive());
+		System.out.println("RENDERER_UPDATE_THREAD_MANAGER threads.size: " + threads.size());
+//		System.out.println("RENDERER_UPDATE_THREAD_MANAGER alive: "+t.isAlive());
 
 	}
 	
@@ -46,12 +46,12 @@ public class RendererUpdateThreadManager {
 		
 
 
-//		System.out.println("threads.size: " + threads.size());
+//		System.out.println("RENDERER_UPDATE_THREAD_MANAGER threads.size: " + threads.size());
 		ArtworksUpdateThread t = new ArtworksUpdateThread(_wallChar);
 		registerThread( t );
 		t.start();
-//		System.out.println("alive: "+t.isAlive());
-//		System.out.println("threads.size: " + threads.size());
+//		System.out.println("RENDERER_UPDATE_THREAD_MANAGER alive: "+t.isAlive());
+//		System.out.println("RENDERER_UPDATE_THREAD_MANAGER threads.size: " + threads.size());
 //		for( int i = 0; i<threads.size(); i++ ) {
 //			System.out.println(i +": "+threads.get(i).getName()+ " : "+ ((UpdateThread)threads.get(i)).getWallChar()+": "+threads.get(i).getState());
 //		}
@@ -64,12 +64,12 @@ public class RendererUpdateThreadManager {
 //		renderer.setBusy(true, Lang.rendererBusy);
 //		renderer.loop();
 
-//		System.out.println("threads.size: " + threads.size());
+//		System.out.println("RENDERER_UPDATE_THREAD_MANAGER threads.size: " + threads.size());
 		LightsUpdateThread t = new LightsUpdateThread(_wallChar);
 		registerThread( t);
 		t.start();
-		System.out.println("threads.size: " + threads.size());
-//		System.out.println("alive: "+t.isAlive());
+		System.out.println("RENDERER_UPDATE_THREAD_MANAGER threads.size: " + threads.size());
+//		System.out.println("RENDERER_UPDATE_THREAD_MANAGER alive: "+t.isAlive());
 		
 	}
 	
@@ -80,11 +80,11 @@ public class RendererUpdateThreadManager {
 	
 	private void unregisterThread(Thread me) {
 		
-//		System.out.println("THREAD MANAGER: threads.size: " + threads.size());
-//		System.out.println("THREAD MANAGER: unregistering thread: " + me.toString());
+//		System.out.println("RENDERER_UPDATE_THREAD_MANAGER THREAD MANAGER: threads.size: " + threads.size());
+//		System.out.println("RENDERER_UPDATE_THREAD_MANAGER THREAD MANAGER: unregistering thread: " + me.toString());
 		threads.remove(me);
 		renderer.setBusyQueueCurrent(threads.size());
-//		System.out.println("THREAD MANAGER: threads.size: " + threads.size());
+//		System.out.println("RENDERER_UPDATE_THREAD_MANAGER THREAD MANAGER: threads.size: " + threads.size());
 		
 		if( threads.size() == 0) {
 			
@@ -203,7 +203,8 @@ public class RendererUpdateThreadManager {
 				try {
 					Thread.sleep(50);
 				} catch( Exception e ) {
-					
+					System.err.println("THIS EXCEPTION GOT CAUGHT: ");
+					e.printStackTrace();
 				}
 			}
 			
@@ -282,7 +283,8 @@ public class RendererUpdateThreadManager {
 				try {
 					Thread.sleep(50);
 				} catch( Exception e ) {
-					
+					System.err.println("THIS EXCEPTION GOT CAUGHT: ");
+					e.printStackTrace();
 				}
 			}
 			

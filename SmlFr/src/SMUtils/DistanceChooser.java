@@ -45,7 +45,7 @@ public class DistanceChooser extends JFrame implements ActionListener, ChangeLis
 		
 		// Layout
 		
-		System.out.println(gap);
+//		System.out.println(gap);
 		if(gap < 0 ) gap = 0;
 		
 		SpinnerModel model = new SpinnerNumberModel(gap, 0, 100000, 15);

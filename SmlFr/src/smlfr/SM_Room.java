@@ -473,7 +473,7 @@ public class SM_Room {
 		
 		String saveLoc = getExportPath().getAbsolutePath()+"/"+myRealName+".pdf";
 		
-		System.out.println("The export will be saved to: "+saveLoc);
+		System.out.println("ROOM: The export will be saved to: "+saveLoc);
 		
 		SM_Exporter export = new SM_Exporter(exwls, saveLoc, myRealName, base.fm.getProjectName(), grundriss);
 		

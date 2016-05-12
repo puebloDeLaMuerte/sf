@@ -5,7 +5,12 @@ import java.awt.*;
 import java.awt.Rectangle;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 //import java.util.HashMap;
 import java.util.HashMap;
 //import java.util.HashMap;
@@ -20,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import SMUtils.Lang;
 import SMUtils.SM_Frames;
+import SMUtils.SysInfo;
 import SMUtils.awFileSize;
 import SMUtils.progState;
 
@@ -61,17 +67,54 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 	
 	public static void main(String _args[]) {
 
-		System.out.println("SimuFoehr launched");
 		
-//		SysInfo.displayMessage();
-        
+		try {
+			File logLock = new File("resources/logs/no.log");
+
+			if( !logLock.exists() ) {
+				
+				System.out.println("SimuFoehr launched");
+				System.out.println("no log-lock has been detected, so the output goes to a file!");
+				
+				
+				File logs = new File("resources/logs");
+				if( !logs.exists() ) logs.mkdir();
+
+				SimpleDateFormat dateForm = new SimpleDateFormat("yyyyMMdd-HHmmss");//dd/MM/yyyy
+
+				String timestamp =  dateForm.format(new java.util.Date());
+
+				PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream(logs.getAbsolutePath()+"/sfLog"+timestamp+".txt")), true);
+
+				System.setOut(stream);
+				System.setErr(stream);
+
+
+				System.out.println("stream: SimuFoehr launched");
+				System.err.println("errstr: SimuFoehr launched");
+				System.out.println();
+
+//				SysInfo.displayMessage();
+				SysInfo.printSysStats();
+				SysInfo.printHeapStats();
+
+			} else {
+				System.out.println("SimuFoehr launched");
+				System.out.println("a log-lock has been detected. Output goes to console...\n");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		
 		if(_args.length >0) {
-			System.out.println("with args:");
+			System.out.println("main args:");
 		
 			for( String a : _args) {
 				System.out.println(" - "+a);
 			}
+		} else {
+			System.out.println("no main args");
 		}
 		
 		SwingUtilities.invokeLater(new Runnable() {
@@ -221,7 +264,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 			
 			JSONObject room = fm.getRoomFromArchitecture(s[ii]);
 			rooms.put(s[ii], new SM_Room(base, s[ii], room, fm.getFilePathForRoom(s[ii])));
-			System.out.println("created: "+rooms.get(s[ii]).getName());
+			System.out.println("SMLFR: created: "+rooms.get(s[ii]).getName());
 		}
 
 		
@@ -230,20 +273,20 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 		
 		// // init (general) Artworks
 		
-		System.out.println("creating artworks...");
+		System.out.println("SMLFR: creating artworks...");
 		
 		String[] aws = fm.getArtLibraryFromProject();
 		artworks = new HashMap<String, SM_Artwork>();
 		for(int a=0;a<aws.length; a++) {
 
 			artworks.put(aws[a], new SM_Artwork( fm.loadArtwork(aws[a]), fm.getImageFilePathForArtwork(aws[a], awFileSize.MEDIUM), frameGfxs ));
-//			System.out.println("created: " + artworks.get(aws[a]).getName());
+//			System.out.println("SMLFR: created: " + artworks.get(aws[a]).getName());
 		}
 		
 	
 		// // init (in Rooms) Artworks
 		
-		System.out.println("putting Artworks in Rooms...");
+		System.out.println("SMLFR: putting Artworks in Rooms...");
 		
 		JSONArray jRooms = fm.getRoomsInProject();
 		// rooms
@@ -272,7 +315,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 		
 		// // init WallColor for Rooms and Walls if present
 		
-		System.out.println("init wallColor...");
+		System.out.println("SMLFR: init wallColor...");
 		
 		jRooms = fm.getRoomsInProject();
 		
@@ -324,7 +367,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 		
 		
 		
-		System.out.println("requesting state change now: PROJECT");
+		System.out.println("SMLFR: requesting state change now: PROJECT");
 		
 		wm.requestStateChange(progState.PROJECT, null);
 	}
@@ -362,7 +405,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 
 	@Override
 	public void windowGainedFocus(WindowEvent e) {
-//		System.out.println("happy Focus");
+//		System.out.println("SMLFR: happy Focus");
 //		this.toBack();
 	}
 

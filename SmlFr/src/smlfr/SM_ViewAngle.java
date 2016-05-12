@@ -24,7 +24,7 @@ public class SM_ViewAngle {
 	public void sayHi() {
 		int count = 0;
 		for( String s : wallSkew.keySet() ) {
-			System.out.println("skews found for "+myName+": "+count+++": "+s);
+			System.out.println("VIEW_ANGLE: skews found for "+myName+": "+count+++": "+s);
 			for( Float fl : wallSkew.get(s) ) System.out.print(fl+", ");
 		}
 	}

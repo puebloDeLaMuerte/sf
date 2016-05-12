@@ -137,7 +137,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		int resultHeight;
 		int resultWidth;
 
-//		System.out.println("\n\navailable space: "+_size.width+" x "+_size.height);
+//		System.out.println("WALL_ARR_VIEW: \n\navailable space: "+_size.width+" x "+_size.height);
 		
 		// Querformat
 		if( aspect <= 1) {
@@ -2093,7 +2093,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 					return;
 				}
 
-				System.out.println("firing this update Request event: "+name+" "+ myWall.getWallChar()+" "+ myWall.myRoom.getName() +" "+ originRoom+" "+ originWall);
+				System.out.println("WALL_ARR_VIEW: firing this update Request event: "+name+" "+ myWall.getWallChar()+" "+ myWall.myRoom.getName() +" "+ originRoom+" "+ originWall);
 
 				WallUpdateRequestEvent e = new WallUpdateRequestEvent(this, name, myWall.getWallChar(), myWall.myRoom.getName(), originRoom, originWall);
 
@@ -2132,7 +2132,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 //		frame.setVisible(false);
 		super.dispose();
-//		if( frame == null ) System.out.println("frame is null, again... ");
+//		if( frame == null ) System.out.println("WALL_ARR_VIEW: frame is null, again... ");
 //
 //		frame.dispose();
 //		frame.setVisible(false);

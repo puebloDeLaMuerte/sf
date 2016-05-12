@@ -145,7 +145,7 @@ public class SM_Renderer extends PApplet{
 		setup();
 		
 		while( !setupRun) {
-			System.out.println("SETUP IS NOT RUNNING");
+			System.out.println("RENDERER: setup is not running");
 		}
 		
 		
@@ -631,7 +631,7 @@ public class SM_Renderer extends PApplet{
 			
 			double endmili = ( millis() - amili);
 			
-		System.out.println("RENDERER : ARTWORK UPDATE: "+ _wallChar + " end. time: " + endmili);
+		System.out.println("RENDERER: ARTWORK UPDATE: "+ _wallChar + " end. time: " + endmili);
 //		redraw();
 		
 		Ac++;
@@ -793,8 +793,10 @@ public class SM_Renderer extends PApplet{
 				try {
 					Thread.sleep(100);
 				} catch (Exception e) {
+					System.err.println("THIS EXCEPTION GOT CAUGHT: ");
+					e.printStackTrace();
 				}
-				System.out.println("Waiting for layers [9]...");
+				System.out.println("RENDERER: Waiting for layers [9]...");
 			}
 			
 			blendMode(BLEND);
@@ -813,8 +815,10 @@ public class SM_Renderer extends PApplet{
 				try {
 					Thread.sleep(100);
 				} catch (Exception e) {
+					System.err.println("THIS EXCEPTION GOT CAUGHT: ");
+					e.printStackTrace();
 				}
-				System.out.println("Waiting for layers [1]...");
+				System.out.println("RENDERER: Waiting for layers [1]...");
 			}
 			
 			
@@ -839,7 +843,7 @@ public class SM_Renderer extends PApplet{
 			
 			int id = 0;
 			for( PGraphics lg : wallGfxsLG) {
-				while(lg == null) { try { System.out.println("waiting on lights");Thread.sleep(100); } catch(Exception e){
+				while(lg == null) { try { System.out.println("RENDERER: waiting on lights");Thread.sleep(100); } catch(Exception e){
 					System.err.println("Thread.sleep(): waiting for lights FAILED");
 					e.printStackTrace();}
 				}
@@ -885,7 +889,7 @@ public class SM_Renderer extends PApplet{
 			for( PGraphics wg : wallGfxsAW) {
 				if( wg != null) try{
 					image(wg, xOff, yOff,displW,displH);
-				} catch (Exception e) { System.err.println("we caught this error: ");e.printStackTrace();}
+				} catch (Exception e) { System.err.println("THIS EXCEPTION GOT CAUGHT: ");e.printStackTrace();}
 				
 				else System.err.println("A WALL GRAPHICS WAS null IN RENDERER DRAW");
 				g.removeCache(g);
@@ -908,7 +912,7 @@ public class SM_Renderer extends PApplet{
 					Thread.sleep(100);
 				} catch (Exception e) {
 				}
-				System.out.println("Waiting for layers [4]...");
+				System.out.println("RENDERER: Waiting for layers [4]...");
 			}
 			image(layers[4], xOff, yOff, displW, displH);
 			g.removeCache(g);
@@ -1251,6 +1255,7 @@ public class SM_Renderer extends PApplet{
 				SysInfo.displayMessage();
 			}
 			} catch(Exception e) {
+				System.err.println("THIS EXCEPTION GOT CAUGHT: ");
 				e.printStackTrace();
 			}
 			

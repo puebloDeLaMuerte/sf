@@ -162,11 +162,11 @@ public class SM_Wall implements UpdateListener {
 		
 		_aw.setTotalWallPos(adOfset % mySize[0], _aw.getTotalHeight());
 //		_aw.setTotalWallPos((mySize[0]/2)-(_aw.getTotalWidth()/2), (mySize[1]/2)+(_aw.getTotalHeight()/2));
-		System.out.println("added Artwork "+_aw.getTitle()+"\n  pos: "+((mySize[0]/2)-(_aw.getTotalWidth()/2))+" x "+((mySize[1]/2)+(_aw.getTotalHeight()/2)));
+		System.out.println("WALL: added Artwork "+_aw.getTitle()+"\n  pos: "+((mySize[0]/2)-(_aw.getTotalWidth()/2))+" x "+((mySize[1]/2)+(_aw.getTotalHeight()/2)));
 	}
 	
 	private void removeArtwork(String _name) {
-		System.out.println("Wall "+ myWallName+ " REMOVED: "+_name);
+		System.out.println("WALL: me, the Wall "+ myWallName+ " REMOVED: "+_name);
 		myArtworks.remove(_name);
 	}
 	

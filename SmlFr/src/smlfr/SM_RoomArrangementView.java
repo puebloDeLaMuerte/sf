@@ -72,7 +72,6 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		}
 		if( activeViews != null ) {
 			
-			// TODO this is temp - the Graphics fpr actie- visible- and over- need to be sorted out !!!
 
 			for( char v : activeViews ) {
 				shape(wallsOverGfx.get(v), 0,0);
@@ -135,19 +134,19 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	@Override
 	public void mouseExited(MouseEvent e) {
 		if(e.getSource().getClass().equals(ViewMenuItem.class)) {
-			System.out.println("SCHNABLER");
+//			System.out.println("SCHNABLER");
 		}
 	}
 	
 	public void disposeVM(SM_Room rom) {
-		System.out.println("VM dispose called");
+		System.out.println("ROOM_ARR_VIEW: VM dispose called");
 		rom.unregisterUpdateListener(vm);
 		vm.dispose();
 	}
 	
 	@Override
 	public void dispose() {
-		System.out.println("closing this Arrview");
+		System.out.println("ROOM_ARR_VIEW: closing this Arrview");
 		super.dispose();
 	}
 }

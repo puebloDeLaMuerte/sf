@@ -427,15 +427,18 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		System.out.println("disposing VM, this is the source from Window closes: " + e.getSource());
-		if (true/*e.getSource()*/) {
-			System.out.println(e.getSource());
-			JFrame f = (JFrame) e.getSource();
-			f.setVisible(false);
-			String t = f.getTitle();
-			t = t.substring(t.length() - 1);
-			sleepWallArr(t);
-		}
+		
+		System.out.print("disposing ViewManager: ");
+		
+			
+		JFrame f = (JFrame) e.getSource();
+		f.setVisible(false);
+		String t = f.getTitle();
+		System.out.print(t);
+		t = t.substring(t.length() - 1);
+		System.out.println(" closing WallArr: " + t);
+		sleepWallArr(t);
+
 	}
 
 	@Override

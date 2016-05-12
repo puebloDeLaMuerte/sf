@@ -283,10 +283,10 @@ public class SM_Artwork {
 	
 	public void sayHi() {
 		
-		System.out.println("\ninvNR: "+invNr);
-		System.out.println("  "+title);
-		System.out.println("  "+artist);
-		System.out.println("  "+mySize[0]+" x "+mySize[1]);
+		System.out.println("\nARTWORK: invNR: "+invNr);
+		System.out.println("ARTWORK:   "+title);
+		System.out.println("ARTWORK:   "+artist);
+		System.out.println("ARTWORK:   "+mySize[0]+" x "+mySize[1]);
 		
 		
 	}

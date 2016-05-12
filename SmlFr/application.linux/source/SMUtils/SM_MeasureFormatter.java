@@ -5,9 +5,9 @@ import java.util.LinkedHashMap;
 public class SM_MeasureFormatter {
 	/**
 	 * <p>
-	 * Umrechnen der Daten von User-Input Logik in SimuFšhr Format.
+	 * Umrechnen der Daten von User-Input Logik in SimuFÃ¶hr Format.
 	 * <p>
-	 * <b> H…HExBREITE  -->  WIDTH x HEIGHT</b>
+	 * <b> HÃ–HExBREITE  -->  WIDTH x HEIGHT</b>
 	 *
 	 * If no Frame or Passepartout is present, the respective input params
 	 * must be set to null. The respective output params will be an empty
@@ -81,14 +81,14 @@ public class SM_MeasureFormatter {
 			if( _tmpPptSize != null ) {
 				
 				// auskommentiert weil falsch:
-				// die passepartout-Format Werte sind OBEN UNTEN verschoben, das ŸbertrŠgt sich hier auf den Rahmen!
+				// die passepartout-Format Werte sind OBEN UNTEN verschoben, das ï¿½bertrï¿½gt sich hier auf den Rahmen!
 				
 //				frameFormat[0] -= pptFormat[0];
 //				frameFormat[1] -= pptFormat[1];
 //				frameFormat[3] -= pptFormat[3];
 //				frameFormat[2] -= pptFormat[2];
 				
-				// Alternativ: ( pptSize sind die Au§enma§e des Ppt. )
+				// Alternativ: ( pptSize sind die Auï¿½enmaï¿½e des Ppt. )
 
 				frameFormat[0] -= (pptSize[1] - size[1]) / 2;
 				frameFormat[1] -= (pptSize[1] - size[1]) / 2;

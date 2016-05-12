@@ -28,12 +28,12 @@ public class Raster {
 //		System.out.println(realscreen.width+" x "+realscreen.height);
 //
 		screen = Toolkit.getDefaultToolkit().getScreenSize();
-		System.out.println(screen.width+" x "+screen.height);
+		System.out.println("RASTER: screensize: "+screen.width+" x "+screen.height);
 		
 		
 		
 		screen = new Dimension(realscreen.width, realscreen.height);
-		System.out.println(screen.width+" x "+screen.height);
+		System.out.println("RASTER: realscreen: "+screen.width+" x "+screen.height);
 
 		raster = new Dimension(screen.width / 3, screen.height / 3);
 		

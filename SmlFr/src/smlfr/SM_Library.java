@@ -47,7 +47,7 @@ import SMupdateModel.UpdateListener;
 import SMupdateModel.WallUpdateRequestEvent;
 import smimport.ProgressGui;
 
-public class SM_Library extends JFrame implements UpdateListener, ActionListener, ArtworkMeasurementParent /*, AdjustmentListener*/ {
+public class SM_Library extends JFrame implements UpdateListener, ActionListener, ArtworkMeasurementParent , AdjustmentListener {
 	
 	/**
 	 * 
@@ -76,7 +76,7 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 	
 	public SM_Library (SM_FileManager _fm, HashMap<String, SM_Artwork> _artworks ) {
 		
-		System.out.println("Library creation in progress...");
+		System.out.println("LIBRARY: Library creation in progress...");
 		
 		artworks = _artworks;
 		fm = _fm;
@@ -167,8 +167,8 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
         int speed = fm.getScrollPaneSpeed();
         scrollPanel.getVerticalScrollBar().setUnitIncrement(speed);
 
-//        scrollPanel.getVerticalScrollBar().addAdjustmentListener(this);
-//        scrollPanel.getHorizontalScrollBar().addAdjustmentListener(this);
+        scrollPanel.getVerticalScrollBar().addAdjustmentListener(this);
+        scrollPanel.getHorizontalScrollBar().addAdjustmentListener(this);
         
         setScrollpaneSize();
         
@@ -511,9 +511,20 @@ public class SM_Library extends JFrame implements UpdateListener, ActionListener
 		fm.updateRequested(e);
 	}
 
-//	@Override
-//	public void adjustmentValueChanged(AdjustmentEvent arg0) {
-//		this.repaint();
-//	}
+	@Override
+	public void adjustmentValueChanged(AdjustmentEvent arg0) {
+		
+		String sys = System.getProperty("os.name"); 
+		String comp = "Mac OS X";
+		
+//		System.out.println("LIBRARY: sys:  "+sys);
+//		System.out.println("LIBRARY: comp: " + comp);
+		
+		
+		if( sys.equals(comp)   ) {
+			
+			this.repaint();
+		}
+	}
 	
 }

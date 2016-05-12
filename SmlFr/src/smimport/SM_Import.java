@@ -66,7 +66,7 @@ public class SM_Import extends PApplet  {
 		JPanel chpane = new JPanel();
 		int returnVal = chooser.showOpenDialog( chpane );
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			System.out.println("You chose to open this file: " +
+			System.out.println("IMPORT: You chose to open this file: " +
 					chooser.getSelectedFile().getName());
 		} else return;
 
@@ -180,8 +180,8 @@ public class SM_Import extends PApplet  {
 //			_artLibSaveLocation = new File(base.fm.getCollectionPath() + "/" + base.fm.getCollectionName() + "/imported");
 //		}
 
-		System.out.println("will import artworks to this location: "+_artLibSaveLocation.getAbsolutePath());
-		System.out.println("we got our exel from here\n we'll get the images from here!\n"+excelLocation.getAbsolutePath());
+		System.out.println("IMPORT: will import artworks to this location: "+_artLibSaveLocation.getAbsolutePath());
+		System.out.println("IMPORT: we got our exel from here\n we'll get the images from here!\n"+excelLocation.getAbsolutePath());
 
 
 		
@@ -275,7 +275,7 @@ public class SM_Import extends PApplet  {
 					throw new Exception(Lang.err_InvNrAlreadyExists);
 				}
 				
-				System.out.println("trying to load this image file: " + excelLocation.getAbsolutePath()+"/"+iNr+".png");
+				System.out.println("IMPORT: trying to load this image file: " + excelLocation.getAbsolutePath()+"/"+iNr+".png");
 				
 				gui.setStatus(iNr);
 				
@@ -549,7 +549,7 @@ public class SM_Import extends PApplet  {
 			if( medGfx.height >= medGfx.width ) {
 				fact = (float)thumbSize / (float)medGfx.height;
 			}
-			System.out.println("\n\n\n\nthe fact is: "+fact);
+			System.out.println("IMPORT: the fact is: "+fact);
 			thumbGfx.resize( (int)(medGfx.width * fact), (int)(medGfx.height * fact));
 			
 			// Display the Image

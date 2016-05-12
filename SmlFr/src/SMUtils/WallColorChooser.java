@@ -265,7 +265,7 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
                     Lang.changeColorTitle,
                     color);
 			
-			System.out.println("we returned from the color chooser dialog.");
+			System.out.println("COLOR CHOOSER: we returned from the color chooser dialog.");
 			
 			if( newColor != null) {
 				redInt   = (int)newColor.getRed();
@@ -280,7 +280,7 @@ public class WallColorChooser extends JFrame implements ActionListener, Property
 				sendPreviewCallbacks();
 			}
 
-			System.out.println("color button pressed");
+			System.out.println("COLOR CHOOSER: color button pressed");
 		}
 		
 		

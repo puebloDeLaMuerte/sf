@@ -353,9 +353,9 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		imageName = imageName.substring(0, imageName.lastIndexOf('.'));
 		imageFolder = imageFolder.getParentFile();
 		
-		System.out.println("here we have these values:");
-		System.out.println("filename: "+imageName);
-		System.out.println("filepath: "+imageFolder.getAbsolutePath());
+		System.out.println("IMPORT_DIALOG: here we have these values:");
+		System.out.println("IMPORT_DIALOG: filename: "+imageName);
+		System.out.println("IMPORT_DIALOG: filepath: "+imageFolder.getAbsolutePath());
 			
 		hasValidData = true;
 	}

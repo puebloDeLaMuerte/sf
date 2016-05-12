@@ -109,7 +109,7 @@ public class ImportThread extends Thread {
 				try {
 					Thread.sleep(80);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					System.err.println("THIS EXCEPTION GOT CAUGHT: ");
 					e.printStackTrace();
 				}
 			}

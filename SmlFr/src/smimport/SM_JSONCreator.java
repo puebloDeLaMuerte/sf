@@ -64,7 +64,7 @@ public class SM_JSONCreator  {
 
 		proj.setJSONArray("rooms", rooms);
 
-//		System.out.println("\nTHE NEWLY GENERATED FRESH PROJECT FILE\n\n" + proj );
+//		System.out.println("JSON_CREATOR: \nTHE NEWLY GENERATED FRESH PROJECT FILE\n\n" + proj );
 
 		return proj;
 
@@ -106,7 +106,7 @@ public class SM_JSONCreator  {
 		aw.setJSONArray("size", sz );
 		
 		
-		System.out.println("RETURNING THIS JSON ARTWORK:\n"+aw.toString());
+		System.out.println("JSON_CREATOR: returning this json artwork:\n"+aw.toString());
 		
 		
 		return aw;
@@ -162,7 +162,7 @@ public class SM_JSONCreator  {
 			//architecture.setJSONObject("S2", room);
 
 			JSONObject museum = new JSONObject();
-			museum.setString("museumName", "Museum Kunst Der WestkŸste");
+			museum.setString("museumName", "Museum Kunst Der Westkï¿½ste");
 			museum.setJSONObject("architecture", architecture);
 
 			return museum;

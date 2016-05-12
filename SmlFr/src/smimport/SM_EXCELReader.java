@@ -56,7 +56,7 @@ public class SM_EXCELReader {
 			chooser.setDialogTitle(Lang.whereIsExcelFile);
 			int returnVal = chooser.showOpenDialog(pane);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+				System.out.println("EXCEL_READER: You chose to open this file: " + chooser.getSelectedFile().getName());
 				excelFile = chooser.getSelectedFile();
 			} else
 				excelFile = null;
@@ -73,7 +73,7 @@ public class SM_EXCELReader {
 				int returnVal = chooser.showOpenDialog(pane);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					
-					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+					System.out.println("EXCEL_READER: You chose to open this file: " + chooser.getSelectedFile().getName());
 					excelFile = chooser.getSelectedFile();
 					
 				} else {
@@ -120,7 +120,7 @@ public class SM_EXCELReader {
 		int z = sheet.getLastRowNum();
 
 		System.out.println();
-		System.out.println("the rows in this sheet go from " + i + " to " + z);
+		System.out.println("EXCEL_READER: the rows in this sheet go from " + i + " to " + z);
 		System.out.println();
 
 //		ArrayList<LinkedHashMap<String, String>> tempLines;
@@ -158,7 +158,7 @@ public class SM_EXCELReader {
 					}
 					if( !testString.isEmpty() ) validRow = true;
 				}
-				System.out.println("this string: "+testString+" evaluated to "+validRow);
+				System.out.println("EXCEL_READER: this string: "+testString+" evaluated to "+validRow);
 				
 				// transfer cell data to "lines" (internal data storage)
 				
