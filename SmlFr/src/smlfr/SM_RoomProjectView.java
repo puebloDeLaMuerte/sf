@@ -36,8 +36,9 @@ import SMupdateModel.WallUpdateRequestEvent;
 import processing.core.PApplet;
 import processing.core.PShape;
 import processing.event.MouseEvent;
+import sfpMenu.*;
 
-public class SM_RoomProjectView extends PApplet implements DropTargetListener, DragGestureListener, Transferable, ActionListener {
+public class SM_RoomProjectView extends PApplet implements DropTargetListener, DragGestureListener, Transferable, ActionListener, SfpEventListener {
 
 	/**
 	 * 
@@ -49,9 +50,15 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	SM_Room 									myRoom;
 	LinkedHashMap<Character, SM_Wall>			myWalls;
     private DragSource							ds;
-    private JPopupMenu							pMenu;
-    private JMenuItem							pMenuChangeColor, pMenuRemoveArtwork, pMenuEnterExitRoom, quitSF, savePr, export;
+    
+    // the OLE menu
+//    private JPopupMenu							pMenu;
+//    private JMenuItem							pMenuChangeColor, pMenuRemoveArtwork, pMenuEnterExitRoom, pMenuQuit, pMenuSavePr, pMenuExport;
 
+    // the FRESH menu
+    
+    private SfpMenu								menu;
+    private SfpComponent						menuChangeColor, menuRemoveArtwork, menuEnterExitRoom, menuQuit, menuSavePr, menuExport;
 	
 	// utils
 //	private JFrame								myFrame;
@@ -99,33 +106,16 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		ds = new DragSource();
 		ds.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, this);
 		
-		pMenu = new JPopupMenu();
-		pMenuChangeColor = new JMenuItem(Lang.changeColor);
-		pMenuChangeColor.addActionListener(this);
-		pMenuRemoveArtwork = new JMenuItem(Lang.RemoveArtwork);
-		pMenuRemoveArtwork.addActionListener(this);
-		pMenuEnterExitRoom = new JMenuItem(Lang.enterRoom);
-		pMenuEnterExitRoom.addActionListener(this);
-		quitSF = new JMenuItem(Lang.quitSF);
-		quitSF.addActionListener(this);
-		savePr = new JMenuItem(Lang.saveProject);
-		savePr.addActionListener(this);
-		export = new JMenuItem(Lang.exportMenu);
-		export.addActionListener(this);
 		
-		pMenu.add(pMenuRemoveArtwork);
-		pMenu.add(pMenuChangeColor);
-		pMenu.add(new JSeparator());
-		pMenu.add(savePr);
-		pMenu.add(export);
-		pMenu.add(new JSeparator());
-		pMenu.add(pMenuEnterExitRoom);
-		pMenu.add(new JSeparator());
-		pMenu.add(quitSF);
+		initJMenu();
+		initSfpMenu();
 		
+		// init drop visual feedback bg-colors
 		bgr = 255;
 		bgg = 255;
 		bgb = 255;
+		
+		// init droptarget
 		dt = new DropTarget(this,this);
 		
 		PShape gfxPack = loadShape(myFilePath.getAbsolutePath()+"/"+myRoom.getName()+".svg");
@@ -165,6 +155,68 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	
 	public boolean isSetupRun() {
 		return setupRun;
+	}
+	
+	private void initSfpMenu() {
+		
+		menu = new SfpMenu(this, "RoomArrView-SfpMenu");
+		
+		menuChangeColor = new SfpComponent(Lang.changeColor);
+		menuChangeColor.addEventListener(this);
+		
+		menuRemoveArtwork = new SfpComponent(Lang.RemoveArtwork);
+		menuRemoveArtwork.addEventListener(this);
+		
+		menuEnterExitRoom = new SfpComponent(Lang.enterRoom);
+		menuEnterExitRoom.addEventListener(this);
+		
+		menuQuit = new SfpComponent(Lang.quitSF);
+		menuQuit.addEventListener(this);
+		
+		menuSavePr = new SfpComponent(Lang.saveProject);
+		menuSavePr.addEventListener(this);
+		
+		menuExport = new SfpComponent(Lang.exportMenu);
+		menuExport.addEventListener(this);
+		
+		menu.addSfpComponent(menuRemoveArtwork);
+		menu.addSfpComponent(menuChangeColor);
+		menu.addSeparator();
+		menu.addSfpComponent(menuSavePr);
+		menu.addSfpComponent(menuExport);
+		menu.addSeparator();
+		menu.addSfpComponent(menuEnterExitRoom);
+		menu.addSeparator();
+		menu.addSfpComponent(menuQuit);
+		
+		menu.pack();
+	}
+	
+	private void initJMenu() {
+		
+//		pMenu = new JPopupMenu();
+//		pMenuChangeColor = new JMenuItem(Lang.changeColor);
+//		pMenuChangeColor.addActionListener(this);
+//		pMenuRemoveArtwork = new JMenuItem(Lang.RemoveArtwork);
+//		pMenuRemoveArtwork.addActionListener(this);
+//		pMenuEnterExitRoom = new JMenuItem(Lang.enterRoom);
+//		pMenuEnterExitRoom.addActionListener(this);
+//		pMenuQuit = new JMenuItem(Lang.quitSF);
+//		pMenuQuit.addActionListener(this);
+//		pMenuSavePr = new JMenuItem(Lang.saveProject);
+//		pMenuSavePr.addActionListener(this);
+//		pMenuExport = new JMenuItem(Lang.exportMenu);
+//		pMenuExport.addActionListener(this);
+//		
+//		pMenu.add(pMenuRemoveArtwork);
+//		pMenu.add(pMenuChangeColor);
+//		pMenu.add(new JSeparator());
+//		pMenu.add(pMenuSavePr);
+//		pMenu.add(pMenuExport);
+//		pMenu.add(new JSeparator());
+//		pMenu.add(pMenuEnterExitRoom);
+//		pMenu.add(new JSeparator());
+//		pMenu.add(pMenuQuit);
 	}
 	
 	@Override
@@ -241,6 +293,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		//String ppp = (mx) + " / " + (my);
 		//text(ppp, 200,200);
 
+		menu.draw();
+		
 	}
 	
 	private void drawArtworks() {
@@ -595,7 +649,8 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	}
 
 	public void setMenuExit() {
-		pMenuEnterExitRoom.setText(Lang.exitRoom);
+//		pMenuEnterExitRoom.setText(Lang.exitRoom);
+		menuEnterExitRoom.setText(Lang.exitRoom);
 	}
 	
 	@Override
@@ -638,24 +693,36 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	public void mousePressed() {
 		
 		if( artOver != null ) {
-			pMenuRemoveArtwork.setEnabled(true);
+//			pMenuRemoveArtwork.setEnabled(true);
+			menuRemoveArtwork.setEnabled(true);
 			menuArtOver = artOver;
 		}
 		else {
-			pMenuRemoveArtwork.setEnabled(false);
+//			pMenuRemoveArtwork.setEnabled(false);
+			menuRemoveArtwork.setEnabled(false);
 			menuArtOver = null;
 		}
 		
 		if( mouseButton == RIGHT ) {
 			if( myRoom.getSaveDirty() ) {
-				savePr.setEnabled(true);
+//				pMenuSavePr.setEnabled(true);
+				menuSavePr.setEnabled(true);
 			} else {
-				savePr.setEnabled(false);
+//				pMenuSavePr.setEnabled(false);
+				menuSavePr.setEnabled(false);				
 			}
-			pMenu.show(this, mouseX, mouseY);
+			
+//			pMenu.show(this, mouseX, mouseY);
+			menu.openAt(mouseX, mouseY, 1);
 		}
+		
+		
 		mX = MouseInfo.getPointerInfo().getLocation().x;
 		mY = MouseInfo.getPointerInfo().getLocation().y;
+		
+		if(mouseButton == LEFT && menu.isVisible()) {
+			menu.doClick();
+		}
 	}
 
 	@Override
@@ -754,6 +821,50 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		frame.dispose();
 //		myFrame.dispose();
 		super.dispose();
+	}
+
+	/* (non-Javadoc)
+	 * @see sfpMenu.SfpEventListener#eventHappened(sfpMenu.SfpActionEvent)
+	 */
+	@Override
+	public void eventHappened(SfpActionEvent e) {
+
+		if( e.getActionCommand().equalsIgnoreCase(Lang.changeColor)) {
+			
+			int wallColor = 0;
+			if( wallOver != ' ' &&  myWalls.get((Character)wallOver).hasColor() ) {
+				wallColor = myWalls.get((Character)wallOver).getColor();
+			}
+			
+			new WallColorChooser(this, wallOver, myRoom.getRoomColor(), wallColor);
+			
+			
+		} else if( menuArtOver != null && e.getActionCommand().equalsIgnoreCase(Lang.RemoveArtwork)) {
+			
+			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, menuArtOver.getName(), ' ', "Library", myRoom.getName(), menuArtOver.getWallChar());
+
+			myRoom.fireUpdateRequest(r);
+		} else if( e.getActionCommand().equalsIgnoreCase(Lang.enterRoom)) {
+			
+			myRoom.requestRoomEnter();
+			
+		} else if( e.getActionCommand().equalsIgnoreCase(Lang.exitRoom)) {
+			
+			myRoom.requestRoomExit();
+			
+		} else if( e.getActionCommand().equalsIgnoreCase(Lang.quitSF)) {
+			myRoom.requestQuit();
+		} else if( e.getActionCommand().equalsIgnoreCase(Lang.saveProject)){
+			boolean saved = myRoom.requestSave();
+			
+			if(saved) javax.swing.JOptionPane.showMessageDialog(null, Lang.saved, "", JOptionPane.INFORMATION_MESSAGE, (Icon)base.getIcon());
+			
+			
+		} else if( e.getActionCommand().equalsIgnoreCase(Lang.exportMenu)){
+			
+			myRoom.exportMeasures(myWalls.keySet().toArray(new Character[myWalls.keySet().size()]));
+			
+		}
 	}
 
 	

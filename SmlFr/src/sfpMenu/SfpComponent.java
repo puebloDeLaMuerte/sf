@@ -206,6 +206,10 @@ public class SfpComponent {
 		return this.enabled;
 	}
 	
+	public void setText(String txt) {
+		myText = txt;
+	}
+	
 	/**
 	 * Does this component hold any sub-components?
 	 * 
