@@ -17,7 +17,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import processing.core.PImage;
-
+import sfpMenu.SfpActionEvent;
+import sfpMenu.SfpEventListener;
+import sfpMenu.SfpViewMenuItem;
 import SMUtils.Lang;
 import SMUtils.ViewMenuItem;
 import SMUtils.artworkActionType;
@@ -28,7 +30,7 @@ import SMupdateModel.UpdateType;
 import sfrenderer.ImageExporter;
 import sfrenderer.SM_Renderer;
 
-public class SM_ViewManager implements ActionListener, WindowListener, UpdateListener {
+public class SM_ViewManager implements SfpEventListener, ActionListener, WindowListener, UpdateListener {
 	
 	private SM_RoomArrangementView								myRoomArrView;
 	private SM_WindowManager									wm;
@@ -107,10 +109,19 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 
 				
 		JFrame f = new JFrame();
+//		RendererFrame f = new RendererFrame();
+		
+//		f.initMenu(this);
+		
+		
+		
 		f.setLayout(new BorderLayout());
 		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		renderer = new SM_Renderer(this,  _va, myRoomArrView.myRoom.getFilePath(), wm.getRaster().height*2);
 		System.out.println("VIEW MANAGER: renderer given this height: "+wm.getRaster().height*2);
+		
+//		f.setRenderer(renderer);
+//		renderer.addMouseListener(f);
 		
 		renderer.frame = f;
 		renderer.resize(renderer.getSize());
@@ -120,6 +131,7 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		renderer.frame.add(renderer);
 		//
 		renderer.init();
+		renderer.initSpfMenu();
 		//
 //		renderer.resize(renderer.getSize());
 		System.out.println("VIEW MANAGER: vm: the renderer returns this size: " + renderer.getSize().width+" x "+renderer.getSize().height);
@@ -130,7 +142,6 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -259,8 +270,11 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	@Override
 	public synchronized void actionPerformed(ActionEvent e) {
 		
+//		System.err.println(Thread.currentThread().getName());
+//		Thread.currentThread().dumpStack();
+		
 		if( e.getSource().getClass().equals(ViewMenuItem.class)) {
-			System.out.println("VIEW MANAGER: This has happened: "+e.getActionCommand());
+			System.out.println("VIEW MANAGER: This Java-ActionEvent has happened: "+e.getActionCommand());
 			ViewMenuItem sourceItem = (ViewMenuItem)e.getSource();
 			
 			
@@ -364,6 +378,117 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 		System.gc();
 	}
 	
+	/* (non-Javadoc)
+	 * @see sfpMenu.SfpEventListener#eventHappened(sfpMenu.SfpActionEvent)
+	 */
+	@Override
+	public synchronized void eventHappened(SfpActionEvent e) {
+
+		if( e.getSource().equals(SfpViewMenuItem.class)) {
+			System.out.println("VIEW MANAGER: This Sfp-ActionEvent has happened: "+e.getActionCommand());
+//			SfpViewMenuItem sourceItem = (SfpViewMenuItem)e.getSource();
+			
+			
+			for(String s : wallArrangementViews.keySet()) {
+
+				if( ! e.getActionCommand().contains(s)) {
+					if ( wallArrangementViews.get(s) != null ) {
+						
+						
+						
+						 // make Artwork Graphics null, hope for heapspace to be cleared!
+						//
+						SM_Wall w = wallArrangementViews.get(s).getWall();
+//						HashMap<String, SM_Artwork> aws = w.getArtworks();
+//						for( String as : aws.keySet() ) {
+						for( SM_Artwork aw : (SM_Artwork[])w.artwork(artworkActionType.GET_ARRAY, null, null) ) {
+							aw.unloadGraphics();
+						}
+					
+						
+						wallArrangementViews.get(s).setVisible(false);
+						wallArrangementViews.get(s).frame.setVisible(false);
+						wallArrangementViews.get(s).dispose();
+						wallArrangementViews.put(s, null);
+					}
+				}
+			}
+
+			for(char w : e.getActionCommand().toCharArray() ) {
+				if( wallArrangementViews.get(""+w) == null ) {
+					wallArrangementViews.put(""+w, initWallArrangementView(w, 0));
+				}
+			}
+			
+			for(SM_ViewAngle va : viewAngles ) {
+				
+				String v = e.getActionCommand();
+				
+				if( va.getWallCharsAsString().equalsIgnoreCase(v)) {
+					renderer.changeView(va);
+					myRoomArrView.setVisibleViews(va.getWallCharsAsString());
+				}
+			}
+			doActiveViews();
+		}
+		
+		if( e.getActionCommand().equals(Lang.savePreviewImage)){
+			
+			System.out.println("VIEW MANAGER: saving preview image now");
+			
+			String name = "preview";
+			name = myRoomArrView.myRoom.getRealName();
+			for( SM_ViewAngle a : viewAngles ) {
+				if( a.getName().equalsIgnoreCase(currentAngle)) {
+					name += " "+a.getRealName();
+				}
+			}
+			
+			
+			File exportLoc = new File(myRoomArrView.myRoom.getExportPath().getAbsolutePath()+"/"+name+".png");
+			
+			if( !exportLoc.getParentFile().exists() ) {
+//				try {
+//					File n = new File(exportLoc.getParent() + "/");
+//					n.createNewFile();
+					exportLoc.getParentFile().mkdirs();
+//				} catch (IOException e1) {
+//					e1.printStackTrace();
+//				}
+			}
+			
+			
+
+			JFileChooser ch = new JFileChooser(exportLoc);
+			ch.setSelectedFile(exportLoc);
+			int fcVal = ch.showSaveDialog(null);
+			
+			System.err.println(fcVal);
+			
+			if( fcVal == 1 ) return;
+			
+			exportLoc = ch.getSelectedFile();
+			
+			int overwrite = 99;
+			String message = Lang.overwrite_1 + exportLoc.getName() + Lang.overwrite_2;
+			if( fcVal == 0 && exportLoc.exists() ) overwrite = JOptionPane.showConfirmDialog(null, message , Lang.overwriteTitle, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, base.getQuestionIcon());
+						
+			boolean success = false;
+			if (overwrite == 0 || overwrite == 99) {
+				String filename = exportLoc.getAbsolutePath();
+				
+				ImageExporter ex = new ImageExporter(renderer, filename);
+				
+				ex.start();
+//				success = renderer.renderPreviewImage(filename);
+			}
+			
+//			System.out.println("VIEW MANAGER: success: "+success);
+		}
+		
+		System.gc();
+		
+	}
 	
 	public synchronized void openWallArr(char _c) {
 		if(wallArrangementViews.get(""+_c) == null ) {
@@ -650,5 +775,8 @@ public class SM_ViewManager implements ActionListener, WindowListener, UpdateLis
 	public int getWallColor(char wc) {
 		return myRoomArrView.myWalls.get((Character)wc).getColor();
 	}
+
+	
+	
 
 }

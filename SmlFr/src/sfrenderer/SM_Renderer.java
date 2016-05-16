@@ -24,6 +24,10 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.event.MouseEvent;
+import sfpMenu.SfpComponent;
+import sfpMenu.SfpMenu;
+import sfpMenu.SfpSeparator;
+import sfpMenu.SfpViewMenuItem;
 import smlfr.SM_ViewAngle;
 import smlfr.SM_ViewManager;
 
@@ -43,9 +47,17 @@ public class SM_Renderer extends PApplet{
 	private File					currentPath;
 	private String					currentFileStub;
 	
+	// the NEW menu:
+	
+	private SfpMenu 			menu;
+	private SfpViewMenuItem[] 	menuViews;
+	private SfpComponent		savePreview;
+	
+	// the old menu:
 	private JPopupMenu				pMenu;
-	private JMenuItem				savePreview;
+	private JMenuItem				pSavePreview;
 	private ViewMenuItem[]			pMenuViews;
+	
 	
 	public RendererUpdateThreadManager		update;
 	private pTimedEventGenerator			tGen;
@@ -107,7 +119,8 @@ public class SM_Renderer extends PApplet{
 		
 		update = new RendererUpdateThreadManager(this);
 		
-		initMenu();
+//		SETUP THE MENU IF ITS A JMENU
+		initJPopupMenu();
 
 		int c = color(123);
 		
@@ -155,9 +168,11 @@ public class SM_Renderer extends PApplet{
 			vm.requestRendererUpdate(wc);
 			
 		}
+		
+//		SysInfo.printHeapStats();
 		System.gc();
 		
-
+//		this.frame.repaint();
 //		redraw();
 	}
 	
@@ -169,12 +184,79 @@ public class SM_Renderer extends PApplet{
 		currentPath = new File(  generalPath.getAbsolutePath()+currentFileStub   );
 	}
 	
-	@Override
-	public void init() {
-		super.init();
+//	@Override
+//	public void init() {
+//		super.init();
+//	}
+	
+	public void initSpfMenu() {
+		
+		
+		menu = new SfpMenu(this, "");
+
+		SfpComponent title = new SfpComponent(Lang.selectView);
+		title.setEnabled(false);
+		menu.addSfpComponent(title);
+		
+		menu.addSfpComponent(new SfpSeparator());
+		
+		// SUB-MENU TEST CODE:::
+		
+//		SfpMenu sub = new SfpMenu(this, "subtles menu...");
+//		
+//		SfpComponent s1 = new SfpComponent("s1 - test");
+//		SfpComponent s2 = new SfpComponent("s2 - test");
+//		SfpComponent s3 = new SfpComponent("s3 - test");
+//		SfpComponent s4 = new SfpComponent("s4 - test");
+//		
+//		sub.addSfpComponent(s1);
+//		sub.addSeparator();
+//		sub.addSfpComponent(s2);
+//		
+//		sub.addSfpComponent(s3);
+//		sub.addSfpComponent(s4);
+//
+//		SfpMenu sub2 = new SfpMenu(this, "subtles menu...");
+//		
+//		SfpComponent s21 = new SfpComponent("s21 - test");
+//		SfpComponent s22 = new SfpComponent("s22 - test");
+//		
+//		sub2.addSfpComponent(s21);
+//		sub2.addSfpComponent(s22);
+//		
+//		sub.addSfpComponent(sub2);
+//		
+//		menu.addSfpComponent(sub);
+		
+		// END TEST
+		
+		menuViews = new SfpViewMenuItem[vm.getNumberOfViewAngles()];
+		int i=0;
+		for( String n : vm.getViewAngleRealNames()) {
+			menuViews[i] = new SfpViewMenuItem(n, vm.getViewAngle(i).getName());
+			menuViews[i].addEventListener(vm);
+			menuViews[i].addMouseListener(vm.getRoomArrView());
+			menu.addSfpComponent(menuViews[i]);
+			i++;
+		}
+
+		menu.addSfpComponent(new SfpSeparator());
+
+		savePreview = new SfpComponent(Lang.savePreviewImage);
+		savePreview.addEventListener(vm);
+		menu.addSfpComponent(savePreview);
+		
+		menu.pack();
+				
+				
+				
 	}
 	
-	public void initMenu() {
+	public void initJPopupMenu() {
+		
+		
+
+		// old menu code here:
 		
 		pMenu = new JPopupMenu();
 		JMenuItem title = new JMenuItem(Lang.selectView);
@@ -183,7 +265,7 @@ public class SM_Renderer extends PApplet{
 		pMenu.add(title);
 		pMenu.add(new JSeparator());
 		pMenuViews = new ViewMenuItem[vm.getNumberOfViewAngles()];
-		int i=0;
+		int i = 0;
 		for( String n : vm.getViewAngleRealNames()) {
 			pMenuViews[i] = new ViewMenuItem(n, vm.getViewAngle(i).getName());
 			pMenuViews[i].addActionListener(vm);
@@ -193,15 +275,17 @@ public class SM_Renderer extends PApplet{
 		}
 		
 		pMenu.add(new JSeparator());
-		savePreview = new JMenuItem(Lang.savePreviewImage);
-		savePreview.addActionListener(vm);
-		pMenu.add(savePreview);
+		pSavePreview = new JMenuItem(Lang.savePreviewImage);
+		pSavePreview.addActionListener(vm);
+		pMenu.add(pSavePreview);
 	}
 	
 	@Override
 	public void setup() {
 		
 		setupRun = false;
+		
+
 		
 		frame.setTitle(currentViewString.substring(2));
 		
@@ -292,8 +376,8 @@ public class SM_Renderer extends PApplet{
 //		layers[5] = null;
 		
 		
+
 		noLoop();
-//		frameRate(5);
 //		smooth();
 		setupRun = true;
 		
@@ -739,6 +823,8 @@ public class SM_Renderer extends PApplet{
 //		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
 //		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
 		
+//		System.out.println("RENDERER: POST: repaint will be ordered");
+		
 		if(savetyDraw && update.getQueueLength() <= 0 ) {
 			super.redraw();
 			savetyDraw = false;
@@ -746,6 +832,8 @@ public class SM_Renderer extends PApplet{
 			busyQueueMax = 0;
 			busyQueueProgress = 0;
 		}
+		
+		this.frame.repaint();
 		
 //		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
 //		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
@@ -769,6 +857,10 @@ public class SM_Renderer extends PApplet{
 //				updateRoomColorLayer(null, null, null);
 //			}
 		}
+//		System.out.println("TIMER tiiittitmtem");
+//		this.frame.pack();
+//		this.frame.repaint();
+//		if( this.frame.getIgnoreRepaint() ) System.out.println("ignores repaint");
 	}
 	
 	@Override
@@ -776,7 +868,8 @@ public class SM_Renderer extends PApplet{
 
 		
 		background(255);
-
+		
+		
 		int displW = (int)(width  * zoomFact);
 		int displH = (int)(height * zoomFact);
 		
@@ -923,6 +1016,12 @@ public class SM_Renderer extends PApplet{
 		
 		drawGUI();
 		if( frameCount % 3 == 0) System.gc(); 
+		
+
+//		menu.mousePos(mouseX, mouseY);
+		menu.draw();
+		
+		if( !menu.isVisible() && !menu.isAnimating() ) noLoop();
 		
 	}
 	
@@ -1164,24 +1263,58 @@ public class SM_Renderer extends PApplet{
 	}
 	
 	
+	public boolean isSetupRun() {
+		return setupRun;
+	}
+	
+	public String getCurrentViewString() {
+		return currentViewString;
+	}
+	
+	/* (non-Javadoc)
+	 * @see processing.core.PApplet#mousePressed()
+	 */
+	/* (non-Javadoc)
+	 * @see processing.core.PApplet#mousePressed()
+	 */
 	@Override
 	public void mousePressed() {
-		if( mouseButton == RIGHT && setupRun) {
-			for( JMenuItem m : pMenuViews) {
-				if( m.getActionCommand().equalsIgnoreCase(currentViewString.substring(currentViewString.lastIndexOf('_')+1))) {
-					m.setFont(m.getFont().deriveFont(Font.ITALIC));
-					m.setEnabled(false);
-				} else {
-					m.setFont(m.getFont().deriveFont(Font.PLAIN));
-					m.setEnabled(true);
-				}
-			}
-			pMenu.show(this, mouseX, mouseY);
+		
+		if( setupRun && mouseButton == LEFT && menu.isVisible() ) {
+			
+			int val = menu.doClick();
+			
+			System.out.println("RENDERER: MENU: returnded " + val);
+			
+//			if( val == -1 ) menu.close();
+
+			
+		} else if( mouseButton == RIGHT && setupRun) {
+			
+			// the new Menu shows like this:
+			
+			menu.openAt(mouseX, mouseY, 1);
+			
+			loop();
+			frameRate(60);
+			
+			// the old Menu shows like this.
+			
+//			for( JMenuItem m : pMenuViews) {
+//				if( m.getActionCommand().equalsIgnoreCase(currentViewString.substring(currentViewString.lastIndexOf('_')+1))) {
+//					m.setFont(m.getFont().deriveFont(Font.ITALIC));
+//					m.setEnabled(false);
+//				} else {
+//					m.setFont(m.getFont().deriveFont(Font.PLAIN));
+//					m.setEnabled(true);
+//				}
+//			}
+//			pMenu.show(this, mouseX, mouseY);
 		}
 	}
 
 	
-	@Override
+//	@Override
 	public void mouseDragged() {
 		xOffset += mouseX-pmouseX;
 		yOffset += mouseY-pmouseY;
@@ -1193,8 +1326,10 @@ public class SM_Renderer extends PApplet{
 	
 	@Override
 	public void mouseWheel(MouseEvent event) {
+//	public void MyMouseWheel(float eventCount) {
 		
 		float e = event.getCount();
+//		float e = eventCount;
 		
 		float f = 0;
 		
@@ -1212,8 +1347,7 @@ public class SM_Renderer extends PApplet{
 			
 		}
 		zoomFact += f;
-//		xOffset -= (int)(((float)mouseX / (float)width) * ((float)width*f));
-//		yOffset -= (int)(((float)mouseY / (float)height) * ((float)height*f));
+
 		
 		if(zoomFact < 1.0f) {
 			zoomFact = 1.0f;
@@ -1227,7 +1361,6 @@ public class SM_Renderer extends PApplet{
 		redraw();
 	}
 	
-	
 	private void offsetBounds() {
 		if((xOffset+(width*zoomFact)) < width ) xOffset += width - (xOffset+(width*zoomFact));
 		if( xOffset > 0 ) xOffset = 0;
@@ -1237,7 +1370,9 @@ public class SM_Renderer extends PApplet{
 	}
 	
  	public boolean isMenuOpen() {
-		return pMenu.isVisible();
+// 		return ((RendererFrame)frame).isMenuOpen();
+//		return pMenu.isVisible();
+ 		return menu.isVisible();
 	}
 
 	@Override

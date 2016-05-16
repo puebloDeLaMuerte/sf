@@ -5,10 +5,14 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.HashMap;
 import processing.core.PShape;
-
+import sfpMenu.SfpActionEvent;
+import sfpMenu.SfpEventListener;
+import sfpMenu.SfpMouseEvent;
+import sfpMenu.SfpMouseListener;
+import sfpMenu.SfpViewMenuItem;
 import SMUtils.ViewMenuItem;
 
-public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseListener {
+public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseListener, SfpMouseListener {
 
 	/**
 	 * 
@@ -67,6 +71,8 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 					shape(wallsOverGfx.get(c), 0, 0);
 
 				}
+			} else {
+				showViewMenuPreview = false;
 			}
 			
 		}
@@ -138,6 +144,34 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see sfpMenu.SfpMouseListener#MouseEventHappened(sfpMenu.SfpMouseEvent)
+	 */
+	@Override
+	public void MouseEventHappened(SfpMouseEvent e) {
+		
+		if ( e.getSource().equals(SfpViewMenuItem.class) ) {
+			if (e.mouseEntered()) {
+
+				int l = e.getActionCommand().length();
+				viewMenuCurrentHighlight = new char[l];
+				for( int i = 0; i<l;i++) {
+					viewMenuCurrentHighlight[i] = e.getActionCommand().charAt(i);
+				}
+				showViewMenuPreview = true;
+				
+				
+			} else if (e.mouseExited()) {
+
+//				showViewMenuPreview = false;
+				
+			} 
+		}
+		
+	}
+	
+
+	
 	public void disposeVM(SM_Room rom) {
 		System.out.println("ROOM_ARR_VIEW: VM dispose called");
 		rom.unregisterUpdateListener(vm);
@@ -149,4 +183,10 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		System.out.println("ROOM_ARR_VIEW: closing this Arrview");
 		super.dispose();
 	}
+
+
+	
+
+
+
 }
