@@ -31,6 +31,7 @@ import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.NewProjectDialog;
 import SMUtils.SM_Frames;
+import SMUtils.SysInfo;
 import SMUtils.artworkActionType;
 import SMUtils.awFileSize;
 import SMupdateModel.ArtworkUpdateRequestEvent;
@@ -134,6 +135,8 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		if (base.lib != null) {
 			base.lib.setSaveDirtyMark(_sd);
 		}
+		
+		SysInfo.printHeapStats();
 	}
 	
 	public void loadFrames(SM_Frames f) {

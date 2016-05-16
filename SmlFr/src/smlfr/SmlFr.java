@@ -77,6 +77,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 				System.out.println("no log-lock has been detected, so the output goes to a file!");
 				
 				
+				
 				File logs = new File("resources/logs");
 				if( !logs.exists() ) logs.mkdir();
 
@@ -94,6 +95,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 				System.err.println("errstr: SimuFoehr launched");
 				System.out.println();
 
+				System.out.println("The version-String is: "+versionString);
 //				SysInfo.displayMessage();
 				SysInfo.printSysStats();
 				SysInfo.printHeapStats();
