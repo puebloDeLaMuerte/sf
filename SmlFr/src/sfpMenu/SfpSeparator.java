@@ -52,14 +52,14 @@ public class SfpSeparator extends SfpComponent {
 		if( visible ) {
 			app.pushStyle();
 
-			app.fill(250, 190);
+			app.fill(menuIdleGreyVal, menuOpacity);
 			app.noStroke();
 			
 			float temp1 = currentDrawPos.x+getParent().getTotalSize().x -1;
 			float temp2 = getTotalSize().y;
 //			app.rectMode();
 			app.rect(currentDrawPos.x, currentDrawPos.y, getParent().getTotalSize().x, temp2);
-			app.stroke(200);
+			app.stroke(menuLineColor);
 			app.line(currentDrawPos.x, currentDrawPos.y+borders[0], temp1, currentDrawPos.y+borders[0]);
 			
 			app.popStyle();

@@ -9,6 +9,15 @@ import processing.core.PVector;
 
 public class SfpComponent {
 
+
+
+	static final int menuDisabledTextGreyVal = 110;
+	static final int menuTextGreyVal = 0;
+	static final int menuOpacity = 210;
+	static final int menuIdleGreyVal = 240;
+	static final int mOverGreyVal = 150;
+	static final int menuLineColor = 200;
+	
 	protected PApplet 			app;
 	private SfpComponent 		parent;
 	protected SfpComponent[] 	components;
@@ -381,7 +390,7 @@ public class SfpComponent {
 	}
 	
 	protected void mouseEntered() {
-		System.out.println("MOUSE ENTERED");
+//		System.out.println("MOUSE ENTERED");
 		 
 		if( parent != null ) {
 			parent.closeSubs();
@@ -401,7 +410,7 @@ public class SfpComponent {
 	}
 	
 	protected void mouseExited() {
-		System.out.println("MOUSE Exited");
+//		System.out.println("MOUSE Exited");
 		for(SfpMouseListener l : mouseListeners) {
 			 l.MouseEventHappened(new SfpMouseExitedEvent(getClass(), myText));
 		 }
@@ -425,7 +434,7 @@ public class SfpComponent {
 //		System.out.println();
 		
 		boolean b = checkMouseOver();
-		System.out.println("check    : " + b);
+//		System.out.println("check    : " + b);
 		
 		for( SfpComponent c : components) {
 			int r = c.doClick();
@@ -440,6 +449,7 @@ public class SfpComponent {
 			for( SfpEventListener l : eventListeners ) {
 				
 				l.eventHappened( new SfpActionEvent(this.getClass(), myText));
+				System.out.println("SfpMENU: event sheduled: " + this.getClass() + " - " + myText);
 				ret = 2;
 			}
 //			close();
@@ -507,10 +517,10 @@ public class SfpComponent {
 			checkMouseOver();
 			
 			if( this.isEnabled() && this.mouseOver ) {
-				app.fill(150, 190);
+				app.fill(mOverGreyVal, menuOpacity);
 //				app.noFill();
 			} else {
-				app.fill(250, 190);
+				app.fill(menuIdleGreyVal, menuOpacity);
 //				app.noFill();
 			}
 			
@@ -521,9 +531,9 @@ public class SfpComponent {
 			
 			
 			if( this.isEnabled() ) {
-				app.fill(0);				
+				app.fill(menuTextGreyVal);				
 			} else {
-				app.fill(110);
+				app.fill(menuDisabledTextGreyVal);
 			}
 		
 			app.text(myText, currentDrawPos.x + borders[2], currentDrawPos.y + borders[0] + app.textAscent());

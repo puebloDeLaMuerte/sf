@@ -1533,13 +1533,9 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	public void mouseClicked() {
 		
 		
-		System.err.println("Click - PRE : menuAW: " + menuAW);
-		System.err.println("Click - PRE : awOver: " + menuAW);
+//		System.err.println("Click - PRE : menuAW: " + menuAW);
+//		System.err.println("Click - PRE : awOver: " + menuAW);
 
-//		if (pMenu.isVisible() ) {
-//			System.err.println(pMenu.doClick());
-//			return;
-//		}
 		
 		
 		if( awOver != null && mouseButton != RIGHT) {
@@ -1589,14 +1585,14 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			}
 			
 			if( click == -1 ) deselectAll();
-			System.err.println("clickvalue: " +click);
+			System.err.println("WALL ARR: clickvalue: " +click);
 //			return;
 		}
 		
 		
 		
-		System.err.println("Click - POST: menuAW: " + menuAW);
-		System.err.println("Click - POST: awOver: " + menuAW);
+//		System.err.println("Click - POST: menuAW: " + menuAW);
+//		System.err.println("Click - POST: awOver: " + menuAW);
 
 	}
 
@@ -1717,7 +1713,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	@Override
 	public void eventHappened(SfpActionEvent e) {
 		
-		System.err.println("Event: menuAW:" + menuAW);
+		System.out.println("WALL ARR: event: menuAW:" + menuAW);
 		
 		String action = e.getActionCommand();
 		

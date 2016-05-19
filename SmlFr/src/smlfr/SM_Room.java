@@ -173,6 +173,7 @@ public class SM_Room {
 		File fl = base.fm.getFilePathForRoom(myRoomName);
 
 		myProjectView.frame = f;
+//		myProjectView.frame.setIgnoreRepaint(true);
 		myProjectView.resize(_size.width, _size.height);
 		myProjectView.setPreferredSize(_size);
 		myProjectView.setMinimumSize(_size);
@@ -192,6 +193,8 @@ public class SM_Room {
 		myProjectView.frame.setLocation(_loc.x, _loc.y);
 		myProjectView.frame.setTitle(myRealName);
 		myProjectView.frame.setVisible(true);
+//		myProjectView.frame.setIgnoreRepaint(true);
+
 		
 ////		f.setTitle(myRealName);
 //		f.setUndecorated(true);
@@ -285,10 +288,12 @@ public class SM_Room {
 		
 		myArrangementView.setMenuExit();
 		myArrangementView.frame.pack();
+//		myArrangementView.frame.setIgnoreRepaint(true);
 		myArrangementView.frame.setVisible(true);
 		myArrangementView.frame.setResizable(false);
 		myArrangementView.frame.setLocation(_loc.x, _loc.y);
 		myArrangementView.frame.setTitle(myRealName);
+//		myArrangementView.frame.setIgnoreRepaint(true);
 		entered = true;
 	}
 	

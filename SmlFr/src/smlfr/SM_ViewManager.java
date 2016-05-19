@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import processing.core.PImage;
 import sfpMenu.SfpActionEvent;
@@ -107,6 +108,7 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 	private synchronized void initRenderer(SM_ViewAngle _va) {
 		
 
+
 				
 		JFrame f = new JFrame();
 //		RendererFrame f = new RendererFrame();
@@ -146,13 +148,28 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 			}
 		}
 //		renderer.frame.setAlwaysOnTop(true);
+		
 		renderer.frame.pack();
+//		renderer.frame.setIgnoreRepaint(true);
 		renderer.frame.setVisible(true);
 		renderer.frame.setLocation(wm.getScreen().width-renderer.getSize().width,0);
 		renderer.frame.setResizable(false);
+//		renderer.frame.setIgnoreRepaint(true);
 		
 
 		renderer.redraw();
+		
+//		SwingUtilities.invokeLater(new Runnable() {
+//			@Override
+//			public void run() {
+//				
+//				
+//				
+//				
+//				
+//				
+//			}
+//		});
 	}
 	
 	private synchronized SM_WallArrangementView initWallArrangementView(char _wall, int _windowOfset) {
@@ -176,6 +193,7 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 		
 		
 		wallArr.frame = f;
+//		wallArr.frame.setIgnoreRepaint(true);
 		wallArr.resize(wallArr.getSize());
 		wallArr.setPreferredSize(wallArr.getSize());
 		wallArr.setMinimumSize(wallArr.getSize());
@@ -187,7 +205,7 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 //		wallArr.frame.setVisible(true);
 		wallArr.frame.setLocation(0, _windowOfset);
 		wallArr.frame.setTitle(Lang.wall+" "+wallArr.getWallName().substring(wallArr.getWallName().lastIndexOf('_')+1));
-
+//		wallArr.frame.setIgnoreRepaint(true);
 		
 		return wallArr;
 		
