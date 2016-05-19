@@ -31,8 +31,8 @@ public class SfpSeparator extends SfpComponent {
 		super.setEnabled(false);
 	}
 
-	@Override
-	public void checkMouseOver() {}
+//	@Override
+//	public boolean checkMouseOver() {return false;}
 
 	@Override
 	public void pack() {

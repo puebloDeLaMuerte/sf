@@ -13,7 +13,7 @@ public class SfpComponent {
 	private SfpComponent 		parent;
 	protected SfpComponent[] 	components;
 	
-	private SfpEventListener[] 		eventListeners;
+	private SfpEventListener[] 	eventListeners;
 	private SfpMouseListener[]	mouseListeners;
 	
 	boolean enabled = true;
@@ -210,6 +210,10 @@ public class SfpComponent {
 		myText = txt;
 	}
 	
+	public String getText() {
+		return myText;
+	}
+	
 	/**
 	 * Does this component hold any sub-components?
 	 * 
@@ -256,6 +260,7 @@ public class SfpComponent {
 			this.currentDrawPos = new PVector(startX, startY);
 			this.visible = true;
 
+			closeSubs();
 			
 			if( depth-- <= 0 ) return;
 
@@ -281,7 +286,7 @@ public class SfpComponent {
 	
 	/**
 	 * 
-	 * Use this to open sub-Menus
+	 * Use this to open sub-Menus held by this SfpComponent
 	 * 
 	 * @param startX: sub - Menu top left X coordinate
 	 * @param startY: sub - Menu top left Y coordinate
@@ -291,7 +296,9 @@ public class SfpComponent {
 		float drawX = startX;
 		float drawY = startY;
 
-		if (components.length > 0) {
+		if (isEnabled() && components.length > 0) {
+						
+//			parent.closeSubs();
 
 			components[0].openAt(drawX, drawY, 0);
 
@@ -320,10 +327,27 @@ public class SfpComponent {
 		}
 	}
 	
+	public void closeSubs() {
+		
+		if (components.length > 0) {
+			
+			for( SfpComponent c : components) {
+				if( c.isSubMenu() && c.isVisible() ) {
+					
+					for( SfpComponent csub : c.components ) {
+						
+						csub.close();
+					}
+				}
+			}
+			
+		}
+	}
+	
 	/**
 	 * determines mouseOver
 	 */
-	public void checkMouseOver() {
+	public boolean checkMouseOver() {
 		
 //		for( SfpComponent c : components) {
 //			c.mousePos(x,y);
@@ -340,7 +364,9 @@ public class SfpComponent {
 			} else {
 				this.mouseOver = false;
 			}
-		} 
+		} else {
+			this.mouseOver = false;
+		}
 		
 		if( mouseOver && mouseOver != pMouseOver ) {
 			 mouseEntered();
@@ -351,11 +377,16 @@ public class SfpComponent {
 		}
 		
 		pMouseOver = mouseOver;
+		return pMouseOver;
 	}
 	
 	protected void mouseEntered() {
 		System.out.println("MOUSE ENTERED");
 		 
+		if( parent != null ) {
+			parent.closeSubs();
+		}
+		
 		 if( isSubMenu() ) {
 			 
 			 float startX = currentDrawPos.x + getParent().myTotalSize.x +1;
@@ -377,16 +408,28 @@ public class SfpComponent {
 	}
 	
 	/**
+	 * Checks the click-position at the PApplets mouseX/mouseY. Issues ActionEvents if valid click is performed. Closes the menu if click is out of bounds.
+	 * <b>Do not call this method after the call to SfpComponent.openAt(x,y,depth)</b> - it will lead to an instand closing since the menu is opened in a position that leads to the mouseX/Y values being outside the bounds of the menu, thus closing it  again instantaneously. Call this method before the openAt() command, or separate the two commands through flow control (eg. if-statements) inside PApplets mouse-Methods. 
+	 * 
 	 *  @return int<br><b>-1</b>	if click was outside of menu bounds<br><b>0</b>	if a disabled (Enabled() == false) component has been clicked<br><b>1</b>	if an Enabled() component has been clicked (but no ActionEvent was issued)<br><b>2</b>	if an action command has been issued
 	 */
-	
 	public int doClick() {
 				
 		int ret = -1;
 		
+//		System.out.println("checking mouse over for:" + this.getText() );
+//		System.out.println("app.mouse: " + app.mouseX +" / " + app.mouseY);
+//		System.out.println("me.pos   : " + this.currentDrawPos +"\n"+
+//						   "me.min   : " + this.getMinSize() +"\n"+
+//						   "me.total : " + this.getTotalSize());
+//		System.out.println();
+		
+		boolean b = checkMouseOver();
+		System.out.println("check    : " + b);
+		
 		for( SfpComponent c : components) {
 			int r = c.doClick();
-			if( r >= 1 ) {
+			if( r >= 0 ) {
 				ret = r;
 				break;
 			}
@@ -400,10 +443,12 @@ public class SfpComponent {
 				ret = 2;
 			}
 //			close();
+		} else if( mouseOver ){
+			ret = 0;
 		}
 
-		if( ret == 0 ) setAnimation();
-		if( ret == 1 ) setAnimation();
+//		if( ret == 0 ) setAnimation();
+		if( ret == 2 ) setAnimation();
 		
 		// if you are the outmose menu container
 		if( parent == null ) {

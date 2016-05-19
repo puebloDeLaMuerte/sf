@@ -202,31 +202,31 @@ public class SM_Renderer extends PApplet{
 		
 		// SUB-MENU TEST CODE:::
 		
-//		SfpMenu sub = new SfpMenu(this, "subtles menu...");
-//		
-//		SfpComponent s1 = new SfpComponent("s1 - test");
-//		SfpComponent s2 = new SfpComponent("s2 - test");
-//		SfpComponent s3 = new SfpComponent("s3 - test");
-//		SfpComponent s4 = new SfpComponent("s4 - test");
-//		
-//		sub.addSfpComponent(s1);
-//		sub.addSeparator();
-//		sub.addSfpComponent(s2);
-//		
-//		sub.addSfpComponent(s3);
-//		sub.addSfpComponent(s4);
-//
-//		SfpMenu sub2 = new SfpMenu(this, "subtles menu...");
-//		
-//		SfpComponent s21 = new SfpComponent("s21 - test");
-//		SfpComponent s22 = new SfpComponent("s22 - test");
-//		
-//		sub2.addSfpComponent(s21);
-//		sub2.addSfpComponent(s22);
-//		
-//		sub.addSfpComponent(sub2);
-//		
-//		menu.addSfpComponent(sub);
+		SfpMenu sub = new SfpMenu(this, "subtles menu...");
+		
+		SfpComponent s1 = new SfpComponent("s1 - test");
+		SfpComponent s2 = new SfpComponent("s2 - test");
+		SfpComponent s3 = new SfpComponent("s3 - test");
+		SfpComponent s4 = new SfpComponent("s4 - test");
+		
+		sub.addSfpComponent(s1);
+		sub.addSeparator();
+		sub.addSfpComponent(s2);
+		
+		sub.addSfpComponent(s3);
+		sub.addSfpComponent(s4);
+
+		SfpMenu sub2 = new SfpMenu(this, "subtles menu...");
+		
+		SfpComponent s21 = new SfpComponent("s21 - test");
+		SfpComponent s22 = new SfpComponent("s22 - test");
+		
+		sub2.addSfpComponent(s21);
+		sub2.addSfpComponent(s22);
+		
+		sub.addSfpComponent(sub2);
+		
+		menu.addSfpComponent(sub);
 		
 		// END TEST
 		

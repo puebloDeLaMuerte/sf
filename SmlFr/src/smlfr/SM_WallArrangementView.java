@@ -38,8 +38,9 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
+import sfpMenu.*;
 
-public class SM_WallArrangementView extends PApplet implements DropTargetListener, UpdateListener, ActionListener, ArtworkMeasurementParent {
+public class SM_WallArrangementView extends PApplet implements DropTargetListener, UpdateListener, ActionListener, SfpEventListener, ArtworkMeasurementParent {
 
 /**
 	 * 
@@ -74,13 +75,21 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	private PVector					awDragOfset;
 	private PVector					dragStart;
 	
-	private JPopupMenu				pMenu;
-	private JMenuItem				putBack, snapToMidHeight, close;
-	private JMenuItem				allignMidHoriz, allignMidVert, allignTop, allignBottom, allignLeft, allignRight;
-	private JMenuItem				distEqual, distValue, posFromBorder;
-	private JMenuItem[]				frameStyles;
-	private JMenu					editArtwork, allign, distance;
-	private JMenuItem				editMeasurements;
+//	private JPopupMenu				pMenu;
+//	private JMenuItem				putBack, snapToMidHeight, close;
+//	private JMenuItem				allignMidHoriz, allignMidVert, allignTop, allignBottom, allignLeft, allignRight;
+//	private JMenuItem				distEqual, distValue, posFromBorder;
+//	private JMenuItem[]				frameStyles;
+//	private JMenu					editArtwork, allign, distance;
+//	private JMenuItem				editMeasurements;
+	
+	private SfpMenu					pMenu;
+	private SfpComponent			putBack, snapToMidHeight, close;
+	private SfpComponent			allignMidHoriz, allignMidVert, allignTop, allignBottom, allignLeft, allignRight;
+	private SfpComponent			distEqual, distValue, posFromBorder;
+	private SfpComponent[]			frameStyles;
+	private SfpMenu					editArtwork, allign, distance;
+	private SfpComponent			editMeasurements;
 	
 	private DistanceChooser			distanceChooser;
 	
@@ -112,7 +121,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		dt = new DropTarget(this,this);
 		myMidHeight = myWall.getMidHeight();
 		
-		initMenu();
+//		initMenu();
 		
 		for( String a : (Set<String>)myWall.artwork(artworkActionType.GET_KEYS,null,null)) {
 			
@@ -161,104 +170,108 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		mySize = new Dimension(resultWidth, resultHeight);
 	}
 	
-	private void initMenu() {
+	// this was private once - maybe it should be at some pooint...?
+	public void initMenu() {
 		
-		pMenu = new JPopupMenu();
+		pMenu = new SfpMenu(this, "WallArrView-Menu");
 		
-		putBack = new JMenuItem(Lang.RemoveArtwork);
-		putBack.addActionListener(this);
+		putBack = new SfpComponent(Lang.RemoveArtwork);
+		putBack.addEventListener(this);
 		putBack.setEnabled(false);
 		
-		snapToMidHeight = new JMenuItem(Lang.snapToMidHeight);
-		snapToMidHeight.addActionListener(this);
+		snapToMidHeight = new SfpComponent(Lang.snapToMidHeight);
+		snapToMidHeight.addEventListener(this);
 		snapToMidHeight.setEnabled(false);
 
-		posFromBorder = new JMenuItem(Lang.posFromBorder);
-		posFromBorder.addActionListener(this);
+		posFromBorder = new SfpComponent(Lang.posFromBorder);
+		posFromBorder.addEventListener(this);
 		posFromBorder.setEnabled(false);
 		
-		editArtwork = new JMenu(Lang.editArtwork);
+		editArtwork = new SfpMenu(this, Lang.editArtwork);
 		editArtwork.setEnabled(true);
 
-		editMeasurements = new JMenuItem(Lang.editMeasurements);
-		editMeasurements.addActionListener(this);
+		editMeasurements = new SfpComponent(Lang.editMeasurements);
+		editMeasurements.addEventListener(this);
 		editMeasurements.setEnabled(true);
-		editArtwork.add(editMeasurements);
+		editArtwork.addSfpComponent(editMeasurements);
 
-		editArtwork.add(new JSeparator());
+		editArtwork.addSeparator();
 		
-		JMenuItem select = new JMenuItem(Lang.changeFrameStyle);
-		select.setFont(select.getFont().deriveFont(Font.ITALIC));
+		SfpComponent select = new SfpComponent(Lang.changeFrameStyle);
+//		select.setFont(select.getFont().deriveFont(Font.ITALIC));
 		select.setEnabled(false);
-		editArtwork.add( select );
-		editArtwork.add(Box.createRigidArea(new Dimension(0	, 10)) );
+		editArtwork.addSfpComponent( select );
+//		editArtwork.add(Box.createRigidArea(new Dimension(0	, 10)) );
 		
 		int i=0;
-		frameStyles = new JMenuItem[ FrameStyle.values().length ];
+		frameStyles = new SfpComponent[ FrameStyle.values().length ];
 		for( FrameStyle fst : SMUtils.FrameStyle.values() ) {
 			
 			String style = fst.toString();
 
-			frameStyles[i] = new JMenuItem(style);
-			frameStyles[i].addActionListener(this);
+			frameStyles[i] = new SfpComponent(style);
+			frameStyles[i].addEventListener(this);
 			frameStyles[i].setEnabled(true);
-			editArtwork.add(frameStyles[i]);
+			editArtwork.addSfpComponent(frameStyles[i]);
 			i++;
 		}
 		
-		allign = new JMenu(Lang.allign);
+		allign =new SfpMenu(this, Lang.allign);
 
-		allignMidHoriz = new JMenuItem(Lang.allignMidHor);
-		allignMidHoriz.addActionListener(this);
+		allignMidHoriz = new SfpComponent(Lang.allignMidHor);
+		allignMidHoriz.addEventListener(this);
 		
-		allignMidVert = new JMenuItem(Lang.allignMidVert);
-		allignMidVert.addActionListener(this);
+		allignMidVert = new SfpComponent(Lang.allignMidVert);
+		allignMidVert.addEventListener(this);
 		
-		allignTop = new JMenuItem(Lang.allignTop);
-		allignTop.addActionListener(this);
+		allignTop = new SfpComponent(Lang.allignTop);
+		allignTop.addEventListener(this);
 		
-		allignBottom = new JMenuItem(Lang.allignBottom);
-		allignBottom.addActionListener(this);
+		allignBottom = new SfpComponent(Lang.allignBottom);
+		allignBottom.addEventListener(this);
 		
-		allignLeft = new JMenuItem(Lang.allignLeft);
-		allignLeft.addActionListener(this);
+		allignLeft = new SfpComponent(Lang.allignLeft);
+		allignLeft.addEventListener(this);
 		
-		allignRight = new JMenuItem(Lang.allignRight);
-		allignRight.addActionListener(this);
+		allignRight = new SfpComponent(Lang.allignRight);
+		allignRight.addEventListener(this);
 		
-		allign.add(allignMidHoriz);
-		allign.add(allignMidVert);
-		allign.add(allignTop);
-		allign.add(allignBottom);
-		allign.add(allignLeft);
-		allign.add(allignRight);
+		allign.addSfpComponent(allignMidHoriz);
+		allign.addSfpComponent(allignMidVert);
+		allign.addSfpComponent(allignTop);
+		allign.addSfpComponent(allignBottom);
+		allign.addSfpComponent(allignLeft);
+		allign.addSfpComponent(allignRight);
 		
-		distance = new JMenu(Lang.distance);
+		distance = new SfpMenu(this, Lang.distance);
 		
-		distEqual = new JMenuItem(Lang.distanceSelection);
-		distEqual.addActionListener(this);
+		distEqual = new SfpComponent(Lang.distanceSelection);
+		distEqual.addEventListener(this);
 		
-		distValue = new JMenuItem(Lang.distanceFixed);
-		distValue.addActionListener(this);
+		distValue = new SfpComponent(Lang.distanceFixed);
+		distValue.addEventListener(this);
 		
-		distance.add(distEqual);
-		distance.add(distValue);
+		distance.addSfpComponent(distEqual);
+		distance.addSfpComponent(distValue);
 
 		
-		close = new JMenuItem(Lang.closeWall);
-		close.addActionListener(this);
+		close = new SfpComponent(Lang.closeWall);
+		close.addEventListener(this);
 		close.setEnabled(true);
 		
-		pMenu.add(putBack);
-		pMenu.add(editArtwork);
-		pMenu.add(new JSeparator());
-		pMenu.add(snapToMidHeight);
-		pMenu.add(allign);
-		pMenu.add(distance);
-		pMenu.add(posFromBorder);
-		pMenu.add(new JSeparator());
-		pMenu.add(close);
+		pMenu.addSfpComponent(putBack);
+		pMenu.addSfpComponent(editArtwork);
+		pMenu.addSeparator();
+		pMenu.addSfpComponent(snapToMidHeight);
+		pMenu.addSfpComponent(allign);
+		pMenu.addSfpComponent(distance);
+		pMenu.addSfpComponent(posFromBorder);
+		pMenu.addSeparator();
+		pMenu.addSfpComponent(close);
 		
+//		pMenu.addSfpComponent(new SfpComponent("testari"));
+		
+		pMenu.pack();
 	}
 	
 	@Override
@@ -285,6 +298,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		shadowOfsetAmount 	= base.fm.getShadowOfsetAmount();
 		
 		frameRate(15);
+		
+//		initMenu();
 	}
 	
 	@Override
@@ -384,6 +399,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			vm.requestRendererUpdate(myWall.getWallChar());
 			firstTime = false;
 		}
+		
+		pMenu.draw();
 	}
 
 	
@@ -1515,12 +1532,22 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	@Override
 	public void mouseClicked() {
 		
+		
+		System.err.println("Click - PRE : menuAW: " + menuAW);
+		System.err.println("Click - PRE : awOver: " + menuAW);
+
+//		if (pMenu.isVisible() ) {
+//			System.err.println(pMenu.doClick());
+//			return;
+//		}
+		
+		
 		if( awOver != null && mouseButton != RIGHT) {
 
 			awOver.toggleSelected();
 
-		} else if(mouseButton != RIGHT){
-			deselectAll();
+		} else if(mouseButton != RIGHT ) {
+//			deselectAll();
 		}
 		
 		if( mouseButton == RIGHT ) {
@@ -1549,8 +1576,28 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			}
 			
 			
-			pMenu.show(this, mouseX, mouseY);
+//			pMenu.show(this, mouseX, mouseY);
+			pMenu.openAt(mouseX, mouseY, 1);
+			
+		} else {
+			
+//			System.err.println(pMenu.doClick());
+			
+			int click =-1;
+			if (pMenu.isVisible() ) {
+				click = pMenu.doClick();
+			}
+			
+			if( click == -1 ) deselectAll();
+			System.err.println("clickvalue: " +click);
+//			return;
 		}
+		
+		
+		
+		System.err.println("Click - POST: menuAW: " + menuAW);
+		System.err.println("Click - POST: awOver: " + menuAW);
+
 	}
 
 	@Override
@@ -1647,7 +1694,8 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		// if it's none of the above it must have been a frameStyle selected. Let's find out which one!
 		else {
 
-			for (JMenuItem item : frameStyles) {
+//			for (JMenuItem item : frameStyles) {
+			for (SfpComponent item : frameStyles) {
 				if( e.getActionCommand().equalsIgnoreCase(item.getText())) {
 					
 					FrameStyle style = FrameStyle.valueOf(item.getText());
@@ -1663,6 +1711,90 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see sfpMenu.SfpEventListener#eventHappened(sfpMenu.SfpActionEvent)
+	 */
+	@Override
+	public void eventHappened(SfpActionEvent e) {
+		
+		System.err.println("Event: menuAW:" + menuAW);
+		
+		String action = e.getActionCommand();
+		
+		if(action.equalsIgnoreCase(Lang.closeWall)) {
+//			this.frame.setVisible(false);
+			vm.sleepWallArr(""+myWall.getWallChar());
+		}
+		
+		else
+		
+		if(action.equalsIgnoreCase(Lang.snapToMidHeight)) {
+				
+			snapToMidHeight();
+		}
+		
+		else
+		
+		if( action.equalsIgnoreCase(Lang.RemoveArtwork) && awOver != null) {
+			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, awOver.getName(), ' ', "Library", myWall.myRoom.getName(), awOver.getWallChar());
+			awOver = null;
+			myWall.myRoom.fireUpdateRequest(r);
+		}
+		
+		else
+			
+		if( action.equalsIgnoreCase(Lang.editMeasurements) ) {
+			
+			SMUtils.ArtworkMeasurementChooser chooser = new SMUtils.ArtworkMeasurementChooser(this, menuAW );
+
+			
+
+		}
+		
+		else if( e.getActionCommand().equals(posFromBorder.getText() )) {
+			
+			SM_Artwork[] aws = getSelectedArtworks();
+			
+			if( aws.length == 0 && menuAW != null ) {
+				aws = new SM_Artwork[1];
+				aws[0] = menuAW;
+			}
+			
+			posFromBorder(aws);
+		}
+		
+		else if( e.getActionCommand().equals(allignMidHoriz.getText()     ) ) allignArtworks( getSelectedArtworks(), AllignmentTypes.MID_HORIZONTAL);
+		else if( e.getActionCommand().equals(allignMidVert.getText()     )  ) allignArtworks( getSelectedArtworks(), AllignmentTypes.MID_VERTICAL);
+		else if( e.getActionCommand().equals(allignTop.getText()        )	) allignArtworks( getSelectedArtworks(), AllignmentTypes.TOP);
+		else if( e.getActionCommand().equals(allignBottom.getText()    )	) allignArtworks( getSelectedArtworks(), AllignmentTypes.BOTTOM);
+		else if( e.getActionCommand().equals(allignLeft.getText()     )	    ) allignArtworks( getSelectedArtworks(), AllignmentTypes.LEFT);
+		else if( e.getActionCommand().equals(allignRight.getText()   )	    ) allignArtworks( getSelectedArtworks(), AllignmentTypes.RIGHT);
+		
+		else if( e.getActionCommand().equals(distEqual.getText()   )		) distanceEqual( getSelectedArtworks() );
+		else if( e.getActionCommand().equals(distValue.getText()  )	 		) distanceValue( getSelectedArtworks() );
+		
+	
+		// if it's none of the above it must have been a frameStyle selected. Let's find out which one!
+		else {
+
+//			for (JMenuItem item : frameStyles) {
+			for (SfpComponent item : frameStyles) {
+				if( e.getActionCommand().equalsIgnoreCase(item.getText())) {
+					
+					FrameStyle style = FrameStyle.valueOf(item.getText());
+					
+					ArtworkUpdateRequestEvent request = new ArtworkUpdateRequestEvent(this, false, -1,  menuAW.getName(), style);
+					System.out.println(menuAW.getName());
+					
+					myWall.myRoom.fireUpdateRequest(request);
+					
+					break;
+				}
+			}
+		}
+		
+	}
+
 	private void allignArtworks( SM_Artwork[] aws, AllignmentTypes type) {
 		
 		
@@ -1983,9 +2115,13 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		
 		SM_Artwork[] aws = getSelectedArtworks();
 		
-		if ((aws == null || aws.length == 0) && awOver != null) {
+//		if ((aws == null || aws.length == 0) && awOver != null) {
+//			aws = new SM_Artwork[1];
+//			aws[0] = awOver;
+//		}
+		if ((aws == null || aws.length == 0) && menuAW != null) {
 			aws = new SM_Artwork[1];
-			aws[0] = awOver;
+			aws[0] = menuAW;
 		}
 		
 		boolean first = true;

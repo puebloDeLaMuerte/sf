@@ -182,6 +182,7 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 		wallArr.frame.setResizable(false);
 		wallArr.frame.add(wallArr);
 		wallArr.init();
+		wallArr.initMenu();
 		wallArr.frame.pack();
 //		wallArr.frame.setVisible(true);
 		wallArr.frame.setLocation(0, _windowOfset);
