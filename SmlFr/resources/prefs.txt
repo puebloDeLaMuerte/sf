@@ -1,8 +1,8 @@
 {
   "shadowAmount": 10,
   "previousProject": {
-    "projectPath": "/Users/pht/Desktop/Schreibtisch alt - SORTIEREN!!!/ffff/sandra und ihr team/sandra und ihr team.sfp",
-    "projectName": "sandra und ihr team"
+    "projectPath": "/Users/pht/Desktop/Schreibtisch alt - SORTIEREN!!!/ffff/Liebermann/Liebermann.sfp",
+    "projectName": "Liebermann"
   },
   "shadowOfsetAmount": 5,
   "fileChooserCurrentDirectory": "/Users/pht/Desktop/gerneauchnicht",

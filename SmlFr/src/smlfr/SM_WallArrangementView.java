@@ -27,6 +27,7 @@ import SMUtils.DistanceChooser;
 import SMUtils.FrameStyle;
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
+import SMUtils.SfPApplet;
 import SMUtils.WallRelativePositionChooser;
 import SMUtils.artworkActionType;
 import SMupdateModel.ArtworkUpdateRequestEvent;
@@ -40,7 +41,7 @@ import processing.core.PImage;
 import processing.core.PVector;
 import sfpMenu.*;
 
-public class SM_WallArrangementView extends PApplet implements DropTargetListener, UpdateListener, ActionListener, SfpEventListener, ArtworkMeasurementParent {
+public class SM_WallArrangementView extends SfPApplet implements DropTargetListener, UpdateListener, ActionListener, SfpEventListener, ArtworkMeasurementParent {
 
 /**
 	 * 
@@ -290,6 +291,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 	
 	@Override
 	public void setup() {
+
 		scale = ((float)mySize.width ) / ((float)myWall.getWidth());
 		wlGfx = createGraphics(width, height);
 
@@ -400,7 +402,7 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 			firstTime = false;
 		}
 		
-		pMenu.draw();
+		if( pMenu != null ) pMenu.draw();
 	}
 
 	
@@ -1730,8 +1732,15 @@ public class SM_WallArrangementView extends PApplet implements DropTargetListene
 		}
 		
 		else
-		
-		if( action.equalsIgnoreCase(Lang.RemoveArtwork) && awOver != null) {
+			
+		// use this if you want the menuAW to be removed...
+		if( action.equalsIgnoreCase(Lang.RemoveArtwork) && menuAW!= null/*awOver != null*/) {
+			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, menuAW.getName(), ' ', "Library", myWall.myRoom.getName(), menuAW.getWallChar());
+			menuAW = null;
+			myWall.myRoom.fireUpdateRequest(r);
+		}
+		// use this if you want the awOver to be removed...
+		else if( action.equalsIgnoreCase(Lang.RemoveArtwork) && awOver != null) {
 			WallUpdateRequestEvent r = new WallUpdateRequestEvent(this, awOver.getName(), ' ', "Library", myWall.myRoom.getName(), awOver.getWallChar());
 			awOver = null;
 			myWall.myRoom.fireUpdateRequest(r);

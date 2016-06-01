@@ -32,7 +32,28 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	public SM_RoomArrangementView(int w, int h, SmlFr base) {
 		super(w,h, base);
 	}
+	
+	public void init() {
+		super.init();
+		isinitialized = true;
+	}
 
+	
+	
+	public void initFileAndRoomAndViewangles(File _filePath, SM_Room _room, SM_ViewAngle[] _vas) {
+		
+		super.initFileAndRoom(_filePath, _room);
+		
+		vm = new SM_ViewManager(this, myRoom.getWindowManager(), _vas, base);
+		
+		wallsOverGfx = super.getWallsOverGfx();
+		wallsActiveGfx = super.getWallsActiveGfx();
+	}
+	
+	public void setWallsGfx() {
+		wallsOverGfx = super.getWallsOverGfx();
+		wallsActiveGfx = super.getWallsActiveGfx();
+	}
 	
 	public void init(File _filePath, SM_Room _room, SM_ViewAngle[] _vas) {
 		
@@ -64,7 +85,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		super.draw();
 
 		if(showViewMenuPreview) {
-			if( vm != null && vm.isRendererMenuOpen() ) {
+			if( vm != null && vm.isRendererMenuOpen() && wallsOverGfx != null) {
 
 				for(char c : viewMenuCurrentHighlight ) {
 
@@ -76,7 +97,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 			}
 			
 		}
-		if( activeViews != null ) {
+		if( activeViews != null && wallsOverGfx != null) {
 			
 
 			for( char v : activeViews ) {
@@ -84,7 +105,7 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 			}
 
 		}
-		if( visibleViews != null ) {
+		if( visibleViews != null && wallsActiveGfx != null) {
 
 			for( char v : visibleViews ) {
 				shape(wallsActiveGfx.get(v), 0,0);

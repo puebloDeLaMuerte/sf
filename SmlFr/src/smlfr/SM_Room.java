@@ -2,6 +2,8 @@ package smlfr;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Panel;
 import java.awt.Point;
 //import java.awt.dnd.DropTargetDragEvent;
 //import java.awt.dnd.DropTargetDropEvent;
@@ -18,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import SMUtils.Lang;
+import SMUtils.SfFrame;
 import SMUtils.artworkActionType;
 import SMUtils.awFileSize;
 import SMUtils.progState;
@@ -26,6 +29,7 @@ import SMupdateModel.ArtworkUpdateRequestListener;
 import SMupdateModel.UpdateListener;
 import SMupdateModel.WallColorUpdateRequestEvent;
 import SMupdateModel.WallUpdateRequestEvent;
+import processing.core.PApplet;
 
 //import com.sun.tools.jdi.LinkedHashMap;
 
@@ -144,10 +148,64 @@ public class SM_Room {
 		return "Hi, this is room "+myRealName+" ("+myRoomName+") \nI have "+myViewAngles.length+" ViewAngles.\nI also have as many as "+myWalls.size()+" Walls.\n\n";
 	}
 	
+public void XinitProjectView(Dimension _size, Point _loc, SmlFr base) {
+		
+		System.out.println("SM_ROOM: init ProjectView");
+
+		myProjectView = new SM_RoomProjectView(_size.width, _size.height, base);
+		
+		File fl = base.fm.getFilePathForRoom(myRoomName);
+		myProjectView.initFileAndRoom(fl, this);
+		
+		myProjectView.resize(_size.width, _size.height);
+		myProjectView.setLocation(_loc.x, _loc.y);
+
+		
+		PApplet.runSketch(new String[] {PApplet.class.getName()}, myProjectView);
+		
+
+		
+		while( !myProjectView.isSetupRun() ) {
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				System.err.println("wait on RoomProjectView: setup was interrupted " + e.getMessage());
+			}
+		}
+		
+//		myProjectView.frame.setTitle(myRealName);
+//		myProjectView.frame.setVisible(true);
+
+	}
+
+	public void XinitArrangementView(Dimension _size, Point _loc, SmlFr base) {
+		
+		myArrangementView = new SM_RoomArrangementView(_size.width, _size.height, base);
+		
+		File fl = base.fm.getFilePathForRoom(myRoomName);
+		myArrangementView.initFileAndRoomAndViewangles(fl, this, myViewAngles);
+		
+		myArrangementView.resize(_size.width, _size.height);
+		
+		PApplet.runSketch(new String[] {PApplet.class.getName()}, myArrangementView);
+		
+		myArrangementView.setWallsGfx();
+		
+		while( !myArrangementView.isSetupRun() ) {
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				System.err.println("wait on RoomProjectView: setup was interrupted " + e.getMessage());
+			}
+		}
+		
+		myArrangementView.setMenuExit();
+		entered = true; // else no renderer will be loaded, aparently
+	}
 
 	public void initProjectView(Dimension _size, Point _loc, SmlFr base) {
 		
-		
+		// the classic/OLD one...
 		
 //		JFrame f = new JFrame();
 //		f.setLayout(new BorderLayout());
@@ -163,12 +221,19 @@ public class SM_Room {
 //		f.setLocation(_loc.width, _loc.height);
 //		f.setResizable(true);
 		
-		JFrame f = new JFrame();
-		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		SfFrame f = new SfFrame();
+//		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		f.setLayout(new BorderLayout());
 		f.setUndecorated(true);
 		myProjectView = new SM_RoomProjectView(_size.width, _size.height, base);
 //		f.setAlwaysOnTop(true);
+		
+		
+
+//		Panel p = new Panel();
+//		p.add(myProjectView);
+//		f.add(p);
+		
 		f.add(myProjectView);
 		File fl = base.fm.getFilePathForRoom(myRoomName);
 
@@ -178,15 +243,23 @@ public class SM_Room {
 		myProjectView.setPreferredSize(_size);
 		myProjectView.setMinimumSize(_size);
 		myProjectView.frame.add(myProjectView);
+
+		
+		System.err.println("Thread that calls init on ProjectView: " + Thread.currentThread().getName());
+		
 		myProjectView.init(fl, this);
 		
-		while( !myProjectView.isSetupRun() ) {
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				System.err.println("wait on RoomProjectView: setup was interrupted " + e.getMessage());
-			}
-		}
+		
+		// we need to wair only if this code runs on any non-EDT Thread! If it's the EDT, don't wait
+		// or else setup() in SfPApplet will never be reached!
+		
+//		while( !myProjectView.isSetupRun() ) {
+//			try {
+//				Thread.sleep(20);
+//			} catch (InterruptedException e) {
+//				System.err.println("wait on RoomProjectView: setup was interrupted " + e.getMessage());
+//			}
+//		}
 		
 		myProjectView.frame.pack();
 		myProjectView.frame.setResizable(false);
@@ -236,15 +309,17 @@ public class SM_Room {
 		
 	}
 	
-	public void initProjectView2(Dimension _size, Point _loc, SmlFr base) {
-		
-		starterThread thread = new starterThread();
-		thread.setName("RoomArr starter Thread");
-		thread.set(_size, _loc, base, this);
-		thread.start();
-	}
+//	public void initProjectView2(Dimension _size, Point _loc, SmlFr base) {
+//		
+//		starterThread thread = new starterThread();
+//		thread.setName("RoomArr starter Thread");
+//		thread.set(_size, _loc, base, this);
+//		thread.start();
+//	}
 	
 	public void initArrangementView(Dimension _size, Point _loc, SmlFr basw) {
+		
+		// the classic/OLD one...
 		
 //		JFrame f = new JFrame();
 //		f.setLayout(new BorderLayout());
@@ -262,12 +337,17 @@ public class SM_Room {
 //		f.setResizable(true);
 //		entered = true;
 		
-		JFrame f = new JFrame();
+		SfFrame f = new SfFrame("fooframe");
 		f.setLayout(new BorderLayout());
-		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+//		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		f.setUndecorated(true);
 //		f.setAlwaysOnTop(true);
 		myArrangementView = new SM_RoomArrangementView(_size.width, _size.height, base);
+		
+//		Panel p = new Panel();
+//		p.add(myArrangementView);
+//		f.add(p);
+		
 		f.add(myArrangementView);
 		File fl = basw.fm.getFilePathForRoom(myRoomName);
 
@@ -278,13 +358,19 @@ public class SM_Room {
 		myArrangementView.frame.add(myArrangementView);
 		myArrangementView.init(fl, this, myViewAngles);
 		
-		while( !myArrangementView.isSetupRun() ) {
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				System.err.println("wait on RoomArrangementView: setup was interrupted " + e.getMessage());
-			}
-		}
+		
+		// only wait for setup() in ArrViews if this code is NOT executed on the EDT - 
+		// because if it is on the EDT, the setup() will never be called if we wait here
+		
+//		while( !myArrangementView.isSetupRun() ) {
+//			try {
+//				Thread.sleep(20);
+//			} catch (InterruptedException e) {
+//				System.err.println("wait on RoomArrangementView: setup was interrupted " + e.getMessage());
+//			}
+//		}
+		
+		myArrangementView.initSfpMenu();
 		
 		myArrangementView.setMenuExit();
 		myArrangementView.frame.pack();

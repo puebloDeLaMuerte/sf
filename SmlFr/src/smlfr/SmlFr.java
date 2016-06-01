@@ -93,15 +93,16 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 
 				System.out.println("stream: SimuFoehr launched");
 				System.err.println("errstr: SimuFoehr launched");
+				System.out.println("The version-String is: "+versionString);
 				System.out.println();
 
-				System.out.println("The version-String is: "+versionString);
 //				SysInfo.displayMessage();
 				SysInfo.printSysStats();
 				SysInfo.printHeapStats();
 
 			} else {
 				System.out.println("SimuFoehr launched");
+				System.out.println("The version-String is: "+versionString);
 				System.out.println("a log-lock has been detected. Output goes to console...\n");
 			}
 		} catch (Exception e) {

@@ -9,12 +9,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
 
 //import org.multiply.processing.TimedEventGenerator;
 
 
 
 import SMUtils.Lang;
+import SMUtils.SfPApplet;
 import SMUtils.SkewMode;
 import SMUtils.Skewmator;
 import SMUtils.SysInfo;
@@ -32,7 +34,7 @@ import smlfr.SM_ViewAngle;
 import smlfr.SM_ViewManager;
 
 
-public class SM_Renderer extends PApplet{
+public class SM_Renderer extends SfPApplet{
 
 	/**
 	 * 
@@ -113,18 +115,18 @@ public class SM_Renderer extends PApplet{
 	double			dA, dL;
 	
 	public SM_Renderer(SM_ViewManager _vm, SM_ViewAngle _defaultView, File _filePath, int _YSize) {
-//		super();
+		super();
 		vm = _vm;
 		skewmator = new Skewmator(photoX, photoY);
 		
 		update = new RendererUpdateThreadManager(this);
 		
 //		SETUP THE MENU IF ITS A JMENU
-		initJPopupMenu();
+//		initJPopupMenu();
 
 		int c = color(123);
 		
-		System.err.println(c);
+//		System.err.println(c);
 		
 		generalPath = _filePath;
 		currentView = _defaultView;
@@ -202,31 +204,31 @@ public class SM_Renderer extends PApplet{
 		
 		// SUB-MENU TEST CODE:::
 		
-		SfpMenu sub = new SfpMenu(this, "subtles menu...");
-		
-		SfpComponent s1 = new SfpComponent("s1 - test");
-		SfpComponent s2 = new SfpComponent("s2 - test");
-		SfpComponent s3 = new SfpComponent("s3 - test");
-		SfpComponent s4 = new SfpComponent("s4 - test");
-		
-		sub.addSfpComponent(s1);
-		sub.addSeparator();
-		sub.addSfpComponent(s2);
-		
-		sub.addSfpComponent(s3);
-		sub.addSfpComponent(s4);
-
-		SfpMenu sub2 = new SfpMenu(this, "subtles menu...");
-		
-		SfpComponent s21 = new SfpComponent("s21 - test");
-		SfpComponent s22 = new SfpComponent("s22 - test");
-		
-		sub2.addSfpComponent(s21);
-		sub2.addSfpComponent(s22);
-		
-		sub.addSfpComponent(sub2);
-		
-		menu.addSfpComponent(sub);
+//		SfpMenu sub = new SfpMenu(this, "subtles menu...");
+//		
+//		SfpComponent s1 = new SfpComponent("s1 - test");
+//		SfpComponent s2 = new SfpComponent("s2 - test");
+//		SfpComponent s3 = new SfpComponent("s3 - test");
+//		SfpComponent s4 = new SfpComponent("s4 - test");
+//		
+//		sub.addSfpComponent(s1);
+//		sub.addSeparator();
+//		sub.addSfpComponent(s2);
+//		
+//		sub.addSfpComponent(s3);
+//		sub.addSfpComponent(s4);
+//
+//		SfpMenu sub2 = new SfpMenu(this, "subtles menu...");
+//		
+//		SfpComponent s21 = new SfpComponent("s21 - test");
+//		SfpComponent s22 = new SfpComponent("s22 - test");
+//		
+//		sub2.addSfpComponent(s21);
+//		sub2.addSfpComponent(s22);
+//		
+//		sub.addSfpComponent(sub2);
+//		
+//		menu.addSfpComponent(sub);
 		
 		// END TEST
 		
@@ -285,7 +287,7 @@ public class SM_Renderer extends PApplet{
 		
 		setupRun = false;
 		
-
+//		size(800,600);
 		
 		frame.setTitle(currentViewString.substring(2));
 		
@@ -536,7 +538,7 @@ public class SM_Renderer extends PApplet{
 		
 		double lmili = millis();
 		
-		System.out.println("RENDERER: LIGHTS UPDATE: "+ _wallChar +" start");
+		System.out.println("RENDERER: LIGHTS UPDATE: "+ _wallChar +" start on Thread " + Thread.currentThread().getName());
 		
 		if( currentView.getWallCharsAsString().contains(""+_wallChar) ) {
 			
@@ -833,7 +835,13 @@ public class SM_Renderer extends PApplet{
 			busyQueueProgress = 0;
 		}
 		
-		this.frame.repaint();
+//		this.frame.repaint();  // TODO run from EDT
+//		SwingUtilities.invokeLater(new Runnable() {
+//			@Override
+//			public void run() {
+//				
+//			}
+//		});
 		
 //		System.out.println("RENDERER: POST: savetydraw: " + savetyDraw);
 //		System.out.println("RENDERER: POST:     redraw: " + this.redraw);
@@ -864,7 +872,7 @@ public class SM_Renderer extends PApplet{
 	}
 	
 	@Override
-	public synchronized void draw(){
+	public /*synchronized*/ void draw(){
 
 		
 		background(255);
@@ -1384,8 +1392,8 @@ public class SM_Renderer extends PApplet{
 			
 			
 			try {
-			devBuff = devBuff.substring(1, 6);
-			devBuff += key;
+				devBuff = devBuff.substring(1, 6);
+				devBuff += key;
 			if( devBuff.equalsIgnoreCase("info++")) {
 				SysInfo.displayMessage();
 			}
@@ -1393,9 +1401,6 @@ public class SM_Renderer extends PApplet{
 				System.err.println("THIS EXCEPTION GOT CAUGHT: ");
 				e.printStackTrace();
 			}
-			
-			
-			
 			
 			
 			if (devGUI) {

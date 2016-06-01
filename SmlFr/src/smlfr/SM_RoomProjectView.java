@@ -28,6 +28,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
+import SMUtils.SfPApplet;
 import SMUtils.WallColorChooser;
 import SMUtils.artworkActionType;
 import SMupdateModel.WallColorUpdateRequestEvent;
@@ -38,7 +39,7 @@ import processing.core.PShape;
 import processing.event.MouseEvent;
 import sfpMenu.*;
 
-public class SM_RoomProjectView extends PApplet implements DropTargetListener, DragGestureListener, Transferable, ActionListener, SfpEventListener {
+public class SM_RoomProjectView extends SfPApplet implements DropTargetListener, DragGestureListener, Transferable, ActionListener, SfpEventListener {
 
 	/**
 	 * 
@@ -90,7 +91,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 //	int count =0;
 	
 	public SM_RoomProjectView(int w, int h, SmlFr base) {
-		super();
+//		super();
 		mySize = new int[2];
 		mySize[0] = w;
 		mySize[1] = h;
@@ -108,7 +109,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		
 		
 		initJMenu();
-		initSfpMenu();
+		initSfpMenu(); 
 		
 		// init drop visual feedback bg-colors
 		bgr = 255;
@@ -157,7 +158,9 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		return setupRun;
 	}
 	
-	private void initSfpMenu() {
+	public void initSfpMenu() {
+		
+		if( menu != null ) return; // prevent multiple inits through init calls in setup() that make undone any changes to the menu that is already present
 		
 		menu = new SfpMenu(this, "RoomArrView-SfpMenu");
 		
@@ -447,6 +450,12 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 		
 	}
 	
+	public void initFileAndRoom(File _filePath, SM_Room _room) {
+		myFilePath = _filePath;
+		myRoom = _room;
+		myWalls = myRoom.getWalls();
+	}
+	
 	public void init(File _filePath, SM_Room _room) {
 		
 		
@@ -507,7 +516,14 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	}
 	
 	public HashMap<Character, PShape> getWallsOverGfx() {
-		return wallsOverGfx;
+		
+		if( wallsOverGfx != null ) {
+			return wallsOverGfx;
+		} else {
+			return null;
+		}
+		
+//		return wallsOverGfx;
 	}
 	
 	
@@ -651,6 +667,7 @@ public class SM_RoomProjectView extends PApplet implements DropTargetListener, D
 	public void setMenuExit() {
 //		pMenuEnterExitRoom.setText(Lang.exitRoom);
 		menuEnterExitRoom.setText(Lang.exitRoom);
+		menu.pack();
 	}
 	
 	@Override

@@ -216,11 +216,11 @@ public class SfpComponent {
 	}
 	
 	public void setText(String txt) {
-		myText = txt;
+		this.myText = txt;
 	}
 	
 	public String getText() {
-		return myText;
+		return this.myText;
 	}
 	
 	/**
@@ -332,7 +332,7 @@ public class SfpComponent {
 		this.visible = false;
 		
 		if( !this.isAnimating() ) {
-			currentDrawPos = null;
+//			currentDrawPos = null;
 		}
 	}
 	
@@ -362,7 +362,13 @@ public class SfpComponent {
 //			c.mousePos(x,y);
 //		}
 		
-				
+//		int appX = app.mouseX;
+//		int appY = app.mouseY;
+//		
+//		float drawX = currentDrawPos.x;
+//		float drawY = currentDrawPos.y;
+//		float sixe  = getParent().getTotalSize().x;		
+		
 		if( this.isVisible() ) {
 			if( app.mouseX > currentDrawPos.x && app.mouseX < currentDrawPos.x + getParent().getTotalSize().x ) {
 				if( app.mouseY > currentDrawPos.y && app.mouseY < currentDrawPos.y + getMinSize().y ) {

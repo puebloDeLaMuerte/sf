@@ -2,6 +2,8 @@ package smlfr;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Panel;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,11 +19,13 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import processing.core.PApplet;
 import processing.core.PImage;
 import sfpMenu.SfpActionEvent;
 import sfpMenu.SfpEventListener;
 import sfpMenu.SfpViewMenuItem;
 import SMUtils.Lang;
+import SMUtils.SfFrame;
 import SMUtils.ViewMenuItem;
 import SMUtils.artworkActionType;
 import SMupdateModel.UpdateEvent;
@@ -105,36 +109,47 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 		doActiveViews();
 	}
 	
-	private synchronized void initRenderer(SM_ViewAngle _va) {
+	private synchronized void XinitRenderer(SM_ViewAngle _va) {
 		
 
 
 				
-		JFrame f = new JFrame();
+//		JFrame f = new JFrame();
 //		RendererFrame f = new RendererFrame();
 		
 //		f.initMenu(this);
 		
+		System.err.println("this ViewManager inits a Renderer on this Thread: " + Thread.currentThread().getName());
+//		System.err.println(Thread.currentThread().getStackTrace());
 		
+//		for( StackTraceElement e : Thread.currentThread().getStackTrace() ) {
+//			System.err.println("  " + e.toString());
+//		}
 		
-		f.setLayout(new BorderLayout());
-		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+//		f.setLayout(new BorderLayout());
+//		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		renderer = new SM_Renderer(this,  _va, myRoomArrView.myRoom.getFilePath(), wm.getRaster().height*2);
-		System.out.println("VIEW MANAGER: renderer given this height: "+wm.getRaster().height*2);
+
+		renderer.resize(renderer.getSize());
+//		System.out.println("VIEW MANAGER: renderer given this height: "+wm.getRaster().height*2);
+		
+		PApplet.runSketch(new String[] { PApplet.class.getName()}, renderer );
+		renderer.initSpfMenu();
+//		renderer.setLocation(wm.getScreen().width-renderer.getSize().width,0);
 		
 //		f.setRenderer(renderer);
 //		renderer.addMouseListener(f);
 		
-		renderer.frame = f;
-		renderer.resize(renderer.getSize());
-		renderer.setPreferredSize(renderer.getSize());
-		renderer.setMinimumSize(renderer.getSize());
-
-		renderer.frame.add(renderer);
-		//
-		renderer.init();
-		renderer.initSpfMenu();
-		//
+//		renderer.frame = f;
+//		renderer.resize(renderer.getSize());
+//		renderer.setPreferredSize(renderer.getSize());
+//		renderer.setMinimumSize(renderer.getSize());
+//
+//		renderer.frame.add(renderer);
+//		
+//		renderer.init();
+//		renderer.initSpfMenu();
+		
 //		renderer.resize(renderer.getSize());
 		System.out.println("VIEW MANAGER: vm: the renderer returns this size: " + renderer.getSize().width+" x "+renderer.getSize().height);
 		System.out.println("VIEW MANAGER: vm: the renderer-frame seems to be: "+renderer.frame.getWidth()+" x "+renderer.frame.getHeight());
@@ -147,6 +162,86 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 				e.printStackTrace();
 			}
 		}
+//		renderer.frame.setAlwaysOnTop(true);
+		
+//		renderer.frame.pack();
+////		renderer.frame.setIgnoreRepaint(true);
+//		renderer.frame.setVisible(true);
+//		renderer.frame.setLocation(wm.getScreen().width-renderer.getSize().width,0);
+//		renderer.frame.setResizable(false);
+//		renderer.frame.setIgnoreRepaint(true);
+		
+
+		renderer.redraw();
+		
+//		SwingUtilities.invokeLater(new Runnable() {
+//			@Override
+//			public void run() {
+//				
+//				
+//				
+//				
+//				
+//				
+//			}
+//		});
+	}
+	
+	private synchronized void initRenderer(SM_ViewAngle _va) {
+		
+
+
+		
+		SfFrame f = new SfFrame();
+//		RendererFrame f = new RendererFrame();
+		
+//		f.initMenu(this);
+		
+		
+		f.setLayout(new BorderLayout());
+//		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		renderer = new SM_Renderer(this,  _va, myRoomArrView.myRoom.getFilePath(), wm.getRaster().height*2);
+		System.out.println("VIEW MANAGER: renderer given this height: "+wm.getRaster().height*2);
+		
+//		f.setRenderer(renderer);
+//		renderer.addMouseListener(f);
+		
+		renderer.frame = f;
+		renderer.resize(renderer.getSize());
+		renderer.setPreferredSize(renderer.getSize());
+		renderer.setMinimumSize(renderer.getSize());
+
+//		Panel p = new Panel();
+//		p.add(renderer);
+//		renderer.frame.add(p);
+
+		
+		
+		renderer.frame.add(renderer);
+		
+		System.err.println("Thread that calls init on Renderer: " + Thread.currentThread().getName());
+
+		
+		renderer.init();
+		renderer.initSpfMenu();
+		
+//		renderer.resize(renderer.getSize());
+		System.out.println("VIEW MANAGER: vm: the renderer returns this size: " + renderer.getSize().width+" x "+renderer.getSize().height);
+		System.out.println("VIEW MANAGER: vm: the renderer-frame seems to be: "+renderer.frame.getWidth()+" x "+renderer.frame.getHeight());
+		
+		
+//		int wait = 0;
+//		while( !renderer.setupRun) {
+//			System.out.println("VIEW MANAGER: waiting on Renderer setup() ...  "+wait++);
+//			try {
+//				Thread.sleep(50);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//		}
+		
+		
+		
 //		renderer.frame.setAlwaysOnTop(true);
 		
 		renderer.frame.pack();
@@ -172,10 +267,65 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 //		});
 	}
 	
-	private synchronized SM_WallArrangementView initWallArrangementView(char _wall, int _windowOfset) {
+	private synchronized SM_WallArrangementView XinitWallArrangementView(char _wall, int _windowOfset) {
+		
+//		
+//		JFrame f = new JFrame();
+//		f.setLayout(new BorderLayout());
+//		f.addWindowListener(this);
+		
+		Dimension maxAvailableSpace;
+		
+		Point lpos = wm.getLibraryPosition();
+		Point rpos = renderer.getLocationOnScreen();
+		
+		if( lpos.y > 150 && rpos.x > 150 ) {
+			maxAvailableSpace = new Dimension(rpos.x, lpos.y-(rpos.y));
+		} else {
+			maxAvailableSpace = wm.getRaster();
+		}
+		SM_WallArrangementView wallArr = new SM_WallArrangementView((SM_Wall)myRoomArrView.myWalls.get(_wall), maxAvailableSpace, this, base );
+//		wallArr.setVisible(false);
+		wallArr.resize(wallArr.getSize());
+		
+		PApplet.runSketch(new String[] {PApplet.class.getName()}, wallArr);
+		
+		wallArr.initMenu();
+		wallArr.redraw();
+		
+//		while( !wallArr.finished) {
+//			try {
+//				System.out.println("Waiting for WallArr to finish setup() etc...");
+//				Thread.sleep(100);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+		
+//		wallArr.frame = f;
+//		wallArr.frame.setIgnoreRepaint(true);
+//		wallArr.resize(wallArr.getSize());
+//		wallArr.setPreferredSize(wallArr.getSize());
+//		wallArr.setMinimumSize(wallArr.getSize());
+//		wallArr.frame.setResizable(false);
+//		wallArr.frame.add(wallArr);
+//		wallArr.init();
+//		wallArr.initMenu();
+//		wallArr.frame.pack();
+////		wallArr.frame.setVisible(true);
+		wallArr.setLocation(0, _windowOfset);
+//		wallArr.frame.setTitle(Lang.wall+" "+wallArr.getWallName().substring(wallArr.getWallName().lastIndexOf('_')+1));
+//		wallArr.frame.setIgnoreRepaint(true);
+		
+		return wallArr;
+		
+	}
+	
+private synchronized SM_WallArrangementView initWallArrangementView(char _wall, int _windowOfset) {
 		
 		
-		JFrame f = new JFrame();
+		SfFrame f = new SfFrame();
 		f.setLayout(new BorderLayout());
 		f.addWindowListener(this);
 		
@@ -198,7 +348,16 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 		wallArr.setPreferredSize(wallArr.getSize());
 		wallArr.setMinimumSize(wallArr.getSize());
 		wallArr.frame.setResizable(false);
+		
+//		Panel p = new Panel();
+//		
+//		p.add(wallArr);
+//		wallArr.frame.add(p);
+		
 		wallArr.frame.add(wallArr);
+		
+		System.err.println("Thread that calls init on WallArrangementView: " + Thread.currentThread().getName());
+		
 		wallArr.init();
 		wallArr.initMenu();
 		wallArr.frame.pack();
@@ -514,6 +673,7 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 			wallArrangementViews.put(""+_c, initWallArrangementView(_c, 0));
 			wallArrangementViews.get(""+_c).frame.setVisible(true);
 		} else if( wallArrangementViews.get(""+_c).isSleeping() ) {
+			wallArrangementViews.get(""+_c).loop();
 			wallArrangementViews.get(""+_c).frame.setVisible(true);
 			wallArrangementViews.get(""+_c).setEnabled(true);
 			wallArrangementViews.get(""+_c).setVisible(true);
@@ -550,7 +710,8 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 
 			if( s.equalsIgnoreCase(t) ) {
 				if ( wallArrangementViews.get(s) != null ) {
-					wallArrangementViews.get(s).setVisible(false);
+//					wallArrangementViews.get(s).setVisible(false);
+					wallArrangementViews.get(s).noLoop();
 					wallArrangementViews.get(s).frame.setVisible(false);
 					
 				}
@@ -593,7 +754,7 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 		
 		System.out.print("disposing VM: ");
 		
-			JFrame f = (JFrame) e.getSource();
+			SfFrame f = (SfFrame) e.getSource();
 			f.setVisible(false);
 			String t = f.getTitle();
 			System.out.print(t);
@@ -632,6 +793,8 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 
 	@Override
 	public void doUpdate(UpdateEvent e) {
+		
+		System.err.println("View Manager receives UpdateRequest on Thread: " + Thread.currentThread().getName());
 		
 		UpdateType type = e.getType();
 		LinkedHashMap<String, Object> data = e.getData();
