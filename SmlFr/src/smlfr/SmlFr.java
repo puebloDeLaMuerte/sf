@@ -23,6 +23,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import SMUtils.BuildInfo;
 import SMUtils.Lang;
 import SMUtils.SM_Frames;
 import SMUtils.SysInfo;
@@ -68,6 +70,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 	public static void main(String _args[]) {
 
 		
+		
 		try {
 			File logLock = new File("resources/logs/no.log");
 
@@ -94,6 +97,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 				System.out.println("stream: SimuFoehr launched");
 				System.err.println("errstr: SimuFoehr launched");
 				System.out.println("The version-String is: "+versionString);
+				System.out.println("The build number is: " SMUtils.BuildInfo.buildNumber + "  timestamp: " + SMUtils.BuildInfo.timeStamp);
 				System.out.println();
 
 //				SysInfo.displayMessage();
