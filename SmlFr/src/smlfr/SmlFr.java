@@ -43,9 +43,7 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 	
 	
 
-	private static final long serialVersionUID = -4943542664716794448L;
-	public static final String versionString = "1.0.6";
-	
+	private static final long serialVersionUID = -4943542664716794448L;	
 	
 	// Modules
 	public SmlFr 						base;
@@ -96,17 +94,19 @@ public class SmlFr extends JFrame implements WindowFocusListener {
 
 				System.out.println("stream: SimuFoehr launched");
 				System.err.println("errstr: SimuFoehr launched");
-				System.out.println("The version-String is: "+versionString);
-				System.out.println("The build number is: " SMUtils.BuildInfo.buildNumber + "  timestamp: " + SMUtils.BuildInfo.timeStamp);
+				System.out.println("The version-String is: "+BuildInfo.versionString);
+				System.out.println("The build number is  : "+BuildInfo.buildNumber + "  timestamp: " + BuildInfo.timeStamp);
 				System.out.println();
 
+				
 //				SysInfo.displayMessage();
 				SysInfo.printSysStats();
 				SysInfo.printHeapStats();
 
 			} else {
 				System.out.println("SimuFoehr launched");
-				System.out.println("The version-String is: "+versionString);
+				System.out.println("The version-String is: "+BuildInfo.versionString);
+				System.out.println("The build number is  : "+BuildInfo.buildNumber + "  timestamp: " + BuildInfo.timeStamp);
 				System.out.println("a log-lock has been detected. Output goes to console...\n");
 			}
 		} catch (Exception e) {

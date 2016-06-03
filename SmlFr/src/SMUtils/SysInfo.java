@@ -77,4 +77,29 @@ public class SysInfo {
 		}
 		System.out.println();
 	}
+
+	/**
+	 * 
+	 */
+	public static void displayVersionInfo() {
+		
+		String mssg = "\n";
+		
+		mssg += "SimuFöhr Version " + SMUtils.BuildInfo.versionString + "\n\n";
+		mssg += "build: " + SMUtils.BuildInfo.buildNumber;
+		mssg += " " + SMUtils.BuildInfo.timeStamp + "\n\n\n";
+		mssg += "<html><b>This is proprietary Software.<br>Do not copy, edit or redistribute without permission!</b></html>\n\n";
+		mssg += "<html>copyright (c) Philipp Tögel and <i>Multi-Press</i>, Hamburg 2016.</html>";
+		
+		JOptionPane.showMessageDialog(null, mssg);
+
+	}
 }
+
+
+
+
+
+
+
+

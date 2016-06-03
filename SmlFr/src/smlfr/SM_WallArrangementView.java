@@ -1564,6 +1564,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 			}
 			
 			if( getSelectedArtworks().length > 1 ) {
+				putBack.setEnabled(false);
 				allign.setEnabled(true);
 				distance.setEnabled(true);
 				snapToMidHeight.setEnabled(true);
@@ -1583,7 +1584,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 			
 			int click =-1;
 			if (pMenu.isVisible() ) {
-				click = pMenu.doClick();
+				click = pMenu.doClick(mouseX, mouseY);
 			}
 			
 			if( click == -1 ) deselectAll();

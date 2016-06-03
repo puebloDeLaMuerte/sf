@@ -738,7 +738,7 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 		mY = MouseInfo.getPointerInfo().getLocation().y;
 		
 		if(mouseButton == LEFT && menu.isVisible()) {
-			menu.doClick();
+			menu.doClick(mouseX, mouseY);
 		}
 	}
 

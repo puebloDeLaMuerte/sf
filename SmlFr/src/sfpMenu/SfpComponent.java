@@ -237,13 +237,17 @@ public class SfpComponent {
 	/**
 	 * Does this item have a Sub-Menu?
 	 * 
-	 * @return <b>true</b> only if this component is of Type sfpMenu.SfpMenu and holds one or more components.
+	 * @return <b>true</b> only if this component is of Type sfpMenu.SfpMenu, has a parent and holds one or more components.
 	 */
 	private boolean isSubMenu() {
 		
+		
 		if( components.length > 0) {
 			if (this.getClass() == SfpMenu.class ) {
-				return true;
+				if( parent != null ) {
+					return true;
+				}
+				return false;
 			}
 			return false;
 		}
@@ -301,6 +305,7 @@ public class SfpComponent {
 	 * @param startY: sub - Menu top left Y coordinate
 	 */
 	public void openSub(float startX, float startY) {
+		
 
 		float drawX = startX;
 		float drawY = startY;
@@ -355,8 +360,10 @@ public class SfpComponent {
 	
 	/**
 	 * determines mouseOver
+	 * @param mouseY 
+	 * @param mouseX 
 	 */
-	public boolean checkMouseOver() {
+	public boolean checkMouseOver(int mouseX, int mouseY) {
 		
 //		for( SfpComponent c : components) {
 //			c.mousePos(x,y);
@@ -370,8 +377,8 @@ public class SfpComponent {
 //		float sixe  = getParent().getTotalSize().x;		
 		
 		if( this.isVisible() ) {
-			if( app.mouseX > currentDrawPos.x && app.mouseX < currentDrawPos.x + getParent().getTotalSize().x ) {
-				if( app.mouseY > currentDrawPos.y && app.mouseY < currentDrawPos.y + getMinSize().y ) {
+			if( mouseX > currentDrawPos.x && mouseX < currentDrawPos.x + getParent().getTotalSize().x ) {
+				if( mouseY > currentDrawPos.y && mouseY < currentDrawPos.y + getMinSize().y ) {
 					this.mouseOver = true;
 				} else {
 					this.mouseOver = false;
@@ -425,10 +432,12 @@ public class SfpComponent {
 	/**
 	 * Checks the click-position at the PApplets mouseX/mouseY. Issues ActionEvents if valid click is performed. Closes the menu if click is out of bounds.
 	 * <b>Do not call this method after the call to SfpComponent.openAt(x,y,depth)</b> - it will lead to an instand closing since the menu is opened in a position that leads to the mouseX/Y values being outside the bounds of the menu, thus closing it  again instantaneously. Call this method before the openAt() command, or separate the two commands through flow control (eg. if-statements) inside PApplets mouse-Methods. 
+	 * @param mouseY 
+	 * @param mouseX 
 	 * 
 	 *  @return int<br><b>-1</b>	if click was outside of menu bounds<br><b>0</b>	if a disabled (Enabled() == false) component has been clicked<br><b>1</b>	if an Enabled() component has been clicked (but no ActionEvent was issued)<br><b>2</b>	if an action command has been issued
 	 */
-	public int doClick() {
+	public int doClick(int mouseX, int mouseY) {
 				
 		int ret = -1;
 		
@@ -439,31 +448,33 @@ public class SfpComponent {
 //						   "me.total : " + this.getTotalSize());
 //		System.out.println();
 		
-		boolean b = checkMouseOver();
+		boolean b = checkMouseOver(mouseX, mouseY);
 //		System.out.println("check    : " + b);
 		
 		for( SfpComponent c : components) {
-			int r = c.doClick();
+			int r = c.doClick(mouseX, mouseY);
 			if( r >= 0 ) {
 				ret = r;
 				break;
 			}
 		}
 		
-		if( mouseOver && isEnabled() ) {
-			if( eventListeners.length == 0 ) ret = 1;
-			for( SfpEventListener l : eventListeners ) {
-				
-				l.eventHappened( new SfpActionEvent(this.getClass(), myText));
-				System.out.println("SfpMENU: event sheduled: " + this.getClass() + " - " + myText);
-				ret = 2;
-			}
-//			close();
-		} else if( mouseOver ){
-			ret = 0;
-		}
+		if ( ret == -1) {
+			if (mouseOver && isEnabled()) {
+				if (eventListeners.length == 0)
+					ret = 1;
+				for (SfpEventListener l : eventListeners) {
 
-//		if( ret == 0 ) setAnimation();
+					l.eventHappened(new SfpActionEvent(this.getClass(), myText));
+					System.out.println("SfpMENU: event sheduled: " + this.getClass() + " - " + myText);
+					ret = 2;
+				}
+				//			close();
+			} else if (mouseOver) {
+				ret = 0;
+			} 
+		}
+		//		if( ret == 0 ) setAnimation();
 		if( ret == 2 ) setAnimation();
 		
 		// if you are the outmose menu container
@@ -520,7 +531,7 @@ public class SfpComponent {
 //			app.stroke(200);
 			app.noStroke();
 			
-			checkMouseOver();
+			checkMouseOver(app.mouseX, app.mouseY);
 			
 			if( this.isEnabled() && this.mouseOver ) {
 				app.fill(mOverGreyVal, menuOpacity);

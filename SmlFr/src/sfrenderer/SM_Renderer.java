@@ -1290,7 +1290,7 @@ public class SM_Renderer extends SfPApplet{
 		
 		if( setupRun && mouseButton == LEFT && menu.isVisible() ) {
 			
-			int val = menu.doClick();
+			int val = menu.doClick(mouseX, mouseY);
 			
 			System.out.println("RENDERER: MENU: returnded " + val);
 			
@@ -1396,6 +1396,8 @@ public class SM_Renderer extends SfPApplet{
 				devBuff += key;
 			if( devBuff.equalsIgnoreCase("info++")) {
 				SysInfo.displayMessage();
+			} else if( devBuff.equalsIgnoreCase("about+")) {
+				SysInfo.displayVersionInfo();
 			}
 			} catch(Exception e) {
 				System.err.println("THIS EXCEPTION GOT CAUGHT: ");
