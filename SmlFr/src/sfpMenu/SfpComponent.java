@@ -6,10 +6,11 @@ import com.sun.xml.internal.bind.v2.TODO;
 
 import processing.core.PApplet;
 import processing.core.PVector;
+import sun.tools.java.SyntaxError;
 
 public class SfpComponent {
 
-
+	// TODO the calculations of sizes in this environment are off! A model needs to be implemented that defines who knows which sizes (self, containing component etc) and who asks whom for which size. totalSize and getMinSize() are similar but different and there's no useage strategy involved! =bad style.
 
 	static final int menuDisabledTextGreyVal = 110;
 	static final int menuTextGreyVal = 0;
@@ -17,6 +18,8 @@ public class SfpComponent {
 	static final int menuIdleGreyVal = 240;
 	static final int mOverGreyVal = 150;
 	static final int menuLineColor = 200;
+	
+	static final int subMenuDividerOfset = 2;
 	
 	protected PApplet 			app;
 	private SfpComponent 		parent;
@@ -170,6 +173,7 @@ public class SfpComponent {
 	}
 	
 	/**
+	 * 
 	 * pack() has to be called at least once before this method returns correct data!
 	 * 
 	 * @return the size of this components including all subcomponents
@@ -186,13 +190,15 @@ public class SfpComponent {
 	 */
 	PVector getMinSize() {
 		
+		
 		float asc = app.textAscent();
 		float dsc = app.textDescent();
 		float wdh = app.textWidth(myText);
 		
 		float y = borders[0] + borders[1] + asc + dsc;
 		float x = borders[2] + borders[3] + wdh;
-		
+
+
 		return new PVector(x, y);
 		
 	}
@@ -254,6 +260,13 @@ public class SfpComponent {
 		else return false;
 	}
 	
+	public boolean isOutmostComponent() {
+		if( parent == null && this.getClass() == SfpMenu.class) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	/**
 	 * is this component visible/opened?
@@ -268,32 +281,53 @@ public class SfpComponent {
 	}
 
 	public void openAt(float startX, float startY, int depth) {
+
 		
+		// if you're the parent of them all - check for space to show them and adjust if necessary
+		
+		if (isOutmostComponent()) {
 			
-			this.currentDrawPos = new PVector(startX, startY);
-			this.visible = true;
-
-			closeSubs();
+			// adjust height
+			int y = (int) startY;
+			for (SfpComponent c : components) {
+				y += c.getTotalSize().y;
+			}
+			if (y > app.height) {
+				startY -= y - app.height;
+			}
 			
-			if( depth-- <= 0 ) return;
+			// adjust width
+			if (startX + myTotalSize.x > app.width) {
+				startX -= (startX + myTotalSize.x) - app.width;
+			} 
+		}
+		
+		// now do the regular opening of yourself and your children
+		
+		this.currentDrawPos = new PVector(startX, startY);
+		this.visible = true;
 
-			float drawX = startX;
-			float drawY = startY;
+		closeSubs();
 
-			if (components.length > 0) {
+		if( depth-- <= 0 ) return;
 
-				components[0].openAt(drawX, drawY, depth);
+		float drawX = startX;
+		float drawY = startY;
 
-				if (components.length > 1) {
+		if (components.length > 0) {
+
+			components[0].openAt(drawX, drawY, depth);
+
+			if (components.length > 1) {
 
 
-					for (int i = 1; i < components.length ; i++) {
+				for (int i = 1; i < components.length ; i++) {
 
-						drawY += components[i - 1].getMinSize().y;
-						components[i].openAt(drawX, drawY, depth);
-					} 
+					drawY += components[i - 1].getMinSize().y;
+					components[i].openAt(drawX, drawY, depth);
 				} 
-			}		
+			} 
+		}		
 			
 	}
 	
@@ -306,23 +340,41 @@ public class SfpComponent {
 	 */
 	public void openSub(float startX, float startY) {
 		
+		
+		
+		if (true) {
 
-		float drawX = startX;
-		float drawY = startY;
+			// adjust height
+			int y = (int) startY;
+			for (SfpComponent c : components) {
+				y += c.getTotalSize().y;
+			}
+			if (y > app.height) {
+				startY -= y - app.height;
+			}
+
+			// adjust width
+			if (startX + myTotalSize.x > app.width) {
+//				startX -= (startX + myTotalSize.x) - app.width;
+				startX = parent.currentDrawPos.x - myTotalSize.x - subMenuDividerOfset;
+			} 
+		}
+		
+		
 
 		if (isEnabled() && components.length > 0) {
 						
 //			parent.closeSubs();
 
-			components[0].openAt(drawX, drawY, 0);
+			components[0].openAt(startX, startY, 0);
 
 			if (components.length > 1) {
 
 
 				for (int i = 1; i < components.length ; i++) {
 
-					drawY += components[i - 1].getMinSize().y;
-					components[i].openAt(drawX, drawY, 0);
+					startY += components[i - 1].getMinSize().y;
+					components[i].openAt(startX, startY, 0);
 				} 
 			} 
 		}		
@@ -411,7 +463,7 @@ public class SfpComponent {
 		
 		 if( isSubMenu() ) {
 			 
-			 float startX = currentDrawPos.x + getParent().myTotalSize.x +1;
+			 float startX = currentDrawPos.x + getParent().myTotalSize.x + subMenuDividerOfset;
 			 float startY = currentDrawPos.y;
 			 
 			 this.openSub(startX, startY);
@@ -560,16 +612,20 @@ public class SfpComponent {
 		} else if (animation) {
 			if( animationCounter > 0 ) {
 				app.pushStyle();
+				app.noStroke();
+
 				
 				if( animationCounter % 2 == 0 ) {
-					app.fill(255);
+					app.fill(mOverGreyVal);
 				} else {
-					app.fill(0);
+					app.fill(menuIdleGreyVal);
 				}
 				
 				float temp1 = parent.getTotalSize().x;
 				float temp2 = getTotalSize().y;
 				app.rect(currentDrawPos.x, currentDrawPos.y, temp1, temp2);
+				app.fill(menuTextGreyVal);
+				app.text(myText, currentDrawPos.x + borders[2], currentDrawPos.y + borders[0] + app.textAscent());
 				
 				animationCounter--;
 				if( animationCounter == 0) animation = false;
