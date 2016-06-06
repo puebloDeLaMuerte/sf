@@ -358,6 +358,7 @@ public void XinitProjectView(Dimension _size, Point _loc, SmlFr base) {
 		myArrangementView.frame.add(myArrangementView);
 		myArrangementView.init(fl, this, myViewAngles);
 		
+		myArrangementView.setWallsGfx();
 		
 		// only wait for setup() in ArrViews if this code is NOT executed on the EDT - 
 		// because if it is on the EDT, the setup() will never be called if we wait here

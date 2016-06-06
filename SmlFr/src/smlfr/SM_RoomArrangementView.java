@@ -33,10 +33,10 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		super(w,h, base);
 	}
 	
-	public void init() {
-		super.init();
-		isinitialized = true;
-	}
+//	public void init() {
+//		super.init();
+//		isinitialized = true;
+//	}
 
 	
 	
@@ -84,8 +84,18 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 		
 		super.draw();
 
+		if( wallsOverGfx == null ) wallsOverGfx = super.getWallsOverGfx();
+		if( wallsActiveGfx == null ) wallsActiveGfx = super.getWallsActiveGfx();
+		
+		
+		
 		if(showViewMenuPreview) {
-			if( vm != null && vm.isRendererMenuOpen() && wallsOverGfx != null) {
+			
+			boolean ropen = vm.isRendererMenuOpen();
+			boolean wgfxNotNull = wallsOverGfx != null;
+			boolean vmNotNull  = vm != null; 
+			
+			if( vmNotNull && ropen && wgfxNotNull) {
 
 				for(char c : viewMenuCurrentHighlight ) {
 
@@ -111,6 +121,10 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 				shape(wallsActiveGfx.get(v), 0,0);
 			}
 
+		}
+		
+		if( this.getClass() == SM_RoomArrangementView.class ) {
+			super.menu.draw();
 		}
 	}
 	

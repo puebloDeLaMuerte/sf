@@ -58,7 +58,7 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 
     // the FRESH menu
     
-    private SfpMenu								menu;
+    protected SfpMenu								menu;
     private SfpComponent						menuChangeColor, menuRemoveArtwork, menuEnterExitRoom, menuQuit, menuSavePr, menuExport;
 	
 	// utils
@@ -102,7 +102,8 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 	@Override
 	public void setup() {
 				
-
+		System.err.println("running super.setup() on " + myRoom.getName());		
+		
 		
 		ds = new DragSource();
 		ds.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, this);
@@ -296,7 +297,9 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 		//String ppp = (mx) + " / " + (my);
 		//text(ppp, 200,200);
 
-		menu.draw();
+		if( this.getClass() == SM_RoomProjectView.class ) {
+			menu.draw();
+		}
 		
 	}
 	
@@ -528,6 +531,7 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 	
 	
 	public HashMap<Character, PShape> getWallsActiveGfx() {
+				
 		return wallsActiveGfx;
 	}
 	

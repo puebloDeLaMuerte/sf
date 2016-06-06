@@ -14,8 +14,8 @@ public class SfpComponent {
 
 	static final int menuDisabledTextGreyVal = 110;
 	static final int menuTextGreyVal = 0;
-	static final int menuOpacity = 210;
-	static final int menuIdleGreyVal = 240;
+	static final int menuOpacity = 233;
+	static final int menuIdleGreyVal = 243;
 	static final int mOverGreyVal = 150;
 	static final int menuLineColor = 200;
 	
@@ -126,8 +126,10 @@ public class SfpComponent {
 	}
 	
 	/**
-	 * must call the setParent(PApplet) method on the <b>comp</b> that is added!
-	 * @param <b>comp</b> - 
+	 * 
+	 * 
+	 * this method must call the setParent(PApplet) method on the <b>SfpComponent</b> that is being added!
+	 * @param <b>comp</b> - the SfpComponent that is beeing added to this Component
 	 */
 	public void addSfpComponent(SfpComponent comp) {
 		
@@ -140,7 +142,7 @@ public class SfpComponent {
 		}
 		n[n.length-1] = comp;
 		components = n;
-		
+				
 //		this.pack();
 	}
 	
