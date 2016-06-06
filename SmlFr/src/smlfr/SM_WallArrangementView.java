@@ -299,7 +299,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 		shadowAmount 		= base.fm.getShadowAmount();
 		shadowOfsetAmount 	= base.fm.getShadowOfsetAmount();
 		
-		frameRate(15);
+//		frameRate(15);
 		
 //		initMenu();
 	}

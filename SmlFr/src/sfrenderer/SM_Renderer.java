@@ -1304,7 +1304,7 @@ public class SM_Renderer extends SfPApplet{
 			menu.openAt(mouseX, mouseY, 1);
 			
 			loop();
-			frameRate(60);
+//			frameRate(60);
 			
 			// the old Menu shows like this.
 			
