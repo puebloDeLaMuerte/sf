@@ -1301,6 +1301,15 @@ public class SM_Renderer extends SfPApplet{
 			
 			// the new Menu shows like this:
 			
+			for( SfpViewMenuItem m : menuViews) {
+				if( m.getText().equalsIgnoreCase(currentViewString.substring(currentViewString.lastIndexOf('_')+1))) {
+					m.setEnabled(false);
+				} else {
+					m.setEnabled(true);
+				}
+			}
+			
+			
 			menu.openAt(mouseX, mouseY, 1);
 			
 			loop();
