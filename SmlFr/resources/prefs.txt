@@ -1,8 +1,8 @@
 {
   "shadowAmount": 10,
   "previousProject": {
-    "projectPath": "/Users/pht/Desktop/Schreibtisch alt - SORTIEREN!!!/ffff/Liebermann/Liebermann.sfp",
-    "projectName": "Liebermann"
+    "projectPath": "/Users/pht/Desktop/Schreibtisch alt - SORTIEREN!!!/ffff/test der westlüste/test der westlüste.sfp",
+    "projectName": "test der westlüste"
   },
   "shadowOfsetAmount": 5,
   "fileChooserCurrentDirectory": "/Users/pht/Desktop/gerneauchnicht",

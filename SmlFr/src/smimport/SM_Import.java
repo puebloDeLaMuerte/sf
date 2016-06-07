@@ -1,9 +1,7 @@
 package smimport;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
@@ -12,7 +10,6 @@ import java.util.LinkedHashMap;
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -24,8 +21,6 @@ import SMUtils.FrameStyle;
 import SMUtils.Lang;
 
 import smlfr.SM_FileManager;
-import smlfr.SM_Wall;
-import smlfr.SM_WallArrangementView;
 import smlfr.SmlFr;
 
 public class SM_Import extends PApplet  {
@@ -79,7 +74,7 @@ public class SM_Import extends PApplet  {
 	
 	public void startImport(File _artLibSaveLocation) {
 		
-		SM_SingleImportDialog in = new SM_SingleImportDialog(this, _artLibSaveLocation);
+		/*SM_SingleImportDialog in = */new SM_SingleImportDialog(this, _artLibSaveLocation);
 		
 	}
 	
@@ -386,6 +381,7 @@ public class SM_Import extends PApplet  {
 		return returnArray;
 	}
 	
+	@SuppressWarnings("unused")
 	@Deprecated
 	private ProgressGui initImportGui() {
 		

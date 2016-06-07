@@ -7,15 +7,19 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 
 import processing.core.PApplet;
-import processing.core.PImage;
 
 public class ProgressGui extends PApplet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2002691566704391002L;
 	private String		status, title;
 	private int			current, max;
-	private PImage		statusImage;
+//	private PImage		statusImage;
 	private boolean		setupRun = false;
 	
+	@Override
 	public void setup() {
 		size( 200,20 );
 		current = 0;
@@ -24,6 +28,7 @@ public class ProgressGui extends PApplet {
 		setupRun = true;
 	}
 	
+	@Override
 	public Dimension getSize() {
 		return new Dimension(200,20);
 	}
@@ -32,6 +37,7 @@ public class ProgressGui extends PApplet {
 		return setupRun;
 	}
 	
+	@Override
 	public void draw() {
 		this.frame.setTitle(title);
 		background(150);

@@ -3,7 +3,6 @@
  */
 package SMUtils;
 
-import java.awt.Graphics;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
@@ -15,6 +14,11 @@ import processing.core.PApplet;
  *
  */
 public class SfPApplet extends PApplet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7868650912844826779L;
 
 	@Override
 	public void handleDraw() {

@@ -19,6 +19,7 @@ public class SM_Validator {
 
 		try {
 			int x = Integer.parseInt(text);
+			System.out.println(x + " is a valid number.");
 			result = true;
 		} catch (Exception e) {
 			result = false;

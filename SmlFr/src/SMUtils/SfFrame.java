@@ -67,7 +67,6 @@ import java.awt.peer.ComponentPeer;
 import java.beans.PropertyChangeListener;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
@@ -76,14 +75,12 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.accessibility.AccessibleContext;
-import javax.swing.SwingUtilities;
-
-import sun.tools.java.SyntaxError;
 
 /**
  * @author pht
  *
  */
+@SuppressWarnings("deprecation")
 public class SfFrame extends Frame {
 //
 //	@Override
@@ -96,7 +93,11 @@ public class SfFrame extends Frame {
 //		return new Color(255, 0, 0);
 //	}
 	
-//	private class ItemHolder<T> implements Runnable{
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 583423364114257330L;
+	//	private class ItemHolder<T> implements Runnable{
 //		private T item;
 //		
 //		public void run() {

@@ -18,7 +18,7 @@ public class Raster {
 	private java.awt.Dimension 		screen;
 	private Rectangle				realscreen;
 	private java.awt.Dimension 		raster;
-	private int						topOffset;
+//	private int						topOffset;
 	private int						windowDecorX, windowDecorY;
 	private Insets					insets;
 	
@@ -63,7 +63,7 @@ public class Raster {
 //        System.out.println("task bar left:  "+insets.left);
 //        System.out.println("task bar right:  "+insets.right);
         
-        topOffset = insets.top;
+//        topOffset = insets.top;
 		
 	}
 	

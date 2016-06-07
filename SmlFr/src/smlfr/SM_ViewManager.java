@@ -2,24 +2,17 @@ package smlfr;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Panel;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import processing.core.PApplet;
+//import processing.core.PApplet;
 import processing.core.PImage;
 import sfpMenu.SfpActionEvent;
 import sfpMenu.SfpEventListener;
@@ -45,8 +38,8 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 	private String 												currentAngle;
 	
 	private SM_Renderer											renderer;
-	private boolean 											rMenuOpen = false;
-	private boolean												rendererUpdate = false;
+//	private boolean 											rMenuOpen = false;
+//	private boolean												rendererUpdate = false;
 	
 	private LinkedHashMap<String, SM_WallArrangementView>		wallArrangementViews;
 
@@ -93,11 +86,9 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 	}
 	
 	public void initViews() {
-		int ofset = 0;
 		for( char w : renderer.getCurrentWallChars() ) {
 			System.out.println("VIEW MANAGER: getting arrview for "+w);
 			wallArrangementViews.put(""+w, initWallArrangementView(w, 0/*ofset*/));
-			ofset += 40;
 //			renderer.updateArtworksLayer();
 			
 //			try {
@@ -109,6 +100,7 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 		doActiveViews();
 	}
 	
+	/*
 	private synchronized void XinitRenderer(SM_ViewAngle _va) {
 		
 
@@ -186,6 +178,8 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 //			}
 //		});
 	}
+	
+	*/
 	
 	private synchronized void initRenderer(SM_ViewAngle _va) {
 		
@@ -267,6 +261,8 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 //		});
 	}
 	
+	/*
+	
 	private synchronized SM_WallArrangementView XinitWallArrangementView(char _wall, int _windowOfset) {
 		
 //		
@@ -321,6 +317,8 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 		return wallArr;
 		
 	}
+	
+	*/
 	
 private synchronized SM_WallArrangementView initWallArrangementView(char _wall, int _windowOfset) {
 		
@@ -540,7 +538,7 @@ private synchronized SM_WallArrangementView initWallArrangementView(char _wall, 
 			String message = Lang.overwrite_1 + exportLoc.getName() + Lang.overwrite_2;
 			if( fcVal == 0 && exportLoc.exists() ) overwrite = JOptionPane.showConfirmDialog(null, message , Lang.overwriteTitle, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, base.getQuestionIcon());
 						
-			boolean success = false;
+//			boolean success = false;
 			if (overwrite == 0 || overwrite == 99) {
 				String filename = exportLoc.getAbsolutePath();
 				
@@ -651,7 +649,7 @@ private synchronized SM_WallArrangementView initWallArrangementView(char _wall, 
 			String message = Lang.overwrite_1 + exportLoc.getName() + Lang.overwrite_2;
 			if( fcVal == 0 && exportLoc.exists() ) overwrite = JOptionPane.showConfirmDialog(null, message , Lang.overwriteTitle, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, base.getQuestionIcon());
 						
-			boolean success = false;
+//			boolean success = false;
 			if (overwrite == 0 || overwrite == 99) {
 				String filename = exportLoc.getAbsolutePath();
 				

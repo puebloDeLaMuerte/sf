@@ -1,6 +1,5 @@
 package SMUtils;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -22,7 +21,6 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -74,7 +72,8 @@ public class AWPanel extends JPanel implements MouseListener, DragGestureListene
 		this.add(menu);
     }
     
-    public void paint(Graphics g)
+    @Override
+	public void paint(Graphics g)
     {
     	super.paint(g);
     	

@@ -35,10 +35,11 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
  ******************************************************************************/
 
 
+@SuppressWarnings("all")
 public class XTImage {
     
     private BufferedImage bufferedImage = null;
-    private java.util.ArrayList corners = null;
+	private java.util.ArrayList corners = null;
     
     private float outputQuality = 1f; //0.9f; //0.5f;
 

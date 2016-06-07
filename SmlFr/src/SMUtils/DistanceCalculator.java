@@ -1,20 +1,20 @@
 package SMUtils;
 
-import smlfr.SM_Artwork;
+//import smlfr.SM_Artwork;
 import smlfr.SM_ExportArtwork;
 import smlfr.SM_ExportWall;
-import smlfr.SM_Wall;
+//import smlfr.SM_Wall;
 
 public class DistanceCalculator /*extends Thread*/ {
 
 	private boolean				isReady;
 	
-	private int 				wallWidth, wallHeight;
+	private int 				/*wallWidth,*/ wallHeight;
 	private SM_ExportArtwork[]	exArtworks;
 //	private SM_ExportArtwork	querryArtwork;
-	private SM_Artwork[]		aws;
+//	private SM_Artwork[]		aws;
 	private SM_ExportWall		exWall;
-	private SM_Wall				wall;
+//	private SM_Wall				wall;
 	
 	private boolean				reInvertHeightCoordinates;
 	
@@ -28,7 +28,7 @@ public class DistanceCalculator /*extends Thread*/ {
 		
 		isReady= false;
 	
-		this.wallWidth = wallWidth;
+//		this.wallWidth = wallWidth;
 		this.wallHeight = wallHeight;
 		this.exWall = wall;
 		exArtworks = artworks;
@@ -48,7 +48,7 @@ public class DistanceCalculator /*extends Thread*/ {
 		
 		
 		isReady = true;
-		cleanup();
+//		cleanup();
 	}
 
 //	public void prepare( SM_Wall wall, SM_Artwork[] artworks, int wallWidth, int wallHeight) {
@@ -86,10 +86,10 @@ public class DistanceCalculator /*extends Thread*/ {
 //		cleanup();
 //	}
 	
-	private void cleanup() {
-		aws = null;
-		wall = null;
-	}
+//	private void cleanup() {
+//		aws = null;
+//		wall = null;
+//	}
 	
 	public boolean isReady() {
 		return isReady;

@@ -2,8 +2,6 @@ package smlfr;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Panel;
 import java.awt.Point;
 //import java.awt.dnd.DropTargetDragEvent;
 //import java.awt.dnd.DropTargetDropEvent;
@@ -73,25 +71,27 @@ public class SM_Room {
 
 		/// Walls:
 		
-		Iterator<?> it = _jRoom.keyIterator();
-		int count = 0;
-		while( it.hasNext() ) {
-			String str = (String)it.next();
-			if(str.startsWith("w_")) {
-				count++;
-			}
-		}
+//		Iterator<?> it = _jRoom.keyIterator();
+//		int count = 0;
+//		while( it.hasNext() ) {
+//			String str = (String)it.next();
+//			if(str.startsWith("w_")) {
+//				count++;
+//			}
+//		}
 		
 		
 		myWalls = new LinkedHashMap<Character, SM_Wall>();
-		count = 0;
-		it = _jRoom.keyIterator();
+		
+//		int count = 0;
+		Iterator<?> it = _jRoom.keyIterator();
+		
 		while( it.hasNext() ) {
 			String str = (String)it.next();
 			if(str.startsWith("w_")) {
 				char key = str.charAt(str.length()-1);
 				myWalls.put(key, new SM_Wall(str, _jRoom.getJSONObject(str), this, base.fm));
-				count++;
+//				count++;
 			}
 		}
 		Map<Character, SM_Wall> tMap = new TreeMap<Character, SM_Wall>(myWalls);
@@ -605,6 +605,7 @@ public void XinitProjectView(Dimension _size, Point _loc, SmlFr base) {
 			this.room = _room;
 		}
 		
+		@Override
 		public void run() {
 			
 			JFrame f = new JFrame();

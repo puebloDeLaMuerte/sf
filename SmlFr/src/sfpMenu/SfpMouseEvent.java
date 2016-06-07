@@ -10,17 +10,17 @@ package sfpMenu;
 public class SfpMouseEvent {
 
 	
-	private Class source;
+	private Class<?> source;
 	protected boolean entered, exited;
 	private String actionCommand;
 	
-	protected SfpMouseEvent(Class source, String actionCommand) {
+	protected SfpMouseEvent(Class<?> source, String actionCommand) {
 		
 		this.source = source;
 		this.actionCommand = actionCommand;
 	}
 	
-	public Class getSource() {
+	public Class<?> getSource() {
 		return source;
 	}
 	

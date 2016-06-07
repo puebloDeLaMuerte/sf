@@ -9,16 +9,16 @@ package sfpMenu;
  */
 public class SfpActionEvent {
 	
-	Class source;
+	Class<?> source;
 	String actionCommand;
 	
-	public SfpActionEvent(Class source, String actionCommand) {
+	public SfpActionEvent(Class<?> source, String actionCommand) {
 		
 		this.source = source;
 		this.actionCommand = actionCommand;
 	}
 	
-	public Class getSource() {
+	public Class<?> getSource() {
 		return source;
 	}
 	

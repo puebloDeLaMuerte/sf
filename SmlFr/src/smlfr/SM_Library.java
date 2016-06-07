@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +44,6 @@ import SMupdateModel.ArtworkUpdateRequestEvent;
 import SMupdateModel.UpdateEvent;
 import SMupdateModel.UpdateListener;
 import SMupdateModel.WallUpdateRequestEvent;
-import smimport.ProgressGui;
 
 public class SM_Library extends JFrame implements UpdateListener, ActionListener, ArtworkMeasurementParent , AdjustmentListener {
 	

@@ -412,7 +412,9 @@ public class SM_SingleImportDialog extends JFrame implements ActionListener, Doc
 		if ( e.getSource() == browseBtn ) {
 			
 			fc.showOpenDialog(this);
-			TF_imageLocation.setText(fc.getSelectedFile().getAbsolutePath());
+			if( fc.getSelectedFile() != null ) {
+				TF_imageLocation.setText(fc.getSelectedFile().getAbsolutePath());
+			}
 		}
 	}
 

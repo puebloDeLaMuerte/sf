@@ -1,7 +1,6 @@
 package smlfr;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -13,13 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import javax.swing.Box;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-
 import SMUtils.AllignmentTypes;
 import SMUtils.ArtworkMeasurementParent;
 import SMUtils.DistanceCalculator;
@@ -35,7 +28,6 @@ import SMupdateModel.UpdateEvent;
 import SMupdateModel.UpdateListener;
 import SMupdateModel.UpdateType;
 import SMupdateModel.WallUpdateRequestEvent;
-import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
@@ -58,10 +50,10 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 	private PImage					lightSprite;
 	private int						backgroundColor = 230;
 	
-	private boolean					ready = false;
+//	private boolean					ready = false;
 
 	private float					scale;
-	private float 					xOffsetPx, yOffsetPx;
+//	private float 					xOffsetPx, yOffsetPx;
 	private int						myMidHeight;
 	
 	private volatile SM_Artwork		awOver, pAwOver, menuAW;
@@ -92,12 +84,14 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 	private SfpMenu					editArtwork, allign, distance;
 	private SfpComponent			editMeasurements;
 	
+	@SuppressWarnings("unused")
 	private DistanceChooser			distanceChooser;
 	
+	@SuppressWarnings("unused")
 	private DropTarget				dt;
 	
-	private boolean					artworkUpdatePending = true;
-	private boolean					reCalculateDistances = true;
+//	private boolean					artworkUpdatePending = true;
+//	private boolean					reCalculateDistances = true;
 	private boolean					firstTime = true;
 		
 	int 							shadowAmount;//10;;
@@ -108,6 +102,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 	int count = 0;
 
 	
+	@SuppressWarnings("unchecked")
 	public SM_WallArrangementView(SM_Wall _myW, Dimension _size, SM_ViewManager _vm, SmlFr base) {
 		super();
 		
@@ -138,8 +133,8 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 		
 		
 //		border = 100f;
-		xOffsetPx = 0f;
-		yOffsetPx = 0f;
+//		xOffsetPx = 0f;
+//		yOffsetPx = 0f;
 		
 		// Calculate Window Size from Available Space:
 		
@@ -396,7 +391,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 		
 		
 		
-		ready = true;
+//		ready = true;
 		if( firstTime ) {
 			vm.requestRendererUpdate(myWall.getWallChar());
 			firstTime = false;
@@ -539,10 +534,10 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 
 				if(showDistances && !isValidDrag() && dcDraw != null && dcDraw.isReady()  ) {
 					
-					if( true /*reCalculateDistances*/ ) {
-						calculateDistances();
-						reCalculateDistances = false;
-					}
+					calculateDistances();
+//					if( true /*reCalculateDistances*/ ) {
+////						reCalculateDistances = false;
+//					}
 					
 					// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
 					// TODO																		  TODO
@@ -799,7 +794,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 						artworkSize = astos(new PVector(tmpPos5[0], tmpPos5[1]), drawScale);
 						
 					
-						PVector wh = astos( new PVector(da.getTotalWidth(), da.getTotalHeight()), scale);
+//						PVector wh = astos( new PVector(da.getTotalWidth(), da.getTotalHeight()), scale);
 						
 						float yt, yp, ya;
 						if( shiftLoc ) {
@@ -880,7 +875,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 
 
 		gfx.endDraw();
-		ready = true;
+//		ready = true;
 		return gfx;
 	}
 	
@@ -1074,8 +1069,8 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 				}
 			}
 			gfx.endDraw();
-			ready = true;
-			if(_mode == 1) artworkUpdatePending = false;
+//			ready = true;
+//			if(_mode == 1) artworkUpdatePending = false;
 		
 		return gfx;
 		}
@@ -1278,6 +1273,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 	}
 	
 	// WallPsoitionLogic to ScreenLogic
+	@SuppressWarnings("unused")
 	private PVector invLogicScaled(int _wX, int _wY, float scl){
 		return invLogicScaled(new PVector(_wX, _wY), scl);
 	}
@@ -1287,6 +1283,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 	}
 
 	// ScreenLogic to WallPositionLogic
+	@SuppressWarnings("unused")
 	private PVector ptowp(int _wX, int _wY, float scl){
 		return ptowp(new PVector(_wX, _wY), scl);
 	}
@@ -1625,8 +1622,8 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 
 	@Override
  	public void doUpdate(UpdateEvent e) {
-		artworkUpdatePending = true;
-		reCalculateDistances = true;
+//		artworkUpdatePending = true;
+//		reCalculateDistances = true;
 		
 		if( e.getType() != UpdateType.POS_IN_WALL ) showDistances = false;
 
@@ -1661,7 +1658,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 			
 		if( action.equalsIgnoreCase(Lang.editMeasurements) ) {
 			
-			SMUtils.ArtworkMeasurementChooser chooser = new SMUtils.ArtworkMeasurementChooser(this, menuAW );
+			/*SMUtils.ArtworkMeasurementChooser chooser = */new SMUtils.ArtworkMeasurementChooser(this, menuAW );
 
 			
 
@@ -1751,7 +1748,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 			
 		if( action.equalsIgnoreCase(Lang.editMeasurements) ) {
 			
-			SMUtils.ArtworkMeasurementChooser chooser = new SMUtils.ArtworkMeasurementChooser(this, menuAW );
+			/*SMUtils.ArtworkMeasurementChooser chooser = */new SMUtils.ArtworkMeasurementChooser(this, menuAW );
 
 			
 
@@ -2149,7 +2146,7 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 			pos.put(a.getName(), a.getTotalWallPos());
 		}
 		
-		WallRelativePositionChooser d = new WallRelativePositionChooser(this, pos, aws);
+		/*WallRelativePositionChooser d = */new WallRelativePositionChooser(this, pos, aws);
 	}
 	
 	/**

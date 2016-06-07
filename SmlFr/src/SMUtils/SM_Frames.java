@@ -53,6 +53,9 @@ public class SM_Frames {
 		case POMP_GOLD_AND_BLACK:
 			frame_pomp_gold_and_black =_i;
 			break;
+		default:
+			// STANDART and NONE don't need this...
+			break;
 		}
 	}
 

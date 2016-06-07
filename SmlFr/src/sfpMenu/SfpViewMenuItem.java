@@ -7,6 +7,7 @@ public class SfpViewMenuItem extends SfpComponent {
 	 * 
 	 */
 	
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 8927197788981971715L;
 	
 	private String myViewName;

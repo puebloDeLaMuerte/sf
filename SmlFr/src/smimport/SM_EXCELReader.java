@@ -3,7 +3,6 @@ package smimport;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 
 import javax.swing.JFileChooser;

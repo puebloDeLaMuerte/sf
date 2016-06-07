@@ -15,11 +15,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -29,6 +27,10 @@ import smlfr.SM_WallArrangementView;
 
 public class WallRelativePositionChooser extends JFrame implements ActionListener, ChangeListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7313053344584475169L;
 	private JSpinner 		spinner;
 	private JButton			okBtn, cancelBtn; 
 	private JRadioButton	topBtn, btmBtn, leftBtn, rightBtn;

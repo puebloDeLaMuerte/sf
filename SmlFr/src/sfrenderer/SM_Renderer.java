@@ -6,10 +6,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
-import javax.swing.SwingUtilities;
+
 
 //import org.multiply.processing.TimedEventGenerator;
 
@@ -22,7 +21,6 @@ import SMUtils.Skewmator;
 import SMUtils.SysInfo;
 import SMUtils.ViewMenuItem;
 import SMUtils.pTimedEventGenerator;
-import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.event.MouseEvent;
@@ -106,10 +104,10 @@ public class SM_Renderer extends SfPApplet{
 	private int[]					previewAdvance;
 	
 	private boolean					savetyDraw = false;
-	private double					lastUpdate = 0;
-	private double					lastUpdateColor = 0;
-	private double					lastUpdateLights = 0;
-	private double					lastUpdateArtworks = 0;
+//	private double					lastUpdate = 0;
+//	private double					lastUpdateColor = 0;
+//	private double					lastUpdateLights = 0;
+//	private double					lastUpdateArtworks = 0;
 
 	double			Ac = 0, Lc =0;
 	double			dA, dL;
@@ -124,7 +122,7 @@ public class SM_Renderer extends SfPApplet{
 //		SETUP THE MENU IF ITS A JMENU
 //		initJPopupMenu();
 
-		int c = color(123);
+//		int c = color(123);
 		
 //		System.err.println(c);
 		
@@ -530,7 +528,7 @@ public class SM_Renderer extends SfPApplet{
 		
 		if(setupRun) ;//redraw();
 		
-		lastUpdate = millis();
+//		lastUpdate = millis();
 		
 	}
 	
@@ -601,7 +599,7 @@ public class SM_Renderer extends SfPApplet{
 	
 	
 //	redraw();
-	lastUpdate = millis();
+//	lastUpdate = millis();
 	}
 	
 	protected synchronized void updateArtworksLayer( char _wallChar ) {
@@ -726,7 +724,7 @@ public class SM_Renderer extends SfPApplet{
 		
 		dA += endmili * ( 1 / Ac );
 		
-		lastUpdate = millis();
+//		lastUpdate = millis();
 	}
 	
 	
@@ -1332,6 +1330,7 @@ public class SM_Renderer extends SfPApplet{
 
 	
 //	@Override
+	@Override
 	public void mouseDragged() {
 		xOffset += mouseX-pmouseX;
 		yOffset += mouseY-pmouseY;

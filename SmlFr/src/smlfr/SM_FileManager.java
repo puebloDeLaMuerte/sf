@@ -3,7 +3,6 @@ package smlfr;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -11,8 +10,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -50,7 +47,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	private static final long serialVersionUID = -5625682259511650553L;
 	
 	private SM_JSONCreator 					creator;
-	private ImageIcon						icon;
+//	private ImageIcon						icon;
 	private JFileChooser					fc;
 
 	private File 							preferencesPath;
@@ -80,7 +77,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 	public SM_FileManager(SmlFr _base, ImageIcon _icon) {
 		
 		base = _base;
-		icon = _icon;
+//		icon = _icon;
 		creator = new SM_JSONCreator(this);
 		fc = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -175,6 +172,9 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 				break;
 			case POMP_GOLD_AND_BLACK:
 				i = loadImage("resources/Frames/Rahmen_Prunk_Schwarz_Gold_1.png");
+				break;
+			default:
+				// no need to load something if frameStyle is STANDART or NONE. STANDART is related to one of these frames elsewhere.
 				break;
 			}
 			f.setFrameImg(s, i);
@@ -419,7 +419,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 	public synchronized File getFilePathForRoom(String _room) {
 		
-		String museumIdentifier = museumPath.getAbsolutePath().substring(museumPath.getAbsolutePath().lastIndexOf("/")+1,museumPath.getAbsolutePath().length()-4);
+//		String museumIdentifier = museumPath.getAbsolutePath().substring(museumPath.getAbsolutePath().lastIndexOf("/")+1,museumPath.getAbsolutePath().length()-4);
 		String filePath4Room = museumPath.getAbsolutePath().substring(0,museumPath.getAbsolutePath().length()-4)+"/"+_room;
 		return new File(filePath4Room);
 	}
@@ -577,7 +577,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 
 
 			JSONObject theNewProj = creator.makeNewProjectFile(projectName, _selectedRooms);
-			String[] importedAws;
+//			String[] importedAws;
 
 			JPanel panel = new JPanel();
 			BoxLayout l = new BoxLayout(panel, BoxLayout.Y_AXIS);
@@ -617,7 +617,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 			
 			if( q == 1) {
 				
-				JSONArray lib = new JSONArray();
+//				JSONArray lib = new JSONArray();
 				
 				if( btn_awks.isSelected() || btn_both.isSelected() ) {
 					

@@ -1,7 +1,7 @@
 package smlfr;
 
 import java.awt.Cursor;
-import java.awt.MouseInfo;
+//import java.awt.MouseInfo;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -22,10 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import javax.swing.Icon;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
 import SMUtils.Lang;
 import SMUtils.SM_DataFlavor;
 import SMUtils.SfPApplet;
@@ -34,7 +31,6 @@ import SMUtils.artworkActionType;
 import SMupdateModel.WallColorUpdateRequestEvent;
 import SMupdateModel.WallUpdateRequestEvent;
 
-import processing.core.PApplet;
 import processing.core.PShape;
 import processing.event.MouseEvent;
 import sfpMenu.*;
@@ -68,12 +64,13 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 	private HashMap<Character, PShape>			wallsActiveGfx;
 	private HashMap<Character, PShape>			wallsOverGfx;
 	private PShape								greyRoom;
+	@SuppressWarnings("unused")
 	private DropTarget							dt;
 	private float[]								nbnd;
-	private float[]								npos;
+//	private float[]								npos;
 	private char								wallOver, menuWall;
 	private SM_Artwork							artOver;
-	private SM_Artwork							menuArtOver;
+	private SM_Artwork							menuArtOver, dragArtOver;
 	private boolean								drag;
 	private float 								mx;
 	private float 								my;
@@ -86,8 +83,8 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 	private boolean dropAnim = false;
 	private int bgr, bgg,bgb;
 	private int dloX, dloY, druX, druY, dTargetMX, dTargetMY;
-	private int mX, mY;
-	private boolean moveWindow = false;
+//	private int mX, mY;
+//	private boolean moveWindow = false;
 //	int count =0;
 	
 	public SM_RoomProjectView(int w, int h, SmlFr base) {
@@ -676,7 +673,8 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 	
 	@Override
 	public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-			String[] t = new String[] { artOver.getName(), myRoom.getName(), artOver.getWall() ,"SM_Artwork" };
+			String[] t = new String[] { dragArtOver.getName(), myRoom.getName(), dragArtOver.getWall() ,"SM_Artwork" };
+			
 		return t;
 	}
 
@@ -697,6 +695,7 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 	public void dragGestureRecognized(DragGestureEvent dge) {
 		if (artOver != null) {
 			Cursor cursor = null;
+			dragArtOver = artOver;
 			if (dge.getDragAction() == DnDConstants.ACTION_COPY) {
 				cursor = DragSource.DefaultCopyDrop;
 				//            cursor = DragSource.DefaultLinkDrop;
@@ -712,7 +711,24 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 
 	@Override
 	public void mousePressed() {
+
 		
+		
+	}
+
+	@Override
+	public void mouseDragged() {
+		
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if(e.getCount() > 1) {
+			if ( this.getClass() == smlfr.SM_RoomProjectView.class) {
+				myRoom.requestRoomEnter();
+				return;
+			}
+		}
 		
 		if( mouseButton == RIGHT ) {
 
@@ -744,33 +760,10 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 		}
 		
 		
-		mX = MouseInfo.getPointerInfo().getLocation().x;
-		mY = MouseInfo.getPointerInfo().getLocation().y;
+
 		
 		if(mouseButton == LEFT && menu.isVisible()) {
 			menu.doClick(mouseX, mouseY);
-		}
-	}
-
-	@Override
-	public void mouseDragged() {
-		
-//		if(moveWindow) {
-//			int deltaX = myFrame.getLocation().x+MouseInfo.getPointerInfo().getLocation().x-mX;
-//			int deltaY = myFrame.getLocation().y+MouseInfo.getPointerInfo().getLocation().y-mY;
-//
-//			myFrame.setLocation(deltaX, deltaY);
-//			mX = MouseInfo.getPointerInfo().getLocation().x;
-//			mY = MouseInfo.getPointerInfo().getLocation().y;
-//		}
-	}
-	
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if(e.getCount() > 1) {
-			if ( this.getClass() == smlfr.SM_RoomProjectView.class) {
-				myRoom.requestRoomEnter();
-			}
 		}
 	}
 	

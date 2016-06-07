@@ -78,6 +78,7 @@ public class ImportThread extends Thread {
 		return ret;
 	}
 	
+	@Override
 	public void run() {
 		if( !isPrepared ) return;
 		

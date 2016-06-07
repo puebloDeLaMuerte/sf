@@ -1,12 +1,7 @@
 package sfpMenu;
 
-import java.awt.Point;
-
-import com.sun.xml.internal.bind.v2.TODO;
-
 import processing.core.PApplet;
 import processing.core.PVector;
-import sun.tools.java.SyntaxError;
 
 public class SfpComponent {
 
@@ -236,6 +231,7 @@ public class SfpComponent {
 	 * 
 	 * @return <b>true</b> if this elements components.length > 0
 	 */
+	@SuppressWarnings("unused")
 	private boolean hasChildren() {
 		if( components.length > 0) return true;
 		else return false;
@@ -502,7 +498,7 @@ public class SfpComponent {
 //						   "me.total : " + this.getTotalSize());
 //		System.out.println();
 		
-		boolean b = checkMouseOver(mouseX, mouseY);
+		checkMouseOver(mouseX, mouseY);
 //		System.out.println("check    : " + b);
 		
 		for( SfpComponent c : components) {

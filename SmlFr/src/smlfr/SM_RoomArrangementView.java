@@ -5,8 +5,6 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.HashMap;
 import processing.core.PShape;
-import sfpMenu.SfpActionEvent;
-import sfpMenu.SfpEventListener;
 import sfpMenu.SfpMouseEvent;
 import sfpMenu.SfpMouseListener;
 import sfpMenu.SfpViewMenuItem;
