@@ -71,7 +71,7 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 	private DropTarget							dt;
 	private float[]								nbnd;
 	private float[]								npos;
-	private char								wallOver;
+	private char								wallOver, menuWall;
 	private SM_Artwork							artOver;
 	private SM_Artwork							menuArtOver;
 	private boolean								drag;
@@ -713,18 +713,20 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 	@Override
 	public void mousePressed() {
 		
-		if( artOver != null ) {
-//			pMenuRemoveArtwork.setEnabled(true);
-			menuRemoveArtwork.setEnabled(true);
-			menuArtOver = artOver;
-		}
-		else {
-//			pMenuRemoveArtwork.setEnabled(false);
-			menuRemoveArtwork.setEnabled(false);
-			menuArtOver = null;
-		}
 		
 		if( mouseButton == RIGHT ) {
+
+			if( artOver != null ) {
+//			pMenuRemoveArtwork.setEnabled(true);
+				menuRemoveArtwork.setEnabled(true);
+//			menuArtOver = artOver;
+			}
+			else {
+//			pMenuRemoveArtwork.setEnabled(false);
+				menuRemoveArtwork.setEnabled(false);
+//			menuArtOver = null;
+			}
+			
 			if( myRoom.getSaveDirty() ) {
 //				pMenuSavePr.setEnabled(true);
 				menuSavePr.setEnabled(true);
@@ -734,6 +736,10 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 			}
 			
 //			pMenu.show(this, mouseX, mouseY);
+			
+			menuArtOver = artOver;
+			menuWall = wallOver;
+			
 			menu.openAt(mouseX, mouseY, 1);
 		}
 		
@@ -798,11 +804,11 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 		if( e.getActionCommand().equalsIgnoreCase(Lang.changeColor)) {
 		
 			int wallColor = 0;
-			if( wallOver != ' ' &&  myWalls.get((Character)wallOver).hasColor() ) {
-				wallColor = myWalls.get((Character)wallOver).getColor();
+			if( menuWall != ' ' &&  myWalls.get((Character)menuWall).hasColor() ) {
+				wallColor = myWalls.get((Character)menuWall).getColor();
 			}
 			
-			new WallColorChooser(this, wallOver, myRoom.getRoomColor(), wallColor);
+			new WallColorChooser(this, menuWall, myRoom.getRoomColor(), wallColor);
 			
 			
 		} else if( menuArtOver != null && e.getActionCommand().equalsIgnoreCase(Lang.RemoveArtwork)) {
@@ -853,11 +859,11 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 		if( e.getActionCommand().equalsIgnoreCase(Lang.changeColor)) {
 			
 			int wallColor = 0;
-			if( wallOver != ' ' &&  myWalls.get((Character)wallOver).hasColor() ) {
-				wallColor = myWalls.get((Character)wallOver).getColor();
+			if( menuWall != ' ' &&  myWalls.get((Character)menuWall).hasColor() ) {
+				wallColor = myWalls.get((Character)menuWall).getColor();
 			}
 			
-			new WallColorChooser(this, wallOver, myRoom.getRoomColor(), wallColor);
+			new WallColorChooser(this, menuWall, myRoom.getRoomColor(), wallColor);
 			
 			
 		} else if( menuArtOver != null && e.getActionCommand().equalsIgnoreCase(Lang.RemoveArtwork)) {
