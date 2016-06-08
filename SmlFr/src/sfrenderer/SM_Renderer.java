@@ -1469,7 +1469,7 @@ public class SM_Renderer extends SfPApplet{
 	
 	@Override
 	public void dispose() {
-		System.err.println("Renderer goodbye...1");
+		System.out.println("Renderer goodbye...1");
 		
 //		tGen.dispose();
 		

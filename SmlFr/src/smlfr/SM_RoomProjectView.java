@@ -99,7 +99,7 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 	@Override
 	public void setup() {
 				
-		System.err.println("running super.setup() on " + myRoom.getName());		
+//		System.err.println("running super.setup() on " + myRoom.getName());		
 		
 		
 		ds = new DragSource();
@@ -609,6 +609,7 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 					bgb = 0;
 					dtde.rejectDrop();
 					wallOver = ' ';
+					drag = false;
 					return;
 				}
 				
@@ -622,6 +623,7 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 					bgb = 0;
 					dtde.rejectDrop();
 					wallOver = ' ';
+					drag = false;
 					return;
 				}
 				

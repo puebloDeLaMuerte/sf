@@ -213,7 +213,7 @@ public class SM_ViewManager implements SfpEventListener, ActionListener, WindowL
 		
 		renderer.frame.add(renderer);
 		
-		System.err.println("Thread that calls init on Renderer: " + Thread.currentThread().getName());
+//		System.err.println("Thread that calls init on Renderer: " + Thread.currentThread().getName());
 
 		
 		renderer.init();
@@ -354,7 +354,7 @@ private synchronized SM_WallArrangementView initWallArrangementView(char _wall, 
 		
 		wallArr.frame.add(wallArr);
 		
-		System.err.println("Thread that calls init on WallArrangementView: " + Thread.currentThread().getName());
+//		System.err.println("Thread that calls init on WallArrangementView: " + Thread.currentThread().getName());
 		
 		wallArr.init();
 		wallArr.initMenu();
@@ -792,7 +792,7 @@ private synchronized SM_WallArrangementView initWallArrangementView(char _wall, 
 	@Override
 	public void doUpdate(UpdateEvent e) {
 		
-		System.err.println("View Manager receives UpdateRequest on Thread: " + Thread.currentThread().getName());
+//		System.err.println("View Manager receives UpdateRequest on Thread: " + Thread.currentThread().getName());
 		
 		UpdateType type = e.getType();
 		LinkedHashMap<String, Object> data = e.getData();
@@ -802,7 +802,7 @@ private synchronized SM_WallArrangementView initWallArrangementView(char _wall, 
 		case POS_IN_WALL:
 			
 			for (String s : data.keySet()) {
-				System.out.println("VIEW MANAGER: receiving update request: " + s + ": " + data.get(s));
+				System.out.println("VIEW MANAGER: receiving update request: POS_IN_WALL: " + s + ": " + data.get(s));
 				if (s.contains("wall")) {
 					Object o = data.get(s);
 					String os = (String) o;
@@ -826,7 +826,7 @@ private synchronized SM_WallArrangementView initWallArrangementView(char _wall, 
 		case FRAME_STYLE:
 			
 			for (String s : data.keySet()) {
-				System.out.println("VIEW MANAGER: receiving update request: " + s + ": " + data.get(s));
+				System.out.println("VIEW MANAGER: receiving update request: FRAME_STYLE: " + s + ": " + data.get(s));
 				if (s.contains("wall")) {
 					
 					Object o = data.get(s);
@@ -889,7 +889,7 @@ private synchronized SM_WallArrangementView initWallArrangementView(char _wall, 
 		case WALL:
 			
 			for (String s : data.keySet()) {
-				System.out.println("VIEW MANAGER: receiving update request: " + s + ": " + data.get(s));
+				System.out.println("VIEW MANAGER: receiving update request: WALL: " + s + ": " + data.get(s));
 				if (s.contains("wall")) {
 					
 					Object o = data.get(s);
@@ -910,7 +910,7 @@ private synchronized SM_WallArrangementView initWallArrangementView(char _wall, 
 			
 		case GENERAL_AW_DATA:
 			for (String s : data.keySet()) {
-				System.out.println("VIEW MANAGER: receiving update request: " + s + ": " + data.get(s));
+				System.out.println("VIEW MANAGER: receiving update request: GENERAL_AW_DATA" + s + ": " + data.get(s));
 				if (s.contains("wall")) {
 					
 					Object o = data.get(s);

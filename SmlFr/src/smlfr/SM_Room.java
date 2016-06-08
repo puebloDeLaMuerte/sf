@@ -245,7 +245,7 @@ public void XinitProjectView(Dimension _size, Point _loc, SmlFr base) {
 		myProjectView.frame.add(myProjectView);
 
 		
-		System.err.println("Thread that calls init on ProjectView: " + Thread.currentThread().getName());
+//		System.err.println("Thread that calls init on ProjectView: " + Thread.currentThread().getName());
 		
 		myProjectView.init(fl, this);
 		

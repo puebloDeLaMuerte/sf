@@ -280,7 +280,6 @@ public class SfpComponent {
 
 	public void openAt(float startX, float startY, int depth) {
 
-		System.err.println("opening menu at thes coordinates: " +startX + " / " + startY);
 		
 		// if you're the parent of them all - check for space to show them and adjust if necessary
 		

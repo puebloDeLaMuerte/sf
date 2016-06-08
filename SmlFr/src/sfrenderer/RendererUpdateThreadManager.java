@@ -247,7 +247,7 @@ public class RendererUpdateThreadManager {
 		@Override
 		public void run() {
 			
-			System.err.println("Lights Update Thread named: " + Thread.currentThread().getName());
+//			System.err.println("Lights Update Thread named: " + Thread.currentThread().getName());
 			
 			boolean go;
 			boolean abort = false;
