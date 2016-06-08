@@ -172,9 +172,9 @@ public class SM_RoomArrangementView extends SM_RoomProjectView implements MouseL
 	
 	@Override
 	public void mouseExited(MouseEvent e) {
-		if(e.getSource().getClass().equals(ViewMenuItem.class)) {
+//		if(e.getSource().getClass().equals(ViewMenuItem.class)) {
 //			System.out.println("SCHNABLER");
-		}
+//		}
 	}
 	
 	/* (non-Javadoc)

@@ -7,7 +7,7 @@
     <propertyfile file="${nrfile}" comment="My Build Number">
     
     	<entry key="build.number" operation="+" value="1" type="int"/>
-    	<entry key="version.string" value="1.0.6" />
+    	<entry key="version.string" value="1.0.7" />
     </propertyfile>
     
     <tstamp>

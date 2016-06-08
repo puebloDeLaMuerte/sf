@@ -435,7 +435,7 @@ private synchronized SM_WallArrangementView initWallArrangementView(char _wall, 
 		else return null;
 	}
 	
- 	public /*synchronized  manual*/ PImage getLightsGfx( Character _wc) {
+ 	public synchronized   PImage getLightsGfx( Character _wc) {
 
 		if( wallArrangementViews.get(""+_wc) != null ) {
 			return wallArrangementViews.get(""+_wc)._drawLights();//          drawLights( 1 );

@@ -610,7 +610,7 @@ public class SM_Renderer extends SfPApplet{
 		
 		double amili = millis();
 		
-		System.out.println("RENDERER: ARTWORK UPDATE: start "+_wallChar);
+		System.out.println("RENDERER: ARTWORK UPDATE: start "+_wallChar +" on Thread: " + Thread.currentThread().getName());
 		
 //		artworksLayer.clear();
 		
