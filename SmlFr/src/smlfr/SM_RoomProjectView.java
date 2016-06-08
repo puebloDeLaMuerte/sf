@@ -546,10 +546,11 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 		druX = druX + ((dTargetMX - druX) / 5);
 		dloY = dloY + ((dTargetMY - dloY) / 5);
 		druY = druY + ((dTargetMY - druY) / 5);
+		pushStyle();
 		rectMode(CORNERS);
 		noFill();
 		rect(dloX, dloY, druX, druY);
-		
+		popStyle();
 		if( abs(dloX-dTargetMX) < 10 ) dropAnim = false;
 	}
 	
@@ -586,7 +587,7 @@ public class SM_RoomProjectView extends SfPApplet implements DropTargetListener,
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
 		
-
+//		System.err.println("DROOOOP");
 		
 		if(dtde.getCurrentDataFlavors()[0] == SM_DataFlavor.SM_AW_Flavor && wallOver != ' ' ) {
 			
