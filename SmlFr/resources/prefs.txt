@@ -1,14 +1,14 @@
 {
-  "shadowAmount": 10,
   "previousProject": {
-    "projectPath": "/Users/pht/Desktop/Schreibtisch alt - SORTIEREN!!!/ffff/test der westlüste/test der westlüste.sfp",
-    "projectName": "test der westlüste"
+    "projectPath": "/Users/pht/PROJEKTE/Föhr/Kräftemessen/Kräftemessen.sfp",
+    "projectName": "Kräftemessen"
   },
-  "shadowOfsetAmount": 5,
-  "fileChooserCurrentDirectory": "/Users/pht/Desktop/gerneauchnicht",
   "museumData": "MuKuDeWe.sfm",
+  "shadowAmount": 10,
+  "shadowOfsetAmount": 5,
   "midHeight": 1500,
-  "scrollPaneSpeed": 16,
   "collectionPath": "/Users/philipptoegel/Desktop/gggggggggggg/Sammlung Kunst der Westküste/Sammlung Kunst der Westküste.xls",
-  "measureDisplayMillis": 200
+  "measureDisplayMillis": 200,
+  "scrollPaneSpeed": 16,
+  "fileChooserCurrentDirectory": "/Users/pht/Desktop/schlenker 02"
 }

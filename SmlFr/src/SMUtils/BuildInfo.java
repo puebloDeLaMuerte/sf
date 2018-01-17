@@ -5,7 +5,7 @@
         
         public class BuildInfo {
         	public static final String versionString="1.0.7";
-            public static final String buildNumber="167";
-            public static final String timeStamp="Wed, 8-June-2016 17:03:38 CEST";
+            public static final String buildNumber="179";
+            public static final String timeStamp="Wed, 17-January-2018 13:28:28 CET";
         }
     

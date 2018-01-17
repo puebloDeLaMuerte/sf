@@ -1,0 +1,33 @@
+<!-- Generate a java class with the current svn revision number -->
+<project>
+    <echo>Generate build info class...</echo>
+    
+    <property name="nrfile" location="mybuild.number"/>
+        
+    <propertyfile file="${nrfile}" comment="My Build Number">
+    
+    	<entry key="build.number" operation="+" value="1" type="int"/>
+    	<entry key="version.string" value="1.0.7" />
+    </propertyfile>
+    
+    <tstamp>
+        <format property="TODAY" pattern="EEE, d-MMMM-yyyy HH:mm:ss z" locale="ENGLISH, GERMANY"/>
+      </tstamp>
+       
+	<property file="${nrfile}" />
+      
+    <echo>Write build info to file ${basedir}/SMUtils/BuildInfo.java</echo>
+    
+    <!-- the source code of the java class -->
+    <echo file="${basedir}/SMUtils/BuildInfo.java">
+        package SMUtils;
+        
+        // auto-generated at built time, dont edit here!
+        
+        public class BuildInfo {
+        	public static final String versionString="${version.string}";
+            public static final String buildNumber="${build.number}";
+            public static final String timeStamp="${TODAY}";
+        }
+    </echo>
+</project>

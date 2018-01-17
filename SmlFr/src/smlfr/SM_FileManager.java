@@ -489,6 +489,7 @@ public class SM_FileManager extends PApplet implements ArtworkUpdateRequestListe
 		String loadingProjName = _f.getAbsoluteFile().getName();
 		loadingProjName = loadingProjName.substring(0,  loadingProjName.indexOf('.'));
 		
+		// TODO check for loadingProjName.indexOf('.')  bein -1 !!! to omit crashes!
 		String loadingProjPath = _f.getAbsolutePath();
 		
 		for (File file : allFiles){

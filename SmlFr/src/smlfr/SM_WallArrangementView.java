@@ -306,9 +306,9 @@ public class SM_WallArrangementView extends SfPApplet implements DropTargetListe
 		
 		
 		if( isValidDrag() ) {
-			frameRate(35);
+//			frameRate(35);
 		} else {
-			frameRate(15);
+//			frameRate(15);
 		}
 		
 		background(backgroundColor);
