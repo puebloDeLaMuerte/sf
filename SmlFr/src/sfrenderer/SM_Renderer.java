@@ -42,16 +42,16 @@ public class SM_Renderer extends SfPApplet{
 //	private JFrame					myFrame;
 	
 	private SM_ViewAngle			currentView;
-	private String					currentViewString;
+	private String				currentViewString;
 	private File					generalPath;
 	private File					currentPath;
-	private String					currentFileStub;
+	private String				currentFileStub;
 	
 	// the NEW menu:
 	
-	private SfpMenu 			menu;
+	private SfpMenu 				menu;
 	private SfpViewMenuItem[] 	menuViews;
-	private SfpComponent		savePreview;
+	private SfpComponent			savePreview;
 	
 	// the old menu:
 	private JPopupMenu				pMenu;
@@ -59,7 +59,7 @@ public class SM_Renderer extends SfPApplet{
 	private ViewMenuItem[]			pMenuViews;
 	
 	
-	public RendererUpdateThreadManager		update;
+	public RendererUpdateThreadManager	update;
 	private pTimedEventGenerator			tGen;
 	
 	private PImage[] layers;
@@ -73,8 +73,8 @@ public class SM_Renderer extends SfPApplet{
 	
 	
 	private PGraphics				cropMask;
-	private volatile PGraphics[]	wallGfxsAW;
-	private	volatile PGraphics[]	wallGfxsLG;
+	private volatile PGraphics[]		wallGfxsAW;
+	private	volatile PGraphics[]		wallGfxsLG;
 	private volatile char[]			wallGfxsId;
 	private boolean					colorPreview = false;
 
@@ -82,7 +82,7 @@ public class SM_Renderer extends SfPApplet{
 
 	private double 					aspect;
 //	private float 					scale;
-	private int 					ySize = 600;
+	private int 						ySize = 600;
 	private int						photoX = 1200;
 	private int						photoY = 800;
 	private float					zoomFact;
@@ -90,7 +90,7 @@ public class SM_Renderer extends SfPApplet{
 	
 	public boolean 					setupRun = false;
 	
-	private boolean 				devGUI = false;
+	private boolean 					devGUI = false;
 	private String					devBuff = "       ";
 	
 	private boolean					isBusy = false;

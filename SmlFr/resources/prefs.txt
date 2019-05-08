@@ -1,14 +1,14 @@
 {
   "previousProject": {
-    "projectPath": "/Users/pht/PROJEKTE/Föhr/Kräftemessen/Kräftemessen.sfp",
-    "projectName": "Kräftemessen"
+    "projectPath": "/Users/pht/PROJEKTE/Föhr/error/20181221_Littmann/Simu_Meisterwerke_neu/Simu_Meisterwerke_neu/Simu_Meisterwerke_neu.sfp",
+    "projectName": "Simu_Meisterwerke_neu"
   },
   "museumData": "MuKuDeWe.sfm",
   "shadowAmount": 10,
   "shadowOfsetAmount": 5,
   "midHeight": 1500,
-  "collectionPath": "/Users/philipptoegel/Desktop/gggggggggggg/Sammlung Kunst der Westküste/Sammlung Kunst der Westküste.xls",
+  "collectionPath": "/Users/pht/PROJEKTE/Föhr/Sammlung Kunst der Westküste Korrektur/Simuföhr_Meer.xls",
   "measureDisplayMillis": 200,
   "scrollPaneSpeed": 16,
-  "fileChooserCurrentDirectory": "/Users/pht/Desktop/schlenker 02"
+  "fileChooserCurrentDirectory": "/Users/pht/PROJEKTE/Föhr/Kräftemessen/SuperfunProXT"
 }
